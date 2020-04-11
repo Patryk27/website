@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+pygmentize -f html -S lovelace -a .pygments | sed 's/.pygments ./.pygments .tok-/g' > assets/style/highlight.css
