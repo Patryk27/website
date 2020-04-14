@@ -25,7 +25,7 @@ in
     buildInputs = with pkgs; [
       asciidoctor
       graphviz
-      hugo
       (python2.withPackages (ps: with ps; [ pygments ]))
+      sass
     ];
   }

@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
 
-@import 'style-config';
+@import 'style/style-config';
+
 @import 'style/asciidoc';
-@import 'style/highlight';
+@import 'style/highlight.css';
 @import 'style/site';
 
 body {

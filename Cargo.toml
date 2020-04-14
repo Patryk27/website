@@ -1,0 +1,16 @@
+[package]
+name = "stdout"
+version = "0.1.0"
+authors = ["Patryk Wychowaniec <wychowaniec.patryk@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+html-minifier = "1.2"
+paw = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+structopt = { version = "0.3", features = ["paw"] }
+tera = "1.2"
+thiserror = "1.0"
+tokio = { version = "0.2", features = ["full"] }
+warp = "0.2"
