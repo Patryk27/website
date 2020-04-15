@@ -10,12 +10,13 @@ let
     $asciidoctor \
         -v \
         -s \
+        --no-header-footer \
         -r asciidoctor-diagram \
         -a source-highlighter=pygments \
         -
 
     # Since I'm using `opts=inline`, I don't need no diagram artifacts
-    if [[ -n $($find . -name 'diag-*' -maxdepth 1 ) ]]; then
+    if [[ -n $($find . -maxdepth 1 -name 'diag-*') ]]; then
         rm diag-*
     fi
   '';

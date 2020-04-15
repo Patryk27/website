@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% for tag in tags %}
+<p>
+    {{ tag.id }}: {{ tag.posts | len }}
+</p>
+{% endfor %}
+{% endblock %}

@@ -1,53 +1,35 @@
 #![feature(try_blocks)]
 
-use std::net::SocketAddr;
 use std::path::PathBuf;
 
 use anyhow::*;
 use structopt::StructOpt;
 
-mod backend;
-mod frontend;
-mod middleend;
+mod cmds;
+mod models;
 
 #[derive(Debug, StructOpt)]
 enum Command {
-    Check {
-        #[structopt(short, long, default_value = "site")]
+    Build {
         src: PathBuf,
+        dst: PathBuf,
     },
 
-    Serve {
-        #[structopt(short, long, default_value = "site")]
+    Watch {
         src: PathBuf,
-
-        #[structopt(short, long, default_value = "127.0.0.1:1337")]
-        addr: SocketAddr,
+        dst: PathBuf,
     },
 }
 
 #[paw::main]
-#[tokio::main]
-async fn main(cmd: Command) {
-    let result: Result<()> = try {
-        match cmd {
-            Command::Check { src } => {
-                println!("Building");
+fn main(cmd: Command) {
+    let result = match cmd {
+        Command::Build { src, dst } => {
+            cmds::build(src, dst)
+        }
 
-                backend::build(src).await?;
-
-                println!("All ok!");
-            }
-
-            Command::Serve { src, addr } => {
-                println!("Building");
-
-                let site = backend::build(src).await?;
-
-                println!("Serving");
-
-                frontend::serve(site, addr).await?;
-            }
+        Command::Watch { src, dst } => {
+            cmds::watch(src, dst)
         }
     };
 

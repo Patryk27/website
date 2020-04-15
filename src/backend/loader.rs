@@ -1,6 +1,5 @@
-use std::path::{Path, PathBuf};
-
 use anyhow::*;
+use std::path::{Path, PathBuf};
 use tokio::fs;
 
 use crate::middleend::{Post, Site};
@@ -10,7 +9,7 @@ pub async fn load(src: &Path) -> Result<Site> {
 
     load_posts(&mut site, src.join("posts"))
         .await
-        .context("Could not compile posts")?;
+        .context("Could not load posts")?;
 
     load_resources(&mut site, src.join("resources"))
         .await
