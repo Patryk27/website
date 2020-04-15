@@ -2,7 +2,7 @@ use anyhow::*;
 
 use crate::app;
 
-fn build(ctxt: &mut Context) -> Result<()> {
+pub fn build(ctxt: &mut app::Context) -> Result<()> {
     println!();
     println!("[+] Loading posts");
 

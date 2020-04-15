@@ -1,8 +1,12 @@
+use std::path::PathBuf;
+
+use structopt::StructOpt;
+
 #[derive(Debug, StructOpt)]
-struct Args {
-    src: PathBuf,
-    dst: PathBuf,
+pub struct Args {
+    pub src: PathBuf,
+    pub dst: PathBuf,
 
     #[structopt(short, long)]
-    watch: bool,
+    pub watch: bool,
 }

@@ -1,5 +1,3 @@
-use std::fmt;
-use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::time::Duration;
 
@@ -9,53 +7,15 @@ use pathdiff::diff_paths;
 
 use crate::app;
 
-#[derive(Debug)]
-enum Event {
-    PostCreated {
-        id: String,
-    },
+use self::event::*;
 
-    PostUpdated {
-        id: String,
-    },
-
-    PostDeleted {
-        id: String,
-    },
-
-    ThemeUpdated,
-}
-
-impl fmt::Display for Event {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        use Event::*;
-
-        match self {
-            PostCreated { id } => {
-                write!(f, "post created: `{}`", id)
-            }
-
-            PostUpdated { id } => {
-                write!(f, "post updated: `{}`", id)
-            }
-
-            PostDeleted { id } => {
-                write!(f, "post deleted: `{}`", id)
-            }
-
-            ThemeUpdated => {
-                write!(f, "theme updated")
-            }
-        }
-    }
-}
+mod event;
 
 pub fn watch(ctxt: &mut app::Context) -> Result<()> {
-    let src = src
+    let src = ctxt
+        .src
         .canonicalize()
         .context("Could not canonicalize source path")?;
-
-    super::build(&src, &dst)?;
 
     println!();
     println!("[+] Watching for changes");
@@ -97,17 +57,7 @@ pub fn watch(ctxt: &mut app::Context) -> Result<()> {
 
     for event in events {
         println!(" -  {}", event);
-
-        match event {
-            Event::PostCreated { id } => {
-                compiler.add_post();
-            }
-
-            Event::PostDeleted { id } => {}
-        }
     }
-
-    println!("[+] Stopping");
 
     Ok(())
 }

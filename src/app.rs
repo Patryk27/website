@@ -1,4 +1,4 @@
-use anyhow::*;
+use anyhow::Result;
 
 use crate::{Posts, Site, Theme};
 
@@ -12,7 +12,7 @@ mod build;
 mod context;
 mod watch;
 
-fn main(args: Args) -> Result<()> {
+pub fn main(args: Args) -> Result<()> {
     println!("[+] Initializing");
 
     let posts_dir = args.src.join("posts");
@@ -27,16 +27,17 @@ fn main(args: Args) -> Result<()> {
         posts: Posts::new(&posts_dir),
         site: Site::new(&args.dst)?,
         theme: Theme::new(&theme_dir, &args.dst),
+        src: args.src,
     };
 
     build::build(&mut ctxt)?;
 
+    println!();
+    println!("Ok, site has been built");
+
     if args.watch {
         watch::watch(&mut ctxt)?;
     }
-
-    println!();
-    println!("[+] Completed");
 
     Ok(())
 }
