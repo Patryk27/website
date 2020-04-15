@@ -6,4 +6,5 @@ use serde::Deserialize;
 pub struct PostMeta {
     pub title: String,
     pub tags: BTreeSet<String>,
+    pub summary: String,
 }

@@ -1,38 +1,30 @@
-#![feature(try_blocks)]
-
 use std::path::PathBuf;
 
 use anyhow::*;
+use anyhow::Context as _;
 use structopt::StructOpt;
 
-mod cmds;
-mod models;
+pub use self::{
+    post::*,
+    post_meta::*,
+    posts::*,
+    site::*,
+    tag::*,
+    theme::*,
+};
 
-#[derive(Debug, StructOpt)]
-enum Command {
-    Build {
-        src: PathBuf,
-        dst: PathBuf,
-    },
-
-    Watch {
-        src: PathBuf,
-        dst: PathBuf,
-    },
-}
+mod app;
+mod post;
+mod post_meta;
+mod posts;
+mod site;
+mod tag;
+mod theme;
 
 #[paw::main]
-fn main(cmd: Command) {
-    let result = match cmd {
-        Command::Build { src, dst } => {
-            cmds::build(src, dst)
-        }
-
-        Command::Watch { src, dst } => {
-            cmds::watch(src, dst)
-        }
-    };
-
-    // @todo
-    result.unwrap();
+fn main(args: app::Args) {
+    try_main(args)
+        .unwrap();
 }
+
+
