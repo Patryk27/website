@@ -6,7 +6,7 @@ tags: [ "dot", "factorio", "graphviz" ]
 In this article I present the way I piggyback on Graphviz's `dot` engine to make building factories in Factorio a bit
 easier, more approachable and wholesome.
 
-<!--more-->
+<!-- more -->
 
 Enjoy.
 

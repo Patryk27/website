@@ -2,22 +2,22 @@ use std::path::{Path, PathBuf};
 
 use anyhow::*;
 
-use crate::Post;
+use crate::input::Post;
 
 mod find;
 mod load;
 
-pub struct Posts {
+pub struct PostsRepository {
     dir: PathBuf,
 }
 
-impl Posts {
+impl PostsRepository {
     pub fn new(dir: &Path) -> Self {
         Self { dir: dir.into() }
     }
 
     pub fn find(&self) -> Result<Vec<String>> {
-        find::find_posts(&self.dir)
+        find::find(&self.dir)
     }
 
     pub fn load(&self, id: &str) -> Result<Post> {
@@ -25,6 +25,6 @@ impl Posts {
             .join(id)
             .with_extension("adoc");
 
-        load::load_post(id, &path)
+        load::load(id, &path)
     }
 }

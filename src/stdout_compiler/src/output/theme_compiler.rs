@@ -3,12 +3,12 @@ use std::process::{Command, Stdio};
 
 use anyhow::*;
 
-pub struct Theme {
+pub struct ThemeCompiler {
     src: PathBuf,
     dst: PathBuf,
 }
 
-impl Theme {
+impl ThemeCompiler {
     pub fn new(src: &Path, dst: &Path) -> Self {
         Self {
             src: src.into(),
@@ -16,7 +16,7 @@ impl Theme {
         }
     }
 
-    pub fn build(&mut self) -> Result<()> {
+    pub fn compile(&mut self) -> Result<()> {
         let cmd = Command::new("sass")
             .arg("-C")
             .arg("--sourcemap=none")

@@ -1,4 +1,8 @@
 use std::fmt;
+use std::path::Path;
+
+use notify::DebouncedEvent;
+use pathdiff::diff_paths;
 
 #[derive(Debug)]
 pub enum Event {
@@ -15,6 +19,31 @@ pub enum Event {
     },
 
     ThemeUpdated,
+}
+
+impl Event {
+    pub fn convert(src: &Path, event: DebouncedEvent) -> Option<Self> {
+        match event {
+            DebouncedEvent::Write(path) => {
+                let path = diff_paths(&path, &src)?;
+
+                if path.starts_with("posts") {
+                    let id = path
+                        .file_stem()?
+                        .to_string_lossy()
+                        .into();
+
+                    Some(Event::PostUpdated { id })
+                } else {
+                    None
+                }
+            }
+
+            _ => {
+                None
+            }
+        }
+    }
 }
 
 impl fmt::Display for Event {

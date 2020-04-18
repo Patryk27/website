@@ -6,9 +6,7 @@ tags: [ "factorio","smt", "z3" ]
 This time we'll take a look at how the https://github.com/Z3Prover/z3[Z3 theorem prover] may help us while designing
 factories in Factorio.
 
-<!--more-->
-
-Enjoy.
+<!-- more -->
 
 == Abstract
 

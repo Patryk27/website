@@ -2,7 +2,7 @@ use std::path::Path;
 
 use anyhow::*;
 
-pub fn find_posts(dir: &Path) -> Result<Vec<String>> {
+pub fn find(dir: &Path) -> Result<Vec<String>> {
     let dir = dir.to_string_lossy();
 
     let posts = glob::glob(&format!("{}/*.adoc", dir))

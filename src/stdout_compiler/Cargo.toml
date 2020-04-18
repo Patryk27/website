@@ -1,0 +1,18 @@
+[package]
+name = "stdout_compiler"
+version = "0.1.0"
+authors = ["Patryk Wychowaniec <wychowaniec.patryk@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+chrono = "0.4"
+glob = "0.3"
+html-minifier = "1.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
+tera = "1.2"
+nom = "6.0.0-alpha1"
+
+[dev-dependencies]
+pretty_assertions = "0.6"

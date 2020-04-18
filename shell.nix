@@ -8,17 +8,20 @@ let
     find="${pkgs.findutils}/bin/find"
 
     $asciidoctor \
-        -v \
         -s \
-        --no-header-footer \
+        --failure-level=WARN \
         -r asciidoctor-diagram \
         -a source-highlighter=pygments \
         -
+
+    code=$?
 
     # Since I'm using `opts=inline`, I don't need no diagram artifacts
     if [[ -n $($find . -maxdepth 1 -name 'diag-*') ]]; then
         rm diag-*
     fi
+
+    exit $code
   '';
 
 in

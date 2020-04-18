@@ -2,22 +2,4 @@
 
 set -e
 
-SRC='site'
-DST='artifacts'
-
-function build-theme {
-    echo '[+] Building theme'
-
-    sass -C "$SRC/theme/style.scss" "$DST/style.css"
-}
-
-function build-site {
-    echo '[+] Building site'
-
-    cargo run -- build "$SRC" "$DST"
-}
-
-build-theme
-build-site
-
-echo '[+] Site has been built'
+cargo run -- build ./site ./site-output

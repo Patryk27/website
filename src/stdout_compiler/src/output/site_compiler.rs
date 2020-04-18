@@ -5,9 +5,9 @@ use std::path::{Path, PathBuf};
 use anyhow::*;
 use chrono::Utc;
 
-use crate::{Post, Tag};
+use crate::input::{Post, Tag, Templates};
 
-pub struct Site {
+pub struct SiteCompiler {
     dir: PathBuf,
     posts: HashMap<String, Post>,
     tags: HashMap<String, Tag>,
@@ -15,14 +15,14 @@ pub struct Site {
     dirty_tags: HashSet<String>,
 }
 
-impl Site {
+impl SiteCompiler {
     pub fn new(dir: &Path) -> Result<Self> {
         if dir.exists() {
             bail!("Destination directory already exists, aborting");
         }
 
         fs::create_dir(&dir)
-            .context("Could not create the main directory")?;
+            .context("Could not create the destination directory")?;
 
         fs::write(dir.join(".gitignore"), "*")
             .context("Could not create `.gitignore`")?;
@@ -57,8 +57,7 @@ impl Site {
             //     .or_default()
             //     .insert(post.id.clone());
 
-            self.dirty_tags
-                .insert(tag.to_owned());
+            self.dirty_tags.insert(tag.to_owned());
         }
 
         self.dirty_posts.insert(post.id.clone());
@@ -67,14 +66,28 @@ impl Site {
 
     pub fn del_post(&mut self, id: String) {
         for (_, tag) in &mut self.tags {
-            tag.posts.remove(&id);
+            if tag.posts.remove(&id) {
+                self.dirty_tags.insert(tag.id.clone());
+            }
         }
 
         self.posts.remove(&id);
         self.dirty_posts.insert(id);
     }
 
-    pub fn render(&mut self) -> Result<()> {
+    pub fn compile(&mut self, templates: &Templates) -> Result<()> {
+        for post in self.dirty_posts.drain() {
+            if let Some(post) = self.posts.get(&post) {
+                templates
+                    .render("post.html", |ctxt| {
+                        ctxt.insert("post", post);
+                    })
+                    .with_context(|| format!("Could not render post `{}`", post.id))?;
+            } else {
+                // @todo remove post
+            }
+        }
+
         Ok(())
 
         // let mut ctxt = tera::Context::new();
