@@ -1,5 +1,0 @@
-[workspace]
-members = [
-    "src/stdout_cli",
-    "src/stdout_compiler",
-]

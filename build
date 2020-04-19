@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-cargo run -- build ./site ./site-output
