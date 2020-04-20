@@ -39,8 +39,14 @@ let
     ]
   );
 
+  sass = pkgs.writeShellScriptBin "sass" ''
+    sass="${pkgs.sass}/bin/sass"
+
+    HOME=/tmp "$sass"
+  '';
+
 in
   {
-    asciidoctor = asciidoctor;
-    sass = pkgs.sass;
+    inherit asciidoctor;
+    inherit sass;
   }
