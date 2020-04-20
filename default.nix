@@ -1,17 +1,15 @@
 with import <nixpkgs> {};
 
 let
-  stdout = import ./app;
+  cli = import ./cli;
 
 in
   stdenv.mkDerivation {
     name = "stdout";
-
+    phases = [ "buildPhase" ];
     src = ./site;
 
-    phases = [ "buildPhase" ];
-
     buildPhase = ''
-        ${stdout}/bin/stdout_cli build "$src" "$out"
+      ${cli}/bin/stdout build "$src" "$out"
     '';
   }

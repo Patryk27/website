@@ -14,8 +14,4 @@ pub enum Command {
         #[structopt(short, long)]
         release: bool, // @todo if enabled, check outgoing links, self-references etc.
     },
-
-    Serve {
-        dir: PathBuf,
-    },
 }

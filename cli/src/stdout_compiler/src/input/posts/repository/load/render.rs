@@ -5,6 +5,7 @@ use anyhow::*;
 
 pub fn render(body: &str) -> Result<String> {
     let mut cmd = Command::new("asciidoctor")
+        .arg("--trace")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

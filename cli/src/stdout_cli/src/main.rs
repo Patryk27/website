@@ -14,9 +14,5 @@ fn main(cmd: Command) -> Result<()> {
         Command::Build { src, dst, watch, release: _ } => {
             cmds::build(src, dst, watch)
         }
-
-        Command::Serve { dir } => {
-            cmds::serve(dir)
-        }
     }
 }
