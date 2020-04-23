@@ -16,15 +16,17 @@ impl PostsRepository {
         Self { dir: dir.into() }
     }
 
-    pub fn find(&self) -> Result<Vec<String>> {
+    pub async fn find(&self) -> Result<Vec<String>> {
         find::find(&self.dir)
+            .await
     }
 
-    pub fn load(&self, id: &str) -> Result<Post> {
+    pub async fn load(&self, id: &str) -> Result<Post> {
         let path = self.dir
             .join(id)
             .with_extension("adoc");
 
         load::load(id, &path)
+            .await
     }
 }

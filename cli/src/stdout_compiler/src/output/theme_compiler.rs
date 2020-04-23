@@ -1,7 +1,9 @@
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 
 use anyhow::*;
+use tokio::process::Command;
+use tokio::time;
 
 pub struct ThemeCompiler {
     src: PathBuf,
@@ -16,7 +18,7 @@ impl ThemeCompiler {
         }
     }
 
-    pub fn compile(&mut self) -> Result<()> {
+    pub async fn compile(&mut self) -> Result<()> {
         let cmd = Command::new("sass")
             .arg("-C")
             .arg("--sourcemap=none")
@@ -24,17 +26,26 @@ impl ThemeCompiler {
             .arg(self.dst.join("theme.css"))
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
+            .kill_on_drop(true)
             .spawn()
             .context("Could not spawn `sass`")?;
 
-        let cmd = cmd
-            .wait_with_output()
-            .context("Could not wait for `sass`")?;
+        let result = time::timeout(time::Duration::from_secs(10), async {
+            let out = cmd
+                .wait_with_output()
+                .await
+                .context("Could not wait for `sass`")?;
 
-        if !cmd.status.success() {
-            bail!("{}", String::from_utf8_lossy(&cmd.stderr));
+            if out.status.success() {
+                Ok(())
+            } else {
+                bail!("{}", String::from_utf8_lossy(&out.stderr));
+            }
+        }).await;
+
+        match result {
+            Ok(result) => result,
+            Err(_) => bail!("`sass` timed out"),
         }
-
-        Ok(())
     }
 }

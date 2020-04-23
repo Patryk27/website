@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::*;
 use tera::Tera;
+use tokio::{task, fs};
 
 use crate::input::Templates;
 
@@ -14,9 +15,13 @@ impl TemplatesRepository {
         Self { dir: dir.into() }
     }
 
-    pub fn load(&mut self) -> Result<Templates> {
-        let dir = &format!("{}/**/*.html", self.dir.to_string_lossy());
-        let tera = Tera::new(dir)?;
+    pub async fn load(&mut self) -> Result<Templates> {
+        let dir = fs::canonicalize(&self.dir).await.unwrap(); // @todo
+        let dir = format!("{}/**/*.html", &dir.to_string_lossy());
+
+        let tera = task::spawn_blocking(move || {
+            Tera::new(&dir)
+        }).await??;
 
         Ok(Templates::new(tera))
     }

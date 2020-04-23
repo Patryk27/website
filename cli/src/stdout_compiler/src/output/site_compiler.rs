@@ -1,9 +1,9 @@
 use std::collections::{HashMap, HashSet};
-use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::*;
 use chrono::Utc;
+use tokio::fs;
 
 use crate::input::{Post, Tag, Templates};
 
@@ -16,27 +16,33 @@ pub struct SiteCompiler {
 }
 
 impl SiteCompiler {
-    pub fn new(dir: &Path) -> Result<Self> {
-        if dir.exists() {
+    pub async fn new(dir: &Path) -> Result<Self> {
+        if fs::metadata(dir).await.is_ok() {
             bail!("Destination directory already exists, aborting");
         }
 
         fs::create_dir(&dir)
+            .await
             .context("Could not create the destination directory")?;
 
         fs::write(dir.join(".gitignore"), "*")
+            .await
             .context("Could not create `.gitignore`")?;
 
         fs::write(dir.join(".timestamp"), Utc::now().to_rfc2822())
+            .await
             .context("Could not create `.timestamp`")?;
 
         fs::create_dir(dir.join("assets"))
+            .await
             .context("Could not create the `assets` directory")?;
 
         fs::create_dir(dir.join("posts"))
+            .await
             .context("Could not create the `posts` directory")?;
 
         fs::create_dir(dir.join("tags"))
+            .await
             .context("Could not create the `tags` directory")?;
 
         Ok(Self {
@@ -81,25 +87,29 @@ impl SiteCompiler {
         self.dirty_posts.insert(id);
     }
 
-    pub fn compile(&mut self, templates: &Templates) -> Result<()> {
-        self.compile_post_pages(templates)?;
-        self.compile_tag_pages(templates)?;
+    pub async fn compile(&mut self, templates: &Templates) -> Result<()> {
+        self.compile_post_pages(templates)
+            .await?;
+
+        self.compile_tag_pages(templates)
+            .await?;
 
         Ok(())
     }
 
-    fn compile_post_pages(&mut self, templates: &Templates) -> Result<()> {
+    async fn compile_post_pages(&mut self, templates: &Templates) -> Result<()> {
         let posts: Vec<_> = self.dirty_posts.drain().collect();
 
         for post in posts {
             self.compile_post_page(templates, &post)
+                .await
                 .with_context(|| format!("Could not compile page for post `{}`", post))?;
         }
 
         Ok(())
     }
 
-    fn compile_post_page(&self, templates: &Templates, post: &str) -> Result<()> {
+    async fn compile_post_page(&self, templates: &Templates, post: &str) -> Result<()> {
         let path = self.dir
             .join("posts")
             .join(post)
@@ -111,27 +121,30 @@ impl SiteCompiler {
             })?;
 
             fs::write(&path, content)
+                .await
                 .with_context(|| format!("Could not create page `{}`", path.to_string_lossy()))?;
         } else {
             fs::remove_file(&path)
+                .await
                 .with_context(|| format!("Could not remove page `{}`", path.to_string_lossy()))?;
         }
 
         Ok(())
     }
 
-    fn compile_tag_pages(&mut self, templates: &Templates) -> Result<()> {
+    async fn compile_tag_pages(&mut self, templates: &Templates) -> Result<()> {
         let tags: Vec<_> = self.dirty_tags.drain().collect();
 
         for tag in tags {
             self.compile_tag_page(templates, &tag)
+                .await
                 .with_context(|| format!("Could not compile page for tag `{}`", tag))?;
         }
 
         Ok(())
     }
 
-    fn compile_tag_page(&self, templates: &Templates, tag: &str) -> Result<()> {
+    async fn compile_tag_page(&self, templates: &Templates, tag: &str) -> Result<()> {
         let path = self.dir
             .join("tags")
             .join(tag)
@@ -143,9 +156,11 @@ impl SiteCompiler {
             })?;
 
             fs::write(&path, content)
+                .await
                 .with_context(|| format!("Could not create page `{}`", path.to_string_lossy()))?;
         } else {
             fs::remove_file(&path)
+                .await
                 .with_context(|| format!("Could not remove page `{}`", path.to_string_lossy()))?;
         }
 

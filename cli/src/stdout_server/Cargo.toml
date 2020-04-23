@@ -1,0 +1,12 @@
+[package]
+name = "stdout_server"
+version = "0.1.0"
+authors = ["Patryk Wychowaniec <wychowaniec.patryk@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+tokio = { version = "0.2.0", features = ["full"] }
+tokio-util = { version = "0.3", features = ["full"] }
+warp = "0.2"
+hyper = "0.13"

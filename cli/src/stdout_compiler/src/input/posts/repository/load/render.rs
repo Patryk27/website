@@ -1,36 +1,48 @@
-use std::io::Write;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 
 use anyhow::*;
+use tokio::io::AsyncWriteExt;
+use tokio::process::Command;
+use tokio::time;
 
-pub fn render(body: &str) -> Result<String> {
+pub async fn render(body: &str) -> Result<String> {
     let mut cmd = Command::new("asciidoctor")
         .arg("--trace")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
+        .kill_on_drop(true)
         .spawn()
         .context("Could not spawn `asciidoctor`")?;
 
-    let pipe = cmd.stdin
-        .as_mut()
-        .ok_or_else(|| anyhow!("Could not attach to `asciidoctor`'s stdin"))?;
+    let result = time::timeout(time::Duration::from_secs(10), async {
+        let pipe = cmd.stdin
+            .as_mut()
+            .ok_or_else(|| anyhow!("Could not attach to `asciidoctor`'s stdin"))?;
 
-    pipe.write(body.as_bytes())
-        .context("Could not write to `asciidoctor`'s stdin")?;
+        pipe.write(body.as_bytes())
+            .await
+            .context("Could not write to `asciidoctor`'s stdin")?;
 
-    let cmd = cmd
-        .wait_with_output()
-        .context("Could not wait for `asciidoctor`")?;
+        let cmd = cmd
+            .wait_with_output()
+            .await
+            .context("Could not wait for `asciidoctor`")?;
 
-    if !cmd.status.success() {
-        bail!("{}", String::from_utf8_lossy(&cmd.stderr));
+        if !cmd.status.success() {
+            bail!("{}", String::from_utf8_lossy(&cmd.stderr));
+        }
+
+        let content = String::from_utf8_lossy(&cmd.stdout)
+            .into();
+
+        Ok(content)
+    }).await;
+
+    match result {
+        Ok(result) => result,
+        Err(_) => bail!("`asciidoctor` timed out"),
     }
-
-    let content = String::from_utf8_lossy(&cmd.stdout)
-        .into();
-
-    Ok(content)
 }
 
 #[cfg(test)]

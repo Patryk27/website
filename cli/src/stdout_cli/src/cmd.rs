@@ -1,3 +1,4 @@
+use std::net::SocketAddr;
 use std::path::PathBuf;
 
 use structopt::StructOpt;
@@ -9,9 +10,14 @@ pub enum Command {
         dst: PathBuf,
 
         #[structopt(short, long)]
-        watch: bool,
+        release: bool, // @todo if enabled, check outgoing links, self-references etc.
 
         #[structopt(short, long)]
-        release: bool, // @todo if enabled, check outgoing links, self-references etc.
+        watch: bool,
+    },
+
+    Serve {
+        dst: PathBuf,
+        addr: SocketAddr,
     },
 }

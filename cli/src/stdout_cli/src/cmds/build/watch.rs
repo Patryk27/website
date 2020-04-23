@@ -3,17 +3,17 @@ use std::time::Duration;
 
 use anyhow::*;
 use notify::{RecommendedWatcher, RecursiveMode, Watcher};
-
+use tokio::fs;
 use super::BuildContext;
 
 use self::event::*;
 
 mod event;
 
-pub fn watch(ctxt: &mut BuildContext) -> Result<()> {
-    let src = ctxt
-        .src
-        .canonicalize()
+// @todo this ain't proper async
+pub async fn watch(ctxt: &mut BuildContext) -> Result<()> {
+    let src = fs::canonicalize(&ctxt.src)
+        .await
         .context("Could not canonicalize source path")?;
 
     println!();

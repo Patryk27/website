@@ -10,7 +10,11 @@
       <sourceFolder url="file://$MODULE_DIR$/app/src/stdout_compiler/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/app/src/stdout_cli/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/app/src/stdout_server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/src/stdout_cli/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/src/stdout_compiler/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli/src/stdout_server/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/app/target" />
+      <excludeFolder url="file://$MODULE_DIR$/cli/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

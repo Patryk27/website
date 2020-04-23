@@ -19,14 +19,14 @@ let
         --failure-level=WARN \
         -r asciidoctor-diagram \
         -a source-highlighter=pygments \
+        "$@" \
         -
 
     code=$?
 
-    # Since I'm using `opts=inline`, I don't need no diagram leftovers
-    if [[ -n $("$find" . -maxdepth 1 -name 'diag-*') ]]; then
-        rm diag-*
-    fi
+    # Clean-up trash
+    rm -rf .asciidoctor
+    rm -f diag-*
 
     exit $code
   '';
@@ -42,7 +42,7 @@ let
   sass = pkgs.writeShellScriptBin "sass" ''
     sass="${pkgs.sass}/bin/sass"
 
-    HOME=/tmp "$sass"
+    HOME=/tmp "$sass" "$@"
   '';
 
 in

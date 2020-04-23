@@ -11,7 +11,7 @@ mod compile;
 mod context;
 mod watch;
 
-pub fn build(src: PathBuf, dst: PathBuf, watch: bool) -> Result<()> {
+pub async fn build(src: PathBuf, dst: PathBuf, watch: bool) -> Result<()> {
     println!("[+] Building");
     println!(" -  src: {}", src.to_string_lossy());
     println!(" -  dst: {}", dst.to_string_lossy());
@@ -29,7 +29,8 @@ pub fn build(src: PathBuf, dst: PathBuf, watch: bool) -> Result<()> {
         &dst,
     );
 
-    let site = SiteCompiler::new(&dst)?;
+    let site = SiteCompiler::new(&dst)
+        .await?;
 
     let mut ctxt = BuildContext {
         src,
@@ -39,13 +40,15 @@ pub fn build(src: PathBuf, dst: PathBuf, watch: bool) -> Result<()> {
         site,
     };
 
-    compile::compile(&mut ctxt)?;
+    compile::compile(&mut ctxt)
+        .await?;
 
     println!();
     println!("Ok, site has been built");
 
     if watch {
-        watch::watch(&mut ctxt)?;
+        watch::watch(&mut ctxt)
+            .await?;
     }
 
     Ok(())
