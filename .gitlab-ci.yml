@@ -1,0 +1,10 @@
+stages:
+  - build
+
+compile:
+  stage: build
+  tags:
+    - nix
+  script:
+    - nix-channel --update
+    - nix-build
