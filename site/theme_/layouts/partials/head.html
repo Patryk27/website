@@ -1,6 +1,0 @@
-{{ $style := resources.Get "style.scss" | toCSS | fingerprint }}
-
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}" media="all">
-</head>

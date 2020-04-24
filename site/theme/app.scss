@@ -1,10 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
 
-@import 'config';
-
-@import 'modules/asciidoc';
-@import 'modules/highlight.css';
+@import 'app/asciidoc';
+@import 'app/config';
+@import 'app/highlight.css';
 
 body {
   margin: 0;
