@@ -1,33 +1,40 @@
 with import <nixpkgs> {};
 
 let
-  cli = import ./cli;
+  deps = import ./deps.nix;
 
 in
   stdenv.mkDerivation {
     name = "stdout";
     phases = [ "buildPhase" ];
-    src = ./site;
+    src = ./src;
+
+    buildInputs = with deps; [
+      asciidoctor
+      hugo
+      rsync
+      sass
+    ];
 
     buildPhase = ''
       set -e
 
-      rsync="${rsync}/bin/rsync"
-      stdout="${cli}/bin/stdout"
+      echo '[+] Copying source files'
 
-      echo
-      echo '-- Building site'
-      echo
+      mkdir "$out"
+      mkdir "$out/src"
 
-      "$stdout" build "$src" "$out"
+      rsync -a "$src/" "$out/src/"
+      chmod 777 -R "$out/src"
 
-      echo
-      echo '-- Copying static resources'
-      echo
+      echo '[+] Compiling'
 
-      "$rsync" -av "$src/static/" "$out"
+      hugo -s "$out/src" --gc --minify
 
-      echo
-      echo '-- Completed'
+      echo '[+] Cleaning up'
+
+      mv "$out/src/public" "$out-tmp"
+      rm -rf "$out"
+      mv "$out-tmp" "$out"
     '';
   }
