@@ -1,0 +1,11 @@
+.tags {
+  text-align: center;
+
+  .tag-title {
+    display: inline-block;
+
+    &:before {
+      content: '#';
+    }
+  }
+}

@@ -1,0 +1,41 @@
+@import '../config';
+
+.post-title {
+  color: lighten($content-fg, 5%);
+  font-size: 2em;
+}
+
+.post-meta {
+  margin-top: 0.8em;
+
+  .meta-time {
+    display: inline-block;
+    padding-right: 1em;
+    border-right: 1px solid $header-anchor-fg;
+  }
+
+  .meta-tags {
+    display: inline-block;
+
+    .meta-tag {
+      padding: 0.5em;
+
+      &::before {
+        content: '#';
+        position: relative;
+        left: 0.15em;
+      }
+    }
+  }
+}
+
+.post-content {
+  h2 {
+    margin-left: -$flow-indent;
+
+    &::before {
+      content: '# ';
+      color: $header-anchor-fg;
+    }
+  }
+}

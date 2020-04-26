@@ -38,6 +38,13 @@ let
     ]
   );
 
+  pygments-css = pkgs.writeShellScriptBin "pygments-css" ''
+    PATH="$PATH:${asciidoctor-python}/bin"
+    PATH="$PATH:${pkgs.gnused}/bin"
+
+    pygmentize -f html -S lovelace -a .pygments | sed 's/.pygments ./.pygments .tok-/g'
+  '';
+
   sass = pkgs.writeShellScriptBin "sass" ''
     sass="${pkgs.sass}/bin/sass"
 
@@ -47,6 +54,7 @@ let
 in
   {
     inherit asciidoctor;
+    inherit pygments-css;
     inherit sass;
 
     hugo = pkgs.hugo;

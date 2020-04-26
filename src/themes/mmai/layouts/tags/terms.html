@@ -1,13 +1,21 @@
-{{ define "main" }}
-    <main class="tag-list">
-        {{- range .Pages }}
+{{ define "title" }}
+    Tags
+{{ end }}
+
+{{ define "body" }}
+    <aside id="breadcrumb">
+        ~/Tags
+    </aside>
+
+    <main class="tags">
+        {{ range .Pages }}
             <div class="tag">
                 <h2 class="tag-title">
-                    <a href="{{ .Permalink | relURL }}" class="post-link post-title-link">
+                    <a href="{{ .Permalink | relURL }}">
                         {{ .Title }}
                     </a>
                 </h2>
             </div>
-        {{- end }}
+        {{ end }}
     </main>
 {{ end }}

@@ -8,6 +8,7 @@ in
     buildInputs = with deps; [
       asciidoctor
       hugo
+      pygments-css
       sass
     ];
   }

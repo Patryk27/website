@@ -1,0 +1,29 @@
+@import '../config';
+
+#navigation {
+  display: flex;
+  margin-bottom: 2em;
+  background-color: $nav-bg;
+  color: $nav-fg;
+  padding: $nav-padding;
+  border-bottom: 1px solid $header-anchor-fg;
+
+  .nav-title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.4em;
+    color: $header-fg;
+  }
+
+  .nav-links {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+
+    .nav-link {
+      padding: 0.5em;
+    }
+  }
+}

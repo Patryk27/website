@@ -1,0 +1,101 @@
+@import './config';
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $body-bg;
+  font-family: 'Source Sans Pro', serif;
+  font-size: 18px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: $header-fg;
+
+  a {
+    color: $header-fg;
+
+    &:hover {
+      color: darken($header-fg, 15%);
+    }
+  }
+}
+
+a {
+  color: $link-fg;
+  text-decoration: none;
+
+  &:hover {
+    color: darken($link-fg, 15%);
+    text-decoration: underline;
+  }
+}
+
+code {
+  &:not([data-lang]) {
+    margin: 0;
+    padding: 0.1em;
+    background: $kbd-bg;
+    color: $kbd-fg;
+    font-size: 0.8em;
+    word-wrap: break-word;
+  }
+}
+
+p {
+  margin: $para-indent 0;
+  line-height: 1.5;
+}
+
+pre {
+  padding: 0.25em;
+  background: $kbd-bg;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.col {
+  flex: 50%;
+
+  &.center-v {
+    display: flex;
+    align-items: center;
+  }
+
+  &.center-h {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.openblock {
+  &.row {
+    > .content {
+      display: flex;
+    }
+  }
+}
+
+.quoteblock {
+  border-left: 3px solid $header-anchor-fg;
+  font-style: italic;
+  line-height: 1.8em;
+  margin: #{$para-indent} -$flow-indent;
+  padding: $flow-indent;
+
+  blockquote {
+    margin: 0;
+    padding: 0;
+  }
+
+  .attribution {
+    color: lighten($content-fg, 50%);
+  }
+}
+
+.sect1 {
+  margin-top: $para-indent;
+}

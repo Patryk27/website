@@ -1,14 +1,12 @@
-{{ define "main" }}
-    {{- if and (eq .Kind "taxonomy") (eq .Data.Singular "tag") }}
-        <aside class="breadcrumb">
-            <h1 class="tag-breadcrumb">
-                {{ .Data.Term }}
-            </h1>
+{{ define "body" }}
+    {{ if and (eq .Kind "taxonomy") (eq .Data.Singular "tag") }}
+        <aside id="breadcrumb">
+            ~/Tags/{{ .Data.Term }}
         </aside>
-    {{- end }}
+    {{ end }}
 
-    <main class="post-list">
-        {{- range .Pages }}
+    <main class="posts">
+        {{ range .Pages }}
             <article class="post">
                 <h2 class="post-title">
                     <a href="{{ .Permalink | relURL }}" class="post-link">
@@ -21,25 +19,25 @@
                         {{ .Date.Format $.Site.Params.dateFormat }}
                     </time>
 
-                    {{- if .Params.tags }}
-                        {{- range .Params.tags }}
+                    {{ if .Params.tags }}
+                        {{ range .Params.tags }}
                             <div class="meta-tags">
                                 <a class="meta-tag" href="/tags/{{ . | urlize }}">
                                     {{ . }}
                                 </a>
                             </div>
-                        {{- end }}
-                    {{- end }}
+                        {{ end }}
+                    {{ end }}
                 </div>
 
-                <div class="post-content">
+                <div class="post-summary">
                     {{ .Summary }}
                 </div>
 
                 <a class="post-link post-link-read-more" href="{{ .Permalink | relURL }}">
-                    Read More
+                    Continue reading
                 </a>
             </article>
-        {{- end }}
+        {{ end }}
     </main>
 {{ end }}
