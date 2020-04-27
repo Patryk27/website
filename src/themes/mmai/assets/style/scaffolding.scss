@@ -5,7 +5,13 @@ body {
   padding: 0;
   background: $body-bg;
   font-family: 'Source Sans Pro', serif;
-  font-size: 18px;
+  font-size: 28px;
+}
+
+@media only screen and (min-width: 992px) {
+  body {
+    font-size: 18px;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -34,68 +40,7 @@ a {
   }
 }
 
-code {
-  &:not([data-lang]) {
-    margin: 0;
-    padding: 0.1em;
-    background: $kbd-bg;
-    color: $kbd-fg;
-    font-size: 0.8em;
-    word-wrap: break-word;
-  }
-}
-
 p {
   margin: $para-indent 0;
   line-height: 1.5;
-}
-
-pre {
-  padding: 0.25em;
-  background: $kbd-bg;
-  font-size: 0.9em;
-  line-height: 1.4;
-}
-
-.col {
-  flex: 50%;
-
-  &.center-v {
-    display: flex;
-    align-items: center;
-  }
-
-  &.center-h {
-    display: flex;
-    justify-content: center;
-  }
-}
-
-.openblock {
-  &.row {
-    > .content {
-      display: flex;
-    }
-  }
-}
-
-.quoteblock {
-  border-left: 3px solid $header-anchor-fg;
-  font-style: italic;
-  line-height: 1.8em;
-  margin: #{$para-indent} -$flow-indent;
-  padding: $flow-indent;
-
-  blockquote {
-    margin: 0;
-    padding: 0;
-  }
-
-  .attribution {
-    color: lighten($content-fg, 50%);
-  }
-}
-
-.sect1 {
-  margin-top: $para-indent;
 }

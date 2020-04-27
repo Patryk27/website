@@ -6,11 +6,11 @@ $nav-padding: 1.2em;
 
 $content-bg: #ffffff;
 $content-fg: #080808;
+$content-margin: 2em;
 $content-padding: 2.5em;
 
 $header-fg: lighten($content-fg, 20%);
-
-$header-anchor-fg: #e0e0e0; // @todo rename
+$border-fg: #e0e0e0;
 
 $kbd-bg: #f5f2f0;
 $kbd-fg: #d7661c;

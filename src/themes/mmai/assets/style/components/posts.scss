@@ -5,7 +5,11 @@
     &:not(:last-child) {
       margin-bottom: 1.5em;
       padding-bottom: 1.5em;
-      border-bottom: 1px solid $header-anchor-fg;
+      border-bottom: 1px solid $border-fg;
+    }
+
+    .toc {
+      display: none;
     }
   }
 

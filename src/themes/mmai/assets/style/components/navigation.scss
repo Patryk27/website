@@ -2,11 +2,10 @@
 
 #navigation {
   display: flex;
-  margin-bottom: 2em;
   background-color: $nav-bg;
   color: $nav-fg;
   padding: $nav-padding;
-  border-bottom: 1px solid $header-anchor-fg;
+  border-bottom: 1px solid $border-fg;
 
   .nav-title {
     font-family: 'Open Sans', sans-serif;

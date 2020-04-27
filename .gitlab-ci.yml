@@ -7,9 +7,9 @@ build:
   tags:
     - nix
   script:
-    - nix-channel --update
     - nix-build
-    - mkdir out && rsync -a result/ out/
+    - mkdir out
+    - rsync -a result/ out/
     - chmod 777 -R out
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"

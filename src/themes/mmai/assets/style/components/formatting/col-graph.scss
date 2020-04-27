@@ -1,0 +1,64 @@
+@import '../../config';
+
+.col-graph {
+  .cg-expander {
+    &:checked {
+      ~ .cg-body .cg-code {
+        &[data-state = "collapsed"] {
+          display: none;
+        }
+
+        &[data-state = "expanded"] {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .cg-expander-label {
+    position: relative;
+    top: -2px;
+    user-select: none;
+  }
+
+  .cg-body {
+    display: flex;
+    flex-direction: column;
+
+    .cg-code {
+      margin-bottom: $para-indent;
+
+      &[data-state = "expanded"] {
+        display: none;
+      }
+
+      pre {
+        margin: 0;
+      }
+    }
+
+    .cg-graph {
+      .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .col-graph {
+    .cg-body {
+      flex-direction: row;
+
+      .cg-code, .cg-graph {
+        flex: 50%;
+      }
+
+      .cg-code {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@
   .meta-time {
     display: inline-block;
     padding-right: 1em;
-    border-right: 1px solid $header-anchor-fg;
+    border-right: 1px solid $border-fg;
   }
 
   .meta-tags {
@@ -35,7 +35,21 @@
 
     &::before {
       content: '# ';
-      color: $header-anchor-fg;
+      color: $border-fg;
+    }
+  }
+
+  .sect1 {
+    &:last-child {
+      .sectionbody {
+        .paragraph {
+          &:last-child {
+            p {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -1,0 +1,27 @@
+{{ if isset .Params "collapsed" }}
+++++
+<div class="cg-code" data-state="collapsed">
+++++
+[source, dot]
+{{ trim .Inner "\n" | safeHTML }}
+++++
+</div>
+++++
+{{ end }}
+
+{{ if isset .Params "expanded" }}
+++++
+<div class="cg-code" data-state="expanded">
+++++
+[source, dot]
+{{ trim .Inner "\n" | safeHTML }}
+++++
+</div>
+++++
+{{ end }}
+
+{{ if isset .Params "rendered" }}
+[.cg-graph]
+[graphviz, format=svg, opts=inline]
+{{ trim .Inner "\n" | safeHTML }}
+{{ end }}

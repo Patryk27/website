@@ -1,0 +1,22 @@
+{{ $expander := index .Params "expander" }}
+{{ $expanderId := md5 .Inner }}
+
+++++
+<div class="col-graph">
+    {{ if $expander }}
+    <input id="cg-expander-{{ $expanderId }}" class="cg-expander" type="checkbox">
+
+    <label for="cg-expander-{{ $expanderId }}" class="cg-expander-label">
+        [ expand code ]
+    </label>
+    {{ end }}
+
+    <div class="cg-body">
+++++
+
+{{ .Inner }}
+
+++++
+    </div>
+</div>
+++++

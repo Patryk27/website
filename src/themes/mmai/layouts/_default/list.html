@@ -1,7 +1,7 @@
 {{ define "body" }}
-    {{ if and (eq .Kind "taxonomy") (eq .Data.Singular "tag") }}
+    {{ if eq .Kind "taxonomy" }}
         <aside id="breadcrumb">
-            ~/Tags/{{ .Data.Term }}
+            ~/{{ .Data.Plural | humanize }}/{{ .Data.Term }}
         </aside>
     {{ end }}
 

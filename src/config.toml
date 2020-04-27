@@ -5,6 +5,7 @@ theme = "mmai"
 
 [taxonomies]
     tag = "tags"
+#    serie = "series" @todo
 
 [params]
     dateFormat = "January 2, 2006"

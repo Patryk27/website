@@ -1,0 +1,29 @@
+{{% col-graph %}}
+{{< col-graph-src collapsed=true >}}
+----
+digraph {
+    /* ... */
+}
+----
+{{< /col-graph-src >}}
+
+{{< col-graph-src expanded=true rendered=true >}}
+----
+digraph {
+    /* ... */
+}
+----
+{{< /col-graph-src >}}
+{{% /col-graph %}}
+
+======================
+
+{{% col-graph %}}
+{{< col-graph-src collapsed=true expanded=true rendered=true >}}
+----
+digraph {
+    /* ... */
+}
+----
+{{< /col-graph-src >}}
+{{% /col-graph %}}
