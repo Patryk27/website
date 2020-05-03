@@ -16,9 +16,7 @@
             {{ if .Params.tags }}
                 <div class="meta-tags">
                     {{ range .Params.tags }}
-                        <a class="meta-tag" href="/tags/{{ . | urlize }}">
-                            {{ . }}
-                        </a>
+                        <a class="meta-tag" href="/tags/{{ . | urlize }}">{{ . }}</a>
                     {{ end }}
                 </div>
             {{ end }}
