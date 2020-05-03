@@ -1,0 +1,21 @@
+{{ define "title" }}
+    Series
+{{ end }}
+
+{{ define "body" }}
+    <aside id="breadcrumb">
+        ~/Series
+    </aside>
+
+    <main class="series">
+        {{ range .Pages }}
+            <div class="serie">
+                <h2 class="serie-title">
+                    <a href="{{ .Permalink | relURL }}">
+                        {{ .Title }}
+                    </a>
+                </h2>
+            </div>
+        {{ end }}
+    </main>
+{{ end }}

@@ -1,0 +1,53 @@
+{{ define "title" }}
+    pwy@stdout
+{{ end }}
+
+{{ define "body" }}
+    <main class="home">
+        <div class="intro">
+            <p>
+                Hi!
+            </p>
+
+            <p>
+                I'm Patryk and here's the place where I write about the stuff I do.
+            </p>
+        </div>
+
+        <div class="posts">
+            {{ range (where .Site.RegularPages "Section" "posts" | first 3) }}
+               <article class="post">
+                    <h2 class="post-title">
+                        <a href="{{ .Permalink | relURL }}" class="post-link">
+                            {{ .Title }}
+                        </a>
+                    </h2>
+
+                    <div class="post-meta">
+                        <time class="meta-time">
+                            {{ .Date.Format $.Site.Params.dateFormat }}
+                        </time>
+
+                        {{ if .Params.tags }}
+                            {{ range .Params.tags }}
+                                <div class="meta-tags">
+                                    <a class="meta-tag" href="/tags/{{ . | urlize }}">
+                                        {{ . }}
+                                    </a>
+                                </div>
+                            {{ end }}
+                        {{ end }}
+                    </div>
+
+                    <div class="post-summary">
+                        {{ .Summary }}
+                    </div>
+
+                    <a class="post-link post-link-read-more" href="{{ .Permalink | relURL }}">
+                        Continue reading
+                    </a>
+                </article>
+            {{ end }}
+        </div>
+    </main>
+{{ end }}

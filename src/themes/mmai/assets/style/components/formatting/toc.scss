@@ -1,0 +1,11 @@
+@import '../../config';
+
+.toc {
+  margin-top: $para-indent;
+
+  .title {
+    @extend h2;
+
+    font-size: 1.5em;
+  }
+}

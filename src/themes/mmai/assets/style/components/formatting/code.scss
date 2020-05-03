@@ -1,0 +1,19 @@
+@import '../../config';
+
+code {
+  &:not([data-lang]) {
+    margin: 0;
+    padding: 0.1em;
+    background: $kbd-bg;
+    color: $kbd-fg;
+    font-size: 0.8em;
+    word-wrap: break-word;
+  }
+}
+
+pre {
+  padding: 0.25em;
+  background: $kbd-bg;
+  font-size: 0.9em;
+  line-height: 1.4;
+}

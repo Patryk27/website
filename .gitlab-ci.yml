@@ -1,0 +1,19 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - nix
+  script:
+    - nix-build
+
+deploy:
+  stage: deploy
+  tags:
+    - nix
+  script:
+    - rsync -avz --delete ./result/ stdout@pwychowaniec.com:/home/stdout/stdout/
+  only:
+    - master

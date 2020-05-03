@@ -1,0 +1,46 @@
+@import './config';
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $body-bg;
+  font-family: 'Source Sans Pro', serif;
+  font-size: 28px;
+}
+
+@media only screen and (min-width: 992px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: $header-fg;
+
+  a {
+    color: $header-fg;
+
+    &:hover {
+      color: darken($header-fg, 15%);
+    }
+  }
+}
+
+a {
+  color: $link-fg;
+  text-decoration: none;
+
+  &:hover {
+    color: darken($link-fg, 15%);
+    text-decoration: underline;
+  }
+}
+
+p {
+  margin: $para-indent 0;
+  line-height: 1.5;
+}

@@ -1,0 +1,43 @@
+{{ define "body" }}
+    {{ if eq .Kind "taxonomy" }}
+        <aside id="breadcrumb">
+            ~/{{ .Data.Plural | humanize }}/{{ .Data.Term }}
+        </aside>
+    {{ end }}
+
+    <main class="posts">
+        {{ range .Pages }}
+            <article class="post">
+                <h2 class="post-title">
+                    <a href="{{ .Permalink | relURL }}" class="post-link">
+                        {{ .Title }}
+                    </a>
+                </h2>
+
+                <div class="post-meta">
+                    <time class="meta-time">
+                        {{ .Date.Format $.Site.Params.dateFormat }}
+                    </time>
+
+                    {{ if .Params.tags }}
+                        {{ range .Params.tags }}
+                            <div class="meta-tags">
+                                <a class="meta-tag" href="/tags/{{ . | urlize }}">
+                                    {{ . }}
+                                </a>
+                            </div>
+                        {{ end }}
+                    {{ end }}
+                </div>
+
+                <div class="post-summary">
+                    {{ .Summary }}
+                </div>
+
+                <a class="post-link post-link-read-more" href="{{ .Permalink | relURL }}">
+                    Continue reading
+                </a>
+            </article>
+        {{ end }}
+    </main>
+{{ end }}
