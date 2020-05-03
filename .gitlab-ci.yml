@@ -8,12 +8,15 @@ build:
     - nix
   script:
     - nix-build
+  only:
+    - dev
 
 deploy:
   stage: deploy
   tags:
     - nix
   script:
+    - nix-build
     - rsync -avz --delete ./result/ stdout@pwychowaniec.com:/home/stdout/stdout/
   only:
     - master
