@@ -17,6 +17,6 @@ deploy:
     - nix
   script:
     - nix-build
-    - rsync -avz --delete ./result/ stdout@pwychowaniec.com:/home/stdout/stdout/
+    - rsync -avz --checksum --delete ./result/ stdout@pwychowaniec.com:/home/stdout/stdout/
   only:
     - master
