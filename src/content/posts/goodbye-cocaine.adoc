@@ -90,7 +90,7 @@ Later, among others:
 - One time I've even re-created half of the-company-im-working-at's environment (HTTP server, database, queue, etc.), so
   that the frontend guys could test our latest API changes we couldn't have deployed on our actual testing machine.
 
-Having that said: we weren't always getting along though.
+Having said that: we weren't always getting along though.
 
 For instance, one time `cocaine` refused to boot _at all_; I've been searching the internet for countless, lengthy hours
 until I've stumbled upon an answer suggesting to remove a single very specific capacitor near the CMOS battery:
