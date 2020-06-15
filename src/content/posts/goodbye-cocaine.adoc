@@ -102,7 +102,7 @@ reliability-wise (no hardware RAID) - I've decided to shrink my wallet a bit and
 I've moved most of the stuff there and, for the past few weeks, the only thing `cocaine` has been responsible for was
 running Deluge.
 
-A few days ago I noticed that I cannot `ssh` at `cocaine` anymore - I checked all the cables, restarted everything, and
+A few days ago I noticed that I cannot `ssh` into `cocaine` anymore - I checked all the cables, restarted everything, and
 eventually left a note for myself to check it thoroughly later.
 
 `later` occurred to be `yesterday` - I dusted off an old HDMI cable and connected the motherboard into my TV.
