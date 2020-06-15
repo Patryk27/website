@@ -1,0 +1,8 @@
+@import '../../config';
+
+.imageblock {
+  .title {
+    color: lighten($content-fg, 65%);
+    font-style: italic;
+  }
+}
