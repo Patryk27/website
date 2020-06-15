@@ -22,7 +22,7 @@ Core i3, 4 GB of RAM, and - if I recall correctly - 256 GB of HDD. Objectively n
 nonetheless a game-changer for me.
 
 It served me well: I've been doing a lot of Pascal programming, a lot of PHP (which later landed me my first job), some
-Arduino; I've been also playing Battlefield 3 (800x600 x minimum details), and lots of other games.
+Arduino; I've also been playing Battlefield 3 (800x600 x minimum details), and lots of other games.
 
 Since I was a tinkering kinda guy, not once have I unscrewed and screwed the entire machine - out of all the memories,
 I remember breaking the connector of keyboard's ribbon cable the most vividly, mainly because it left a permanent mark
