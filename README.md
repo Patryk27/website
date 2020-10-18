@@ -20,5 +20,5 @@ $ hugo serve
 
 ## License
 
-Copyright (c) 2019-2020, Patryk Wychowaniec <wychowaniec.patryk@gmail.com>.    
+Copyright (c) 2019-2020, Patryk Wychowaniec <pwychowaniec @at@ pm.me>.    
 Licensed under the MIT license.
