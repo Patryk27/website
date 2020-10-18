@@ -16,5 +16,5 @@ $ nix-build
 
 ## License
 
-Copyright (c) 2019-2020, Patryk Wychowaniec wychowaniec.patryk@gmail.com.    
+Copyright (c) 2019-2020, Patryk Wychowaniec <wychowaniec.patryk@gmail.com>.    
 Licensed under the MIT license.
