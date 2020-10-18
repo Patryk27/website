@@ -7,11 +7,7 @@ Powered by [Hugo](https://gohugo.io) and [Nix](https://nixos.org/).
 ## Building
 
 ```
-# Nix (v3):
 $ nix build
-
-# Nix (v2):
-$ nix-build
 ```
 
 ## License
