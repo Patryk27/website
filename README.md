@@ -6,8 +6,16 @@ Powered by [Hugo](https://gohugo.io) and [Nix](https://nixos.org/).
 
 ## Building
 
-```
+```shell
 $ nix build
+```
+
+## Running locally
+
+```shell
+$ nix develop
+$ cd src
+$ hugo serve
 ```
 
 ## License
