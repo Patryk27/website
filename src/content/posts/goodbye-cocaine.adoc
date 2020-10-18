@@ -6,8 +6,6 @@ published: 2020-06-15
 
 Yesterday a part of me died; my server, who's helped me greatly over the course of past 8~ish years, is gone.
 
-<!--more-->
-
 == Tychy, Poland
 
 Her name was `cocaine` (with following servers named `layla` and `eric`, so you might get the gist of my convention),

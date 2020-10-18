@@ -5,18 +5,18 @@ stages:
 build:
   stage: build
   tags:
-    - nix
+    - website
   script:
-    - nix-build
+    - nix build
   only:
     - dev
 
 deploy:
   stage: deploy
   tags:
-    - nix
+    - website
   script:
-    - nix-build
-    - rsync -avz --checksum --delete ./result/ stdout@pwychowaniec.com:/home/stdout/stdout/
+    - nix build
+    - rsync -avz --checksum --delete ./result/ website@10.175.147.15:/home/website/content
   only:
     - master

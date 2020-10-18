@@ -1,40 +1,11 @@
-with import <nixpkgs> {};
-
-let
-  deps = import ./deps.nix;
-
-in
-  stdenv.mkDerivation {
-    name = "stdout";
-    phases = [ "buildPhase" ];
-    src = ./src;
-
-    buildInputs = with deps; [
-      asciidoctor
-      hugo
-      rsync
-      sass
-    ];
-
-    buildPhase = ''
-      set -e
-
-      echo '[+] Copying source files'
-
-      mkdir "$out"
-      mkdir "$out/src"
-
-      rsync -a "$src/" "$out/src/"
-      chmod 777 -R "$out/src"
-
-      echo '[+] Compiling'
-
-      hugo -s "$out/src" --gc --minify
-
-      echo '[+] Cleaning up'
-
-      mv "$out/src/public" "$out-tmp"
-      rm -rf "$out"
-      mv "$out-tmp" "$out"
-    '';
+(
+  import
+    (
+      fetchTarball {
+        url = "https://github.com/edolstra/flake-compat/archive/c75e76f80c57784a6734356315b306140646ee84.tar.gz";
+        sha256 = "071aal00zp2m9knnhddgr2wqzlx6i6qa1263lv1y7bdn2w20h10h";
+      }
+    ) {
+    src = ./.;
   }
+).defaultNix

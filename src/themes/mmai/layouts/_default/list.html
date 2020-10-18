@@ -1,7 +1,7 @@
 {{ define "body" }}
-    {{ if eq .Kind "taxonomy" }}
+    {{ if .Data.Singular }}
         <aside id="breadcrumb">
-            ~/{{ .Data.Plural | humanize }}/{{ .Data.Term }}
+            ~/{{ .Data.Plural }}/{{ .Data.Term }}
         </aside>
     {{ end }}
 
@@ -15,28 +15,20 @@
                 </h2>
 
                 <div class="post-meta">
-                    <time class="meta-time">
-                        {{ .Date.Format $.Site.Params.dateFormat }}
-                    </time>
-
                     {{ if .Params.tags }}
-                        {{ range .Params.tags }}
-                            <div class="meta-tags">
+                        <div class="meta-tags">
+                            {{ range .Params.tags }}
                                 <a class="meta-tag" href="/tags/{{ . | urlize }}">
                                     {{ . }}
                                 </a>
-                            </div>
-                        {{ end }}
+                            {{ end }}
+                        </div>
                     {{ end }}
-                </div>
 
-                <div class="post-summary">
-                    {{ .Summary }}
+                    <time class="meta-time">
+                        {{ .Date.Format $.Site.Params.dateFormat }}
+                    </time>
                 </div>
-
-                <a class="post-link post-link-read-more" href="{{ .Permalink | relURL }}">
-                    Continue reading
-                </a>
             </article>
         {{ end }}
     </main>

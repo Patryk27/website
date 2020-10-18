@@ -1,11 +1,10 @@
-baseURL = "https://stdout.pwychowaniec.com"
+baseURL = "https://pwychowaniec.com"
 title = "pwychowaniec"
 languageCode = "en"
 theme = "mmai"
 
 [taxonomies]
     tag = "tags"
-#    serie = "series" @todo
 
 [params]
     dateFormat = "January 2, 2006"

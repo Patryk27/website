@@ -1,51 +1,23 @@
 {{ define "title" }}
-    pwy@stdout
+    pwychowaniec.com
 {{ end }}
 
 {{ define "body" }}
-    <main class="home">
-        <div class="intro">
+    <main id="home">
+        <div id="home-content">
             <p>
-                Hi!
+                Hi! 🖖
             </p>
 
             <p>
-                I'm Patryk and here's the place where I write about the stuff I do.
+                I'm Patryk - I write <a href="/posts">articles</a> and <a href="https://github.com/Patryk27">software</a>,
+                and do <a href="/talks">talks</a> every now and then.
             </p>
-        </div>
 
-        <div class="posts">
-            {{ range (where .Site.RegularPages "Section" "posts" | first 3) }}
-               <article class="post">
-                    <h2 class="post-title">
-                        <a href="{{ .Permalink | relURL }}" class="post-link">
-                            {{ .Title }}
-                        </a>
-                    </h2>
-
-                    <div class="post-meta">
-                        <time class="meta-time">
-                            {{ .Date.Format $.Site.Params.dateFormat }}
-                        </time>
-
-                        {{ if .Params.tags }}
-                            {{ range .Params.tags }}
-                                <div class="meta-tags">
-                                    <a class="meta-tag" href="/tags/{{ . | urlize }}">{{ . }}</a>
-                                </div>
-                            {{ end }}
-                        {{ end }}
-                    </div>
-
-                    <div class="post-summary">
-                        {{ .Summary }}
-                    </div>
-
-                    <a class="post-link post-link-read-more" href="{{ .Permalink | relURL }}">
-                        Continue reading
-                    </a>
-                </article>
-            {{ end }}
+            <p>
+                You can reach me at <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) and
+                <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
+            </p>
         </div>
     </main>
 {{ end }}

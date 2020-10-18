@@ -4,22 +4,26 @@
 
 {{ define "body" }}
     <main class="post">
-        <h1 class="post-title">
-            {{ .Title }}
-        </h1>
+        <div class="post-header">
+            <h1 class="post-title">
+                {{ .Title }}
+            </h1>
 
-        <div class="post-meta">
-            <time class="meta-time">
-                {{ .Date.Format $.Site.Params.dateFormat }}
-            </time>
+            <div class="post-meta">
+                {{ if .Params.tags }}
+                    <div class="meta-tags">
+                        {{ range .Params.tags }}
+                            <a class="meta-tag" href="/tags/{{ . | urlize }}">
+                                {{ . }}
+                            </a>
+                        {{ end }}
+                    </div>
+                {{ end }}
 
-            {{ if .Params.tags }}
-                <div class="meta-tags">
-                    {{ range .Params.tags }}
-                        <a class="meta-tag" href="/tags/{{ . | urlize }}">{{ . }}</a>
-                    {{ end }}
-                </div>
-            {{ end }}
+                <time class="meta-time">
+                    {{ .Date.Format $.Site.Params.dateFormat }}
+                </time>
+            </div>
         </div>
 
         <div class="post-content">

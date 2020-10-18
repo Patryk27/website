@@ -1,0 +1,13 @@
+{{ define "title" }}
+    {{ .Title }}
+{{ end }}
+
+{{ define "body" }}
+    <aside id="breadcrumb">
+        {{ .Title }}
+    </aside>
+
+    <main>
+        {{ .Content }}
+    </main>
+{{ end }}
