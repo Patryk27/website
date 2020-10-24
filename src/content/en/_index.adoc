@@ -1,0 +1,19 @@
+---
+title: ""
+---
+
+++++
+<p>
+    Hi! 🖖
+</p>
+
+<p>
+    I'm Patryk - I write <a href="/en/posts">articles</a> and <a href="https://github.com/Patryk27">software</a>,
+    and do <a href="/en/talks">talks</a> every now and then.
+</p>
+
+<p>
+    You can reach me at <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) and
+    <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
+</p>
+++++

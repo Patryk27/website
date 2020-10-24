@@ -1,10 +1,54 @@
-baseURL = "https://pwychowaniec.com"
-title = "pwychowaniec"
-languageCode = "en"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true
 theme = "mmai"
+title = "pwychowaniec"
+
+[languages]
+    [languages.en]
+    contentDir = "content/en"
+    languageName = "English"
+    weight = 1
+
+        [[languages.en.menu.main]]
+        name = "/~"
+        url = "/"
+
+        [[languages.en.menu.main]]
+        name = "~/posts"
+        url = "/posts"
+
+        [[languages.en.menu.main]]
+        name = "~/tags"
+        url = "/tags"
+
+        [[languages.en.menu.main]]
+        name = "~/talks"
+        url = "/talks"
+
+    [languages.pl]
+    contentDir = "content/pl"
+    languageName = "Polski"
+    weight = 2
+
+        [[languages.pl.menu.main]]
+        name = "/~"
+        url = "/"
+
+        [[languages.pl.menu.main]]
+        name = "~/posty"
+        url = "/posts"
+
+        [[languages.pl.menu.main]]
+        name = "~/tagi"
+        url = "/tags"
+
+        [[languages.pl.menu.main]]
+        name = "~/prezentacje"
+        url = "/talks"
+
 
 [taxonomies]
-    tag = "tags"
+tag = "tags"
 
 [params]
-    dateFormat = "January 2, 2006"
+dateFormat = "January 2, 2006"

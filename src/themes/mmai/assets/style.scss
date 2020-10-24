@@ -45,6 +45,7 @@ code {
     color: $kbd-fg;
     font-size: 0.8em;
     word-wrap: break-word;
+    white-space: nowrap;
   }
 }
 
@@ -79,6 +80,10 @@ pre {
   background: $kbd-bg;
   font-size: 0.9em;
   line-height: 1.4;
+
+  &.highlight {
+    background: darken($kbd-bg, 25%);
+  }
 }
 
 #breadcrumb {
@@ -98,9 +103,6 @@ pre {
 }
 
 #home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
 
   p {
@@ -110,6 +112,17 @@ pre {
     &:first-child {
       margin-top: 0;
     }
+  }
+}
+
+#home-translations {
+  border-top: 1px solid lighten(#000000, 60%);
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+
+  li {
+    list-style-type: none;
+    padding-bottom: 0.5em;
   }
 }
 
@@ -330,6 +343,22 @@ pre {
   }
 }
 
+.post-translations {
+  border-top: 1px solid lighten(#000000, 60%);
+  border-bottom: 1px solid lighten(#000000, 60%);
+  padding: 1em;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  ul {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+
 .posts {
   .post {
     &:not(:last-child) {
@@ -367,6 +396,10 @@ pre {
       content: '#';
     }
   }
+}
+
+.text-center {
+  text-align: center;
 }
 
 .toc {
