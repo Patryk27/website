@@ -83,6 +83,7 @@ pre {
 
   &.highlight {
     background: darken($kbd-bg, 25%);
+    overflow: scroll;
   }
 }
 
@@ -127,7 +128,7 @@ pre {
 }
 
 .top-nav {
-  margin-bottom: 3em;
+  margin-bottom: 2em;
   font-size: 0.8em;
 
   a {
@@ -150,6 +151,7 @@ pre {
   }
 
   @media only screen and (min-width: 992px) {
+    margin-bottom: 3em;
     font-size: 1em;
 
     .nav-link-secondary {
@@ -305,6 +307,7 @@ pre {
 
 .post-header {
   text-align: center;
+  margin-bottom: 2em;
 
   @media only screen and (min-width: 992px) {
     margin: 0 0 3em -100px;
