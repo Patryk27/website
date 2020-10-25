@@ -83,7 +83,7 @@ pre {
 
   &.highlight {
     background: darken($kbd-bg, 25%);
-    overflow: scroll;
+    overflow: auto;
   }
 }
 

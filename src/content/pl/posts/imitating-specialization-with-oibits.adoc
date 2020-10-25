@@ -100,8 +100,8 @@ fn main() {
 // 14  | |     });
 //     | |_____- within this `[closure@src/main.rs:12:19: 14:6]`
 //     |
-//     = help: within `[closure@src/main.rs:12:19: 14:6]`, the trait
-//             `Send` is not implemented for `Rc<&str>`
+//     = help: within `[closure@src/main.rs:12:19: 14:6]`, the
+//             trait `Send` is not implemented for `Rc<&str>`
 //     = note: required because it appears within the type
 //             `[closure@src/main.rs:12:19: 14:6`
 ----
@@ -143,8 +143,8 @@ fn main() {
 //   --> src/main.rs:15:20
 //    |
 // 5  | fn assert_display(_: impl Display) {
-//    |                           ------- required by this bound in
-//    |                                   `assert_display`
+//    |                           ------- required by this bound
+//    |                                   in `assert_display`
 // ...
 // 14 |     assert_display(Chinchilla("Flora"));
 //    |                    ^^^^^^^^^^^^^^^^^^^
@@ -424,8 +424,8 @@ impl Serialize for Vec<bool> {
 //    | -------------------------------- first implementation here
 // ...
 // 45 | impl Serialize for Vec<bool> {
-//    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for
-//                                   `Vec<bool>`
+//    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation
+//                                   for `Vec<bool>`
 ----
 
 \... i, chwila, moment, co tu się stało?
@@ -586,8 +586,7 @@ mod vec {
     use super::*;
     use std::fmt::Write;
 
-    impl<T> Serialize for Vec<T>
-    where T: Serialize + BlanketVecImpl {
+    impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
         fn serialize_in_place(&self, buffer: &mut String) {
             buffer.push_str("v(");
 
