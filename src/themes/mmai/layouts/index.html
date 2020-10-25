@@ -5,19 +5,24 @@
 {{ define "body" }}
     <main id="home">
         <div id="home-content">
+            {{ .Content }}
+        </div>
+
+        <div id="home-translations">
             <p>
-                Hi! 🖖
+                {{ i18n "home.translations.header" }}
             </p>
 
-            <p>
-                I'm Patryk - I write <a href="/posts">articles</a> and <a href="https://github.com/Patryk27">software</a>,
-                and do <a href="/talks">talks</a> every now and then.
-            </p>
-
-            <p>
-                You can reach me at <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) and
-                <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
-            </p>
+            <ul>
+                {{ range $.Site.Home.AllTranslations }}
+                    <li>
+                        <a href="{{ .Permalink }}">
+                            {{ i18n (printf "language.%s.flag" .Lang) }}
+                            {{ .Language.LanguageName }}
+                        </a>
+                    </li>
+                {{ end }}
+            </ul>
         </div>
     </main>
 {{ end }}

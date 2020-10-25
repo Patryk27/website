@@ -1,0 +1,18 @@
+---
+title: "~/talks"
+type: "page"
+layout: "static"
+---
+
+Kody źródłowe wszystkich prezentacji dostępne są https://github.com/Patryk27/talks[na moim GitHubie].
+
+== 2020
+
+- 🇬🇧 *Can't Hack This*: A hard-headed introduction to Nix
+  | Functional Programming Wrocław, 03.07.2020
+  | https://www.youtube.com/watch?v=LBrWwZOjsQ4[nagranie], https://github.com/Patryk27/talks/blob/master/2020-cant-hack-this/talk.pdf[slajdy]
+- 🇬🇧 *Scary Acronyms (and Super Creeps)*: A take on OIBITs, HRTBs, and other charming abbreviations
+  | Rust Wrocław, 27.05.2020
+  | https://www.youtube.com/watch?v=6Qi5-VU-kS0[nagranie], https://github.com/Patryk27/talks/blob/master/2020-scary-acronyms/talk.pdf[slajdy]
+- 🇬🇧 *Fantastic Actors and Where to Find Them*: building a simple async actor system from scratch
+  | https://github.com/Patryk27/talks/blob/master/2020-fantastic-actors/talk.pdf[slajdy]

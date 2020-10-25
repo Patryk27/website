@@ -1,0 +1,20 @@
+---
+title: ""
+---
+
+++++
+<p>
+    Hejka! 🖖
+</p>
+
+<p>
+    Nazywam się Patryk - w wolnych chwilach piszę <a href="/pl/posts">artykuły</a> oraz
+    <a href="https://github.com/Patryk27">oprogramowanie</a>, lubię też od czasu do czasu
+    <a href="/pl/talks">poprowadzić prezentację</a>.
+</p>
+
+<p>
+    Znajdziesz mnie na <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) oraz
+    <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
+</p>
+++++

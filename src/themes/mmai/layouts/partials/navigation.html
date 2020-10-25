@@ -1,20 +1,12 @@
 <nav class="top-nav">
     <div class="nav-links">
-        <a class="nav-link" href="/">
-            ~/
-        </a>
+        {{- $currentPage := . -}}
 
-        <a class="nav-link" href="/posts">
-            ~/posts
-        </a>
-
-        <a class="nav-link" href="/tags">
-            ~/tags
-        </a>
-
-        <a class="nav-link" href="/talks">
-            ~/talks
-        </a>
+        {{ range .Site.Menus.main -}}
+            <a class="nav-link" href="{{ .URL | absLangURL }}">
+                {{ .Name }}
+            </a>
+        {{- end }}
 
         <a class="nav-link nav-link-secondary" href="https://github.com/Patryk27">
             GitHub

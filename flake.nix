@@ -51,7 +51,7 @@
         PATH="$PATH:${asciidoctor-python}/bin"
         PATH="$PATH:${pkgs.gnused}/bin"
 
-        pygmentize -f html -S lovelace -a .pygments | sed 's/.pygments ./.pygments .tok-/g'
+        pygmentize -f html -S monokai -a .pygments | sed 's/.pygments ./.pygments .tok-/g'
       '';
 
       sass = pkgs.writeShellScriptBin "sass" ''
@@ -106,6 +106,7 @@
             asciidoctor
             pkgs.hugo
             pkgs.rsync
+            pygments-css
             sass
           ];
         };

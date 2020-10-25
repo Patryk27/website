@@ -13,7 +13,7 @@
                 {{ if .Params.tags }}
                     <div class="meta-tags">
                         {{ range .Params.tags }}
-                            <a class="meta-tag" href="/tags/{{ . | urlize }}">
+                            <a class="meta-tag" href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">
                                 {{ . }}
                             </a>
                         {{ end }}
@@ -25,6 +25,8 @@
                 </time>
             </div>
         </div>
+
+        {{ partial "translations.html" . }}
 
         <div class="post-content">
             {{ .Content }}
