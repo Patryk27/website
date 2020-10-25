@@ -89,7 +89,7 @@
 
             echo '[+] Compiling'
 
-            HUGO_NUMWORKERMULTIPLIER=1 hugo -s "$out/src" --gc --minify
+            HUGO_NUMWORKERMULTIPLIER=1 hugo -s "$out/src" --gc
 
             echo '[+] Cleaning up'
 
