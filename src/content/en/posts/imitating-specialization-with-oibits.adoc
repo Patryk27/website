@@ -518,14 +518,6 @@ recommend to use it in production code, it serves quite an educational purpose a
 #![feature(negative_impls)]
 #![feature(optin_builtin_traits)]
 
-auto trait BlanketVecImpl {
-    //
-}
-
-impl !BlanketVecImpl for bool {
-    //
-}
-
 trait Serialize {
     fn serialize_in_place(&self, buffer: &mut String);
 
@@ -577,6 +569,14 @@ mod vec {
     use super::*;
     use std::fmt::Write;
 
+    pub auto trait BlanketVecImpl {
+        //
+    }
+
+    impl !BlanketVecImpl for bool {
+        //
+    }
+
     impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
         fn serialize_in_place(&self, buffer: &mut String) {
             buffer.push_str("v(");
@@ -627,4 +627,4 @@ mod vec {
 ----
 
 [.text-center]
-(https://play.rust-lang.org/?version=nightly&mode=debug&edition=2018&gist=bbc6863a033f967cf0171cf802aed73b[playground link])
+(https://play.rust-lang.org/?version=nightly&mode=debug&edition=2018&gist=08d4a0a8925c8a460aa34cba682e52fc[playground link])
