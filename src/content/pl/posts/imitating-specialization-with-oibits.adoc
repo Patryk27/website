@@ -586,6 +586,10 @@ mod vec {
         //
     }
 
+    impl BlanketVecImpl for Vec<bool> {
+        //
+    }
+
     impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
         fn serialize_in_place(&self, buffer: &mut String) {
             buffer.push_str("v(");
@@ -628,6 +632,11 @@ mod vec {
         );
 
         assert_eq!(
+            "v(vb(2), vb(1))",
+            vec![vec![true, false], vec![false, true]].serialize(),
+        );
+
+        assert_eq!(
             "v(s(foo), s(bar))",
             vec!["foo", "bar"].serialize(),
         );
@@ -636,4 +645,4 @@ mod vec {
 ----
 
 [.text-center]
-(https://play.rust-lang.org/?version=nightly&mode=debug&edition=2018&gist=08d4a0a8925c8a460aa34cba682e52fc[link do playgroundu])
+(https://play.rust-lang.org/?version=nightly&mode=debug&edition=2018&gist=60136ee1a7052233e527a368d75d6482[link do playgroundu])
