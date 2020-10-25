@@ -3,7 +3,7 @@
         {{- $currentPage := . -}}
 
         {{ range .Site.Menus.main -}}
-            <a class="nav-link" href="{{ .URL | absLangURL }}">
+            <a class="nav-link" href="{{ .URL | relLangURL }}">
                 {{ .Name }}
             </a>
         {{- end }}
