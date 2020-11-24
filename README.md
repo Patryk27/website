@@ -15,7 +15,7 @@ $ nix build
 ```shell
 $ nix develop
 $ cd src
-$ hugo serve
+$ HUGO_NUMWORKERMULTIPLIER=1 hugo serve
 ```
 
 ## License
