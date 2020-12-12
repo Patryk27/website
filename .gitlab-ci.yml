@@ -19,4 +19,4 @@ deploy:
     - nix build
     - rsync -avz --checksum --delete ./result/ website@10.175.147.15:/home/website/content
   only:
-    - master
+    - main
