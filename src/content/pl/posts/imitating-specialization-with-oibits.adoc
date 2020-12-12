@@ -188,7 +188,7 @@ fn main() {
 }
 ----
 
-_Auto traits_, z drugiej strony, są *out-out*:
+_Auto traits_, z drugiej strony, są *opt-out*:
 
 [source, rust]
 ----
