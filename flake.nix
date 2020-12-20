@@ -64,7 +64,7 @@
     {
       defaultPackage = {
         x86_64-linux = pkgs.stdenv.mkDerivation {
-          name = "pwychowaniec.com";
+          name = "pwy-io";
           src = ./src;
 
           buildInputs = [

@@ -807,7 +807,7 @@ sulfur
 
 Since I don't quite enjoy arduous, repetitive tasks - and I'm a programmer by heart - instead of translating the entire
 recipe by hand, I've prepared a tiny application that can do it for me; it's available at
-https://factorio-layouter.pwychowaniec.com - feel free to use it!
+https://factorio-layouter.pwy.io - feel free to use it!
 
 == Summary & future work
 

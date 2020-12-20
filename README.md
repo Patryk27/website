@@ -1,6 +1,6 @@
-# pwychowaniec.com
+# pwy.io
 
-This repository contains source code for [my website](https://pwychowaniec.com).
+This repository contains source code for [my website](https://pwy.io).
 
 Powered by [Hugo](https://gohugo.io) and [Nix](https://nixos.org/).
 

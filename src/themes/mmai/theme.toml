@@ -1,11 +1,11 @@
 name = "mmai"
 license = "MIT"
 description = ""
-homepage = "https://pwychowaniec.com"
+homepage = "https://pwy.io"
 tags = []
 features = []
 min_version = "0.41"
 
 [author]
   name = "Patryk Wychowaniec"
-  homepage = "https://pwychowaniec.com"
+  homepage = "https://pwy.io"
