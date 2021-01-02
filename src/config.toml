@@ -15,15 +15,15 @@ title = "pwy"
 
         [[languages.en.menu.main]]
         name = "~/posts"
-        url = "/posts"
+        url = "/posts/"
 
         [[languages.en.menu.main]]
         name = "~/tags"
-        url = "/tags"
+        url = "/tags/"
 
         [[languages.en.menu.main]]
         name = "~/talks"
-        url = "/talks"
+        url = "/talks/"
 
     [languages.pl]
     contentDir = "content/pl"
@@ -36,16 +36,15 @@ title = "pwy"
 
         [[languages.pl.menu.main]]
         name = "~/posty"
-        url = "/posts"
+        url = "/posts/"
 
         [[languages.pl.menu.main]]
         name = "~/tagi"
-        url = "/tags"
+        url = "/tags/"
 
         [[languages.pl.menu.main]]
         name = "~/prezentacje"
-        url = "/talks"
-
+        url = "/talks/"
 
 [taxonomies]
 tag = "tags"
