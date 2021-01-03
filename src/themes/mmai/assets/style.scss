@@ -127,6 +127,16 @@ pre {
   }
 }
 
+#home-commit {
+  border-top: 1px solid lighten(#000000, 60%);
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+
+  a {
+    opacity: 0.5;
+  }
+}
+
 .top-nav {
   margin-bottom: 2em;
   font-size: 0.8em;
