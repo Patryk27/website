@@ -29,7 +29,7 @@
         {{ partial "translations.html" . }}
 
         <div class="post-content">
-            {{ .Content }}
+            {{ .Content | replaceRE "<h2 id=\"(.*)\">(.*)</h2>" `<h2 id="${1}"><a href="#${1}">${2}</a></h2>` | safeHTML }}
         </div>
     </main>
 {{ end }}
