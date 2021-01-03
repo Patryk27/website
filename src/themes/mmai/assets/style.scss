@@ -16,11 +16,7 @@ body {
   background: $body-bg;
   color: $body-fg;
   font-family: 'Source Sans Pro', serif;
-  font-size: 16px;
-
-  @media only screen and (min-width: 992px) {
-    font-size: 20px;
-  }
+  font-size: 19px;
 }
 
 a {
@@ -45,7 +41,6 @@ code {
     color: $kbd-fg;
     font-size: 0.8em;
     word-wrap: break-word;
-    white-space: nowrap;
   }
 }
 
@@ -54,7 +49,16 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
+  line-height: 1.4;
   color: $body-fg;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.35em;
 }
 
 kbd {
@@ -68,19 +72,19 @@ kbd {
 
 p {
   margin: $para-indent 0;
-  line-height: 1.2;
-
-  @media only screen and (min-width: 992px) {
-    line-height: 1.4;
-  }
+  line-height: 1.4;
 }
 
 pre {
   padding: 0.75em;
   background: $kbd-bg;
-  font-size: 0.9em;
+  font-size: 0.8em;
   line-height: 1.4;
-
+  
+  @media only screen and (min-width: 992px) { 
+    font-size: 0.9em;
+  }
+  
   &.highlight {
     background: darken($kbd-bg, 25%);
     overflow: auto;
@@ -94,11 +98,11 @@ pre {
 }
 
 #container {
-  margin: 1em auto;
-  padding: 0 0.5em;
+  margin: 0 auto;
+  padding: 0.5em;
 
   @media only screen and (min-width: 992px) {
-    padding: 0;
+    padding: 1em;
     max-width: $body-width;
   }
 }
@@ -121,6 +125,11 @@ pre {
   margin-top: 1.5em;
   padding-top: 1.5em;
 
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  
   li {
     list-style-type: none;
     padding-bottom: 0.5em;
@@ -138,8 +147,8 @@ pre {
 }
 
 .top-nav {
-  margin-bottom: 2em;
-  font-size: 0.8em;
+  margin-bottom: 1.5em;
+  font-size: 1em;
 
   a {
     color: $body-fg;
@@ -161,8 +170,7 @@ pre {
   }
 
   @media only screen and (min-width: 992px) {
-    margin-bottom: 3em;
-    font-size: 1em;
+    margin-bottom: 2em;
 
     .nav-link-secondary {
       display: block;
@@ -293,7 +301,9 @@ pre {
   text-align: justify;
 
   h2 {
-    margin-left: -$flow-indent;
+    @media only screen and (min-width: 992px) {
+      margin-left: -$flow-indent;
+    }
 
     &::before {
       content: '# ';
@@ -317,16 +327,16 @@ pre {
 
 .post-header {
   text-align: center;
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
 
   @media only screen and (min-width: 992px) {
-    margin: 0 0 3em -100px;
+    margin: 0 0 2em -100px;
     width: ($body-width + 2 * 100px);
   }
 }
 
 .post-meta {
-  margin-top: 0.4em;
+  margin-top: 0.5em;
   opacity: 0.4;
 
   &:hover {
@@ -359,7 +369,7 @@ pre {
 .post-translations {
   border-top: 1px solid lighten(#000000, 60%);
   border-bottom: 1px solid lighten(#000000, 60%);
-  padding: 1em;
+  padding: 1.2em;
 
   p {
     margin: 0;
@@ -369,6 +379,19 @@ pre {
   ul {
     margin-top: 0.5em;
     margin-bottom: 0;
+    padding-inline-start: 0;
+  }
+
+  li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    // Required for the li's dot to be visible
+    list-style-position: inside;
+
+    // Required for the .a's border to be visible
+    padding-bottom: 2px;
   }
 }
 
@@ -377,7 +400,7 @@ pre {
     &:not(:last-child) {
       margin-bottom: 1.5em;
       padding-bottom: 1.5em;
-      border-bottom: 1px solid black;
+      border-bottom: 1px solid lighten(#000000, 60%);
     }
 
     .toc {
