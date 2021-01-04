@@ -275,6 +275,7 @@ strong {
   .title {
     color: rgba($body-fg, 0.5);
     font-style: italic;
+    text-align: center;
   }
 }
 
@@ -444,13 +445,6 @@ strong {
   .title {
     @extend h2;
     font-size: 1.5em;
-  }
-}
-
-.imageblock {
-  .title {
-    // To avoid justification artifacts on smaller screens
-    text-align: left;
   }
 }
 
