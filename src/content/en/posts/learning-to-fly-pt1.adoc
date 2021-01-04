@@ -1,0 +1,587 @@
+---
+title: "Learning to Fly: Let's create a simulation in Rust! (pt 1)"
+tags:
+  - genetic-algorithm
+  - neural-network
+  - rust
+  - webassembly
+published: 2021-01-04
+---
+
+In this series we'll create a simulation of *evolution* using *neural network* & *genetic algorithm*.
+
+I'm going to introduce you to how a basic neural network and genetic algorithm works, then we'll implement both in
+*Rust* and compile our application to *WebAssembly* to ultimately end up with:
+
+image::/resources/learning-to-fly-pt1/intro-outcome.png[width=100%, title="https://pwy.io/en/projects/shorelark/"]
+
+[NOTE]
+====
+This series is intended for *Rust beginners* - I'm assuming you know a thing or two about Rust and I'll introduce you
+to rest of the concepts (such as neural networks) as we go.
+
+No fancy mathematics or IT background is required.
+====
+
+This series will be divided into a few posts, roughly:
+
+1. Introduction to the domain (what are we going to simulate, how does a neural network & genetic algorithm work),
+2. Implementing a neural network,
+3. Implementing a genetic algorithm,
+4. Implementing eyes, brain, and the simulation itself.
+
+Due diligence: I'll do my best to explain all the concepts, but if at any point you feel lost, feel free to take a look
+at this article's last section - it contains links to external (mostly popular science) sources that might prove to be
+helpful in understanding the domain.
+
+Curious? Hop on the bus, Gus, and onto the first chapter: <<Design>>.
+
+[[design]]
+== Design
+
+Let's start by clearly defining our objective: what are we going to simulate, actually?
+
+The overall idea is that we have a two-dimensional board representing a *world*:
+
+image::/resources/learning-to-fly-pt1/design-1.png[role=drawing]
+
+This world consists of *birds* (hence the project's original code name - _Shorelark_):
+
+image::/resources/learning-to-fly-pt1/design-2.png[role=drawing]
+
+\... and *foods* (of an abstract kind, rich in protein & fiber):
+
+image::/resources/learning-to-fly-pt1/design-3.png[role=drawing]
+
+Each bird has their own *vision*, allowing them to locate the food:
+
+image::/resources/learning-to-fly-pt1/design-4.png[role=drawing]
+
+\... and a *brain* that controls bird's body (i.e. speed and rotation).
+
+Our magic touch will lay in the fact that instead of _hard-coding_ our birds to some specific behavior (e.g. "go to the
+nearest food in your eyesight"), we'll take a more intriguing route:
+
+[.text-center]
+We'll make our birds able to *learn* and *evolve*.
+
+[[brain]]
+== Brain
+
+If you squint your eyes hard enough, you'll see that a brain is nothing but a *function* of some inputs to some outputs,
+e.g.:
+
+image::/resources/learning-to-fly-pt1/brain-1.png[role=drawing]
+
+[NOTE]
+====
+You're a precious mathematical formula, remember that.
+====
+
+Since our birds will have only one sensory input, their brains can be then approximated as:
+
+image::/resources/learning-to-fly-pt1/brain-2.png[role=drawing]
+
+Mathematically, we can represent this function's input (i.e. biological _eye_) as a list of numbers, with each number
+(i.e. biological _photoreceptor_) describing _how close_ the nearest object (i.e. food) is:
+
+image::/resources/learning-to-fly-pt1/brain-3.png[role=drawing]
+
+[.text-center]
+_(`0.0` - no object in sight, `1.0` - object right in front of us.)_
+
+[NOTE]
+====
+Our birds won't see color, but that's just for simplicity - you could use e.g.
+https://raytracing.github.io/books/RayTracingInOneWeekend.html[raytracing] to make the eyes more realistic.
+====
+
+As for the output, we'll make our function return a tuple of `(Δspeed, Δrotation)`.
+
+For instance, a brain telling us `(0.1, 45)` will mean "body, please increase our speed by `0.1` units and rotate us
+`45` degrees clockwise", while `(0.0, 0)` will mean "body, please keep our course steady".
+
+[NOTE]
+====
+It's important that we use _relative_ values (so `delta speed` and `delta rotation`), as our brain won't be aware of its
+own location & rotation respective to the world - passing that information would increase our brain's complexity for no
+real benefit.
+====
+
+Finally, let's address the elephant in the room: so a brain is basically `f(eyes)`, right? But how do we find out what
+actually _follows_ the equals sign?
+
+[.text-center]
+`f(eyes) = what?`
+
+[[nn-intro]]
+== Neural network: Introduction
+
+As a fellow human, you are might be aware that brains are made of neurons connected via synapses:
+
+image::/resources/learning-to-fly-pt1/nn-1.png[role=drawing, title="My attempt at drawing neurons; not to scale"]
+
+Synapses carry electric and chemical signals between neurons, while neurons "decide" whether given signal should be
+propagated further or stopped; eventually this allows for people to recognize letters, eat brussels sprouts, and write
+mean comments on Twitter.
+
+Due to their https://en.wikipedia.org/wiki/Biological_neuron_model[inherent complexity], biological neural networks are
+not among the easiest to simulate (one could argue that neurons are thus not
+https://www.youtube.com/watch?v=b2F-DItXtZs[Web Scale]), which made some smart people invent a class of mathematical
+structures called *artificial neural networks*, which allow to approximate - with a pinch of salt - brain-like behavior
+using math.
+
+Artificial neural networks (which I'm going to call just neural networks) are prominent at *generalizing* over datasets
+(e.g. learning how a cat looks like), so they found their use in face recognition (e.g. for cameras), language
+translation (e.g. for https://en.wikipedia.org/wiki/Google_Neural_Machine_Translation[GNMT]), and - in our case - to
+steer colorful pixels for a handful of reddit karma.
+
+The particular kind of network we'll be focusing on is called `feedforward neural network` (FFNN)...
+
+[NOTE]
+====
+Cool bear's hot tip: FFNNs are sometimes called
+https://en.wikipedia.org/wiki/Multilayer_perceptron[multilayer perceptrons] and they are one of the building blocks of
+https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53[convolutional neural networks],
+such as https://en.wikipedia.org/wiki/DeepDream[DeepDream].
+====
+
+\... and it looks like this:
+
+image::/resources/learning-to-fly-pt1/nn-2.png[role=drawing, title="Example of a multilayer perceptron (MLP), also called FFNN"]
+
+This is a layout of an FFNN with *five synapses* and *three neurons*, all organized in *two layers*: the *input layer*
+(on the left side) and the *output layer* (on the right side).
+
+There may also exist layers in-between, in which case they are called *hidden layers* - they improve the network's
+ability to understand the input data (think: the bigger the brain, the "more abstraction" it might understand, to a
+certain degree).
+
+[NOTE]
+====
+A https://www.youtube.com/watch?v=rA5qnZUXcqo[similar process] happens inside your own
+https://en.wikipedia.org/wiki/Visual_cortex[visual cortex], too.
+====
+
+Contrary to biological neural networks (which piggyback on electric signals), FFNNs work by accepting some *numbers* at
+their input and propagating (_feedforwarding_) those numbers layer-by-layer across the entire network; numbers that
+appear at the last layer determine network's answer.
+
+For instance, if you fed your network with raw pixels of a picture, you might've got a response saying:
+
+- `0.0` - this picture _does not_ contain an orange cat eating lasagna,
+- `0.5` - this picture _might_ contain an orange cat eating lasagna,
+- `1.0` - this picture _certainly_ contains an orange cat eating lasagna.
+
+It's also possible for a network to return _many_ values (the number of output values is equal to the number of neurons
+in the output layer):
+
+- `(0.0, 0.5)` - this picture _does not_ contain an orange cat, but _might_ contain a lasagna,
+- `(0.5, 0.0)` - this picture _might_ contain an orange cat, but _does not_ contain a lasagna.
+
+The meaning of input and output numbers is up to you - in this case we've simply imagined that there exists _some_
+neural network behaving this way, but in reality it's on you to prepare so-called *training dataset* ("given this
+picture, you should return 1.0", "given that picture, you should return 0.0").
+
+[NOTE]
+====
+You might've as well created a network that, say,
+https://www.researchgate.net/publication/320662740_Identification_and_counting_of_mature_apple_fruit_based_on_BP_feed_forward_neural_network[identifies mature apples] -
+sky's the limit.
+====
+
+Having the general overview of FFNNs in mind, let's now take the next major step and learn about the magic allowing for
+all of this to happen.
+
+[[nn-deep-dive]]
+== Neural network: Deep dive
+
+FFNNs lean on two building blocks: *neurons* and *synapses*.
+
+A *neuron* (usually represented with a circle) accepts some input values, processes them, and returns some output value;
+each neuron has _at least_ one input and _at most_ one output:
+
+image::/resources/learning-to-fly-pt1/nn-3.png[role=drawing, title="A single neuron with three synapses"]
+
+Additionally, each neuron has a *bias*:
+
+image::/resources/learning-to-fly-pt1/nn-4.png[role=drawing, title="A single neuron with three synapses and annotated bias value"]
+
+Bias is like a neuron's `if` statement - it allows for a neuron to stay inactive (return an output of zero) _unless_ the
+input is strong (high) enough. Formally we'd say that bias allows to regulate neuron's *activation threshold*.
+
+Imagine you've got a neuron with three inputs, with each input determining whether it sees a lasagna (`1.0`) or not
+(`0.0`) - now, if you wanted to create a neuron that's activated when it sees _at least two_ lasagnas, you'd simply
+create a neuron with a bias of `-1.0`; this way your neuron's "natural" state would be `-1.0` (inactive), with one
+lasagna - `0.0` (still inactive), and with two - `1.0` (active, voilà).
+
+[NOTE]
+====
+If my lasagna metaphor doesn't appeal to you, you might find
+https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks[this math-oriented
+explanation] more helpful.
+====
+
+Apart from neurons, we've got *synapses* - a synapse is like a wire that connects one neuron's output to another
+neuron's input; each synapse is of certain *weight*:
+
+image::/resources/learning-to-fly-pt1/nn-5.png[role=drawing, title="A single neuron with three synapses with annotated weights"]
+
+A weight is a _factor_ (hence the `x` before each number, to emphasize its multiplicative nature), so a weight of:
+
+- `0.0` means that a synapse is effectively _dead_ (it doesn't pass any information from one neuron into the another),
+- `0.3` means that if neuron A returns `0.7`, neuron B will receive `0.7 * 0.3 ~= 0.2`,
+- `1.0` means that a synapse is effectively _passthrough_ - if neuron A returns `0.7`, neuron B will receive
+`0.7 * 1.0 = 0.7`.
+
+Having all this knowledge in mind, let's go back to our network and fill-in missing weights & biases with some random
+numbers:
+
+image::/resources/learning-to-fly-pt1/nn-6.png[role=drawing]
+
+What a beauty, isn't it?
+
+Let's see what it thinks of, say, `(0.5, 0.8)`:
+
+image::/resources/learning-to-fly-pt1/nn-7.png[role=drawing]
+
+To reiterate, we're interested in the output value of the rightmost neuron (that's our output layer) - since it depends
+on two previous neurons (the ones from the input layer), we're going to start with them.
+
+Let's focus on the top-left neuron first - to calculate its output, we start by computing a *weighted sum* of all its
+inputs:
+
+[source, text]
+----
+0.5 * 0.2 = 0.1
+----
+
+\... then, we add the bias:
+
+[source, text]
+----
+0.1 - 0.3 = -0.2
+----
+
+\... and *clamp* this value through so-called *activation function*; activation function limits neuron's output to a
+predefined range, simulating the `if`-like behavior.
+
+The simplest activation function is *rectified linear unit* (`ReLU`), which is basically
+https://doc.rust-lang.org/stable/std/primitive.f32.html#method.max[`f32::max`]:
+
+image::/resources/learning-to-fly-pt1/nn-8.png[role=drawing]
+
+[NOTE]
+====
+Another popular activation function is `tanh` - its graph looks slightly different (like an `s`) and it's got
+https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks[different
+properties].
+
+Activation function affects network's input and output - e.g. `tanh` forces a network to work on numbers from range
++++<code><-1.0, 1.0></code>+++ instead of `<0.0, +inf>`, as compared to `ReLU`.
+====
+
+As you can see, when our weighted-sum-with-a-bias is lower than zero, the neuron's output will be `0.0` - and that's
+exactly what happens to our current output:
+
+[source, text]
+----
+max(-0.2, 0.0) = 0.0
+----
+
+Nice; now let's do the bottom-left one:
+
+[source, text]
+----
+# Weighted sum:
+0.8 * 1.0 = 0.8
+
+# Bias:
+0.8 + 0.0 = 0.8
+
+# Activation function:
+max(0.8, 0.0) = 0.8
+----
+
+At this point we've got the input layer completed:
+
+image::/resources/learning-to-fly-pt1/nn-9.png[role=drawing]
+
+\... which heads us towards the last neuron:
+
+[source, text]
+----
+# Weighted sum:
+(0.0 * 0.6) + (0.8 * 0.5) = 0.4
+
+# Bias:
+0.4 + 0.2 = 0.6
+
+# Activation function:
+max(0.6, 0.0) = 0.6
+----
+
+\... and the network's output itself:
+
+[source, text]
+----
+0.6 * 1.0 = 0.6
+----
+
+Voilà - for the input of `(0.5, 0.8)`, our network responded `0.6`.
+
+_(since it's just an exercise on a totally made-up network, this number doesn't mean anything - it's just some output
+value.)_
+
+Overall, that's one of the simplest FFNNs possible - given appropriate weights, it's able to solve
+https://medium.com/@jayeshbahire/the-xor-problem-in-neural-networks-50006411840b[the XOR problem], but probably lacks
+computational capacity to steer a bird.
+
+More complex FFNNs, such as this one:
+
+image::/resources/learning-to-fly-pt1/nn-10.png[role=drawing]
+
+\... work exactly the same way: you just go left-to-right, neuron-by-neuron, computing the outputs, until you squeeze
+all the numbers from the output layer.
+
+_(on that particular diagram some of the synapses overlap, but it doesn't mean anything: it's just that representing
+multidimensional graphs on a flat screen is unfortunate.)_
+
+At this point you might begin to wonder "wait, how do we _know_ our network's weights?", and for that I've got a simple
+answer:
+
+[.text-center]
+*we randomize them*! ❤️️
+
+If you're accustomed to deterministic algorithms (bubble sort, anyone?), this might feel non-diegetic to you, but it's
+_the_ way things go for networks containing more than a few neurons: you cross your fingers, randomize the initial
+weights, and work with what you got.
+
+Notice I said _initial_ weights - having some non-zero weights in place, there are certain algorithms that you can apply
+on your network to _improve_ it (so, essentially, to teach it).
+
+One of the most popular "teaching" algorithms for FFNNs is https://www.youtube.com/watch?v=tIeHLnjs5U8[backpropagation]:
+
+You show your network lots (think: hundredths of thousands) of examples in the form of "for this input, you should
+return that" (think: "for this picture of _dakimakura_, you should return _pillow_"), and backpropagation slowly adjusts
+your network's weights until it gets the answers right.
+
+[NOTE]
+====
+Or not - a network might get stuck at a https://en.wikipedia.org/wiki/Local_optimum[local optimum] and "just" stop
+learning.
+
+Also, if you ever find yourself doing a neural network crossword, remember that backpropagation is an example of
+https://en.wikipedia.org/wiki/Supervised_learning[supervised learning].
+====
+
+Backpropagation is a great tool if you have a rich set of _labeled_ examples (such as photos or statistics), and that's
+why it doesn't fit our original assumption:
+
+We ain't no statisticians, the world is a cruel place, so we want for our birds to figure out all the learning _on their
+own_ (contrary to being given concrete examples of "for this vision, go left", "for this vision, go right").
+
+Solution?
+
+[.text-center]
++++<del>+++biology+++</del>+++ genetic algorithms and the magic of https://en.wikipedia.org/wiki/Law_of_large_numbers[
+large numbers]
+
+[[ga-intro]]
+== Genetic algorithm: Introduction
+
+To recap, from the mathematical point of view our underlying problem is that we have a function
+(https://en.wikipedia.org/wiki/Universal_approximation_theorem[represented] using a neural network) that's defined by a
+whole lot of *parameters*:
+
+image::/resources/learning-to-fly-pt1/ga-1.png[role=drawing]
+
+_(I didn't bother to draw all the weights, but I hope you get the point - there's a lot of them.)_
+
+Had we represented each parameter with a single-precision floating-point number, a network of mere 3 neurons and 5
+synapses could be defined in so many different combinations...
+
+[source, text]
+----
+(3.402 * 10^38) ^ (3 + 5) ~= 1.8 * 10^308
+----
+
+_(https://jameshoward.us/2015/09/09/how-many-floating-point-numbers-are-there/[how-many-floating-point-numbers-are-there])_
+
+\... that the universe would sooner meet its https://en.wikipedia.org/wiki/Heat_death_of_the_universe[ultimate fate]
+than we'd be done checking them all; we certainly need to be smarter!
+
+[NOTE]
+====
+All the possible sets of parameters are called a *search space*.
+====
+
+Since iterating through our search space looking for the single best answer is off the table, we can focus on a much
+simpler task of finding a list of _suboptimal_ answers.
+
+[.text-center]
+And in order to do that, we must *dig deeper*.
+
+[[ga-deep-dive]]
+== Genetic algorithm: Deep dive
+
+This is a wild carrot together with its domesticated form:
+
+image::/resources/learning-to-fly-pt1/carrot.jpg[role=drawing]
+
+This domesticated, widely known form didn't appear out of blue - it's an outcome of hundredths of years of
+https://en.wikipedia.org/wiki/Selective_breeding[selective breeding] with certain factors - like taproot's texture or
+color - in mind.
+
+Wouldn't it be awesome if we could do a similar thing with our neural brains? If we just, like, created a bunch of
+random birds and selectively bred the ones who seemed the most prominent...
+
+[.text-center]
+*hmmm*
+
+As it turns out, we're not the first to stumble upon this idea - there already exists a widely researched branch of
+computer science called https://en.wikipedia.org/wiki/Evolutionary_computation[evolutionary computation] that's all
+about solving problems "just the way nature would do".
+
+Out of all the evolutionary algorithms, the concrete subclass we'll be studying is called
+https://en.wikipedia.org/wiki/Genetic_algorithm[genetic algorithm].
+
+[NOTE]
+====
+Similarly as with neural networks, there's no _the_ genetic algorithm - it's a variety of different algorithms; so to
+avoid burning the midnight oil, we'll take a look at how things work _generally_.
+====
+
+Starting top-bottom, a genetic algorithm starts with a *population*:
+
+image::/resources/learning-to-fly-pt1/ga-2.png[role=drawing]
+
+A population is built from *individuals* (sometimes called *agents*):
+
+image::/resources/learning-to-fly-pt1/ga-3.png[role=drawing, width=15%]
+
+An *individual* (or an *agent*) is a _single possible solution_ to given problem (a population is thus a _set_ of some
+possible solutions).
+
+In our case, each individual will model a brain (or an entire bird, if you prefer to visualise it this way), but
+generally it depends on the problem you're tackling:
+
+- If you were trying to, say, https://en.wikipedia.org/wiki/Evolved_antenna[evolve an antenna], a single individual
+would be a single antenna.
+- If you were trying to, say, https://www.postgresql.org/docs/8.3/geqo-intro2.html[evolve a query plan], a single
+individual would be a single query plan.
+
+[NOTE]
+====
+An individual represents _some_ solution, but not necessarily _the best_ or even a remotely desirable one.
+====
+
+An individual is built from *genes* (collectively named *genome*):
+
+image::/resources/learning-to-fly-pt1/ga-4.png[role=drawing, width=30%, title="A genome represented with neural network's weights; a genome might be a list of numbers, a graph or anything else that is able to model a solution to the problem"]
+
+A *gene* is a single parameter that's being _evaluated_ and _tuned_ by the genetic algorithm.
+
+In our case, each gene will be simply a neural network's weight, but representing problem's domain isn't always this
+straightforward.
+
+For instance, if you were trying to https://en.wikipedia.org/wiki/Travelling_salesman_problem[help a fellow salesman],
+where the underlying problem isn't based on neural networks at all, a single gene could be a tuple of `(x, y)`
+coordinates determining a part of a salesman's journey (consequently, an individual would then describe a salesman's
+entire path):
+
+image::/resources/learning-to-fly-pt1/ga-5.png[role=drawing, title="A hypothetical approach to the travelling salesman problem - each box represents a probable, suggested path for the salesman to travel"]
+
+Now, let's say we've got a _random population_ of fifty birds - we pass them to a genetic algorithm, what happens?
+
+Similarly as with selective breeding, genetic algorithm starts by *evaluating* each of the individuals (each of the
+possible solutions) to see which are the best among the current population.
+
+Biologically, this is an equivalent of taking a stroll to your garden and checking which carrots are the orangest and
+the yummiest.
+
+Evaluation happens using so-called *fitness function* that returns a *fitness score* quantifying _how good_ a particular
+individual (so a particular _solution_) is:
+
+image::/resources/learning-to-fly-pt1/ga-6.png[role=drawing, title="An example of a fitness function that quantifies carrots by their taproot's color and radius"]
+
+Creating a https://www.youtube.com/watch?v=7J-DfS52bnI[usable] fitness function is one of the hardest tasks when it
+comes to genetic algorithms, as usually there are many metrics by which an individual can be measured.
+
+_(even our imaginative carrot has at least three metrics: taproot's color, radius, and taste, that have to be squashed
+into a single number.)_
+
+Fortunately, when it comes to birds, we don't have much to choose from anyway: we'll just say that a bird is as good as
+the amount of food it ate during the course of current *generation*.
+
+A bird who ate `30` foods is better than the one who ate just `20`, simple as that.
+
+[NOTE]
+====
+Negating a fitness function makes a genetic algorithm return the _worst_ solutions instead of the best ones; just an
+amusing trick to remember for later.
+====
+
+Now, the time has come for the genetic algorithm's _crème de la crème_: *reproduction*!
+
+Broadly speaking, reproduction is the process of building a new (hopefully - _slightly improved_) population starting
+from the current one.
+
+It's the mathematical equivalent of choosing the tastiest carrots and planting their seeds.
+
+What happens is that the genetic algorithm chooses _two_ individuals at random (prioritizing the ones with the higher
+fitness scores) and uses them to produce two _new_ individuals (a so-called *offspring*):
+
+image::/resources/learning-to-fly-pt1/ga-7.png[role=drawing]
+
+Offspring is produced by taking genomes of both parents and performing
+https://en.wikipedia.org/wiki/Chromosomal_crossover[*crossover*] & https://en.wikipedia.org/wiki/Mutation[*mutation*] on
+them:
+
+image::/resources/learning-to-fly-pt1/ga-8.png[role=drawing]
+
+[NOTE]
+====
+*Crossover* allows to mix two different gnomes to get an approximate in-between solution, while *mutation* allows to
+discover _new_ solutions that weren't present in the initial population.
+====
+
+Both newly-spawned individuals are pushed into the pool of `new population` and the process starts over until the entire
+new population is built; the current population then gets discarded and the whole simulation starts over on this new
+(hopefully improved!) population.
+
+As you can see, there's a lot of *randomness* in the process: we start with a random population, we randomize how the
+genes are being distributed... so...
+
+[.text-center]
+this cannot _actually_ work, can it?
+
+[[code]]
+== The Code
+
+Let's end this post with a cliffhanger:
+
+[source, shell]
+----
+$ mkdir shorelark
+----
+
+Can you guess why I didn't use `cargo new`?
+
+In the second part we'll implement a working, bare-bones feed-forward neural network - until then!
+
+[[sources]]
+== Sources
+
+Here are some of the sources that I've personally found useful while learning about topics presented in this article:
+
+*Neural networks*:
+
+- https://www.youtube.com/watch?v=aircAruvnKk[YouTube, *3Blue1Brown* - But what is a Neural Network?]
+- https://www.youtube.com/watch?v=rA5qnZUXcqo[YouTube, *Vsauce* - The Stilwell Brain]
+
+*Genetic algorithms*:
+
+- https://www.youtube.com/watch?v=7J-DfS52bnI[YouTube, *Jeremy Fisher* - Genetic Algorithms]
+- https://www.obitko.com/tutorials/genetic-algorithms/index.php[*obitko.com* - Genetic Algorithms Tutorial]
+- https://ibug.doc.ic.ac.uk/media/uploads/documents/courses/GeneticAlgorithm-tutorial.pdf[*Darrell Whitley* - A Genetic Algorithm Tutorial]
