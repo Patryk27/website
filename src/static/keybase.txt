@@ -1,0 +1,54 @@
+==================================================================
+https://keybase.io/patryk27
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://pwy.io
+  * I am patryk27 (https://keybase.io/patryk27) on keybase.
+  * I have a public key ASDHJNIh1sIKv_OwnbAaus9SQ9IDr31Ksdr66kokL-thwgo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120527f92f8fa4018e8db6b4fab590ea451e98f6e796c3fd8e33402d3c638f619c50a",
+      "host": "keybase.io",
+      "kid": "0120c724d221d6c20abff3b09db01abacf5243d203af7d4ab1dafaea4a242feb61c20a",
+      "uid": "286307712d5573d0c22768dbbaaa9119",
+      "username": "patryk27"
+    },
+    "merkle_root": {
+      "ctime": 1609792629,
+      "hash": "2d0d099b8751d7ac090917acf381bde18a171ccbf4ecdbfb57957d5045060421698da45dfcab5305ec7b874833fbebbd0543dc9a3d87ea9dc53680dd7a336e61",
+      "hash_meta": "1743028f3197f320038aed72d3f372c9a2883421ef803d004f488dbee1ffd3fd",
+      "seqno": 18591419
+    },
+    "service": {
+      "entropy": "xe60Lj98lTuRpre1MxE/XrYs",
+      "hostname": "pwy.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.5.2"
+  },
+  "ctime": 1609792639,
+  "expire_in": 504576000,
+  "prev": "9a04984780f8b9c5ae9a175a7e02a9dba02022f4db796367091cfd4e239b780b",
+  "seqno": 53,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgxyTSIdbCCr/zsJ2wGrrPUkPSA699SrHa+upKJC/rYcIKp3BheWxvYWTESpcCNcQgmgSYR4D4ucWumhdafgKp26AgIvTbeWNnCRz9TiObeAvEIM7zwbWaagmsh7vEXl/TvqBG8ORhRu1DKh5ua+Tey2q8AgHCo3NpZ8RAlc6y7S49QaMyQk/2nsSHp3AzFGamgS7Bs+XC6ZheDb9JWz5mRZufIULeCkbrw8JzMG5kIHyY6jyjJDLF0JftCKhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIB5KC8L1yj5EvLfUVldKFrFYQurGv5rDeFiErBrv2Pz0o3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/patryk27
