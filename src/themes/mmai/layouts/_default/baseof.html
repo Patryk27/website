@@ -6,12 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ $style.Permalink }}" media="all">
+    {{ range .AlternativeOutputFormats -}}
+        {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+    {{ end -}}
     <title>{{ block "title" . }}{{ end }}</title>
 </head>
 <body>
     <div id="container">
         {{ partial "navigation.html" . }}
         {{ block "body" . }}{{ end }}
+        {{ partial "footer.html" . }}
     </div>
 </body>
 </html>

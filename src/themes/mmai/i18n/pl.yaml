@@ -1,3 +1,6 @@
+- id: footer.translations.scroll-top
+  translation: "przewiń do góry"
+
 - id: home.translations.header
   translation: "Ta strona jest dostępna w następujących wersjach językowych:"
 

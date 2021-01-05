@@ -1,5 +1,5 @@
 {{ define "title" }}
-    Patryk Wychowaniec
+    {{ .Site.Title }} | Patryk Wychowaniec
 {{ end }}
 
 {{ define "body" }}
@@ -23,12 +23,6 @@
                     </li>
                 {{ end }}
             </ul>
-        </div>
-
-        <div id="home-commit">
-            <a href="https://github.com/Patryk27/website">
-                🔖 {{ readFile "/meta.rev" }}
-            </a>
         </div>
     </main>
 {{ end }}

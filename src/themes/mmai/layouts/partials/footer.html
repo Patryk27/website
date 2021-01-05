@@ -1,0 +1,19 @@
+<footer>
+    <div class="footer-item">
+        <a href="#">^ {{ i18n "footer.translations.scroll-top" }}</a>
+    </div>
+
+    <div class="footer-item">
+        <a href="{{ $.Site.BaseURL }}/{{ $.Site.Language.Lang }}/posts/index.xml">
+            <img src="/icons/rss.svg">
+            RSS / Atom
+        </a>
+    </div>
+
+    <div class="footer-item">
+        <a href="https://github.com/Patryk27/website">
+            <img src="/icons/git.png">
+            {{ readFile "/meta.rev" }}
+        </a>
+    </div>
+</footer>

@@ -9,6 +9,7 @@ $flow-indent: 1em;
 $kbd-bg: lighten($body-bg, 20%);
 $kbd-fg: #ffffff;
 $para-indent: 1.5em;
+$border-fg: #050505;
 
 body {
   margin: 0;
@@ -42,6 +43,49 @@ code {
     color: $kbd-fg;
     font-size: 0.8em;
     word-wrap: break-word;
+  }
+}
+
+footer {
+  border-top: 1px solid $border-fg;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+
+  @media only screen and (min-width: 992px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  img {
+    height: 24px;
+    padding-right: 1px;
+    vertical-align: middle;
+
+    // To prevent link's hover from bleeding into the icon
+    background-color: $body-bg;
+  }
+
+  .footer-item {
+    opacity: 0.65;
+    text-align: right;
+    padding: 0.65em 0;
+
+    @media only screen and (min-width: 992px) {
+      text-align: center;
+      padding: 0;
+
+      &:first-child {
+        text-align: left;
+      }
+
+      &:last-child {
+        text-align: right;
+      }
+    }
+
+    &:hover {
+      opacity: 1.0;
+    }
   }
 }
 
@@ -127,7 +171,7 @@ strong {
 }
 
 #home-translations {
-  border-top: 1px solid lighten(#000000, 60%);
+  border-top: 1px solid $border-fg;
   margin-top: 1.5em;
   padding-top: 1.5em;
 
@@ -139,16 +183,6 @@ strong {
   li {
     list-style-type: none;
     padding-bottom: 0.5em;
-  }
-}
-
-#home-commit {
-  border-top: 1px solid lighten(#000000, 60%);
-  margin-top: 1.5em;
-  padding-top: 1.5em;
-
-  a {
-    opacity: 0.5;
   }
 }
 
@@ -368,8 +402,8 @@ strong {
 }
 
 .post-translations {
-  border-top: 1px solid lighten(#000000, 60%);
-  border-bottom: 1px solid lighten(#000000, 60%);
+  border-top: 1px solid $border-fg;
+  border-bottom: 1px solid $border-fg;
   padding: 1.2em;
 
   p {
@@ -401,7 +435,7 @@ strong {
     &:not(:last-child) {
       margin-bottom: 1.5em;
       padding-bottom: 1.5em;
-      border-bottom: 1px solid lighten(#000000, 60%);
+      border-bottom: 1px solid $border-fg;
     }
 
     .toc {

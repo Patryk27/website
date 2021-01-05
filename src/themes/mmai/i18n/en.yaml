@@ -1,3 +1,6 @@
+- id: footer.translations.scroll-top
+  translation: "scroll to top"
+
 - id: home.translations.header
   translation: "This site is available in the following languages:"
 
