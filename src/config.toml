@@ -1,7 +1,7 @@
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = true
 theme = "mmai"
-title = "pwy"
+title = "pwy.io"
 
 [languages]
     [languages.en]
