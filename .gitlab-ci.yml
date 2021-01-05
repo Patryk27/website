@@ -16,7 +16,7 @@ deploy:
   tags:
     - website
   script:
-    - git rev-parse HEAD > src/meta.rev
+    - git rev-parse --short HEAD > src/meta.rev
     - nix build
     - rsync -avz --checksum --delete ./result/ website@10.1.183.197:/home/website/content
   only:
