@@ -10,7 +10,7 @@ title = "pwy.io"
     weight = 1
 
         [[languages.en.menu.main]]
-        name = "/~"
+        name = "~/"
         url = "/"
 
         [[languages.en.menu.main]]
@@ -31,7 +31,7 @@ title = "pwy.io"
     weight = 2
 
         [[languages.pl.menu.main]]
-        name = "/~"
+        name = "~/"
         url = "/"
 
         [[languages.pl.menu.main]]
