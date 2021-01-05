@@ -26,7 +26,23 @@
             </div>
         </div>
 
-        {{ partial "translations.html" . }}
+        {{ if .IsTranslated }}
+            <div class="post-translations">
+                <p>
+                    {{ i18n "post.translations.header" }}
+                </p>
+
+                <ul>
+                    {{ range .Translations }}
+                        <li>
+                            <a href="{{ .Permalink }}">
+                                {{ i18n (printf "language.%s.flag" .Lang) }} {{ .Lang }}: {{ .Title }}
+                            </a>
+                        </li>
+                    {{ end }}
+                </ul>
+            </div>
+        {{ end }}
 
         <div class="post-content">
             {{ .Content | replaceRE "<h2 id=\"(.*)\">(.*)</h2>" `<h2 id="${1}"><a href="#${1}">${2}</a></h2>` | safeHTML }}
