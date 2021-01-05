@@ -77,8 +77,9 @@ for pageId in $(seq 1 $pages); do
 
         convert \
             "${pagePath}" \
-            -fuzz 20% \
+            -fuzz 5% \
             -trim \
+            -resize "1500>" \
             "${pagePath}" &> /dev/null
     } &
 
