@@ -1,4 +1,4 @@
-{{ $style := resources.Get "style.scss" | toCSS | fingerprint }}
+{{ $style := resources.Get "style.scss" | toCSS | resources.Minify | fingerprint }}
 
 <!DOCTYPE html>
 <html>
