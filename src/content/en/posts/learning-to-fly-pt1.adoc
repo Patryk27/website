@@ -13,7 +13,7 @@ In this series we'll create a simulation of *evolution* using *neural network* &
 I'm going to introduce you to how a basic neural network and genetic algorithm works, then we'll implement both in
 *Rust* and compile our application to *WebAssembly* to ultimately end up with:
 
-image::/resources/learning-to-fly-pt1/intro-outcome.png[width=100%, title="https://pwy.io/en/projects/shorelark/"]
+image::/resources/learning-to-fly-pt1/intro-outcome.png[width=100%, title="https://pwy.io/en/projects/shorelark/", link="https://pwy.io/en/projects/shorelark/"]
 
 [NOTE]
 ====

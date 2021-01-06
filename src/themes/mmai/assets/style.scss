@@ -22,16 +22,19 @@ body {
 }
 
 a {
-  color: $body-fg;
   text-decoration: none;
-  border-bottom: 2px solid lighten($body-bg, 40%);
 
-  &:active {
+  &:not(.image) {
     color: $body-fg;
-  }
+    border-bottom: 2px solid lighten($body-bg, 40%);
 
-  &:hover {
-    border-bottom-color: $body-fg;
+    &:active {
+      color: $body-fg;
+    }
+
+    &:hover {
+      border-bottom-color: $body-fg;
+    }
   }
 }
 
