@@ -465,10 +465,6 @@ digraph {
 {{< /col-graph-src >}}
 {{% /col-graph %}}
 
-I'd say
-
-{{< meme not-great-not-terrible >}}
-
 \... at least this time we've got something we could _actually build_ in the game!
 
 No reason to rest on our laurels so soon though - since Factorio's assembly machines are squares, it would make sense to

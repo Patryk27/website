@@ -20,5 +20,5 @@ $ HUGO_NUMWORKERMULTIPLIER=1 hugo serve
 
 ## License
 
-Copyright (c) 2019-2020, Patryk Wychowaniec (`pwychowaniec @at@ pm.me`).    
+Copyright (c) 2019-2021, Patryk Wychowaniec (`pwychowaniec @at@ pm.me`).    
 Licensed under the MIT license.

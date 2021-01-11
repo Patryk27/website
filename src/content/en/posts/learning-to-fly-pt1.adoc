@@ -5,6 +5,7 @@ tags:
   - neural-network
   - rust
   - webassembly
+series: learning-to-fly
 published: 2021-01-04
 ---
 

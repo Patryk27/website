@@ -8,8 +8,6 @@ build:
     - website
   script:
     - nix build
-  only:
-    - dev
 
 deploy:
   stage: deploy
@@ -18,6 +16,25 @@ deploy:
   script:
     - git rev-parse --short HEAD > src/meta.rev
     - nix build
-    - rsync -avz --checksum --delete ./result/ website@10.1.183.197:/home/website/content
+    - rsync -avz --checksum --delete ./result/ website@10.1.183.197:/home/website/main
   only:
     - main
+
+deploy-beta:
+  stage: deploy
+  tags:
+    - website
+  script:
+    - echo "beta--$(git rev-parse --short HEAD)" > src/meta.rev
+    - nix build
+    - rsync -avz --checksum --delete ./result/ "website@10.1.183.197:/home/website/beta-${CI_COMMIT_BRANCH//\//-}"
+  when: manual
+
+remove-beta:
+  stage: deploy
+  tags:
+    - website
+  script:
+    - ssh website@10.1.183.197 "chmod -R 755 /home/website/beta-${CI_COMMIT_BRANCH//\//-}"
+    - ssh website@10.1.183.197 "rm -rf /home/website/beta-${CI_COMMIT_BRANCH//\//-}"
+  when: manual

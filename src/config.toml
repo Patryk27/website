@@ -47,6 +47,7 @@ title = "pwy.io"
         url = "/talks/"
 
 [taxonomies]
+series = "series"
 tag = "tags"
 
 [params]

@@ -60,7 +60,7 @@ done
 echo
 echo "[+] Converting pages"
 
-nproc=$(nproc)
+nproc=4
 
 for pageId in $(seq 1 $pages); do
     {
@@ -79,7 +79,7 @@ for pageId in $(seq 1 $pages); do
             "${pagePath}" \
             -fuzz 5% \
             -trim \
-            -resize "1500>" \
+            -resize "1000>" \
             "${pagePath}" &> /dev/null
     } &
 

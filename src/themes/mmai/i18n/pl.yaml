@@ -4,5 +4,8 @@
 - id: home.translations.header
   translation: "Ta strona jest dostępna w następujących wersjach językowych:"
 
+- id: post.series.header
+  translation: "Inne posty w tej serii:"
+
 - id: post.translations.header
   translation: "Ten post jest dostępny również w innych wersjach językowych:"

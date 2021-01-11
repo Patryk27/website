@@ -10,5 +10,8 @@
 - id: language.pl.flag
   translation: "🇵🇱"
 
+- id: post.series.header
+  translation: "Other posts in this series:"
+
 - id: post.translations.header
   translation: "This post is also available in the following languages:"
