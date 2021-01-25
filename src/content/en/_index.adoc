@@ -13,7 +13,7 @@ title: ""
 </p>
 
 <p>
-    You can reach me at <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) and
+    You can reach me at <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwy.gpg">GPG</a>) and
     <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
 </p>
 ++++

@@ -14,7 +14,7 @@ title: ""
 </p>
 
 <p>
-    Znajdziesz mnie na <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwychowaniec.gpg">GPG</a>) oraz
+    Znajdziesz mnie na <kbd>pwychowaniec [@at@] pm.me</kbd> (<a href="/pwy.gpg">GPG</a>) oraz
     <a href="https://keybase.io/patryk27">keybase.io/patryk27</a>.
 </p>
 ++++
