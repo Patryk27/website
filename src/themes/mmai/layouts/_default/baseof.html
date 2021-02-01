@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ $style.Permalink }}" media="all">
     <link rel="icon" type="image/png" href="/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+    <meta property="og:image" content="{{ "favicon.png" | absURL }}">
+    <meta property="og:site_name" content="{{ .Site.Title }}">
+    <meta property="twitter:image" content="{{ "favicon.png" | absURL }}">
 
     {{ if .IsPage }}
         <meta name="title" content="{{ .Title }} | {{ .Site.Title }}">
         <meta property="og:type" content="article">
         <meta property="og:url" content="{{ .Permalink | absURL }}">
-        <meta property="og:site_name" content="{{ .Site.Title }}">
         <meta property="twitter:card" content="{{ .Title }}">
         <meta property="twitter:title" content="{{ .Title }}">
     {{ end }}
