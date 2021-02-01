@@ -15,7 +15,7 @@
     {{ if .IsPage }}
         <meta name="title" content="{{ .Title }} | {{ .Site.Title }}">
         <meta property="og:type" content="article">
-        <meta property="og:url" content="{{ .Permalink | absURL }}">
+        <meta property="og:url" content="{{ .Permalink }}">
         <meta property="twitter:card" content="{{ .Title }}">
         <meta property="twitter:title" content="{{ .Title }}">
     {{ end }}

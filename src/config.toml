@@ -2,6 +2,7 @@ defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = true
 theme = "mmai"
 title = "pwy.io"
+baseURL = "https://pwy.io"
 
 [languages]
     [languages.en]
