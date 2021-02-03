@@ -635,7 +635,7 @@ If we know - or we can estimate - a vector's size up-front, we might then create
 `Vec::with_capacity()` can be a great low-hanging fruit if your application allocates lots of _large_ vectors, but using it is not always worth the hassle; as usually when it comes to performance, a benchmark's your best friend.
 ====
 
-Using `with_capacity()` might be awkward as times and so Rust, fulfilling its promise of zero-cost abstractions, allows to invoke it somewhat transparently:
+Using `with_capacity()` might be awkward at times and so Rust, fulfilling its promise of zero-cost abstractions, allows to invoke it somewhat transparently:
 
 [source, rust]
 ----
