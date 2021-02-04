@@ -24,8 +24,6 @@ blockquote {
   border-radius: 0 $border-radius $border-radius 0;
 
   * {
-    box-shadow: none !important;
-
     &:first-child {
       p {
         margin-top: 0 !important;
@@ -117,7 +115,6 @@ pre {
 
   &.highlight {
     background: $code-bg;
-    box-shadow: 0 0 4px $code-bg;
   }
 }
 
@@ -259,12 +256,7 @@ video {
 
   &.note {
     color: #004085;
-    background-color: #cce5ff;
-    box-shadow: 0 0 4px darken(#cce5ff, 25%);
-  }
-
-  * {
-    box-shadow: none !important;
+    background-color: #cce1ff;
   }
 
   a {
