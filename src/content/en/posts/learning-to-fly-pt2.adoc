@@ -49,16 +49,16 @@ You might've noticed that when you do `cargo build`, it sometimes prints crate n
 
 [source, text]
 ----
-    Updating crates.io index
-  Downloaded log v0.4.13
-  Downloaded serde v1.0.119
-  Downloaded thread_local v1.1.0
-  Downloaded byteorder v1.4.2
-   Compiling libc v0.2.82
-   Compiling cfg-if v1.0.0
-   Compiling arrayref v0.3.6
-   Compiling matches v0.1.8
-    Building [>           ] 6/153: byteorder, matches, cc, byte-tools
+   Updating crates.io index
+ Downloaded log v0.4.13
+ Downloaded serde v1.0.119
+ Downloaded thread_local v1.1.0
+ Downloaded byteorder v1.4.2
+  Compiling libc v0.2.82
+  Compiling cfg-if v1.0.0
+  Compiling arrayref v0.3.6
+  Compiling matches v0.1.8
+   Building [>           ] 6/153: byteorder, matches, cc, byte-tools
 ----
 
 It means that it's building those crates *in parallel*.
@@ -89,7 +89,7 @@ One of the bigger - if not the biggest - workspace-based project I know is the a
 
 Considering our toy project won't reach 10k LOC, why am I even talking about all those workspaces and crates?
 
-https://www.youtube.com/watch?v=J2eud_tEIj8[I just think they're neat].
+https://www.youtube.com/watch?v=J2eud_tEIj8[I just think they're neat.]
 
 Also, I consider them to be a *good practice*: workspaces allow to introduce clear-cut boundaries between project's modules, and - when applied within reason - not only make the code cleaner, but _force it_ to be.
 
@@ -179,7 +179,7 @@ $ cargo new neural-network --lib
 
 It's time to get down to business.
 
-We'll start *top-down*, with a structure modelling the entire network - it will provide sort of an *entry point* to our neural network crate:
+We'll start *top-down*, with a structure modelling the entire network - it will provide sort of an *entry point* to our crate; let's open `libs/neural-network/src/lib.rs` and write:
 
 [source, rust]
 ----
@@ -399,6 +399,8 @@ fn propagate(&self, mut inputs: Vec<f32>) -> Vec<f32> {
 }
 ----
 
+[NOTE]
+====
 But hey, won't this force our _callers_ to pass mutable values? Nope!
 
 [source, rust]
@@ -479,13 +481,14 @@ fn bar(mut items: &Vec<usize>) {
     // *which* thing is referenced:
     items = some_another_vector;
 
-    // But if the type remains immutable, you cannot modify the thing
-    // itself:
+    // But if the type remains immutable, you cannot modify the
+    // thing itself:
     items.push(1234);
-    //   ^^^^^ cannot borrow `*items` as mutable, as it is behind a
-    //         `&` reference
+    //   ^^^^^ error: cannot borrow `*items` as mutable, as it is
+    //         behind a `&` reference
 }
 ----
+====
 
 There's one more refinement we can apply to our code - this very pattern is known as *folding*:
 
@@ -949,7 +952,7 @@ Inside a FFNN, all layers are connected consecutively, back-to-back:
 
 image::/resources/learning-to-fly-pt2/coding-new-2.png[role=drawing]
 
-\... because layer A's output is layer B's input, if we went with:
+\... because layer A's output is layer B's input, *if* we went with:
 
 [source, rust]
 ----
@@ -1228,7 +1231,7 @@ video::/resources/learning-to-fly-pt2/rand.webm[]
 
 When it comes to PRNGs, https://crates.io/crates/rand[`rand`] is the *de facto standard*, https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html[extremely versatile] crate that allows to generate not only pseudo-random numbers, but also other types such as strings.
 
-In order to fetch `rand`, we have to add it to our neural network's `Cargo.toml`:
+In order to fetch `rand`, we have to add it to our `libs/neural-network/Cargo.toml`:
 
 [source, toml]
 ----
