@@ -1079,7 +1079,6 @@ pub fn random(layers: Vec<LayerTopology>) -> Self {
     /* ... */
 
     let layers = layers
-        .iter()
         .windows(2)
         .map(|layers| {
             Layer::random(layers[0].neurons, layers[1].neurons)
