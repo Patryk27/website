@@ -60,26 +60,31 @@ done
 echo
 echo "[+] Converting pages"
 
-nproc=4
+nproc=10
 
 for pageId in $(seq 1 $pages); do
     {
         pageFile="${labels[((pageId - 1))]}"
-        pagePath="${postPath}/${pageFile}.png"
+        pagePath="${postPath}/${pageFile}.svg"
 
         echo " -  Converting page ${pageId} (${pageFile})"
 
         inkscape \
-            --export-dpi=2000 \
             --export-filename="${pagePath}" \
             --pdf-page="${pageId}" \
+            --export-area-drawing \
             "${imagesPath}" &> /dev/null
 
-        convert \
-            "${pagePath}" \
-            -fuzz 5% \
-            -trim \
-            -resize "1000>" \
+        image_optim \
+            --no-pngcrush \
+            --no-pngout \
+            --no-advpng \
+            --no-optipng \
+            --no-pngquant \
+            --no-jhead \
+            --no-jpegoptim \
+            --no-jpegtran \
+            --no-gifsicle \
             "${pagePath}" &> /dev/null
     } &
 

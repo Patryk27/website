@@ -1,18 +1,31 @@
 ---
-title: "Learning to Fly: Let's create a simulation in Rust! (pt 1)"
+title:
+  "Learning to Fly: Let's simulate evolution in Rust! (pt 1)"
+
+series:
+  "learning-to-fly"
+
+subtitle:
+  "The Domain"
+
 tags:
   - genetic-algorithm
   - neural-network
   - rust
   - webassembly
-series: learning-to-fly
-published: 2021-01-04
+
+summary: >
+  In this series we'll create a simulation of *evolution* using *neural network* and *genetic algorithm*.
+  +++<br>+++
+  I'm going to introduce you to how a basic neural network and genetic algorithm works, then we'll implement both in *Rust* and compile our application to *WebAssembly*.
+
+published:
+  "2021-01-04"
 ---
 
-In this series we'll create a simulation of *evolution* using *neural network* & *genetic algorithm*.
+In this series we'll create a simulation of *evolution* using *neural network* and *genetic algorithm*.
 
-I'm going to introduce you to how a basic neural network and genetic algorithm works, then we'll implement both in
-*Rust* and compile our application to *WebAssembly* to ultimately end up with:
+I'm going to introduce you to how a basic neural network and genetic algorithm works, then we'll implement both in *Rust* and compile our application to *WebAssembly* to ultimately end up with:
 
 image::/resources/learning-to-fly-pt1/intro-outcome.png[width=100%, title="https://pwy.io/en/projects/shorelark/", link="https://pwy.io/en/projects/shorelark/"]
 
@@ -44,19 +57,19 @@ Let's start by clearly defining our objective: what are we going to simulate, ac
 
 The overall idea is that we have a two-dimensional board representing a *world*:
 
-image::/resources/learning-to-fly-pt1/design-1.png[role=drawing]
+image::/resources/learning-to-fly-pt1/design-1.svg[role=drawing]
 
 This world consists of *birds* (hence the project's original code name - _Shorelark_):
 
-image::/resources/learning-to-fly-pt1/design-2.png[role=drawing]
+image::/resources/learning-to-fly-pt1/design-2.svg[role=drawing]
 
 \... and *foods* (of an abstract kind, rich in protein & fiber):
 
-image::/resources/learning-to-fly-pt1/design-3.png[role=drawing]
+image::/resources/learning-to-fly-pt1/design-3.svg[role=drawing]
 
 Each bird has their own *vision*, allowing them to locate the food:
 
-image::/resources/learning-to-fly-pt1/design-4.png[role=drawing]
+image::/resources/learning-to-fly-pt1/design-4.svg[role=drawing]
 
 \... and a *brain* that controls bird's body (i.e. speed and rotation).
 
@@ -72,7 +85,7 @@ We'll make our birds able to *learn* and *evolve*.
 If you squint your eyes hard enough, you'll see that a brain is nothing but a *function* of some inputs to some outputs,
 e.g.:
 
-image::/resources/learning-to-fly-pt1/brain-1.png[role=drawing]
+image::/resources/learning-to-fly-pt1/brain-1.svg[role=drawing]
 
 [NOTE]
 ====
@@ -81,12 +94,12 @@ You're a precious mathematical formula, remember that.
 
 Since our birds will have only one sensory input, their brains can be then approximated as:
 
-image::/resources/learning-to-fly-pt1/brain-2.png[role=drawing]
+image::/resources/learning-to-fly-pt1/brain-2.svg[role=drawing]
 
 Mathematically, we can represent this function's input (i.e. biological _eye_) as a list of numbers, with each number
 (i.e. biological _photoreceptor_) describing _how close_ the nearest object (i.e. food) is:
 
-image::/resources/learning-to-fly-pt1/brain-3.png[role=drawing]
+image::/resources/learning-to-fly-pt1/brain-3.svg[role="drawing w-70"]
 
 [.text-center]
 _(`0.0` - no object in sight, `1.0` - object right in front of us.)_
@@ -120,7 +133,7 @@ actually _follows_ the equals sign?
 
 As a fellow human, you are might be aware that brains are made of neurons connected via synapses:
 
-image::/resources/learning-to-fly-pt1/nn-1.png[role=drawing, title="My attempt at drawing neurons; not to scale"]
+image::/resources/learning-to-fly-pt1/nn-1.svg[role="drawing w-50", title="My attempt at drawing neurons; not to scale"]
 
 Synapses carry electric and chemical signals between neurons, while neurons "decide" whether given signal should be
 propagated further or stopped; eventually this allows for people to recognize letters, eat brussels sprouts, and write
@@ -149,7 +162,7 @@ such as https://en.wikipedia.org/wiki/DeepDream[DeepDream].
 
 \... and it looks like this:
 
-image::/resources/learning-to-fly-pt1/nn-2.png[role=drawing, title="Example of a multilayer perceptron (MLP), also called FFNN"]
+image::/resources/learning-to-fly-pt1/nn-2.svg[role=drawing, title="Example of a multilayer perceptron (MLP), also called FFNN"]
 
 This is a layout of an FFNN with *five synapses* and *three neurons*, all organized in *two layers*: the *input layer*
 (on the left side) and the *output layer* (on the right side).
@@ -202,11 +215,11 @@ FFNNs lean on two building blocks: *neurons* and *synapses*.
 A *neuron* (usually represented with a circle) accepts some input values, processes them, and returns some output value;
 each neuron has _at least_ one input and _at most_ one output:
 
-image::/resources/learning-to-fly-pt1/nn-3.png[role=drawing, title="A single neuron with three synapses"]
+image::/resources/learning-to-fly-pt1/nn-3.svg[role=drawing, title="A single neuron with three synapses"]
 
 Additionally, each neuron has a *bias*:
 
-image::/resources/learning-to-fly-pt1/nn-4.png[role=drawing, title="A single neuron with three synapses and annotated bias value"]
+image::/resources/learning-to-fly-pt1/nn-4.svg[role=drawing, title="A single neuron with three synapses and annotated bias value"]
 
 Bias is like a neuron's `if` statement - it allows for a neuron to stay inactive (return an output of zero) _unless_ the
 input is strong (high) enough. Formally we'd say that bias allows to regulate neuron's *activation threshold*.
@@ -226,7 +239,7 @@ explanation] more helpful.
 Apart from neurons, we've got *synapses* - a synapse is like a wire that connects one neuron's output to another
 neuron's input; each synapse is of certain *weight*:
 
-image::/resources/learning-to-fly-pt1/nn-5.png[role=drawing, title="A single neuron with three synapses with annotated weights"]
+image::/resources/learning-to-fly-pt1/nn-5.svg[role=drawing, title="A single neuron with three synapses with annotated weights"]
 
 A weight is a _factor_ (hence the `x` before each number, to emphasize its multiplicative nature), so a weight of:
 
@@ -238,13 +251,13 @@ A weight is a _factor_ (hence the `x` before each number, to emphasize its multi
 Having all this knowledge in mind, let's go back to our network and fill-in missing weights & biases with some random
 numbers:
 
-image::/resources/learning-to-fly-pt1/nn-6.png[role=drawing]
+image::/resources/learning-to-fly-pt1/nn-6.svg[role="drawing w-70"]
 
 What a beauty, isn't it?
 
 Let's see what it thinks of, say, `(0.5, 0.8)`:
 
-image::/resources/learning-to-fly-pt1/nn-7.png[role=drawing]
+image::/resources/learning-to-fly-pt1/nn-7.svg[role="drawing w-70"]
 
 To reiterate, we're interested in the output value of the rightmost neuron (that's our output layer) - since it depends
 on two previous neurons (the ones from the input layer), we're going to start with them.
@@ -270,7 +283,7 @@ predefined range, simulating the `if`-like behavior.
 The simplest activation function is *rectified linear unit* (`ReLU`), which is basically
 https://doc.rust-lang.org/stable/std/primitive.f32.html#method.max[`f32::max`]:
 
-image::/resources/learning-to-fly-pt1/nn-8.png[role=drawing]
+image::/resources/learning-to-fly-pt1/nn-8.svg[role="drawing w-50"]
 
 [NOTE]
 ====
@@ -306,7 +319,7 @@ max(0.8, 0.0) = 0.8
 
 At this point we've got the input layer completed:
 
-image::/resources/learning-to-fly-pt1/nn-9.png[role=drawing]
+image::/resources/learning-to-fly-pt1/nn-9.svg[role="drawing w-70"]
 
 \... which heads us towards the last neuron:
 
@@ -340,7 +353,7 @@ computational capacity to steer a bird.
 
 More complex FFNNs, such as this one:
 
-image::/resources/learning-to-fly-pt1/nn-10.png[role=drawing]
+image::/resources/learning-to-fly-pt1/nn-10.svg[role="drawing w-70"]
 
 \... work exactly the same way: you just go left-to-right, neuron-by-neuron, computing the outputs, until you squeeze
 all the numbers from the output layer.
@@ -395,7 +408,7 @@ To recap, from the mathematical point of view our underlying problem is that we 
 (https://en.wikipedia.org/wiki/Universal_approximation_theorem[represented] using a neural network) that's defined by a
 whole lot of *parameters*:
 
-image::/resources/learning-to-fly-pt1/ga-1.png[role=drawing]
+image::/resources/learning-to-fly-pt1/ga-1.svg[role="drawing w-90"]
 
 _(I didn't bother to draw all the weights, but I hope you get the point - there's a lot of them.)_
 
@@ -407,6 +420,7 @@ synapses could be defined in so many different combinations...
 (3.402 * 10^38) ^ (3 + 5) ~= 1.8 * 10^308
 ----
 
+[.text-attached]
 _(https://jameshoward.us/2015/09/09/how-many-floating-point-numbers-are-there/[how-many-floating-point-numbers-are-there])_
 
 \... that the universe would sooner meet its https://en.wikipedia.org/wiki/Heat_death_of_the_universe[ultimate fate]
@@ -455,11 +469,11 @@ avoid burning the midnight oil, we'll take a look at how things work _generally_
 
 Starting top-bottom, a genetic algorithm starts with a *population*:
 
-image::/resources/learning-to-fly-pt1/ga-2.png[role=drawing]
+image::/resources/learning-to-fly-pt1/ga-2.svg[role=drawing]
 
 A population is built from *individuals* (sometimes called *agents*):
 
-image::/resources/learning-to-fly-pt1/ga-3.png[role=drawing, width=15%]
+image::/resources/learning-to-fly-pt1/ga-3.svg[role="drawing w-40"]
 
 An *individual* (or an *agent*) is a _single possible solution_ to given problem (a population is thus a _set_ of some
 possible solutions).
@@ -479,7 +493,7 @@ An individual represents _some_ solution, but not necessarily _the best_ or even
 
 An individual is built from *genes* (collectively named *genome*):
 
-image::/resources/learning-to-fly-pt1/ga-4.png[role=drawing, width=30%, title="A genome represented with neural network's weights; a genome might be a list of numbers, a graph or anything else that is able to model a solution to the problem"]
+image::/resources/learning-to-fly-pt1/ga-4.svg[role="drawing w-40", title="A genome represented with neural network's weights; a genome might be a list of numbers, a graph or anything else that is able to model a solution to the problem"]
 
 A *gene* is a single parameter that's being _evaluated_ and _tuned_ by the genetic algorithm.
 
@@ -491,7 +505,7 @@ where the underlying problem isn't based on neural networks at all, a single gen
 coordinates determining a part of a salesman's journey (consequently, an individual would then describe a salesman's
 entire path):
 
-image::/resources/learning-to-fly-pt1/ga-5.png[role=drawing, title="A hypothetical approach to the travelling salesman problem - each box represents a probable, suggested path for the salesman to travel"]
+image::/resources/learning-to-fly-pt1/ga-5.svg[role=drawing, title="A hypothetical approach to the travelling salesman problem - each box represents a probable, suggested path for the salesman to travel"]
 
 Now, let's say we've got a _random population_ of fifty birds - we pass them to a genetic algorithm, what happens?
 
@@ -504,7 +518,7 @@ the yummiest.
 Evaluation happens using so-called *fitness function* that returns a *fitness score* quantifying _how good_ a particular
 individual (so a particular _solution_) is:
 
-image::/resources/learning-to-fly-pt1/ga-6.png[role=drawing, title="An example of a fitness function that quantifies carrots by their taproot's color and radius"]
+image::/resources/learning-to-fly-pt1/ga-6.svg[role=drawing, title="An example of a fitness function that quantifies carrots by their taproot's color and radius"]
 
 Creating a https://www.youtube.com/watch?v=7J-DfS52bnI[usable] fitness function is one of the hardest tasks when it
 comes to genetic algorithms, as usually there are many metrics by which an individual can be measured.
@@ -533,13 +547,13 @@ It's the mathematical equivalent of choosing the tastiest carrots and planting t
 What happens is that the genetic algorithm chooses _two_ individuals at random (prioritizing the ones with the higher
 fitness scores) and uses them to produce two _new_ individuals (a so-called *offspring*):
 
-image::/resources/learning-to-fly-pt1/ga-7.png[role=drawing]
+image::/resources/learning-to-fly-pt1/ga-7.svg[role=drawing]
 
 Offspring is produced by taking genomes of both parents and performing
 https://en.wikipedia.org/wiki/Chromosomal_crossover[*crossover*] & https://en.wikipedia.org/wiki/Mutation[*mutation*] on
 them:
 
-image::/resources/learning-to-fly-pt1/ga-8.png[role=drawing]
+image::/resources/learning-to-fly-pt1/ga-8.svg[role="drawing w-70"]
 
 [NOTE]
 ====
@@ -576,12 +590,12 @@ In the second part we'll implement a working, bare-bones feed-forward neural net
 
 Here are some of the sources that I've personally found useful while learning about topics presented in this article:
 
-*Neural networks*:
+=== Neural networks
 
 - https://www.youtube.com/watch?v=aircAruvnKk[YouTube, *3Blue1Brown* - But what is a Neural Network?]
 - https://www.youtube.com/watch?v=rA5qnZUXcqo[YouTube, *Vsauce* - The Stilwell Brain]
 
-*Genetic algorithms*:
+=== Genetic algorithms
 
 - https://www.youtube.com/watch?v=7J-DfS52bnI[YouTube, *Jeremy Fisher* - Genetic Algorithms]
 - https://www.obitko.com/tutorials/genetic-algorithms/index.php[*obitko.com* - Genetic Algorithms Tutorial]

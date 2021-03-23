@@ -1,19 +1,13 @@
-<nav class="top-nav">
-    <div class="nav-links">
+<nav>
+    <ul>
         {{- $currentPage := . -}}
 
         {{ range .Site.Menus.main -}}
-            <a class="nav-link" href="{{ .URL | relLangURL }}">
-                {{ .Name }}
-            </a>
+            <li>
+                <a href="{{ .URL | relLangURL }}">
+                    {{ .Name }}
+                </a>
+            </li>
         {{- end }}
-
-        <a class="nav-link nav-link-secondary" href="https://github.com/Patryk27">
-            GitHub
-        </a>
-
-        <a class="nav-link nav-link-secondary" href="https://keybase.io/patryk27">
-            Keybase
-        </a>
-     </div>
+     </ul>
 </nav>

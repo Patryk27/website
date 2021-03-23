@@ -1,18 +1,30 @@
 ---
-title: "Learning to Fly: Let's create a simulation in Rust! (pt 2)"
+title:
+  "Learning to Fly: Let's simulate evolution in Rust! (pt 2)"
+
+series:
+  "learning-to-fly"
+
+subtitle:
+  "The Neural Network"
+
 tags:
   - genetic-algorithm
   - neural-network
   - rust
   - webassembly
-series: learning-to-fly
-published: 2021-02-01
+
+summary: >
+  This is second part of the *Learning to Fly* series in which we're coding a simulation of evolution using *neural network* and *genetic algorithm*.
+
+published:
+  "2021-02-01"
 ---
 
 :abbr-loc: pass:[<abbr title="lines of code">LOC</abbr>]
 :abbr-no-op: pass:[<abbr title="no-operation, i.e. doing nothing">no-op</abbr>]
 
-This is second part of the `Learning to Fly` series in which we're coding a simulation of evolution using *neural network* & *genetic algorithm*:
+This is second part of the *Learning to Fly* series in which we're coding a simulation of evolution using *neural network* and *genetic algorithm*:
 
 image::/resources/learning-to-fly-pt1/intro-outcome.png[width=100%, title="https://pwy.io/en/projects/shorelark/", link="https://pwy.io/en/projects/shorelark/"]
 
@@ -188,7 +200,7 @@ pub struct Network;
 
 A neural network's most crucial operation is propagating numbers:
 
-image::/resources/learning-to-fly-pt2/coding-propagate-1.png[role=drawing]
+image::/resources/learning-to-fly-pt2/coding-propagate-1.svg[role="drawing w-70"]
 
 \... so:
 
@@ -275,7 +287,7 @@ thread 'main' panicked at 'not yet implemented'
 
 Similarly to an ocean filled with water droplets, a network is built from layers:
 
-image::/resources/learning-to-fly-pt2/coding-propagate-2.png[role=drawing]
+image::/resources/learning-to-fly-pt2/coding-propagate-2.svg[role="drawing w-70"]
 
 \... so:
 
@@ -290,7 +302,7 @@ struct Layer;
 
 Layers are built from neurons:
 
-image::/resources/learning-to-fly-pt2/coding-propagate-3.png[role=drawing]
+image::/resources/learning-to-fly-pt2/coding-propagate-3.svg[role=drawing]
 
 \... giving us:
 
@@ -303,7 +315,7 @@ struct Layer {
 
 Eventually, neurons contain biases and *output* weights:
 
-image::/resources/learning-to-fly-pt2/coding-propagate-4.png[role=drawing, width=50%]
+image::/resources/learning-to-fly-pt2/coding-propagate-4.svg[role="drawing w-50"]
 
 \... so:
 
@@ -377,7 +389,7 @@ impl Network {
 
 This is quite a satisfying, correct piece of code - but it's also *non-idiomatic*: we can write it better, more *rustic*; let's see how!
 
-image::/resources/learning-to-fly-pt2/coding-propagate-5.png[role=drawing, title="Ecstasy of Saint Ferris (upon seeing idiomatic code), colorized"]
+image::/resources/learning-to-fly-pt2/coding-propagate-5.svg[role=drawing, title="Ecstasy of Saint Ferris (upon seeing idiomatic code), colorized"]
 
 First of all, this is called a *rebinding* (or _shadowing_):
 
@@ -942,7 +954,7 @@ pub fn random(layers: Vec<LayerTopology>) -> Self {
 
 Now, if you look real close at a neural network's layer:
 
-image::/resources/learning-to-fly-pt2/coding-new-1.png[role=drawing, width=33%]
+image::/resources/learning-to-fly-pt2/coding-new-1.svg[role="drawing w-30"]
 
 \... perhaps you'll notice that it's actually defined by *two* numbers: its _input_ and _output_ size; does it mean our single-field `LayerTopology` is wrong? Au contraire!
 
@@ -950,7 +962,7 @@ What we've done is, as I like to call it, *exploiting domain knowledge*.
 
 Inside a FFNN, all layers are connected consecutively, back-to-back:
 
-image::/resources/learning-to-fly-pt2/coding-new-2.png[role=drawing]
+image::/resources/learning-to-fly-pt2/coding-new-2.svg[role=drawing]
 
 \... because layer A's output is layer B's input, *if* we went with:
 
@@ -1451,14 +1463,13 @@ fn do_something<W: Write>(stdout: W) -> W {
 ----
 ====
 
-Because the `rand` crate doesn't provide a predictable or seedable PRNG, we have to make use of another crate - I like `rand_chacha` (easy to remember, you probably already memorized it):
+Because the `rand` crate doesn't provide a predictable or seedable PRNG, we have to make use of another crate - I like `rand_chacha` (easy to remember, you've probably already memorized it):
 
 [source, toml]
 ----
 # ...
 
-[dependencies]
-rand = "0.8"
+[dev-dependencies]
 rand_chacha = "0.3"
 ----
 
@@ -1466,6 +1477,9 @@ rand_chacha = "0.3"
 
 [source, rust]
 ----
+use rand::SeedableRng;
+use rand_chacha::ChaCha8Rng;
+
 #[test]
 fn test() {
     // Because we always use the same seed, our `rng` in here will

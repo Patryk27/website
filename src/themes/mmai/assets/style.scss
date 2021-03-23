@@ -1,16 +1,22 @@
-$body-bg: darken(#2f3144, 5%);
-$body-fg: #f8f8f8;
-$body-font: 'Source Sans Pro';
+$body-bg: darken(#283149, 5%);
+$body-fg: #f0f0f0;
+$body-fg-natural: #ffffff;
+$body-fg-secondary: #808080;
+$body-font: 'PT Sans';
 $body-width: 750px;
-$code-font: 'Fira Mono';
-$header-font: 'Open Sans';
-$kbd-bg: lighten($body-bg, 20%);
-$kbd-fg: #ffffff;
-$code-bg: darken($kbd-bg, 25%);
-$para-indent: 1.5em;
-$border-fg: #050505;
+
+$hr-fg: lighten($body-bg, 30%);
 $border-radius: 4px;
+
+$header-font: 'DM Serif Display';
+$para-indent: 1.5em;
+$link-underline: #c86b85;
+
+$code-font: 'Fira Mono';
+$code-bg: darken($body-bg, 5%);
+$kbd-bg: lighten($body-bg, 20%);
+$kbd-fg: $body-fg;
 
 @import 'style/vendor';
 @import 'style/layout';
-@import 'style/formatting';
+@import 'style/text';

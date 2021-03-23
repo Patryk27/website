@@ -1,3 +1,8 @@
+aside {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -5,56 +10,109 @@ body {
   color: $body-fg;
   font-family: $body-font, serif;
   font-weight: 400;
-  font-size: 19px;
+  font-size: 18px;
 }
 
 footer {
-  border-top: 1px solid $border-fg;
+  @extend hr;
   margin-top: 1.5em;
   padding-top: 1.5em;
+  text-align: right;
 
   @media only screen and (min-width: 992px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+  }
+}
+
+nav {
+  display: flex;
+  margin-bottom: 1.5em;
+
+  @media only screen and (min-width: 992px) {
+    margin-bottom: 2em;
   }
 
-  img {
-    height: 26px;
-    padding-right: 1px;
-    vertical-align: middle;
-
-    // To prevent link's hover from bleeding into the icon
-    background-color: $body-bg;
+  ul {
+    margin: 0;
+    padding: 0;
   }
 
-  .footer-item {
-    opacity: 0.65;
-    text-align: right;
-    padding: 0.65em 0;
+  li {
+    display: inline-block;
+    text-align: center;
 
-    @media only screen and (min-width: 992px) {
-      text-align: center;
-      padding: 0;
-
-      &:first-child {
-        text-align: left;
-      }
-
-      &:last-child {
-        text-align: right;
+    &:not(:last-child) {
+      &::after {
+        content: '.';
+        position: relative;
+        top: -0.25em;
       }
     }
+  }
 
-    &:hover {
-      opacity: 1.0;
+  a {
+    display: inline-block;
+    min-width: 40px;
+    padding: 0.5em 1em;
+    margin: 0 0.1em;
+
+    @media only screen and (min-width: 992px) {
+      width: 80px;
+      margin: 0 0.2em;
     }
   }
 }
 
-#breadcrumb {
-  margin-bottom: 3rem;
-  font-size: 2em;
-  text-align: center;
+.post-meta {
+  color: $body-fg-secondary;
+  padding-bottom: 1em;
+
+  .meta-time {
+    display: inline-block;
+    margin-top: 0.25em;
+
+    @media only screen and (min-width: 992px) {
+      margin-top: 0;
+    }
+  }
+
+  .meta-tags {
+    @media only screen and (min-width: 992px) {
+      display: inline-block;
+      padding-left: 0.7em;
+      margin-left: 0.5em;
+      border-left: 1px solid $body-fg-secondary;
+    }
+
+    .meta-tag {
+      white-space: nowrap;
+      border: none;
+      color: $body-fg-secondary;
+
+      &:not(:last-child) {
+        margin-right: 0.4em;
+      }
+
+      &:hover {
+        color: $body-fg-natural;
+      }
+
+      &::before {
+        content: '#';
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+}
+
+.posts {
+  .post {
+    &:not(:last-child) {
+      margin-bottom: 1.5em;
+      padding-bottom: 1.5em;
+    }
+  }
 }
 
 #container {
@@ -67,202 +125,96 @@ footer {
   }
 }
 
-#home {
-  text-align: center;
+main#home {
+  .home-section {
+    &:not(:last-child) {
+      border-bottom: 2px dotted $hr-fg;
+    }
 
-  p {
-    margin: 0.8em 0;
-    padding: 0;
-
-    &:first-child {
-      margin-top: 0;
+    ul {
+      margin-top: 0.5em;
     }
   }
 }
 
-#home-translations {
-  border-top: 1px solid $border-fg;
-  margin-top: 1.5em;
-  padding-top: 1.5em;
-
-  ul {
-    margin: 0;
-    padding: 0;
+main#post {
+  .post-meta {
+    margin-top: 0.2em;
+    border-bottom: 2px dotted $hr-fg;
   }
 
-  li {
-    list-style-type: none;
-    padding-bottom: 0.5em;
+  .post-series, .post-translations {
+    border-bottom: 2px dotted $hr-fg;
+    padding: 1.2em;
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    ol, ul {
+      margin-top: 0.5em;
+      margin-bottom: 0;
+      padding-inline-start: 0;
+    }
+
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      // Required for the li's dot to be visible
+      list-style-position: inside;
+
+      // Required for the .a's border to be visible
+      padding-bottom: 2px;
+    }
   }
 }
 
-.post-content {
-  text-align: justify;
+main#posts {
+  .post {
+    margin-bottom: 1.5em;
 
-  h2 {
-    @media only screen and (min-width: 992px) {
-      margin-left: -1em;
-    }
-
-    &::before {
-      content: '# ';
+    &:not(:last-child) {
+      padding-bottom: 1.5em;
+      border-bottom: 2px dotted $hr-fg;
     }
   }
 
-  .sect1 {
-    &:last-child {
-      .sectionbody {
-        .paragraph {
-          &:last-child {
-            p {
-              margin-bottom: 0;
-            }
-          }
+  .post-meta {
+    margin-top: 0.2em;
+  }
+
+  .post-summary {
+    .paragraph {
+      br {
+        display: block;
+        margin: 0.3em 0;
+      }
+
+      p {
+        margin: 0.3em 0;
+        line-height: 1.2;
+      }
+
+      &:first-child {
+        p {
+          margin-top: 0;
+        }
+      }
+
+      &:last-child {
+        p {
+          margin-bottom: 0;
         }
       }
     }
   }
 }
 
-.post-header {
-  text-align: center;
-  margin-bottom: 1.5em;
-
-  @media only screen and (min-width: 992px) {
-    margin: 0 0 2em -100px;
-    width: ($body-width + 2 * 100px);
-  }
-
-  .post-title {
-    text-align: center;
-  }
-}
-
-.post-meta {
-  margin-top: 0.5em;
-  opacity: 0.4;
-
-  &:hover {
-    opacity: 1.0;
-  }
-
-  .meta-tags {
-    .meta-tag {
-      white-space: nowrap;
-
-      &:not(:last-child) {
-        margin-right: 0.4em;
-      }
-
-      &::before {
-        content: '#';
-        position: relative;
-        left: 1px;
-      }
-    }
-
-    @media only screen and (min-width: 992px) {
-      display: inline-block;
-      padding-right: 0.7em;
-      margin-right: 0.5em;
-      border-right: 1px solid #ffffff;
-    }
-  }
-
-  .meta-time {
-    display: inline-block;
-    margin-top: 0.25em;
-
-    @media only screen and (min-width: 992px) {
-      margin-top: 0;
-    }
-  }
-}
-
-.post-series, .post-translations {
-  border-top: 1px solid $border-fg;
-  border-bottom: 1px solid $border-fg;
-  padding: 1.2em;
-
-  p {
-    margin: 0;
-    padding: 0;
-  }
-
-  ul {
-    margin-top: 0.5em;
-    margin-bottom: 0;
-    padding-inline-start: 0;
-  }
-
-  li {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    // Required for the li's dot to be visible
-    list-style-position: inside;
-
-    // Required for the .a's border to be visible
-    padding-bottom: 2px;
-  }
-}
-
-.posts {
-  .post {
-    &:not(:last-child) {
-      margin-bottom: 1.5em;
-      padding-bottom: 1.5em;
-      border-bottom: 1px solid $border-fg;
-    }
-
-    .toc {
-      display: none;
-    }
-  }
-}
-
-.tags {
-  text-align: center;
-
-  .tag-title {
-    display: inline-block;
-    margin-bottom: 0.25em;
-
-    &:before {
-      content: '#';
-    }
-  }
-}
-
-.top-nav {
-  margin-bottom: 1.5em;
-  font-size: 1em;
-
-  a {
-    color: $body-fg;
-  }
-
-  .nav-links {
-    display: flex;
-  }
-
-  .nav-link {
-    flex-grow: 1;
-    padding: 0.5em 1em;
-    margin: 0 0.2em;
-    text-align: center;
-  }
-
-  .nav-link-secondary {
-    display: none;
-  }
-
-  @media only screen and (min-width: 992px) {
-    margin-bottom: 2em;
-
-    .nav-link-secondary {
-      display: block;
-    }
+main#tags {
+  .tags {
+    margin-top: 0;
   }
 }
