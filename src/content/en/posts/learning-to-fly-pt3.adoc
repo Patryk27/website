@@ -2560,7 +2560,7 @@ let expected_population = vec![
 
 _As the clandestine averages begin to caress my neurons, a juggernaut shout leaves my throat: it works! it works! our genetic algorithm *is* the apex predator of computer science!_
 
-image::/resources/learning-to-fly-pt3/the-test-1.svg[role=drawing]
+image::/resources/learning-to-fly-pt3/the-test-1.svg[role=drawing, title="https://knowyourmeme.com/memes/stonks[stonks]"]
 
 For real tho - we've got higher fitness scores, which means that our individuals _did_ get better and everything works as intended:
 
