@@ -44,7 +44,7 @@ baseURL = "https://pwy.io"
         url = "/tags/"
 
         [[languages.pl.menu.main]]
-        name = "~/prezentacje"
+        name = "~/prezki"
         url = "/talks/"
 
 [taxonomies]

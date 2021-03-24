@@ -1,34 +1,10 @@
-@font-face {
-  font-family: 'Source Sans Pro';
-  font-style: normal;
-  font-weight: 400;
-  src: url('assets/fonts/source-sans-pro--normal--400.woff2') format('woff2'),
-       url('assets/fonts/source-sans-pro--normal--400.woff') format('woff');
-}
+$fonts-url:
+  'https://fonts.googleapis.com/css2?'
+  + 'family=PT+Sans:ital,wght@0,400;0,700;1,400&'
+  + 'family=DM+Serif+Display&'
+  + 'display=swap';
 
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
-  src: url('assets/fonts/open-sans--normal--700.woff2') format('woff2'),
-       url('assets/fonts/open-sans--normal--700.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Source Sans Pro';
-  font-style: italic;
-  font-weight: 400;
-  src: url('assets/fonts/source-sans-pro--italic--400.woff2') format('woff2'),
-       url('assets/fonts/source-sans-pro--italic--400.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Source Sans Pro';
-  font-style: normal;
-  font-weight: 700;
-  src: url('assets/fonts/source-sans-pro--normal--700.woff2') format('woff2'),
-       url('assets/fonts/source-sans-pro--normal-   -700.woff') format('woff');
-}
+@import url($fonts-url);
 
 @font-face {
   font-family: 'Fira Mono';

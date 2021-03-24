@@ -3,19 +3,19 @@
 {{ end }}
 
 {{ define "body" }}
-    <aside id="breadcrumb">
+    <aside>
         ~/tags
     </aside>
 
-    <main class="tags">
-        {{ range .Pages }}
-            <div class="tag">
-                <h2 class="tag-title">
+    <main id="tags">
+        <ul class="tags">
+            {{ range .Pages }}
+                <li>
                     <a href="{{ .Permalink | relURL }}">
                         {{ .Title }}
                     </a>
-                </h2>
-            </div>
-        {{ end }}
+                </li>
+            {{ end }}
+        </ul>
     </main>
 {{ end }}

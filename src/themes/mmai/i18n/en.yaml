@@ -1,8 +1,5 @@
-- id: footer.translations.scroll-top
+- id: footer.scroll-to-top
   translation: "scroll to top"
-
-- id: home.translations.header
-  translation: "This site is available in the following languages:"
 
 - id: language.en.flag
   translation: "🇬🇧"
@@ -11,7 +8,7 @@
   translation: "🇵🇱"
 
 - id: post.series.header
-  translation: "Other posts in this series:"
+  translation: "This post is part of the <b>%s</b> series:"
 
 - id: post.translations.header
   translation: "This post is also available in the following languages:"

@@ -1,10 +1,18 @@
 ---
-title: "Imitowanie specjalizacji w oparciu o OIBITy"
-tags: [ "rust", "sztuczki" ]
-published: 2020-10-25
+title:
+  "Imitowanie specjalizacji w oparciu o OIBITy"
+
+tags:
+  - rust
+  - sztuczki
+
+published:
+  "2020-10-25"
 ---
 
 Dlaczego poniższy kod się kompiluje?
+
+<!--more-->
 
 [source, rust]
 ----
@@ -287,6 +295,7 @@ struct Zar {
 }
 ----
 
+[.text-attached]
 _(jak zwykle, wszystko zostało spisane
 https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md[w odpowiednim RFC].)_
 
@@ -644,5 +653,5 @@ mod vec {
 }
 ----
 
-[.text-center]
+[.text-attached]
 (https://play.rust-lang.org/?version=nightly&mode=debug&edition=2018&gist=60136ee1a7052233e527a368d75d6482[link do playgroundu])

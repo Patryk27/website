@@ -1,11 +1,21 @@
 ---
-title: "Graphviz in the service of Factorio (1/2)"
-tags: [ "dot", "factorio", "graph", "graphviz" ]
-published: 2020-05-03
+title:
+  "Graphviz in the service of Factorio (pt 1)"
+
+tags:
+  - dot
+  - factorio
+  - graph
+  - graphviz
+
+published:
+  "2020-05-03"
 ---
 
 Graphviz is a software that renders graphs, Factorio is a game in which you build and maintain factories; let's explore
 how both can complement each other.
+
+<!--more--> 
 
 [NOTE]
 ====

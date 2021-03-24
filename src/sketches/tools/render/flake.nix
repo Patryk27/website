@@ -17,7 +17,18 @@
         x86_64-linux = writeShellScriptBin "render" ''
           export PATH="$PATH:${
             lib.strings.makeBinPath [
-              imagemagick
+              (image_optim.override {
+                withPngcrush = false;
+                withPngout = false;
+                withAdvpng = false;
+                withOptipng = false;
+                withPngquant = false;
+                withJhead = false;
+                withJpegoptim = false;
+                withJpegrecompress = false;
+                withJpegtran = false;
+                withGifsicle = false;
+              })
               inkscape
               pdftk
             ]

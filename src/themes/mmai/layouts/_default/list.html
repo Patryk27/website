@@ -9,12 +9,12 @@
 
 {{ define "body" }}
     {{ if .Data.Singular }}
-        <aside id="breadcrumb">
+        <aside>
             ~/{{ .Data.Plural }}/{{ .Data.Term }}
         </aside>
     {{ end }}
 
-    <main class="posts">
+    <main id="posts">
         {{ range .Pages }}
             <article class="post">
                 <h2 class="post-title">
@@ -24,19 +24,13 @@
                 </h2>
 
                 <div class="post-meta">
-                    {{ if .Params.tags }}
-                        <div class="meta-tags">
-                            {{ range .Params.tags }}
-                                <a class="meta-tag" href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">
-                                    {{ . }}
-                                </a>
-                            {{ end }}
-                        </div>
-                    {{ end }}
-
                     <time class="meta-time">
                         {{ .Date.Format $.Site.Params.dateFormat }}
                     </time>
+                </div>
+
+                <div class="post-summary">
+                    {{ .Summary }}
                 </div>
             </article>
         {{ end }}

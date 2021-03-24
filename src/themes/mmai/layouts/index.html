@@ -4,25 +4,6 @@
 
 {{ define "body" }}
     <main id="home">
-        <div id="home-content">
-            {{ .Content }}
-        </div>
-
-        <div id="home-translations">
-            <p>
-                {{ i18n "home.translations.header" }}
-            </p>
-
-            <ul>
-                {{ range $.Site.Home.AllTranslations }}
-                    <li>
-                        <a href="{{ .Permalink }}">
-                            {{ i18n (printf "language.%s.flag" .Lang) }}
-                            {{ .Language.LanguageName }}
-                        </a>
-                    </li>
-                {{ end }}
-            </ul>
-        </div>
+        {{ .Content }}
     </main>
 {{ end }}
