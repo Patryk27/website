@@ -2539,11 +2539,11 @@ let expected_population = vec![
 ];
 ----
 
-Yes... ha ha ha... +++<u>yes</u>+++? ta-da? hey presto - we got... numbers galore?
+Yes... ha ha ha... +++<u>yes</u>+++? ta-da? hey presto - we got... numbers?
 
 What's certain is that we've got _some_ output - but how do we know those four individuals are actually *better* than the four we started with?
 
-Well, since we generally evaluate individuals by fitness scores, why don't we take a look theirs:
+Well, what do you say we look at their fitness scores:
 
 [source, rust]
 ----
