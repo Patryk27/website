@@ -986,8 +986,8 @@ pub fn random(layers: Vec<LayerTopology>) -> Self {
     let mut built_layers = Vec::new();
 
     for i in 0..(layers.len() - 1) {
-        let input_neurons = layers[layer_id].neurons;
-        let output_neurons = layers[layer_id + 1].neurons;
+        let input_neurons = layers[i].neurons;
+        let output_neurons = layers[i + 1].neurons;
 
         built_layers.push(Layer::random(
             input_neurons,
