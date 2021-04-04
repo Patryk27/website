@@ -389,8 +389,15 @@ video {
 
 .sect2 {
   h3 {
-    margin-bottom: -1em;
     border-bottom: 1px solid $hr-fg;
+
+    & + .paragraph {
+      margin-top: -0.75em;
+    }
+
+    & + .ulist {
+      margin-top: 0.75em;
+    }
   }
 
   ul, ol {
