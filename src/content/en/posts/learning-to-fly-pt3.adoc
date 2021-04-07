@@ -1674,7 +1674,7 @@ let parent_a: Chromosome =
         .map(|n| n as f32)
         .collect();
 
-let parent_a: Chromosome =
+let parent_b: Chromosome =
     (1..=100)
         .map(|n| -n as f32)
         .collect();
