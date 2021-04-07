@@ -2294,6 +2294,25 @@ impl AsRef<Chromosome> for TestIndividual {
 ----
 ====
 
+Rather than simply:
+[souce, rust]
+----
+#[cfg(test)]
+impl Individual for TestIndividual {
+    fn create(chromosome: Chromosome) -> Self {
+        TestIndividual::new(chromosome.genes[0])
+    }
+
+    fn fitness(&self) -> f32 {
+        self.fitness
+    }
+
+    fn chromosome(&self) -> &Chromosome {
+        panic!("not supported for TestIndividual")
+    }
+}
+----
+
 Back to the loop:
 
 [source, rust]
