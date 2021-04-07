@@ -217,6 +217,7 @@ pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
             // TODO selection
             // TODO crossover
             // TODO mutation
+            todo!()
         })
         .collect()
 }
@@ -1002,6 +1003,7 @@ where
             // TODO selection
             // TODO crossover
             // TODO mutation
+            todo!()
         })
         .collect()
 }
@@ -1074,6 +1076,7 @@ where
 
             // TODO crossover
             // TODO mutation
+            todo!()
         })
         .collect()
 }
@@ -1105,6 +1108,7 @@ where
 
             // TODO crossover
             // TODO mutation
+            todo!()
         })
         .collect()
 }
@@ -1544,11 +1548,12 @@ impl Individual for TestIndividual {
         // TODO crossover
         // TODO mutation
         // TODO convert `Chromosome` back into `Individual`
+        todo!()
     })
     .collect()
 ----
 
-As for the crossover itself, there are https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples[many] algorithms we could implement - usually it's best to try few of them and see whichever plays best with given problem; for simplicity, we'll go with *uniform crossover*, which can be described with a single drawing:
+As for the crossover itself, there are https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples[many] algorithms we could implement - usually it's best to try a few of them and see whichever plays best with given problem; for simplicity, we'll go with *uniform crossover*, which can be described with a single drawing:
 
 image::/resources/learning-to-fly-pt3/coding-crossover-6.svg[role=drawing]
 
@@ -1834,6 +1839,7 @@ My personal stance is that `Box` is a convenient mechanism whose potential runti
 
         // TODO mutation
         // TODO convert `Chromosome` back into `Individual`
+        todo!()
     })
     .collect()
 ----
@@ -2206,6 +2212,7 @@ where
             self.mutation_method.mutate(rng, &mut child);
 
             // TODO convert `Chromosome` back into `Individual`
+            todo!()
         })
         .collect()
 }
