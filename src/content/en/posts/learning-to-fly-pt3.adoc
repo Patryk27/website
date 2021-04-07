@@ -2253,7 +2253,7 @@ pub trait Individual {
 }
 ----
 
-As usually when it comes to naming, there's no single best answer; we'll continue with `::create()`, because we have to decide on _something_, but keep this example in mind next time you're scratching you head, thinking "how to call this function".
+As usually when it comes to naming, there's no single best answer; we'll continue with `::create()`, because we have to decide on _something_, but keep this example in mind next time you're scratching you head, thinking "What to name this function?".
 
 Just for fun, it's also possible to delegate 2/3 of those methods into *supertraits*:
 
