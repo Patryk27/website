@@ -2227,6 +2227,15 @@ pub trait Individual {
 
     /* ... */
 }
+
+/* ... */
+
+#[cfg(test)]
+impl Individual for TestIndividual {
+    fn create(chromosome: Chromosome) -> Self {
+       todo!()
+    }
+}
 ----
 
 [NOTE]
@@ -2353,14 +2362,17 @@ We'll start by adjusting our `TestIndividual` so that instead of `panic!()`-ing,
 
 Some tests - e.g. the ones for `RouletteWheelSelection` - don't care about genes at all, so we'll get bonus points for inventing a solution that doesn't require modifying those already-working tests.
 
-My proposition is:
+My proposition is to change `TestIndividual` from `struct` to an `enum` with two different variants:
 
 [source, rust]
 ----
 #[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub enum TestIndividual {
+    /// For tests that require access to chromosome
     WithChromosome { chromosome: Chromosome },
+
+    /// For tests that don't require access to chromosome
     WithFitness { fitness: f32 },
 }
 
