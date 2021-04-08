@@ -1570,6 +1570,8 @@ pub trait CrossoverMethod {
 
 [source, rust]
 ----
+use rand::Rng;
+
 #[derive(Clone, Debug)]
 pub struct UniformCrossover;
 
