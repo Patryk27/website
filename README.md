@@ -13,9 +13,7 @@ $ nix build
 ## Running locally
 
 ```shell
-$ nix develop
-$ cd src
-$ HUGO_NUMWORKERMULTIPLIER=1 hugo serve
+$ nix develop -c do-serve
 ```
 
 ## License

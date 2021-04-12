@@ -1,115 +1,79 @@
 {
   inputs = {
+    # TODO upgrading causes Hugo to fail :-((
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
+
+    nixpkgs-master = {
+      url = "github:nixos/nixpkgs";
+    };
+
+    shorelark = {
+      url = "github:patryk27/shorelark";
+    };
+
+    utils = {
+      url = "github:numtide/flake-utils";
+    };
   };
 
-  outputs = { self, nixpkgs }:
-    let
-      pkgs = (import nixpkgs) {
-        system = "x86_64-linux";
-      };
+  outputs = { self, nixpkgs, nixpkgs-master, shorelark, utils }:
+    utils.lib.eachDefaultSystem (system:
+      let
+        inherit (pkgs) stdenv;
 
-      asciidoctor = pkgs.writeShellScriptBin "asciidoctor" ''
-        # Required for `asciidoctor-diagram`
-        export PATH="$PATH:${asciidoctor-graphviz}/bin"
-
-        # Required for `pygments`
-        export PATH="$PATH:${asciidoctor-python}/bin"
-
-        # Other executables that don't have to be in `PATH` (to avoid hitting system limit)
-        asciidoctor="${pkgs.asciidoctor}/bin/asciidoctor"
-        find="${pkgs.findutils}/bin/find"
-
-        # Launch `asciidoctor`
-        HOME=/tmp "$asciidoctor" \
-            -s \
-            --failure-level=WARN \
-            -r asciidoctor-diagram \
-            -a source-highlighter=pygments \
-            -
-
-        code=$?
-
-        # Clean-up trash
-        rm -rf .asciidoctor
-        rm -f diag-*
-
-        exit $code
-      '';
-
-      asciidoctor-graphviz = pkgs.graphviz;
-
-      asciidoctor-python = pkgs.python2.withPackages (
-        ps: with ps; [
-          pygments
-        ]
-      );
-
-      pygments-css = pkgs.writeShellScriptBin "pygments-css" ''
-        PATH="$PATH:${asciidoctor-python}/bin"
-        PATH="$PATH:${pkgs.gnused}/bin"
-
-        pygmentize -f html -S monokai -a .pygments | sed 's/.pygments ./.pygments .tok-/g'
-      '';
-
-      sass = pkgs.writeShellScriptBin "sass" ''
-        sass="${pkgs.sass}/bin/sass"
-
-        HOME=/tmp "$sass" "$@"
-      '';
-
-    in
-    {
-      defaultPackage = {
-        x86_64-linux = pkgs.stdenv.mkDerivation {
-          name = "pwy-io";
-          src = ./src;
-
-          buildInputs = [
-            asciidoctor
-            pkgs.hugo
-            pkgs.rsync
-            sass
-          ];
-
-          phases = [ "buildPhase" ];
-
-          buildPhase = ''
-            set -e
-
-            echo '[+] Copying source files'
-
-            mkdir "$out"
-            mkdir "$out/src"
-
-            rsync -a "$src/" "$out/src/"
-            chmod 777 -R "$out/src"
-
-            echo '[+] Compiling'
-
-            HUGO_NUMWORKERMULTIPLIER=1 hugo -s "$out/src" --gc
-
-            echo '[+] Cleaning up'
-
-            mv "$out/src/public" "$out-tmp"
-            rm -rf "$out"
-            mv "$out-tmp" "$out"
-          '';
+        pkgs = (import nixpkgs) {
+          inherit system;
         };
-      };
 
-      devShell = {
-        x86_64-linux = pkgs.mkShell {
-          buildInputs = [
-            asciidoctor
-            pkgs.hugo
-            pkgs.rsync
-            pygments-css
-            sass
+        pkgs-master = (import nixpkgs-master) {
+          inherit system;
+        };
+
+        website-base = (import ./base/default.nix) {
+          inherit pkgs;
+        };
+
+        website-projects = (import ./projects/default.nix) {
+          inherit system pkgs shorelark;
+        };
+
+        website-sketches = (import ./sketches/default.nix) {
+          inherit pkgs;
+        };
+
+        website = hugoArgs: pkgs.symlinkJoin {
+          name = "website";
+
+          paths = [
+            (website-base.build hugoArgs)
+            website-projects
+            website-sketches
           ];
         };
-      };
-    };
+
+      in
+      {
+        defaultApp = pkgs.writeShellScriptBin "website" ''
+          ${pkgs-master.php80}/bin/php -S localhost:1313 -t ${website "-b http://localhost:1313"}
+        '';
+
+        defaultPackage = website "";
+
+        devShell = pkgs.mkShell {
+          buildInputs = [
+            (pkgs.writeShellScriptBin "do-refresh-pygments-css" ''
+              ${website-base.extraDeps.python}/bin/pygmentize -f html -S monokai -a .pygments |
+                  ${pkgs.gnused}/bin/sed 's/.pygments ./.pygments .tok-/g'
+            '')
+
+            (pkgs.writeShellScriptBin "do-serve" ''
+              cd base
+              clear && HUGO_NUMWORKERMULTIPLIER=1 hugo serve
+            '')
+          ] ++ website-base.deps;
+        };
+      }
+    );
 }
