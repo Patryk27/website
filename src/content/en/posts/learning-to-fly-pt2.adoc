@@ -693,7 +693,7 @@ impl Neuron {
 
 This snippet contains two unidiomatic constructs and one potential bug - let's start with the latter.
 
-Since we're iterating through `self.weights` using length of `inputs`', there are three edge cases we have to consider:
+Since we're iterating through `self.weights` using length from `inputs`, there are three edge cases we have to consider:
 
 . Given `inputs.len() < self.weights.len()`,
 . Given `inputs.len() == self.weights.len()`,
