@@ -1431,7 +1431,7 @@ mod tests {
 +
 [source, rust]
 ----
-#![feature(type_alias_impl_trait)]
+#![feature(min_type_alias_impl_trait)]
 
 /* ... */
 
@@ -1470,7 +1470,7 @@ mod tests {
 
 [NOTE]
 ====
-Our last implementation uses a _nightly_ feature called https://github.com/rust-lang/rust/issues/63063[`type_alias_impl_trait`] - it allows to use `impl Trait` in places such as associated types:
+Our last implementation uses a _nightly_ feature called https://github.com/rust-lang/rust/issues/63063[`min_type_alias_impl_trait`] - it allows to use `impl Trait` in places such as associated types:
 
 [source, rust]
 ----
@@ -1500,7 +1500,7 @@ impl IntoIterator for Chromosome {
 
 \... which isn't always as smooth as that (e.g. combinators such as `.map()` can be tricky).
 
-So yeah, I guess you could call me a `#![feature(type_alias_impl_trait)]`-'s fan #1.
+So yeah, I guess you could call me a `#![feature(min_type_alias_impl_trait)]`-'s fan #1.
 ====
 
 As I said few minutes before:
