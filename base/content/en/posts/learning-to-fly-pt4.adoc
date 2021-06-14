@@ -5907,7 +5907,7 @@ impl Brain {
 [.source-title]
 libs/simulation/src/animal.rs
 
-[source, rust, highlight="6,11-16,18-26,31-40"]
+[source, rust, highlight="6,11-16,18-27,31-40"]
 ----
 /* ... */
 
@@ -6274,7 +6274,7 @@ Ok, now that we can speed-up the evolution, let's get our hands dirty with stati
 [.source-title]
 libs/genetic-algorithm/src/lib.rs
 
-[source, rust, highlight="3-8,12-34,38-"]
+[source, rust, highlight="3-8,18,30-32,38-"]
 ----
 /* ... */
 
@@ -6507,7 +6507,7 @@ If you want to fiddle a bit on your own, there's still a few things to do here, 
 
 You remember all those constants such as `FOV_RANGE`?
 
-They are called *hyperparameters* -- and if instead of keeping them hard-coded, you made them configurable via some `struct Config`, you could then create an application that'd traverse different combinations of those hyperparameters, trying to find the most optimal ones:
+If instead of keeping them hard-coded, you made them configurable via some `struct Config`, you could then create an application that'd traverse different combinations of those parameters, trying to find the most optimal ones:
 
 [source, rust]
 ----
