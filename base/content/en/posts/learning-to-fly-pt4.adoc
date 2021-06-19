@@ -583,18 +583,6 @@ This one converts Rust's `String` into a pair of numbers -- following the JavaSc
 
 Those two numbers are then used by `getStringFromWasm0()` to *recreate* ("deserialize") the string on JavaScript's side -- all without us having to lift a single finger.
 
-Also, just FYI, here:
-
-[.source-title]
-libs/simulation-wasm/pkg/lib_simulation_wasm_bg.js
-
-[source, javascript]
-----
-const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-----
-
-\... it's `-16`, because `r0` & `r1` are 64-bit numbers, so: 2 * 64 / 8 bits per byte = 16 bytes.
-
 Pretty neat!
 
 (to avoid diluting this article -- if you're further interested in WebAssembly's memory model, https://radu-matei.com/blog/practical-guide-to-wasm-memory/[here's] a nice introduction.)
