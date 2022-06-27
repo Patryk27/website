@@ -4,15 +4,39 @@ type: "page"
 layout: "static"
 ---
 
-Source codes for all my talks are available https://github.com/Patryk27/talks[at my GitHub repository].
+Source codes & related materials for all my talks are available https://github.com/Patryk27/talks[at my GitHub repository].
 
-== 2020
+++++
+<div style="margin-top: 0.5em"></div>
+++++
 
-- 🇬🇧 *Can't Hack This*: A hard-headed introduction to Nix
-  | Functional Programming Wrocław, 03.07.2020
-  | https://www.youtube.com/watch?v=LBrWwZOjsQ4[video], https://github.com/Patryk27/talks/blob/master/2020-cant-hack-this/talk.pdf[slides]
-- 🇬🇧 *Scary Acronyms (and Super Creeps)*: A take on OIBITs, HRTBs, and other charming abbreviations
-  | Rust Wrocław, 27.05.2020
-  | https://www.youtube.com/watch?v=6Qi5-VU-kS0[video], https://github.com/Patryk27/talks/blob/master/2020-scary-acronyms/talk.pdf[slides]
-- 🇬🇧 *Fantastic Actors and Where to Find Them*: building a simple async actor system from scratch
-  | https://github.com/Patryk27/talks/blob/master/2020-fantastic-actors/talk.pdf[slides]
+++++
+<style>
+.talks li {
+  margin-bottom: 0.8em;
+}
+</style>
+++++
+
+[.talks]
+- *Microdosing Rust*:+++<br>+++
+  Why & How to Get Started with AVR?+++<br>+++
+  (https://youtube.com/watch?v=3o_lzQMLU5Q[video],
+   link:./2022-microdosing-rust.pdf[slides],
+   https://github.com/Patryk27/talks/tree/master/2022-microdosing-rust/codes[codes];
+   23.06.2022, Rust Wrocław)
+- *Can't Hack This*:+++<br>+++
+  A hard-headed introduction to Nix+++<br>+++
+  (https://www.youtube.com/watch?v=LBrWwZOjsQ4[video],
+   link:./2020-cant-hack-this.pdf[slides];
+   03.07.2020, Functional Programming Wrocław)+++<br>+++
+- *Scary Acronyms (and Super Creeps)*:+++<br>+++
+  A take on OIBITs, HRTBs, and other charming abbreviations+++<br>+++
+  (https://www.youtube.com/watch?v=6Qi5-VU-kS0[video],
+   link:./2020-scary-acronyms.pdf[slides];
+   27.05.2020, Rust Wrocław)
+- *Fantastic Actors and Where to Find Them*:+++<br>+++
+  Building async actor system from scratch+++<br>+++
+  (link:./2020-fantastic-actors.pdf[slides],
+   https://github.com/Patryk27/talks/tree/master/2020-fantastic-actors/codes[codes];
+   27.02.2020, Rust Wrocław)
