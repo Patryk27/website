@@ -118,6 +118,12 @@ main {
 
       .tag {
         margin: 0.15em 0 0.15em;
+        padding: 0.2em 0 0.2em;
+
+        @media only screen and (min-width: 992px) {
+          margin: 0.2em 0 0.2em;
+          padding: 0;
+        }
 
         .post-count {
           color: $body-fg-secondary;
