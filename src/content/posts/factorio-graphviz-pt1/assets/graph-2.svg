@@ -1,0 +1,55 @@
+<svg viewBox="0.00 0.00 430.57 98.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="573px" height="130px">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 94)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-94 426.57,-94 426.57,4 -4,4"></polygon>
+<g id="node1" class="node">
+<title>Patryk</title>
+<ellipse fill="none" stroke="black" cx="39" cy="-45" rx="38.99" ry="18"></ellipse>
+<text text-anchor="middle" x="39" y="-41.3" font-family="Times-Roman" font-size="14.00">Patryk</text>
+</g>
+<g id="node2" class="node">
+<title>Dafne</title>
+<ellipse fill="none" stroke="black" cx="151.69" cy="-45" rx="37.89" ry="18"></ellipse>
+<text text-anchor="middle" x="151.69" y="-41.3" font-family="Times-Roman" font-size="14.00">Dafne</text>
+</g>
+<g id="edge1" class="edge">
+<title>Patryk-&gt;Dafne</title>
+<path fill="none" stroke="black" d="M75.63,-38.65C85.29,-38.24 95.88,-38.15 105.97,-38.36"></path>
+<polygon fill="black" stroke="black" points="106.15,-41.87 116.26,-38.7 106.38,-34.87 106.15,-41.87"></polygon>
+</g>
+<g id="edge2" class="edge">
+<title>Dafne-&gt;Patryk</title>
+<path fill="none" stroke="black" d="M116.26,-51.3C106.57,-51.74 95.88,-51.85 85.65,-51.66"></path>
+<polygon fill="black" stroke="black" points="85.73,-48.16 75.63,-51.35 85.52,-55.15 85.73,-48.16"></polygon>
+</g>
+<g id="node3" class="node">
+<title>Niko</title>
+<ellipse fill="none" stroke="black" cx="263.73" cy="-72" rx="30.59" ry="18"></ellipse>
+<text text-anchor="middle" x="263.73" y="-68.3" font-family="Times-Roman" font-size="14.00">Niko</text>
+</g>
+<g id="edge3" class="edge">
+<title>Dafne-&gt;Niko</title>
+<path fill="none" stroke="black" d="M185.71,-53.1C198.19,-56.17 212.49,-59.67 225.36,-62.83"></path>
+<polygon fill="black" stroke="black" points="224.75,-66.29 235.3,-65.27 226.42,-59.49 224.75,-66.29"></polygon>
+</g>
+<g id="node4" class="node">
+<title>Dulcia</title>
+<ellipse fill="none" stroke="black" cx="263.73" cy="-18" rx="38.19" ry="18"></ellipse>
+<text text-anchor="middle" x="263.73" y="-14.3" font-family="Times-Roman" font-size="14.00">Dulcia</text>
+</g>
+<g id="edge4" class="edge">
+<title>Dafne-&gt;Dulcia</title>
+<path fill="none" stroke="black" d="M185.71,-36.9C196.27,-34.31 208.14,-31.4 219.33,-28.65"></path>
+<polygon fill="black" stroke="black" points="220.48,-31.97 229.36,-26.19 218.81,-25.17 220.48,-31.97"></polygon>
+</g>
+<g id="node5" class="node">
+<title>Charlie</title>
+<ellipse fill="none" stroke="black" cx="380.33" cy="-18" rx="42.49" ry="18"></ellipse>
+<text text-anchor="middle" x="380.33" y="-14.3" font-family="Times-Roman" font-size="14.00">Charlie</text>
+</g>
+<g id="edge5" class="edge">
+<title>Dulcia-&gt;Charlie</title>
+<path fill="none" stroke="black" d="M302.25,-18C310.33,-18 319,-18 327.51,-18"></path>
+<polygon fill="black" stroke="black" points="327.76,-21.5 337.76,-18 327.76,-14.5 327.76,-21.5"></polygon>
+</g>
+</g>
+</svg>

@@ -1,8 +1,0 @@
-- id: footer.scroll-to-top
-  translation: "przewiń do góry"
-
-- id: post.series.header
-  translation: "Ten post jest częścią serii <b>%s</b>:"
-
-- id: post.translations.header
-  translation: "Ten post jest dostępny również w innych wersjach językowych:"
