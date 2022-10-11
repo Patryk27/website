@@ -1,7 +1,7 @@
 fw:
 
 let
-  inherit (fw) pkgs;
+  inherit (fw) rev pkgs;
 
   style = pkgs.runCommand "style" { } ''
     ${pkgs.sass}/bin/scss \
@@ -64,7 +64,7 @@ let
 
 in
 pkgs.linkFarm "theme" [
-  { name = "style.css"; path = style; }
-  { name = "pygments.css"; path = pygments; }
+  { name = "style.${rev}.css"; path = style; }
+  { name = "pygments.${rev}.css"; path = pygments; }
   { name = "fonts"; path = fonts; }
 ]

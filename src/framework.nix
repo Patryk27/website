@@ -1,10 +1,10 @@
-{ pkgs, libs, content }:
+{ rev, pkgs, libs, content }:
 
 let
   inherit (fw.pkgs) lib;
 
   fw = {
-    inherit pkgs libs;
+    inherit rev pkgs libs;
 
     content = content // {
       tags =

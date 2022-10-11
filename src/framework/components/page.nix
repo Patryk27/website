@@ -36,8 +36,8 @@ fw.utils.prettifyHtml "page-${title}" ''
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/theme/pygments.css" media="all">
-    <link rel="stylesheet" href="/theme/style.css" media="all">
+    <link rel="stylesheet" href="/theme/pygments.${fw.rev}.css" media="all">
+    <link rel="stylesheet" href="/theme/style.${fw.rev}.css" media="all">
     <link rel="icon" type="image/png" href="/favicon.png"/>
     <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     ${head}

@@ -33,11 +33,12 @@
         defaultPackage = import ./src/framework.nix {
           inherit pkgs;
 
+          rev = self.rev or "dirty";
+          content = import ./src/content.nix pkgs;
+
           libs = {
             inherit crane;
           };
-
-          content = import ./src/content.nix pkgs;
         };
 
         defaultApp =
