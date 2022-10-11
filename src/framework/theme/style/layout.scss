@@ -55,12 +55,15 @@ nav {
     a {
       display: inline-block;
       min-width: 40px;
-      padding: 0.5em 1em;
+      padding: 0.42em 0.65em;
       margin: 0 0.1em;
+      font-size: 0.9em;
 
       @media only screen and (min-width: 992px) {
         width: 80px;
         margin: 0 0.2em;
+        padding: 0.5em 1em;
+        font-size: 1em;
       }
     }
   }
