@@ -1,16 +1,15 @@
 {
   inputs = {
-    # TODO upgrading causes Hugo to fail :-((
+    crane = {
+      url = "github:ipetkov/crane";
+    };
+
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
-    nixpkgs-master = {
-      url = "github:nixos/nixpkgs";
-    };
-
-    shorelark = {
-      url = "github:patryk27/shorelark";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
     };
 
     utils = {
@@ -18,62 +17,63 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-master, shorelark, utils }:
+  outputs = { self, crane, nixpkgs, rust-overlay, utils }:
     utils.lib.eachDefaultSystem (system:
       let
-        inherit (pkgs) stdenv;
-
-        pkgs = (import nixpkgs) {
+        pkgs = import nixpkgs {
           inherit system;
-        };
 
-        pkgs-master = (import nixpkgs-master) {
-          inherit system;
-        };
-
-        website-base = (import ./base/default.nix) {
-          inherit pkgs;
-        };
-
-        website-projects = (import ./projects/default.nix) {
-          inherit system pkgs shorelark;
-        };
-
-        website-sketches = (import ./sketches/default.nix) {
-          inherit pkgs;
-        };
-
-        website = hugoArgs: pkgs.symlinkJoin {
-          name = "website";
-
-          paths = [
-            (website-base.build hugoArgs)
-            website-projects
-            website-sketches
+          overlays = [
+            (import rust-overlay)
           ];
         };
 
       in
-      {
-        defaultApp = pkgs.writeShellScriptBin "website" ''
-          ${pkgs-master.php80}/bin/php -S localhost:1313 -t ${website "-b http://localhost:1313"}
-        '';
+      rec {
+        defaultPackage = import ./src/framework.nix {
+          inherit pkgs;
 
-        defaultPackage = website "";
+          libs = {
+            inherit crane;
+          };
 
-        devShell = pkgs.mkShell {
-          buildInputs = [
-            (pkgs.writeShellScriptBin "do-refresh-pygments-css" ''
-              ${website-base.extraDeps.python}/bin/pygmentize -f html -S monokai -a .pygments |
-                  ${pkgs.gnused}/bin/sed 's/.pygments ./.pygments .tok-/g'
-            '')
-
-            (pkgs.writeShellScriptBin "do-serve" ''
-              cd base
-              clear && HUGO_NUMWORKERMULTIPLIER=1 hugo serve
-            '')
-          ] ++ website-base.deps;
+          content = import ./src/content.nix pkgs;
         };
-      }
-    );
+
+        defaultApp =
+          let
+            app = pkgs.writeText "app.py" ''
+              import http.server
+
+              class Server(http.server.ThreadingHTTPServer):
+                  def finish_request(self, request, client_address):
+                      self.RequestHandlerClass(
+                          request,
+                          client_address,
+                          self,
+                          directory="${defaultPackage}"
+                      )
+
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def end_headers(self):
+                      self.send_my_headers()
+                      http.server.SimpleHTTPRequestHandler.end_headers(self)
+
+                  def send_my_headers(self):
+                      self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                      self.send_header("Pragma", "no-cache")
+                      self.send_header("Expires", "0")
+
+              http.server.test(
+                  ServerClass=Server,
+                  HandlerClass=Handler,
+                  port=1313
+              )
+            '';
+
+          in
+          pkgs.writeShellScriptBin "run-website" ''
+            ${pkgs.python3}/bin/python ${app}
+          '';
+      });
 }

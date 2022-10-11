@@ -1,0 +1,122 @@
+.post-meta {
+  color: $body-fg-secondary;
+  padding-bottom: 1em;
+
+  .post-meta-time {
+    display: inline-block;
+    margin-top: 0.25em;
+
+    @media only screen and (min-width: 992px) {
+      margin-top: 0;
+    }
+  }
+
+  .post-meta-tags {
+    @media only screen and (min-width: 992px) {
+      display: inline-block;
+      padding-left: 0.7em;
+      margin-left: 0.5em;
+      border-left: 1px solid $body-fg-secondary;
+    }
+
+    .post-meta-tag {
+      position: relative;
+      top: -1px;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba($link-underline, 0.5);
+      color: $body-fg-secondary;
+
+      &:not(:last-child) {
+        margin-right: 0.4em;
+      }
+
+      &:hover {
+        color: $body-fg-natural;
+      }
+    }
+  }
+}
+
+.posts {
+  .post {
+    margin-bottom: 1.5em;
+
+    &:not(:last-child) {
+      padding-bottom: 1.5em;
+      border-bottom: 2px dotted $hr-fg;
+    }
+
+    .post-meta {
+      margin-top: 0.2em;
+    }
+
+    .post-summary {
+      p {
+        margin: 0.8em 0;
+        line-height: 1.2;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+.col-graph {
+  @media only screen and (min-width: 992px) {
+    margin-left: -150px;
+    width: ($body-width + 2 * 150px);
+    text-align: center;
+  }
+
+  .cg-expander {
+    margin-bottom: 2em;
+
+    &:checked {
+      ~ .cg-body .cg-code {
+        &[data-state = "collapsed"] {
+          display: none;
+        }
+
+        &[data-state = "expanded"] {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .cg-expander-label {
+    position: relative;
+    top: -2px;
+    user-select: none;
+  }
+
+  .cg-body {
+    display: flex;
+    flex-direction: column;
+
+    @media only screen and (min-width: 992px) {
+      flex-direction: row;
+      justify-content: center;
+      gap: 1em;
+      text-align: left;
+    }
+
+    .cg-code {
+      margin-bottom: $para-indent;
+
+      &[data-state = "expanded"] {
+        display: none;
+      }
+
+      .listing {
+        margin: 0;
+      }
+    }
+  }
+}

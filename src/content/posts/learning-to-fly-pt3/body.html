@@ -1,0 +1,3663 @@
+<p>
+  This is third part of the <b>Learning to Fly</b> series in which we're coding
+  a simulation of evolution using <b>neural network</b> and
+  <b>genetic algorithm</b>:
+</p>
+
+<figure>
+  <a href="https://shorelark.pwy.io">
+    <img src="/posts/learning-to-fly-pt1/assets/intro-outcome.png" />
+  </a>
+
+  <figcaption>
+    <div class="title">
+      <a href="https://shorelark.pwy.io">shorelark.pwy.io</a>
+    </div>
+  </figcaption>
+</figure>
+
+<p>
+  In the previous post, we implemented a rudimentary feed-forward neural network
+  that could propagate numbers through its randomized layers - it was the first
+  milestone in our effors to create a functioning brain.
+</p>
+
+<p>
+  Randomness can get us only so far, though - for the most part, evolution is
+  about making small, incremental <b>changes</b> to the system, so that it gets
+  better over time; so that our brains, from entirely haywire~ish, begin to
+  gather knowledge and function as we expect from them (i.e. just catch the
+  food, birdies!).
+</p>
+
+<p>But how can we <b>train</b> a bunch of <code>Vec&lt;f32&gt;</code>?</p>
+
+<h2 id="plan">
+  <a href="#plan">Plan</a>
+</h2>
+
+<p>
+  Plan for today is straightforward: we'll learn how a genetic algorithm works
+  by implementing one in Rust. We'll examine in-depth how
+  <a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)"
+    >selection</a
+  >,
+  <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)"
+    >crossover</a
+  >, and
+  <a href="https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)"
+    >mutation</a
+  >
+  all play together, allowing for a computer to find complex answers seemingly
+  out of thin air.
+</p>
+
+<p>
+  We'll try to remain <b>generic</b>, meaning that instead of hard-coding a
+  particular selection or crossover algorithm, we'll use
+  <a href="https://doc.rust-lang.org/book/ch10-02-traits.html">traits</a> to
+  create a versatile library that could be even published to
+  <a href="https://crates.io">crates.io</a>!
+</p>
+
+<p>
+  As in the previous part, so today we'll investigate various intricacies of
+  Rust's syntax, focusing a lot on the terminology.
+</p>
+
+<p>
+  Hopefully, by the end of this post you'll be able to say: I could have
+  implemented it on my own!
+</p>
+
+<h2 id="intro">
+  <a href="#intro">Introduction</a>
+</h2>
+
+<p>
+  First, let's recap how does a genetic algorithm work and what's the point of
+  this venture.
+</p>
+
+<p>
+  Our problem is that we've got an object - a neural network - that's defined by
+  a whole lot of <b>parameters</b>. There are so many of them that, even for the
+  smallest of networks, we couldn't possibly brute-force all of their
+  combinations in our lifetime.
+</p>
+
+<aside class="note">
+  <p>
+    As you might remember, all the possible parameters in general are called a
+    <b>search space</b>; so an erudite would say that our problem's search space
+    is <i>huuuuge</i> and then run away.
+  </p>
+</aside>
+
+<p>
+  What we can do is to kinda <i>mimic</i> the nature: if we started with a bunch
+  of random <b>suboptimal</b> solutions, we could try improving them to get -
+  over time - gradually better answers.
+</p>
+
+<p>
+  One of the methods that allows to simulate all this evolutionary machinery is
+  the eponymous <b>genetic algorithm</b>: it starts with a bunch of random
+  solution-<i>candidates</i> (a <b>population</b>), which are then improved
+  using <b>mutation</b> and <b>crossover</b>, utilizing a
+  <b>fitness function</b> to evaluate solutions (<b>individuals</b>) found so
+  far:
+</p>
+
+<figure class="sketch w-80">
+  <img src="{{ assets }}/sketches/intro-1.svg" />
+
+  <figcaption>
+    <div class="title">
+      Overview of the genetic algorithm; starting from top and and going
+      clockwise: (1) estimating current solutions with a fitness function, (2)
+      performing crossover and mutation, (3) starting the entire proces over on
+      the new, improved population
+    </div>
+  </figcaption>
+</figure>
+
+<aside class="note">
+  <p>
+    Because genetic algorithm involves working on random numbers, it's an
+    example of a
+    <a href="https://en.wikipedia.org/wiki/Randomized_algorithm"
+      >probabilistic method</a
+    >.
+  </p>
+
+  <p>
+    Probabilistic algorithms trade <b>accuracy</b> for <b>performance</b> - they
+    don't always return the best answers, but usually get
+    <i>Pretty Close Pretty Cheaply ®</i>.
+  </p>
+</aside>
+
+<p>
+  Vegetable manufacturers don't want you to know this, but there exists a
+  straightforward procedure to becoming a carrot tycoon that's actually based on
+  a genetic algorithm:
+</p>
+
+<listing lang="text">
+  <!--
+    10  go to your garden
+    20  sow a few random carrots
+    30  wait for those carrots to sprout
+    40  choose the best carrot-children and sow them
+    50  goto 30
+    
+    in this world:
+    - population = carrots
+    - individual = carrot
+    - mutation & crossover = happen automatically (free labor!)
+    - fitness function = your eyes & brain
+  -->
+</listing>
+
+<p>
+  By now, most of those words ought to sound familiar to you - we've already
+  gone through the basics of evolutionary computation in the first article; by
+  the end of <i>this</i> article, you'll have answered questions such as:
+</p>
+
+<ul>
+  <li>
+    <p>
+      but how do you <b>choose</b> the individuals? there must be like a
+      thousand ways to do it! <br />
+      <i>(psst: oh my yes, there are)</i>
+    </p>
+  </li>
+  <li>
+    <p>
+      but how do you <b>represent</b> their genomes? there must be like a
+      thousand ways to do it! <br />
+      <i>(psst: oh my yes, there are)</i>
+    </p>
+  </li>
+  <li>
+    <p>
+      but how do you <b>implement</b> it in Rust? you promised it'll work inside
+      a web browser! <br />
+      <i>(psst: oh my yes, it will)</i>
+    </p>
+  </li>
+</ul>
+
+<h2 id="coding-outline">
+  <a href="#coding-outline">Coding: Outline</a>
+</h2>
+
+<p>We'll start by creating a second crate inside our workspace:</p>
+
+<listing lang="shell">
+  <!--
+    $ cd shorelark/libs
+    $ cargo new genetic-algorithm --lib
+  -->
+</listing>
+
+<p>
+  Oh, that's some nice <code>genetic-algorithm/src/lib.rs</code> Cargo created
+  for us in there - let's replace it with a just as good entry point:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub struct GeneticAlgorithm;
+    
+    impl GeneticAlgorithm {
+        pub fn new() -> Self {
+            Self
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Our genetic algorithm, as all
+  <a
+    href="https://exceptionnotfound.net/god-objects-the-daily-software-anti-pattern/"
+    >good objects</a
+  >
+  do, will provide only one functionality - sometimes it's called
+  <code>iterate</code>, sometimes it's called <code>step</code> or
+  <code>process</code>; I've tossed a coin and decided on:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl GeneticAlgorithm {
+        /* ... */
+    
+        pub fn evolve(&self) {
+            todo!()
+        }
+    }
+  -->
+</listing>
+
+<p>What are we evolving? A population, of course!</p>
+
+<listing lang="rust">
+  <!--
+    impl GeneticAlgorithm {
+        pub fn evolve(&self, population: &[???]) -> Vec<???> {
+            todo!()
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Our actual problem will depend on neural networks, but since we want for this
+  library to be generic, we can't force it to accept a hard-coded
+  <code>NeuralNetwork</code> - instead, we can introduce a
+  <b>type parameter</b>:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl GeneticAlgorithm {
+        pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
+            todo!()
+        }
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p><code>I</code> stands for <b>individual</b>.</p>
+
+  <p>As for the Rust's terminology:</p>
+
+  <listing lang="rust">
+    <!--
+      // visibility  generics   _ function parameters
+      // |          _|     ____|  (or just "parameters")
+      // |         |      |
+      // v-v       v-----vv----------v
+         pub fn foo<'a, T>(bar: &'a T) { /* ... */ }
+      //            ^^  ^  ^--------^
+      //            |   |  |
+      //            |   |  function parameter
+      //            |   |  (or just "parameter")
+      //            |   type parameter
+      //            lifetime parameter
+    -->
+  </listing>
+
+  <p class="text-attached">
+    <i
+      >(<a
+        href="https://doc.rust-lang.org/reference/items/functions.html"
+       
+        >https://doc.rust-lang.org/reference/items/functions.html</a
+      >)</i
+    >
+  </p>
+
+  <p>If you wanted to read this signature aloud, you'd say:</p>
+
+  <p>
+    <i
+      >public function <code>foo</code> is <b>generic over</b> lifetime
+      <code>a</code> and type <code>T</code>, and it <b>accepts</b> a single
+      parameter named <code>bar</code> that is a reference to <code>T</code>.</i
+    >
+  </p>
+
+  <p>
+    That was function's <b>definition</b> - on the other hand, the place where
+    you <b>invoke</b> a function is named <b>call site</b> and the values you
+    specify there are called <b>arguments</b>:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      // v-----------------------v call site
+         foo::<'static, f32>(&1.0);
+      //       ^-----^  ^-^  ^--^
+      //       |        |    |
+      //       |        |    function argument
+      //       |        |    (or just "argument")
+      //       |        type argument
+      //       lifetime argument
+    -->
+  </listing>
+
+  <p>
+    Most of this vernacular (e.g. the difference between <i>argument</i> and
+    <i>parameter</i>) is universal across all the programming languages, so it's
+    worth remembering.
+  </p>
+</aside>
+
+<p>Learning from past mistakes, let's not forget about <b>preconditions</b>:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
+        assert!(!population.is_empty());
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>As for the algorithm itself - the outline is:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
+        /* ... */
+    
+        (0..population.len())
+            .map(|_| {
+                // TODO selection
+                // TODO crossover
+                // TODO mutation
+                todo!()
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<h2 id="coding-selection">
+  <a href="#coding-selection">Coding: Selection</a>
+</h2>
+
+<p>
+  At this point, inside the loop, we have to pick two individuals - they will
+  become parents and "create" us a digital offspring.
+</p>
+
+<p class="text-dim">
+  <i
+    >(imagining that chip made of sand can create "offspring" hits my
+    <a href="https://en.wikipedia.org/wiki/Uncanny_valley">uncanny valley</a>
+    right in the feels.)</i
+  >
+</p>
+
+<p>
+  Choosing individuals is called the
+  <a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)"
+    >selection stage</a
+  >
+  of a genetic algorithm, and it should satisfy following two properties:
+</p>
+
+<ul>
+  <li>
+    <p>each individual should have a <b>non-zero</b> chance of being picked,</p>
+  </li>
+  <li>
+    <p>
+      an individual with a higher fitness score should get picked, on average,
+      <b>more often</b> than an individual with a lower fitness score.
+    </p>
+  </li>
+</ul>
+
+<p>
+  Because we'll have to know fitness scores, let's start off by thinking how we
+  want users to specify their <b>fitness function</b>; as trivial as it sounds,
+  there are at least two <i>exceptive</i> approaches we can apply:
+</p>
+
+<ol>
+  <li>
+    <p>Fitness function as a <i>parameter</i>:</p>
+
+    <listing lang="rust">
+      <!--
+        pub fn evolve<I>(
+            &self,
+            population: &[I],
+            evaluate_fitness: &dyn Fn(&I) -> f32,
+        ) -> Vec<I> {
+            /* ... */
+        }
+      -->
+    </listing>
+  </li>
+  <li>
+    <p>Fitness score as a <i>property</i> of an individual:</p>
+
+    <listing lang="rust">
+      <!--
+        pub trait Individual {
+            fn fitness(&self) -> f32;
+        }
+        
+        pub fn evolve<I>(&self, population: &[I]) -> Vec<I>
+        where
+            I: Individual,
+        {
+            /* ... */
+        }
+      -->
+    </listing>
+  </li>
+</ol>
+
+<p>First approach:</p>
+
+<ul>
+  <li>
+    <p>
+      ✅ allows to provide many different fitness functions for one kind of an
+      individual, which <i>might</i> prove to be useful for somebody (not us,
+      though),
+    </p>
+  </li>
+  <li>
+    <p>
+      ❌ requires specifying fitness function for each invocation of
+      <code>.evolve()</code>, which feels a bit shoehorned.
+    </p>
+  </li>
+</ul>
+
+<p>Second approach:</p>
+
+<ul>
+  <li>
+    <p>
+      ✅ allows to <b>encapsulate</b> all the individual-oriented attributes
+      into a single trait, making it easy for users to discover what they need
+      to provide,
+    </p>
+  </li>
+  <li>
+    <p>
+      ❌ specifying different fitness functions is possible, but a bit more
+      tricky (can you figure out how and why?).
+    </p>
+  </li>
+</ul>
+
+<p>
+  My guts vote 133:7 for introducing a trait (a trait that, as you'll see later,
+  we would need anyway), so a trait it is.
+</p>
+
+<p>
+  As for the selection method, we'll use an algorithm called
+  <a
+    href="https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm"
+    >fitness proportionate selection</a
+  >
+  (also known as <b>roulette wheel selection</b>), as it's easy to reason about;
+  to understand how it works, let's imagine we have following three individuals:
+</p>
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 20%" />
+    <col style="width: 20%" />
+    <col style="width: 60%" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Individual</th>
+      <th class="tableblock halign-left valign-top">Fitness score</th>
+      <th class="tableblock halign-left valign-top">Fitness score %</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">A</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">3</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          <code>3 / (1 + 2 + 3)</code> = <code>3 / 6</code> = <code>50%</code>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">B</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">2</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          <code>2 / (1 + 2 + 3)</code> = <code>2 / 6</code> = <code>33%</code>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">C</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          <code>1 / (1 + 2 + 3)</code> = <code>1 / 6</code> = <code>16%</code>
+        </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  If we placed them all on a roulette wheel - or a pie chart, for all it matters
+  - with each individual getting a slice of wheel as large as proportion of
+  their fitness score to the rest:
+</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-selection-1.svg" />
+
+  <figcaption>
+    <div class="title">
+      A pie chart - or a roulette wheel, if you squeeze your eyes enough -
+      illustrating individuals from the table above
+    </div>
+  </figcaption>
+</figure>
+
+<p>
+  ... randomizing an individual would boil down to "spinning" the wheel with
+  random force and seeing what came up:
+</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-selection-2.svg" />
+</figure>
+
+<aside class="note">
+  <p>
+    In practice, fitness proportionate selection is rather frowned upon - it's
+    because it allows for the best individuals to <b>dominate</b> the
+    simulation.
+  </p>
+
+  <p>
+    Say, your genetic algorithm finds a solution that's exponentially better
+    than the rest:
+  </p>
+
+  <figure class="sketch w-50">
+    <img src="{{ assets }}/sketches/coding-selection-3.svg" />
+  </figure>
+
+  <p>
+    ... when it happens, fitness proportionate selection will happily choose
+    this green solution 99% of the time, making rest of the individuals an army
+    of copy-pasted, green clones.
+  </p>
+
+  <p>You might think:</p>
+
+  <blockquote>
+    <p>isn't finding the best solution, like, the whole point?</p>
+  </blockquote>
+
+  <p>
+    ... it is; but it's important to remember that solutions found by genetic
+    algorithm are always best <b>to date</b> - if you discard a
+    <i>seemingly</i> unpromising candidate too early, you will never know
+    whether tuning some parameter wouldn't make it an even better solution
+    <i>in the long run</i>.
+  </p>
+
+  <p>To put it another way:</p>
+
+  <blockquote>
+    <p>
+      the more <b>diverse</b> humans you have, the greater chance one of them is
+      a trombone prodigy
+    </p>
+  </blockquote>
+
+  <p>
+    For simplicity, we'll continue with the roulette wheel selection - but
+    should you feel frisky, I'll just say that
+    <a
+      href="https://setu677.medium.com/how-to-perform-roulette-wheel-and-rank-based-selection-in-a-genetic-algorithm-d0829a37a189"
+      >rank selection</a
+    >
+    is example of an algorithm that doesn't exhibit this dominating behavior,
+    and it will work with our birdies, too!
+  </p>
+</aside>
+
+<p>
+  Living up to the generic-ness promise, instead of hard-coding our library to
+  always use roulette wheel selection, let's create a trait - this way users
+  will be able to use any algorithm they fancy:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub trait SelectionMethod {
+        fn select(&self);
+    }
+  -->
+</listing>
+
+<p>A selection method has to have access to the entire population:</p>
+
+<listing lang="rust">
+  <!--
+    pub trait SelectionMethod {
+        fn select<I>(&self, population: &[I]) -> &I
+        where
+            I: Individual;
+    }
+  -->
+</listing>
+
+<p>For clarity, let's annotate the output's lifetime:</p>
+
+<listing lang="rust">
+  <!--
+    pub trait SelectionMethod {
+        fn select<'a, I>(&self, population: &'a [I]) -> &'a I
+        where
+            I: Individual;
+    }
+  -->
+</listing>
+
+<p>
+  We're going to need random numbers any minute now, so let's add
+  <code>rand</code> to <code>libs/genetic-algorithm/Cargo.toml</code>:
+</p>
+
+<listing lang="toml">
+  <!--
+    # ...
+    
+    [dependencies]
+    rand = "0.8"
+    
+    [dev-dependencies]
+    rand_chacha = "0.3"
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Each crate in a workspace has <b>its own</b> set of dependencies - the
+    <code>rand</code> we've previously added to
+    <code>libs/neural-network/Cargo.toml</code> is <i>not</i> automatically
+    visible in any other crate in the workspace.
+  </p>
+</aside>
+
+<p>
+  Learning from our past troubles with <code>thread_rng()</code>, let's already
+  pass the pseudo-random number generator via a parameter:
+</p>
+
+<listing lang="rust">
+  <!--
+    use rand::RngCore;
+    
+    pub trait SelectionMethod {
+        fn select<'a, I>(
+           &self,
+           rng: &mut dyn RngCore,
+           population: &'a [I],
+        ) -> &'a I
+        where
+            I: Individual;
+    }
+  -->
+</listing>
+
+<p>Ain't that a beautiful signature?</p>
+
+<aside class="note">
+  <p>
+    You might be wondering why we don't take a step further and make
+    <code>select()</code> generic over the PRNG, too:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      pub trait SelectionMethod {
+          fn select<'a, R, I>(
+             &self,
+             rng: &mut R,
+             population: &'a [I],
+          ) -> &'a I
+          where
+              R: RngCore,
+              I: Individual;
+      }
+    -->
+  </listing>
+
+  <p>First, let's catch up on the vernacular - in general:</p>
+
+  <ol>
+    <li>
+      <p>
+        <code>dyn Trait</code>, <code>&dyn Trait</code> and
+        <code>&mut dyn Trait</code> imply <b>dynamic dispatch</b>,
+      </p>
+    </li>
+    <li>
+      <p>
+        <code>T</code>, <code>&T</code> and <code>&mut T</code> imply
+        <b>static dispatch</b>.
+      </p>
+    </li>
+  </ol>
+
+  <p>
+    Dispatching is the way compiler answers the question "which method should
+    get called here, exactly?" for generic types:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      fn foo() {
+         bar();
+      
+         // ^ compiling this call is easy, because it always transfers
+         // control into `bar`
+      }
+      
+      fn bar() {
+         println!("yas queen");
+      }
+      
+      fn method(obj: &dyn SomeTrait) {
+          obj.method();
+      
+          // ^ compiling this call is harder, because there's no single
+          // function this could refer to - each implementation of the
+          // trait might provide its own `fn method()`
+          //
+          // in general, this is called *polymorphism*
+      }
+    -->
+  </listing>
+
+  <p>
+    For the sake of an example, let's consider this trait with its two
+    implementations:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      trait Animal {
+          fn kind(&self) -> &'static str;
+      }
+      
+      // --
+      
+      struct Chinchilla;
+      
+      impl Animal for Chinchilla {
+          fn kind(&self) -> &'static str {
+              "chinchilla"
+          }
+      }
+      
+      // --
+      
+      struct Viscacha;
+      
+      impl Animal for Viscacha {
+          fn kind(&self) -> &'static str {
+              "viscacha"
+          }
+      }
+    -->
+  </listing>
+
+  <p>
+    If you wanted to create a function that prints kind of <i>any</i> animal,
+    you could do it twofold:
+  </p>
+
+  <div class="listing-title">
+    <a
+      href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d5d734320717f0fda4d16de1f2600764"
+      >open in playground</a
+    >
+  </div>
+
+  <listing lang="rust">
+    <!--
+      // Uses static dispatch
+      // (aka static polymorphism)
+      fn print_kind_static<A>(animal: &A)
+          where A: Animal
+      {
+          println!("{}", animal.kind());
+      }
+      
+      // Uses dynamic dispatch
+      // (aka dynamic polymorphism, aka runtime polymorphism)
+      fn print_kind_dynamic(animal: &dyn Animal) {
+          println!("{}", animal.kind());
+      }
+      
+      fn main() {
+          print_kind_static(&Chinchilla);
+          print_kind_static(&Viscacha);
+      
+          print_kind_dynamic(&Chinchilla);
+          print_kind_dynamic(&Viscacha);
+      }
+    -->
+  </listing>
+
+  <p>
+    From a distance, both function look alike - what's the difference, then?
+  </p>
+
+  <p>
+    <code>print_kind_static()</code> uses a technique called
+    <b>monomorphization</b> - meaning that for each <code>Animal</code> this
+    function is invoked with, compiler transparently generates a dedicated,
+    "copy-pasted" version of that function:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      fn print_kind_static__chinchilla(animal: &Chinchilla) {
+          println!("{}", Chinchilla::kind(animal));
+      }
+      
+      fn print_kind_static__viscacha(animal: &Viscacha) {
+          println!("{}", Viscacha::kind(animal));
+      }
+      
+      fn main() {
+          print_kind_static__chinchilla(&Chinchilla);
+          print_kind_static__viscacha(&Viscacha);
+      }
+    -->
+  </listing>
+
+  <p>
+    At this point you can see why it's called <i>static</i> dispatch -
+    underneath, compiler replaces <i>dynamic</i> traits with
+    <i>static</i> types.
+  </p>
+
+  <p>
+    Monomorphization has a drawback of being a bit slower to compile (instead of
+    just one function, compiler has to process many of them), but usually it
+    results in a faster, more optimized code at runtime; it can make a
+    noticeable difference for applications that call such generic functions,
+    say, million times per second.
+  </p>
+
+  <p>
+    <code>print_kind_dynamic()</code>, on the other hand, uses a technique
+    called <b>vtable</b> ("virtual table"), where each implementation is created
+    a dedicated "proxy table" that maps to concrete functions:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      // This is pseudo-Rust, just to show the concept
+      
+      struct AnimalVtable {
+          // Pointer to a concrete implementation of the `kind()` method
+          kind: fn(*const ()) -> &'static str,
+      }
+      
+      const CHINCHILLA_VTABLE: AnimalVtable = AnimalVtable {
+          kind: Chinchilla::kind,
+      };
+      
+      const VISCACHA_VTABLE: AnimalVtable = AnimalVtable {
+          kind: Viscacha::kind,
+      };
+      
+      fn print_kind_dynamic(
+          animal_obj: *const(),
+          animal_vtable: &AnimalVtable,
+      ) {
+          println!("{}", animal_vtable.kind(animal_obj));
+      }
+      
+      fn main() {
+          print_kind_dynamic(&Chinchilla, &CHINCHILLA_VTABLE);
+          print_kind_dynamic(&Viscacha, &VISCACHA_VTABLE);
+      }
+    -->
+  </listing>
+
+  <p>
+    Since all implementations can be described via <code>AnimalVtable</code>,
+    <code>print_kind_dynamic()</code> doesn't have to be monomorphized -
+    depending on the underlying type, compiler will simply pass different
+    vtable.
+  </p>
+
+  <p>
+    In this case, the drawback is that each time you call
+    <code>print_kind_dynamic()</code>, it has to go through this additional
+    "proxy table", which makes it <i>theoretically</i> slower than
+    <code>print_kind_static()</code>; more often than not the difference is not
+    meaningful, though.
+  </p>
+
+  <p>
+    Circling back to the original question: so why not
+    <code>where R: RngCore</code>?
+  </p>
+
+  <p>
+    Because we won't be invoking this PRNG million times per second, and so the
+    additional maintenance burden is - to me - a cake not worth the candle.
+  </p>
+</aside>
+
+<p>As for the implementation, we <i>could</i> do it by hand:</p>
+
+<listing lang="rust">
+  <!--
+    use rand::Rng;
+    use rand::seq::SliceRandom;
+    
+    pub struct RouletteWheelSelection;
+    
+    impl RouletteWheelSelection {
+        pub fn new() -> Self {
+            Self
+        }
+    }
+    
+    impl SelectionMethod for RouletteWheelSelection {
+        fn select<'a, I>(
+           &self,
+           rng: &mut dyn RngCore,
+           population: &'a [I],
+        ) -> &'a I
+        where
+            I: Individual,
+        {
+            assert!(!population.is_empty());
+    
+            let total_fitness: f32 = population
+                .iter()
+                .map(|individual| individual.fitness())
+                .sum();
+    
+            // This is a naïve approach for demonstration purposes; a more
+            // efficient implementation could invoke `rng` just once
+            loop {
+                let indiv = population
+                    .choose(rng)
+                    .expect("got an empty population");
+    
+                let indiv_share = indiv.fitness() / total_fitness;
+    
+                if rng.gen_bool(indiv_share as f64) {
+                    return indiv;
+                }
+            }
+        }
+    }
+  -->
+</listing>
+
+<p>
+  ... but a code <i>par excellence</i> would be <i>&lt;drums/&gt;</i>
+  <b>no code at all</b>!
+</p>
+
+<p>
+  If you go through
+  <a href="https://docs.rs/rand/0.8.3/rand/"
+    ><code>rand</code>-'s documentation</a
+  >, you might just spot a trait called
+  <a href="https://docs.rs/rand/0.8.3/rand/seq/trait.SliceRandom.html"
+    ><code>SliceRandom</code></a
+  >; if you take a look inside it, you might just spot a method called
+  <code>choose_weighted()</code> that happens to be doing exactly the thing we
+  need:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl SelectionMethod for RouletteWheelSelection {
+        fn select<'a, I>(
+           &self,
+           rng: &mut dyn RngCore,
+           population: &'a [I],
+        ) -> &'a I
+        where
+            I: Individual,
+        {
+            population
+                .choose_weighted(rng, |individual| individual.fitness())
+                .expect("got an empty population")
+        }
+    }
+  -->
+</listing>
+
+<p class="text-attached">
+  <i
+    >(thanks to <a href="https://github.com/javiertury">@javiertury</a> for
+    <a href="https://github.com/Patryk27/shorelark/pull/2"
+      >pointing out that this method exists</a
+    >.)</i
+  >
+</p>
+
+<p>
+  Apart from trusting <code>rand</code>-s developers, how can we be sure
+  <code>choose_weighted()</code> does the thing we need? By testing it!
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+    
+        #[test]
+        fn test() {
+            todo!();
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Path to the TDD-nirvana is a path strawn with roses, and we're about to get
+  bit by one of their thorns:
+</p>
+
+<listing lang="rust">
+  <!--
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+    
+    #[test]
+    fn test() {
+        let mut rng = ChaCha8Rng::from_seed(Default::default());
+    
+        let population = vec![ /* what here? */ ];
+    
+        let actual = RouletteWheelSelection::new()
+            .select(&mut rng, &population);
+    
+        assert!(/* what here? */);
+    }
+  -->
+</listing>
+
+<p>At this point we've got two problems:</p>
+
+<ol>
+  <li>
+    <p>
+      Since <code>Individual</code> is a trait, how can we <i>fake it</i> for
+      testing purposes?
+    </p>
+  </li>
+  <li>
+    <p>
+      Since <code>.select()</code> returns just a single individual, how can we
+      be sure it's random? <br />
+      (<a href="https://xkcd.com/221/">obligatory xkcd</a>.)
+    </p>
+  </li>
+</ol>
+
+<p>
+  Starting from the top: creating fake objects for testing purposes is called
+  <b>mocking</b> - and while
+  <a href="https://docs.rs/mockall/0.9.1/mockall/">there are</a> mocking
+  solutions for Rust, I gotta admit I've never been a fan of the concept of a
+  mock, as best presented
+  <a href="https://www.youtube.com/watch?v=LI_Oe-jtgdI">in a song</a>:
+</p>
+
+<listing lang="text">
+  <!--
+    Friend, either you're closing your eyes
+    To a situation you do not wish to acknowledge
+    Or you are not aware of the caliber of disaster indicated
+    By the presence of mocks in your repository
+    
+    [...]
+    
+    Oh yes we got trouble, trouble, trouble!
+    With a "T"! Gotta rhyme it with "M"!
+    And that stands for Mock
+  -->
+</listing>
+
+<p class="text-dim">
+  <i>(but for real, my contempt for mocks deserves its own post.)</i>
+</p>
+
+<p>
+  My suggestion - that doesn't require any external crates - it to create a
+  dedicated testing-struct:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    #[derive(Clone, Debug)]
+    pub struct TestIndividual {
+        fitness: f32,
+    }
+    
+    #[cfg(test)]
+    impl TestIndividual {
+        pub fn new(fitness: f32) -> Self {
+            Self { fitness }
+        }
+    }
+    
+    #[cfg(test)]
+    impl Individual for TestIndividual {
+        fn fitness(&self) -> f32 {
+            self.fitness
+        }
+    }
+  -->
+</listing>
+
+<p>... which can be then used as:</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        let population = vec![
+            TestIndividual::new(2.0),
+            TestIndividual::new(1.0),
+            TestIndividual::new(4.0),
+            TestIndividual::new(3.0),
+        ];
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>What about the assertion, though? A test such as this one:</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        /* ... */
+    
+        let actual = RouletteWheelSelection::new()
+            .select(&mut rng, &population);
+    
+        assert!(actual, &population[2]);
+    }
+  -->
+</listing>
+
+<p>
+  ... doesn't inspire confidence, as it doesn't <b>prove</b> that fitness scores
+  are being considered; a hypothetical, <i>invalid</i> implementation:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl SelectionMethod for RouletteWheelSelection {
+        fn select<'a, I>(/* ... */) -> &'a I
+        where
+            I: Individual,
+        {
+            &population[2]
+        }
+    }
+  -->
+</listing>
+
+<p>
+  ... would pass such test with <span class="text-rainbow">flying colors</span>!
+</p>
+
+<p>
+  Fortunately, we are not doomed - since we want to assess probability, instead
+  of invoking <code>.select()</code> once, we can do it many times and look at
+  the <b>histogram</b>:
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/sketches/coding-selection-4.svg" />
+
+  <figcaption>
+    <div class="title">
+      A histogram - <code>X</code> axis represents items, <code>Y</code> axis
+      represents frequency; also, to make hay while the sun shines, I hereby dub
+      this type of histogram the
+      <a
+        href="https://duckduckgo.com/?q=johnny+bravo&amp;t=h_&amp;iax=images&amp;ia=images"
+        >The Johnny Bravo Chart</a
+      >
+    </div>
+  </figcaption>
+</figure>
+
+<listing lang="rust">
+  <!--
+    use std::iter::FromIterator;
+    
+    #[test]
+    fn test() {
+        let method = RouletteWheelSelection::new();
+        let mut rng = ChaCha8Rng::from_seed(Default::default());
+    
+        let population = vec![
+            TestIndividual::new(2.0),
+            TestIndividual::new(1.0),
+            TestIndividual::new(4.0),
+            TestIndividual::new(3.0),
+        ];
+    
+        let mut actual_histogram = BTreeMap::new();
+    
+        //               there is nothing special about this thousand;
+        //          v--v a number as low as fifty might do the trick, too
+        for _ in 0..1000 {
+            let fitness = method
+                .select(&mut rng, &population)
+                .fitness() as i32;
+    
+            *actual_histogram
+                .entry(fitness)
+                .or_insert(0) += 1;
+        }
+    
+        let expected_histogram = BTreeMap::from_iter(vec![
+            // (fitness, how many times this fitness has been chosen)
+            (1, 0),
+            (2, 0),
+            (3, 0),
+            (4, 0),
+        ]);
+    
+        assert_eq!(actual_histogram, expected_histogram);
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Notice that while building the histogram, we're <b>casting</b> fitness
+    scores from <code>f32</code> to <code>i32</code>:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      let fitness = method
+          .select(&mut rng, &population)
+          .fitness() as i32;
+    -->
+  </listing>
+
+  <p>
+    We have to do that, because floating-point numbers in Rust don't implement
+    the
+    <a href="https://doc.rust-lang.org/std/cmp/trait.Ord.html"
+      ><code>Ord</code></a
+    >
+    trait, making it impossible to use them as a <code>BTreeMap</code>-'s
+    <i>key</i>:
+  </p>
+
+  <div class="listing-title">
+    <a
+      href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=535648a70ce2e61f12b8c38021fddbef"
+      >open in playground</a
+    >
+  </div>
+
+  <listing lang="rust">
+    <!--
+      use std::collections::BTreeMap;
+      
+      fn main() {
+          let mut map = BTreeMap::new();
+          map.insert(1.0, "one point zero");
+      }
+    -->
+  </listing>
+
+  <listing lang="text">
+    <!--
+      error[E0277]: the trait bound `{float}: Ord` is not satisfied
+        |
+        |     map.insert(1.0, "one point zero");
+        |         ^^^^^^ the trait `Ord` is not implemented for `{float}`
+    -->
+  </listing>
+
+  <p>
+    The reason is that floating-point numbers, as defined by the
+    <a href="https://floating-point-gui.de/">IEEE 754</a> standard, are not a
+    <a href="https://en.wikipedia.org/wiki/Total_order">totally ordered set</a>
+    - namely, comparing
+    <a href="https://en.wikipedia.org/wiki/NaN#Comparison_with_NaN">NaN</a>-s is
+    problematic, because:
+  </p>
+
+  <listing lang="text">
+    <!--
+      NaN != NaN
+    -->
+  </listing>
+
+  <p>
+    Practically, it means that had you ever inserted a <code>NaN</code> into a
+    map, not only would you be unable to retrieve that particular entry using
+    <code>.get()</code>, but you could break <code>BTreeMap</code>-'s internal
+    structure, making it impossible to retrieve <i>any</i> item.
+  </p>
+
+  <p>
+    <i
+      >(by the way, that's also true for custom implementations of
+      <code>Ord</code> and <code>PartialOrd</code> - if they don't satisfy
+      <a href="https://en.wikipedia.org/wiki/Asymmetry#In_mathematics"
+        >asymmetry</a
+      >
+      and
+      <a href="https://simple.wikipedia.org/wiki/Transitivity_(mathematics)"
+        >transitivity</a
+      >, you're gonna have a bad time.)</i
+    >
+  </p>
+
+  <p>If you feel like exploring this topic more:</p>
+
+  <ul>
+    <li>
+      <p>
+        <a
+         
+          href="https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html"
+          >https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html</a
+        >
+      </p>
+    </li>
+    <li>
+      <p>
+        <a
+         
+          href="https://www.reddit.com/r/rust/comments/cbrpll/why_doesnt_stdcmpord_is_implemented_for_floats/"
+          >https://www.reddit.com/r/rust/comments/cbrpll/why_doesnt_stdcmpord_is_implemented_for_floats/</a
+        >
+      </p>
+    </li>
+    <li>
+      <p>
+        <a
+          href="https://www.reddit.com/r/rust/comments/29kia3/no_ord_for_f32/"
+         
+          >https://www.reddit.com/r/rust/comments/29kia3/no_ord_for_f32/</a
+        >
+      </p>
+    </li>
+    <li>
+      <p>
+        <a
+          href="https://stackoverflow.com/questions/26489701/why-does-rust-not-implement-total-ordering-via-the-ord-trait-for-f64-and-f32"
+         
+          >https://stackoverflow.com/questions/26489701/why-does-rust-not-implement-total-ordering-via-the-ord-trait-for-f64-and-f32</a
+        >
+      </p>
+    </li>
+  </ul>
+</aside>
+
+<p>
+  <code>cargo test</code> (or <code>cargo test --workspace</code>, if you're in
+  the virtual manifest's directory) returns:
+</p>
+
+<listing lang="text">
+  <!--
+    thread '...' panicked at 'assertion failed: `(left == right)`
+      left: `{1: 98, 2: 202, 3: 278, 4: 422}`,
+     right: `{1: 0, 2: 0, 3: 0, 4: 0}`'
+  -->
+</listing>
+
+<p>
+  ... proving that <code>choose_weighted()</code> <i>does</i> work as advertised
+  (higher fitness scores were chosen more frequently), so let's fix the test:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        /* ... */
+    
+        let expected_histogram = BTreeMap::from_iter(vec![
+            // (fitness, how many times this fitness has been chosen)
+            (1, 98),
+            (2, 202),
+            (3, 278),
+            (4, 422),
+        ]);
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>Voilà - we've tested the untestable!</p>
+
+<p>
+  Before moving on, let's take a moment to ponder the nature of existence - and
+  maybe rustify our code a little bit as there are some things we could get
+  improved.
+</p>
+
+<p>
+  First, constructing maps via <code>::from_iter()</code> is kinda messy - not
+  only you have to create a vector on the way, but you're limited to
+  <code>(key, value)</code> tuples that look foreign to an untrained eye.
+</p>
+
+<p>
+  As always when it comes to Rust's syntax being overly verbose: just macro it
+  ™; in case we'll make use of a crate named
+  <a href="https://docs.rs/maplit/1.0.2/maplit/">maplit</a>:
+</p>
+
+<listing lang="toml">
+  <!--
+    # ...
+    
+    [dev-dependencies]
+    # ...
+    maplit = "1.0"
+  -->
+</listing>
+
+<p>... that provides a handy macro called <code>btreemap!</code>:</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        /* ... */
+    
+        let expected_histogram = maplit::btreemap! {
+            // fitness => how many times this fitness has been chosen
+            1 => 98,
+            2 => 202,
+            3 => 278,
+            4 => 422,
+        };
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  Moreover, we can use
+  <a
+    href="https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.fold"
+    ><code>Iterator::fold()</code></a
+  >
+  to simplify the loop:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        /* ... */
+    
+        let actual_histogram: BTreeMap<i32, _> = (0..1000)
+            .map(|_| method.select(&mut rng, &population))
+            .fold(Default::default(), |mut histogram, individual| {
+                *histogram
+                    .entry(individual.fitness() as _)
+                    .or_default() += 1;
+    
+                histogram
+            });
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    <code>as _</code> means "compiler, pretty please <b>infer</b> what type is
+    required and cast this value into it".
+  </p>
+
+  <p>
+    While this operation <i>feels</i> pointless, it performs the same function
+    it did a few code blocks above (i.e. converting <code>f32</code> to
+    <code>i32</code>) - the only difference is that now that we've explicitly
+    stated our map's key using <code>: BTreeMap&lt;i32, _&gt;</code>, we don't
+    have to do it inside the casting.
+  </p>
+
+  <p>
+    <i
+      >(it wouldn't be wrong to repeat the type and write <code>as i32</code> -
+      it's just my preference to avoid duplicating type annotations.)</i
+    >
+  </p>
+
+  <p>Another way we could've written this code is:</p>
+
+  <listing lang="rust">
+    <!--
+      let actual_histogram = (0..1000)
+          .map(|_| method.select(&mut rng, &population))
+          .fold(BTreeMap::default(), |mut histogram, individual| {
+              *histogram
+                  .entry(individual.fitness() as i32)
+                  .or_default() += 1;
+      
+              histogram
+          });
+    -->
+  </listing>
+
+  <p>
+    All those three approaches (including the initial one with an explicit loop)
+    are equally valid Rust code - use whichever one you find the most readable.
+  </p>
+</aside>
+
+<p>Having the selection algorithm ready, let's recap where we stopped:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(&self, population: &[I]) -> Vec<I>
+    where
+        I: Individual,
+    {
+        /* ... */
+    
+        (0..population.len())
+            .map(|_| {
+                // TODO selection
+                // TODO crossover
+                // TODO mutation
+                todo!()
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<p>
+  What we have to figure out now is how to pass
+  <code>SelectionMethod</code> there - I see two approaches:
+</p>
+
+<ol>
+  <li>
+    <p>Using parameter:</p>
+
+    <listing lang="rust">
+      <!--
+        pub fn evolve<I, S>(
+            &self,
+            population: &[I],
+            selection_method: &S,
+        ) -> Vec<I>
+        where
+            I: Individual,
+            S: SelectionMethod,
+        {
+            /* ... */
+        }
+      -->
+    </listing>
+  </li>
+  <li>
+    <p>Using constructor:</p>
+
+    <listing lang="rust">
+      <!--
+        pub struct GeneticAlgorithm<S> {
+            selection_method: S,
+        }
+        
+        impl<S> GeneticAlgorithm<S>
+        where
+            S: SelectionMethod,
+        {
+            pub fn new(selection_method: S) -> Self {
+                Self { selection_method }
+            }
+        
+            pub fn evolve<I, S>(&self, population: &[I]) -> Vec<I>
+            where
+                I: Individual,
+            {
+                /* ... */
+            }
+        }
+      -->
+    </listing>
+  </li>
+</ol>
+
+<p>
+  When I'm facing this kind of decision, I think <i>how often</i> users will
+  need to affect that particular value: a population is usually different each
+  time someone calls <code>.evolve()</code>, so it's convenient to accept it via
+  parameter; on the other hand, selection algorithm generally remains identical
+  for the whole simulation, so it'll be wiser to go with constructor.
+</p>
+
+<p>Now we're almost ready to invoke the selection method:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(&self, population: &[I]) -> Vec<I>
+    where
+        I: Individual,
+    {
+        /* ... */
+    
+        (0..population.len())
+            .map(|_| {
+                let parent_a = self
+                    .selection_method
+                    .select(population);
+    
+                let parent_b = self
+                    .selection_method
+                    .select(population);
+    
+                // TODO crossover
+                // TODO mutation
+                todo!()
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<p>... the only thing we're missing is the PRNG:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(
+        &self,
+        rng: &mut dyn RngCore,
+        population: &[I],
+    ) -> Vec<I>
+    where
+        I: Individual,
+    {
+        /* ... */
+    
+        (0..population.len())
+            .map(|_| {
+                let parent_a = self
+                    .selection_method
+                    .select(rng, population);
+    
+                let parent_b = self
+                    .selection_method
+                    .select(rng, population);
+    
+                // TODO crossover
+                // TODO mutation
+                todo!()
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    You might be wondering why <code>rng</code> is passed via
+    <code>.evolve()</code> instead of going through the constructor - surely the
+    random number generator doesn't change <i>that</i> frequently!
+  </p>
+
+  <p>
+    Well, this decision was more subtle - to understand why, let's explore other
+    ways we could have written that code:
+  </p>
+
+  <ol>
+    <li>
+      <p>By accepting an <b>owned</b> PRNG via the constructor:</p>
+
+      <listing lang="rust">
+        <!--
+          pub struct GeneticAlgorithm<R> {
+              rng: R,
+          }
+          
+          impl<R> GeneticAlgorithm<R>
+          where
+              R: RngCore,
+          {
+              pub fn new(rng: R) -> Self {
+                  Self { rng }
+              }
+          }
+        -->
+      </listing>
+    </li>
+    <li>
+      <p>By accepting a <b>borrowed</b> PRNG via the constructor:</p>
+
+      <listing lang="rust">
+        <!--
+          pub struct GeneticAlgorithm<'r> {
+              rng: &'mut dyn RngCore,
+          }
+          
+          impl<'r> GeneticAlgorithm<'r> {
+              pub fn new(rng: &'r mut dyn RngCore) -> Self {
+                  Self { rng }
+              }
+          }
+        -->
+      </listing>
+    </li>
+  </ol>
+
+  <p>
+    The first approach is something I <i>would</i> suggest had we been
+    implementing our simulation in C# or Java - it's a different story in Rust,
+    because if we <i>move</i> <code>rng</code> inside the constructor, we won't
+    be able to use it in other places of the application:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      fn main() {
+          let rng = /* ... */;
+          let ga = GeneticAlgorithm::new(rng);
+      
+          // oh no, we can't use this `rng` anymore!
+          if rng.gen_bool() {
+              /* ... */
+          } else {
+              /* ... */
+          }
+      }
+    -->
+  </listing>
+
+  <p>
+    You could argue the same already happens for <code>SelectionMethod</code>:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      fn main() {
+          let sp = RouletteWheelSelection::new();
+          let ga = GeneticAlgorithm::new(sp);
+      
+          // oh no, we can't use this `sp` anymore!
+          if sp.something() {
+              /* ... */
+          }
+      }
+    -->
+  </listing>
+
+  <p>
+    ... but in my opinion there's a difference in that <code>Rng</code> is a
+    more versatile trait - it makes sense to use it outside the
+    <code>GeneticAlgorithm</code>, which cannot be said about
+    <code>SelectionMethod</code>.
+  </p>
+
+  <p>
+    All said, you'd be right to call this a far-fetched explanation - picking a
+    "more versatile" trait is nothing but a gut feeling; if you ask me, the
+    owned-value approach is correct, just slightly inferior in this particular
+    case.
+  </p>
+
+  <p>
+    As for the <code>&mut dyn RngCore</code> variant, I consider it the worst -
+    it requires a unique borrow (<code>&mut</code>) on <code>rng</code>, so not
+    only it "locks" PRNG for the lifetime of the genetic algorithm:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      fn main() {
+          let rng = /* ... */;
+          let ga = GeneticAlgorithm::new(&mut rng);
+      
+          // oh no, we still can't use this `rng`!
+          let population = if rng.gen_bool() {
+              /* ... */
+          } else {
+              /* ... */
+          };
+      
+          ga.evolve(population);
+      }
+    -->
+  </listing>
+
+  <p>... but it also prevents otherwise valid use cases such as this one:</p>
+
+  <listing lang="rust">
+    <!--
+      struct Simulation {
+          rng: ChaCha8Rng,
+          ga: GeneticAlgoritm<'whats_this_lifetime??>,
+      }
+    -->
+  </listing>
+
+  <p>
+    By the way, this is called a <b>self-referential struct</b> - without
+    referring to eldritch unsafe magicks, it cannot be declared in Rust.
+  </p>
+
+  <p>More on this topic, if you feel curious:</p>
+
+  <ul>
+    <li>
+      <p>
+        <a
+          href="https://stackoverflow.com/questions/32300132/why-cant-i-store-a-value-and-a-reference-to-that-value-in-the-same-struct"
+         
+          >https://stackoverflow.com/questions/32300132/why-cant-i-store-a-value-and-a-reference-to-that-value-in-the-same-struct</a
+        >
+      </p>
+    </li>
+    <li>
+      <p>
+        <a
+          href="https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/"
+         
+          >https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/</a
+        >
+      </p>
+    </li>
+  </ul>
+</aside>
+
+<h2 id="coding-crossover">
+  <a href="#coding-crossover">Coding: Crossover</a>
+</h2>
+
+<p>
+  Now that we have chosen two parent-individuals, it's time for the
+  <b>crossover</b> phase.
+</p>
+
+<p>
+  Crossover (also known as <b>recombination</b>) takes two individuals and
+  "mixes" them, yielding a new~ish solution:
+</p>
+
+<figure class="sketch w-80">
+  <img src="{{ assets }}/sketches/coding-crossover-1.svg" />
+</figure>
+
+<p>
+  Compared to randomizing brand new individuals, crossover is neat in the sense
+  that it tries to <b>preserve knowledge</b> - the idea is that combining two
+  solutions will usually yield a solution that's both new <i>and</i> at least as
+  good as the two solutions we already have; this allows to explore the search
+  space without the risk of losing the best solutions discovered so far.
+</p>
+
+<p>
+  As in real world, crossover doesn't actually happen on an individual, but
+  rather on their <b>chromosomes</b> - which is a fancy word for "an encoding of
+  a solution":
+</p>
+
+<figure class="sketch w-80">
+  <img src="{{ assets }}/sketches/coding-crossover-2.svg" />
+</figure>
+
+<p>
+  A chromosome (also called <b>genotype</b>, though I'm convinced a biologist
+  dies each time someone juxtaposes both terms) is usually built from
+  <b>genes</b>, and its structure depends on the underlying problem - sometimes
+  it's convenient to model a chromosome as a bitset:
+</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-crossover-3.svg" />
+</figure>
+
+<p>... sometimes it's more convenient to have a string:</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-crossover-4.svg" />
+</figure>
+
+<p>
+  ... and we'll re-use what we already have - a bunch of floating-point numbers
+  (i.e. weights of the neural network):
+</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-crossover-5.svg" />
+</figure>
+
+<p>As for the code:</p>
+
+<listing lang="rust">
+  <!--
+    #[derive(Clone, Debug)]
+    pub struct Chromosome {
+        genes: Vec<f32>,
+    }
+  -->
+</listing>
+
+<p>
+  Instead of exposing genes directly (via <code>pub genes: …​</code>), we'll
+  provide a handful of functions allowing to peek inside the chromosome:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl Chromosome {
+        pub fn len(&self) -> usize {
+            self.genes.len()
+        }
+    
+        pub fn iter(&self) -> impl Iterator<Item = &f32> {
+            self.genes.iter()
+        }
+    
+        pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut f32> {
+            self.genes.iter_mut()
+        }
+    }
+  -->
+</listing>
+
+<p>
+  If you're assiduous, you might even write a handful of tests for them; some
+  people would consider testing such tiny functions overzealous, but I say we go
+  for it:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+    
+        fn chromosome() -> Chromosome {
+            Chromosome {
+                genes: vec![3.0, 1.0, 2.0],
+            }
+        }
+    
+        mod len {
+            use super::*;
+    
+            #[test]
+            fn test() {
+                assert_eq!(chromosome().len(), 3);
+            }
+        }
+    
+        mod iter {
+            use super::*;
+    
+            #[test]
+            fn test() {
+                let chromosome = chromosome();
+                let genes: Vec<_> = chromosome.iter().collect();
+    
+                assert_eq!(genes.len(), 3);
+                assert_eq!(genes[0], &3.0);
+                assert_eq!(genes[1], &1.0);
+                assert_eq!(genes[2], &2.0);
+            }
+        }
+    
+        mod iter_mut {
+            use super::*;
+    
+            #[test]
+            fn test() {
+                let mut chromosome = chromosome();
+    
+                chromosome.iter_mut().for_each(|gene| {
+                    *gene *= 10.0;
+                });
+    
+                let genes: Vec<_> = chromosome.iter().collect();
+    
+                assert_eq!(genes.len(), 3);
+                assert_eq!(genes[0], &30.0);
+                assert_eq!(genes[1], &10.0);
+                assert_eq!(genes[2], &20.0);
+            }
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Seizing the day, let's catch up on some cool traits from the standard library:
+</p>
+
+<ol>
+  <li>
+    <p>
+      There's
+      <a href="https://doc.rust-lang.org/stable/std/ops/trait.Index.html"
+        ><code>Index</code></a
+      >, which allows to use the <b>indexing operator</b> - <code>[]</code> - on
+      your type:
+    </p>
+
+    <listing lang="rust">
+      <!--
+        /* ... */
+        
+        // ---
+        // | this is the type of expression you expect inside the square
+        // | brackets
+        // |
+        // | e.g. if you implemented `Index<&str>`, you could write:
+        // |   chromosome["yass"]
+        // ------- v---v
+        impl Index<usize> for Chromosome {
+            type Output = f32;
+        
+            fn index(&self, index: usize) -> &Self::Output {
+                &self.genes[index]
+            }
+        }
+        
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+        
+            mod index {
+                use super::*;
+        
+                #[test]
+                fn test() {
+                    let chromosome = Chromosome {
+                        genes: vec![3.0, 1.0, 2.0],
+                    };
+        
+                    assert_eq!(chromosome[0], 3.0);
+                    assert_eq!(chromosome[1], 1.0);
+                    assert_eq!(chromosome[2], 2.0);
+                }
+            }
+        }
+      -->
+    </listing>
+  </li>
+  <li>
+    <p>
+      There's
+      <a
+        href="https://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html"
+        ><code>FromIterator</code></a
+      >, which allows to <code>.collect()</code> <i>into</i> your type:
+    </p>
+
+    <listing lang="rust">
+      <!--
+        /* ... */
+        
+        // ---
+        // | this is the "type of iterator" for which you want to provide
+        // | `from_iter()` and `collect()`
+        // |
+        // | sometimes it's called the type the iterator *yields*
+        // -------------- v-v
+        impl FromIterator<f32> for Chromosome {
+            fn from_iter<T: IntoIterator<Item = f32>>(iter: T) -> Self {
+                Self {
+                    genes: iter.into_iter().collect(),
+                }
+            }
+        }
+        
+        #[cfg(test)]
+        mod tests {
+            /* ... */
+        
+            mod from_iterator {
+                use super::*;
+        
+                #[test]
+                fn test() {
+                    let chromosome: Chromosome =
+                        vec![3.0, 1.0, 2.0]
+                            .into_iter()
+                            .collect();
+        
+                    assert_eq!(chromosome[0], 3.0);
+                    assert_eq!(chromosome[1], 1.0);
+                    assert_eq!(chromosome[2], 2.0);
+                }
+            }
+        }
+      -->
+    </listing>
+  </li>
+  <li>
+    <p>
+      Finally, there's also a reverse trait -
+      <a
+        href="https://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html"
+        ><code>IntoIterator</code></a
+      >:
+    </p>
+
+    <listing lang="rust">
+      <!--
+        #![feature(min_type_alias_impl_trait)]
+        
+        /* ... */
+        
+        impl IntoIterator for Chromosome {
+            type Item = f32;
+            type IntoIter = impl Iterator<Item = f32>;
+        
+            fn into_iter(self) -> Self::IntoIter {
+                self.genes.into_iter()
+            }
+        }
+        
+        #[cfg(test)]
+        mod tests {
+            /* ... */
+        
+            mod into_iterator {
+                use super::*;
+        
+                #[test]
+                fn test() {
+                    let chromosome = Chromosome {
+                        genes: vec![3.0, 1.0, 2.0],
+                    };
+        
+                    let genes: Vec<_> = chromosome.into_iter().collect();
+        
+                    assert_eq!(genes.len(), 3);
+                    assert_eq!(genes[0], 3.0);
+                    assert_eq!(genes[1], 1.0);
+                    assert_eq!(genes[2], 2.0);
+                }
+            }
+        }
+      -->
+    </listing>
+  </li>
+</ol>
+
+<aside class="note">
+  <p>
+    Our last implementation uses a <i>nightly</i> feature called
+    <a href="https://github.com/rust-lang/rust/issues/63063"
+      ><code>min_type_alias_impl_trait</code></a
+    >
+    - it allows to use <code>impl Trait</code> in places such as associated
+    types:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      impl IntoIterator for Chromosome {
+          /* ... */
+      
+          type IntoIter = impl Iterator<Item = f32>;
+      
+          /* ... */
+      }
+    -->
+  </listing>
+
+  <p>
+    <i
+      >(by the way, <code>impl Trait</code> in this position is called
+      <a
+        href="https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html"
+        >an existential type</a
+      >.)</i
+    >
+  </p>
+
+  <p>If not for this feature, we'd have to figure out the type on our own:</p>
+
+  <listing lang="rust">
+    <!--
+      impl IntoIterator for Chromosome {
+          /* ... */
+      
+          type IntoIter = std::vec::IntoIter<f32>;
+      
+          /* ... */
+      }
+    -->
+  </listing>
+
+  <p>
+    ... which isn't always as smooth as that (e.g. combinators such as
+    <code>.map()</code> can be tricky).
+  </p>
+
+  <p>
+    So yeah, I guess you could call me a
+    <code>#![feature(min_type_alias_impl_trait)]</code>-'s fan #1.
+  </p>
+</aside>
+
+<p>As I said few minutes before:</p>
+
+<blockquote>
+  <p>
+    [...] crossover doesn't actually happen on an individual, but rather on
+    their <b>chromosomes</b>
+  </p>
+</blockquote>
+
+<p>... which brings us to:</p>
+
+<listing lang="rust">
+  <!--
+    pub trait Individual {
+        fn chromosome(&self) -> &Chromosome;
+    
+        /* ... */
+    }
+    
+    /* ... */
+    
+    #[cfg(test)]
+    impl Individual for TestIndividual {
+        fn chromosome(&self) -> &Chromosome {
+            panic!("not supported for TestIndividual")
+        }
+    
+        /* ... */
+    }
+    
+    /* ... */
+    
+    (0..population.len())
+        .map(|_| {
+            let parent_a = self
+                .selection_method
+                .select(rng, population)
+                .chromosome();
+    
+            let parent_b = self
+                .selection_method
+                .select(rng, population)
+                .chromosome();
+    
+            // TODO crossover
+            // TODO mutation
+            // TODO convert `Chromosome` back into `Individual`
+            todo!()
+        })
+        .collect()
+  -->
+</listing>
+
+<p>
+  As for the crossover itself, there are
+  <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples"
+    >many</a
+  >
+  algorithms we could implement - usually it's best to try a few of them and see
+  whichever plays best with given problem; for simplicity, we'll go with
+  <b>uniform crossover</b>, which can be described with a single drawing:
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/sketches/coding-crossover-6.svg" />
+</figure>
+
+<p>Same as before, let's start with a trait:</p>
+
+<listing lang="rust">
+  <!--
+    pub trait CrossoverMethod {
+        fn crossover(
+            &self,
+            rng: &mut dyn RngCore,
+            parent_a: &Chromosome,
+            parent_b: &Chromosome,
+        ) -> Chromosome;
+    }
+  -->
+</listing>
+
+<p>... and now a rudimentary implementation:</p>
+
+<listing lang="rust">
+  <!--
+    use rand::Rng;
+    
+    #[derive(Clone, Debug)]
+    pub struct UniformCrossover;
+    
+    impl UniformCrossover {
+        pub fn new() -> Self {
+            Self
+        }
+    }
+    
+    impl CrossoverMethod for UniformCrossover {
+        fn crossover(
+            &self,
+            rng: &mut dyn RngCore,
+            parent_a: &Chromosome,
+            parent_b: &Chromosome,
+        ) -> Chromosome {
+            let mut child = Vec::new();
+            let gene_count = parent_a.len();
+    
+            for gene_idx in 0..gene_count {
+                let gene = if rng.gen_bool(0.5) {
+                    parent_a[gene_idx]
+                } else {
+                    parent_b[gene_idx]
+                };
+    
+                child.push(gene);
+            }
+    
+            child.into_iter().collect()
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Your internal code reviewer might notice a few things <i>off</i> about this
+  code - rightfully so!
+</p>
+
+<p>First, let's add an assertion:</p>
+
+<listing lang="rust">
+  <!--
+    fn crossover(/* ... */) -> Chromosome {
+        assert_eq!(parent_a.len(), parent_b.len());
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  Second, let's use a <span class="text-rainbow">combinator</span>; we already
+  know this one from the previous post - it's
+  <a
+    href="https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.zip"
+    ><code>.zip()</code></a
+  >:
+</p>
+
+<listing lang="rust">
+  <!--
+    fn crossover(/* ... */) -> Chromosome {
+        /* ... */
+    
+        let parent_a = parent_a.iter();
+        let parent_b = parent_b.iter();
+    
+        parent_a
+            .zip(parent_b)
+            .map(|(&a, &b)| if rng.gen_bool(0.5) { a } else { b })
+            .collect()
+    }
+  -->
+</listing>
+
+<p>How neat!</p>
+
+<p>
+  Notice how by implementing <code>.iter()</code> and
+  <code>FromIterator</code> a moment ago, we were able to reduce code in here to
+  a bare minimum that conveys the <i>essence</i> of the uniform crossover. Apart
+  from improved readability, what I love about combinators the most is that they
+  don't sacrifice performance - if anything, the variant above will be faster
+  (preallocation!).
+</p>
+
+<p>
+  Your internal sceptic might still be alerted that something's missing…​ hmm…​
+  ah, tests!
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use rand::SeedableRng;
+        use rand_chacha::ChaCha8Rng;
+    
+        #[test]
+        fn test() {
+            let mut rng = ChaCha8Rng::from_seed(Default::default());
+            let parent_a = todo!();
+            let parent_b = todo!();
+    
+            let child = UniformCrossover::new()
+                .crossover(&mut rng, &parent_a, &parent_b);
+    
+            assert!(/* ... */);
+        }
+    }
+  -->
+</listing>
+
+<p>
+  What we want to verify, in plain words, is that <code>child</code> is 50%
+  <code>parent_a</code> + 50% <code>parent_b</code>.
+</p>
+
+<p>
+  My suggestion is to generate two <i>distinct</i> chromosomes (they don't have
+  to be random, just build out of different genes):
+</p>
+
+<listing lang="rust">
+  <!--
+    let parent_a: Chromosome =
+        (1..=100)
+            .map(|n| n as f32)
+            .collect();
+    
+    let parent_b: Chromosome =
+        (1..=100)
+            .map(|n| -n as f32)
+            .collect();
+    
+    // First parent will be:
+    //   [1, 2, /* ... */, 100]
+    //
+    // Second parent will look similar, but with reversed signs:
+    //   [-1, -2, /* ... */, -100]
+    //
+    // Just like in the histogram, the concrete number of genes doesn't
+    // matter - 100 will nicely round up to 100%, that's all
+  -->
+</listing>
+
+<p>... and compare how much <code>child</code> differs from each of them:</p>
+
+<listing lang="rust">
+  <!--
+    // Number of genes different between `child` and `parent_a`
+    let diff_a = child
+        .iter()
+        .zip(parent_a)
+        .filter(|(c, p)| *c != p)
+        .count();
+    
+    // Number of genes different between `child` and `parent_b`
+    let diff_b = child
+        .iter()
+        .zip(parent_b)
+        .filter(|(c, p)| *c != p)
+        .count();
+    
+    assert_eq!(diff_a, 0);
+    assert_eq!(diff_b, 0);
+  -->
+</listing>
+
+<p>Given this code, <code>cargo test</code> returns:</p>
+
+<listing lang="text">
+  <!--
+    thread '...' panicked at 'assertion failed: `(left == right)`
+      left: `49`,
+     right: `0`'
+  -->
+</listing>
+
+<p>... so let's adjust the test:</p>
+
+<listing lang="rust">
+  <!--
+    assert_eq!(diff_a, 49);
+  -->
+</listing>
+
+<p>Another <code>cargo test</code> will fail on the second assertion:</p>
+
+<listing lang="text">
+  <!--
+    thread '...' panicked at 'assertion failed: `(left == right)`
+      left: `51`,
+     right: `0`'
+  -->
+</listing>
+
+<p>... so:</p>
+
+<listing lang="rust">
+  <!--
+    assert_eq!(diff_b, 51);
+  -->
+</listing>
+
+<p>To recall, what we've got is:</p>
+
+<listing lang="rust">
+  <!--
+    assert_eq!(diff_a, 49);
+    assert_eq!(diff_b, 51);
+  -->
+</listing>
+
+<p>
+  ... meaning that our <code>child</code> got 49% of its genome from
+  <code>parent_a</code>, and 51% from <code>parent_b</code>; this ultimately
+  proves our uniform crossover picks genes from both parents at equal
+  probability.
+</p>
+
+<p class="text-dim">
+  (we didn't get an exact 50% - 50% match, but that's just probability being
+  probability.)
+</p>
+
+<p>
+  Now we can pass <code>CrossoverMethod</code> next to
+  <code>SelectionMethod</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub struct GeneticAlgorithm<S> {
+        selection_method: S,
+        crossover_method: Box<dyn CrossoverMethod>,
+    }
+    
+    impl<S> GeneticAlgorithm<S>
+    where
+        S: SelectionMethod,
+    {
+        pub fn new(
+            selection_method: S,
+            crossover_method: impl CrossoverMethod + 'static,
+        ) -> Self {
+            Self {
+                selection_method,
+                crossover_method: Box::new(crossover_method),
+            }
+        }
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Contrary to <code>SelectionMethod::select()</code>,
+    <code>CrossoverMethod::crossover()</code> doesn't contain any generic
+    parameters -
+    <a
+      href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects"
+      >that’s why</a
+    >
+    we can <code>Box</code> it; another solution would be:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      pub struct GeneticAlgorithm<S, C> {
+          selection_method: S,
+          crossover_method: C,
+      }
+      
+      impl<S, C> GeneticAlgorithm<S, C>
+      where
+          S: SelectionMethod,
+          C: CrossoverMethod,
+      {
+          pub fn new(
+              selection_method: S,
+              crossover_method: C,
+          ) -> Self {
+              Self {
+                  selection_method,
+                  crossover_method,
+              }
+          }
+      
+          /* ... */
+      }
+    -->
+  </listing>
+
+  <p>
+    The trade-off here is exactly the same as when we were talking about
+    <code>T</code> vs <code>dyn Trait</code>, with the code directly above us
+    using static dispatch (monomorphization) and
+    <code>Box&lt;dyn Trait&gt;</code> being dynamic dispatch.
+  </p>
+
+  <p>
+    Because Rust makes it so easy to create genetic parameter upon generic
+    parameter,
+    <a href="http://troubles.md/rust-optimization/#avoid-box-trait"
+      >some people</a
+    >
+    argue that using <code>Box</code> - which has a theoretical performance
+    penalty - makes for a less idiomatic, slower Rust code.
+  </p>
+
+  <p>
+    My personal stance is that <code>Box</code> is a convenient mechanism whose
+    potential runtime trade-off is paid by keeping a code that's easier to
+    maintain; I'd say: use <code>Box</code> unless benchmarks prove it's an
+    issue / unless it makes the code awkward to read.
+  </p>
+</aside>
+
+<p>... and then:</p>
+
+<listing lang="rust">
+  <!--
+    (0..population.len())
+        .map(|_| {
+            /* ... */
+    
+            let mut child = self
+                .crossover_method
+                .crossover(rng, parent_a, parent_b);
+    
+            // TODO mutation
+            // TODO convert `Chromosome` back into `Individual`
+            todo!()
+        })
+        .collect()
+  -->
+</listing>
+
+<h2 id="coding-mutation">
+  <a href="#coding-mutation">Coding: Mutation</a>
+</h2>
+
+<p>
+  Now that we have a semi-new chromosome at hand, it's time to introduce some
+  diversity!
+</p>
+
+<p>
+  Mutation, next to crossover and selection, is the third
+  <a href="https://en.wikipedia.org/wiki/Genetic_operator">genetic operator</a>
+  - it takes a chromosome and introduces one or many random changes to it:
+</p>
+
+<figure class="sketch w-50">
+  <img src="{{ assets }}/sketches/coding-mutation-1.svg" />
+</figure>
+
+<p>
+  As in <i>The Actual Evolution</i>®, mutation's role is to allow to explore
+  solutions that were not present in the initial population; it also helps to
+  avoid getting stuck in a local optimum, as it keeps the population ceaselessly
+  changed, from one generation to another.
+</p>
+
+<p>
+  Since we already have <code>Chromosome</code> implemented, mutation's going to
+  be smooth as butter:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub trait MutationMethod {
+        fn mutate(&self, rng: &mut dyn RngCore, child: &mut Chromosome);
+    }
+  -->
+</listing>
+
+<p>
+  We'll use <code>Gaussian mutation</code>, which is a fancy way of saying
+  "we'll add or subtract random numbers from the genome". Contrary to our
+  parameter-less selection method, Gaussian mutation requires specifying two
+  arguments:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[derive(Clone, Debug)]
+    pub struct GaussianMutation {
+        /// Probability of changing a gene:
+        /// - 0.0 = no genes will be touched
+        /// - 1.0 = all genes will be touched
+        chance: f32,
+    
+        /// Magnitude of that change:
+        /// - 0.0 = touched genes will not be modified
+        /// - 3.0 = touched genes will be += or -= by at most 3.0
+        coeff: f32,
+    }
+    
+    impl GaussianMutation {
+        pub fn new(chance: f32, coeff: f32) -> Self {
+            assert!(chance >= 0.0 && chance <= 1.0);
+    
+            Self { chance, coeff }
+        }
+    }
+    
+    impl MutationMethod for GaussianMutation {
+        fn mutate(&self, rng: &mut dyn RngCore, child: &mut Chromosome) {
+            for gene in child.iter_mut() {
+                let sign = if rng.gen_bool(0.5) { -1.0 } else { 1.0 };
+    
+                if rng.gen_bool(self.chance as _) {
+                    *gene += sign * self.coeff * rng.gen::<f32>();
+                }
+            }
+        }
+    }
+  -->
+</listing>
+
+<p>
+  As for the tests, instead of doing <code>fn test()</code> like before, this
+  time I'd like to show you a bit different approach - let's talk
+  <b>edge cases</b>:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+    
+        mod given_zero_chance {
+            mod and_zero_coefficient {
+                #[test]
+                fn does_not_change_the_original_chromosome() {
+                    todo!();
+                }
+            }
+    
+            mod and_nonzero_coefficient {
+                #[test]
+                fn does_not_change_the_original_chromosome() {
+                    todo!();
+                }
+            }
+        }
+    
+        mod given_fifty_fifty_chance {
+            mod and_zero_coefficient {
+                #[test]
+                fn does_not_change_the_original_chromosome() {
+                    todo!();
+                }
+            }
+    
+            mod and_nonzero_coefficient {
+                #[test]
+                fn slightly_changes_the_original_chromosome() {
+                    todo!();
+                }
+            }
+        }
+    
+        mod given_max_chance {
+            mod and_zero_coefficient {
+                #[test]
+                fn does_not_change_the_original_chromosome() {
+                    todo!();
+                }
+            }
+    
+            mod and_nonzero_coefficient {
+                #[test]
+                fn entirely_changes_the_original_chromosome() {
+                    todo!();
+                }
+            }
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Naming tests this way took me a while to get used to, but eventually I've
+  found this convention so helpful that I cannot <i>not</i> mention it; tests
+  structured like that are worth more than a million comments, because tests -
+  contrary to comments - don't become obsolete over time.
+</p>
+
+<p>
+  When implementing, to avoid copy-pasting, first let's create a helper
+  function:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use rand::SeedableRng;
+        use rand_chacha::ChaCha8Rng;
+    
+        fn actual(chance: f32, coeff: f32) -> Vec<f32> {
+            let mut child = vec![1.0, 2.0, 3.0, 4.0, 5.0]
+                .into_iter()
+                .collect();
+    
+            let mut rng = ChaCha8Rng::from_seed(Default::default());
+    
+            GaussianMutation::new(chance, coeff)
+                .mutate(&mut rng, &mut child);
+    
+            child.into_iter().collect()
+        }
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>... with this function, rest is as easy as:</p>
+
+<listing lang="toml">
+  <!--
+    # ...
+    
+    [dev-dependencies]
+    # ...
+    approx = "0.4"
+  -->
+</listing>
+
+<listing lang="rust">
+  <!--
+    /* ... */
+    
+    mod given_zero_chance {
+        fn actual(coeff: f32) -> Vec<f32> {
+            super::actual(0.0, coeff)
+        }
+    
+        mod and_zero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                let actual = actual(0.0);
+                let expected = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    
+        mod and_nonzero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                let actual = actual(0.5);
+                let expected = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    }
+    
+    /* ... */
+  -->
+</listing>
+
+<p>Just for completion, here's rest of the tests:</p>
+
+<listing lang="rust">
+  <!--
+    /* ... */
+    
+    mod given_fifty_fifty_chance {
+        fn actual(coeff: f32) -> Vec<f32> {
+            super::actual(0.5, coeff)
+        }
+    
+        mod and_zero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                let actual = actual(0.0);
+                let expected = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    
+        mod and_nonzero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn slightly_changes_the_original_chromosome() {
+                let actual = actual(0.5);
+                let expected = vec![1.0, 1.7756249, 3.0, 4.1596804, 5.0];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    }
+    
+    mod given_max_chance {
+        fn actual(coeff: f32) -> Vec<f32> {
+            super::actual(1.0, coeff)
+        }
+    
+        mod and_zero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                let actual = actual(0.0);
+                let expected = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    
+        mod and_nonzero_coefficient {
+            use super::*;
+    
+            #[test]
+            fn entirely_changes_the_original_chromosome() {
+                let actual = actual(0.5);
+    
+                let expected = vec![
+                    1.4545316,
+                    2.1162078,
+                    2.7756248,
+                    3.9505124,
+                    4.638691,
+                ];
+    
+                approx::assert_relative_eq!(
+                    actual.as_slice(),
+                    expected.as_slice(),
+                );
+            }
+        }
+    }
+    
+    /* ... */
+  -->
+</listing>
+
+<p>
+  Now we can pass <code>MutationMethod</code> next to
+  <code>SelectionMethod</code>; there are no generics inside
+  <code>MutationMethod::mutate()</code>, so let's not hesitate on a
+  <code>Box</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub struct GeneticAlgorithm<S> {
+        selection_method: S,
+        crossover_method: Box<dyn CrossoverMethod>,
+        mutation_method: Box<dyn MutationMethod>,
+    }
+    
+    impl<S> GeneticAlgorithm<S>
+    where
+        S: SelectionMethod,
+    {
+        pub fn new(
+            selection_method: S,
+            crossover_method: impl CrossoverMethod + 'static,
+            mutation_method: impl MutationMethod + 'static,
+        ) -> Self {
+            Self {
+                selection_method,
+                crossover_method: Box::new(crossover_method),
+                mutation_method: Box::new(mutation_method),
+            }
+        }
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>... and:</p>
+
+<listing lang="rust">
+  <!--
+    (0..population.len())
+        .map(|_| {
+            /* ... */
+    
+            self.mutation_method.mutate(rng, &mut child);
+    
+            /* ... */
+        })
+        .collect()
+  -->
+</listing>
+
+<h2 id="coding-creating-individuals">
+  <a href="#coding-creating-individuals">Coding: Creating individuals</a>
+</h2>
+
+<p>Behold, our entire function so far:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(
+        &self,
+        rng: &mut dyn RngCore,
+        population: &[I],
+    ) -> Vec<I>
+    where
+        I: Individual,
+    {
+        assert!(!population.is_empty());
+    
+        (0..population.len())
+            .map(|_| {
+                let parent_a = self
+                    .selection_method
+                    .select(rng, population)
+                    .chromosome();
+    
+                let parent_b = self
+                    .selection_method
+                    .select(rng, population)
+                    .chromosome();
+    
+                let mut child = self
+                    .crossover_method
+                    .crossover(rng, parent_a, parent_b);
+    
+                self.mutation_method.mutate(rng, &mut child);
+    
+                // TODO convert `Chromosome` back into `Individual`
+                todo!()
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<p>We're missing the very last part:</p>
+
+<listing lang="rust">
+  <!--
+    // TODO convert `Chromosome` back into `Individual`
+  -->
+</listing>
+
+<p>
+  <code>child</code> is of type <code>Chromosome</code>, while the vector we
+  return is <code>Vec&lt;I&gt;</code> - so the thing we need is a method
+  converting genotype back into an individual:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub trait Individual {
+        fn create(chromosome: Chromosome) -> Self;
+    
+        /* ... */
+    }
+    
+    /* ... */
+    
+    #[cfg(test)]
+    impl Individual for TestIndividual {
+        fn create(chromosome: Chromosome) -> Self {
+           todo!()
+        }
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Naming's important - sometimes instead of abstract "create", it makes more
+    sense to talk in terms of "where from" and "where to".
+  </p>
+
+  <p>
+    For instance, compare which one of these feels more <i>natural</i> to you:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      pub trait Individual {
+          fn create(chromosome: Chromosome) -> Self;
+          fn chromosome(&self) -> &Chromosome;
+          fn fitness(&self) -> f32;
+      }
+    -->
+  </listing>
+
+  <listing lang="rust">
+    <!--
+      pub trait Individual {
+          fn from_chromosome(chromosome: Chromosome) -> Self;
+          fn as_chromosome(&self) -> &Chromosome;
+          fn fitness(&self) -> f32;
+      }
+    -->
+  </listing>
+
+  <p>
+    As usually when it comes to naming, there's no single best answer; we'll
+    continue with <code>::create()</code>, because we have to decide on
+    <i>something</i>, but keep this example in mind next time you're scratching
+    you head, thinking "What to name this function?".
+  </p>
+
+  <p>
+    Just for fun, it's also possible to delegate 2/3 of those methods into
+    <b>supertraits</b>:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      pub trait Individual: From<Chromosome> + AsRef<Chromosome> {
+          fn fitness(&self) -> f32;
+      }
+    -->
+  </listing>
+
+  <p>
+    ... although I wouldn't recommend it, because supertraits make
+    <code>impl</code>-s look less compact:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      #[cfg(test)]
+      impl Individual for TestIndividual {
+          fn fitness(&self) -> f32 {
+              self.fitness
+          }
+      }
+      
+      /// By looking at this impl you cannot really say that it's a part
+      /// of implementation for `Individual`
+      #[cfg(test)]
+      impl From<Chromosome> for TestIndividual {
+          fn from(_: Chromosome) -> Self {
+              panic!("not supported for TestIndividual")
+          }
+      }
+      
+      /// ditto
+      #[cfg(test)]
+      impl AsRef<Chromosome> for TestIndividual {
+          fn as_ref(&self) -> &Chromosome {
+              panic!("not supported for TestIndividual")
+          }
+      }
+    -->
+  </listing>
+</aside>
+
+<p>Back to the loop:</p>
+
+<listing lang="rust">
+  <!--
+    (0..population.len())
+        .map(|_| {
+            /* ... */
+    
+            I::create(child)
+        })
+  -->
+</listing>
+
+<p>Voilà:</p>
+
+<listing lang="rust">
+  <!--
+    pub fn evolve<I>(
+        &self,
+        rng: &mut dyn RngCore,
+        population: &[I],
+    ) -> Vec<I>
+    where
+        I: Individual,
+    {
+        assert!(!population.is_empty());
+    
+        (0..population.len())
+            .map(|_| {
+                let parent_a = self
+                    .selection_method
+                    .select(rng, population)
+                    .chromosome();
+    
+                let parent_b = self
+                    .selection_method
+                    .select(rng, population)
+                    .chromosome();
+    
+                let mut child = self
+                    .crossover_method
+                    .crossover(rng, parent_a, parent_b);
+    
+                self.mutation_method.mutate(rng, &mut child);
+    
+                I::create(child)
+            })
+            .collect()
+    }
+  -->
+</listing>
+
+<h2 id="the-test">
+  <a href="#the-test">The Test</a>
+</h2>
+
+<p>
+  Having <code>.evolve()</code> ready, the time has come for perhaps the most
+  exciting slice of this post: the telos, final, cherry-on-top
+  <b><span class="text-rainbow">test</span></b> - one that will prove to
+  everyone that our <code>.evolve()</code> works and that we know what we're
+  doing.
+</p>
+
+<p>
+  We'll start by adjusting our <code>TestIndividual</code> so that instead of
+  <code>panic!()</code>-ing, it actually implements <code>::create()</code> and
+  <code>.chromosome()</code>.
+</p>
+
+<p>
+  Some tests - e.g. the ones for <code>RouletteWheelSelection</code> - don't
+  care about genes at all, so we'll get bonus points for inventing a solution
+  that doesn't require modifying those already-working tests.
+</p>
+
+<p>
+  My proposition is to change <code>TestIndividual</code> from
+  <code>struct</code> to an <code>enum</code> with two different variants:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    #[derive(Clone, Debug, PartialEq)]
+    pub enum TestIndividual {
+        /// For tests that require access to chromosome
+        WithChromosome { chromosome: Chromosome },
+    
+        /// For tests that don't require access to chromosome
+        WithFitness { fitness: f32 },
+    }
+    
+    #[cfg(test)]
+    impl TestIndividual {
+        pub fn new(fitness: f32) -> Self {
+            Self::WithFitness { fitness }
+        }
+    }
+    
+    #[cfg(test)]
+    impl Individual for TestIndividual {
+        fn create(chromosome: Chromosome) -> Self {
+            Self::WithChromosome { chromosome }
+        }
+    
+        fn chromosome(&self) -> &Chromosome {
+            match self {
+                Self::WithChromosome { chromosome } => chromosome,
+    
+                Self::WithFitness { .. } => {
+                    panic!("not supported for TestIndividual::WithFitness")
+                }
+            }
+        }
+    
+        fn fitness(&self) -> f32 {
+            match self {
+                Self::WithChromosome { chromosome } => {
+                    chromosome.iter().sum()
+    
+                    // ^ the simplest fitness function ever - we're just
+                    // summing all the genes together
+                }
+    
+                Self::WithFitness { fitness } => *fitness,
+            }
+        }
+    }
+  -->
+</listing>
+
+<p class="text-dim">
+  <i
+    >(instead of <code>enum</code>, you could also create two separate types
+    like <code>TestIndividualWithChromosome</code> and
+    <code>TestIndividualWithFitness</code> - but that feels
+    <a
+      href="https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition"
+      >too enterprise-y</a
+    >
+    for me, so I'll take a rain check)</i
+  >
+</p>
+
+<p>Since we're already here, let's derive <code>PartialEq</code>:</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    #[derive(Clone, Debug, PartialEq)]
+    pub enum TestIndividual {
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  We'll need <code>PartialEq</code> for <code>Chromosome</code> too; to avoid
+  funky floating-point surprises, let's write it by hand using
+  <code>approx</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    impl PartialEq for Chromosome {
+        fn eq(&self, other: &Self) -> bool {
+            approx::relative_eq!(
+                self.genes.as_slice(),
+                other.genes.as_slice(),
+            )
+        }
+    }
+  -->
+</listing>
+
+<p>
+  As for the test, nothing scary - we'll start with a few individuals, evolve
+  them over a few generations, and compare the output population:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use rand::SeedableRng;
+        use rand_chacha::ChaCha8Rng;
+    
+        #[test]
+        fn test() {
+            let mut rng = ChaCha8Rng::from_seed(Default::default());
+    
+            let ga = GeneticAlgorithm::new(
+                RouletteWheelSelection::new(),
+                UniformCrossover::new(),
+                GaussianMutation::new(0.5, 0.5),
+            );
+    
+            let mut population = vec![
+                /* todo */
+            ];
+    
+            // We're running `.evolve()` a few times, so that the
+            // differences between initial and output population are
+            // easier to spot.
+            //
+            // No particular reason for a number of 10 - this test would
+            // be fine for 5, 20 or even 1000 generations; the only thing
+            // that'd change is the *magnitude* of difference between
+            // initial and output population.
+            for _ in 0..10 {
+                population = ga.evolve(&mut rng, &population);
+            }
+    
+            let expected_population = vec![
+                /* todo */
+            ];
+    
+            assert_eq!(population, expected_population);
+        }
+    }
+  -->
+</listing>
+
+<p>
+  We're going to create a few individuals at once, so a helper function is a
+  must:
+</p>
+
+<listing lang="rust">
+  <!--
+    fn individual(genes: &[f32]) -> TestIndividual {
+        let chromosome = genes.iter().cloned().collect();
+    
+        TestIndividual::create(chromosome)
+    }
+  -->
+</listing>
+
+<p>... and now:</p>
+
+<listing lang="rust">
+  <!--
+    #[test]
+    fn test() {
+        /* ... */
+    
+        let mut population = vec![
+            individual(&[0.0, 0.0, 0.0]), // fitness = 0.0
+            individual(&[1.0, 1.0, 1.0]), // fitness = 3.0
+            individual(&[1.0, 2.0, 1.0]), // fitness = 4.0
+            individual(&[1.0, 2.0, 4.0]), // fitness = 7.0
+        ];
+    
+        /* ... */
+    
+        let expected_population = vec![
+            individual(&[0.0, 0.0, 0.0, 0.0]),
+            individual(&[0.0, 0.0, 0.0, 0.0]),
+            individual(&[0.0, 0.0, 0.0, 0.0]),
+            individual(&[0.0, 0.0, 0.0, 0.0]),
+        ];
+    
+        /* ... */
+    }
+  -->
+</listing>
+
+<p class="text-dim">
+  (as before, there's no reason for creating <i>exactly</i> 4 individuals with
+  chromosomes of length 3 - it just <i>feels</i> right and reasonable to
+  maintain; two individuals would be too few, a hundredth - probably too many.)
+</p>
+
+<p>
+  Do you hear the people sing, singings the songs of angry men? It's
+  <code>cargo test</code>, failing - as intended - due to our zeroed-out
+  <code>expected_population</code>:
+</p>
+
+<listing lang="text">
+  <!--
+    thread '...' panicked at 'assertion failed: `(left == right)`
+      left: `[WithChromosome { ... }, WithChromosome { ... }, ... ]`,
+     right: `[WithChromosome { ... }, WithChromosome { ... }, ... ]`,
+  -->
+</listing>
+
+<p>
+  Using this output, we can copy-paste actual genes from <code>left</code> into
+  <code>expected_population</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    let expected_population = vec![
+        individual(&[0.44769490, 2.0648358, 4.3058133]),
+        individual(&[1.21268670, 1.5538777, 2.8869110]),
+        individual(&[1.06176780, 2.2657390, 4.4287640]),
+        individual(&[0.95909685, 2.4618788, 4.0247330]),
+    ];
+  -->
+</listing>
+
+<p>Yes…​ ha ha ha…​ <u>yes</u>? ta-da? hey presto - we got…​ numbers?</p>
+
+<p>
+  What's certain is that we've got <i>some</i> output - but how do we know those
+  four individuals are actually <b>better</b> than the four we started with?
+</p>
+
+<p>Well, what do you say we look at their fitness scores:</p>
+
+<listing lang="rust">
+  <!--
+    // In this case, `fitness score` means `average of the genes`, as per our
+    // implemetation inside `TestIndividual::fitness()`
+    
+    let expected_population = vec![
+        individual(&[/* ... */]), // fitness ~= 6.8
+        individual(&[/* ... */]), // fitness ~= 5.7
+        individual(&[/* ... */]), // fitness ~= 7.8
+        individual(&[/* ... */]), // fitness ~= 7.4
+    ];
+  -->
+</listing>
+
+<p>
+  <i
+    >As the clandestine averages begin to caress my neurons, a juggernaut shout
+    leaves my throat: it works! it works! our genetic algorithm <b>is</b> the
+    apex predator of computer science!</i
+  >
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/sketches/the-test-1.svg" />
+
+  <figcaption>
+    <div class="title">
+      <a href="https://knowyourmeme.com/memes/stonks">stonks</a>
+    </div>
+  </figcaption>
+</figure>
+
+<p>
+  For real tho - we've got higher fitness scores, which means that our
+  individuals <i>did</i> get better and everything works as intended:
+</p>
+
+<ol>
+  <li>
+    <p>
+      Thanks to the roulette wheel selection, the worst solution -
+      <code>[0.0, 0.0, 0.0]</code> - was discarded.
+    </p>
+  </li>
+  <li>
+    <p>
+      Thanks to the uniform crossover, the average fitness score grew from 3.5
+      to 7.0 (!)
+    </p>
+  </li>
+  <li>
+    <p>
+      Thanks to the Gaussian mutation, we see genes - numbers - that were not
+      present in the initial population.
+    </p>
+  </li>
+</ol>
+
+<p>
+  You don't have to believe me, though - try commenting out various parts of the
+  algorithm:
+</p>
+
+<listing lang="rust">
+  <!--
+    // self.mutation_method.mutate(rng, &mut child);
+  -->
+</listing>
+
+<p>... and see how they affect the output population :-)</p>
+
+<h2 id="closing-thoughts">
+  <a href="#closing-thoughts">Closing thoughts</a>
+</h2>
+
+<p>
+  So far, learning <i>whoa so much</i> on the way, we've implemented two
+  separate components: a neural network and a genetic algorithm.
+</p>
+
+<p>
+  In the upcoming, last post of this series we'll integrate both algorithms and
+  implement a snazzy user interface that'll allow us to see <i>beyond</i> lists
+  of floating-point numbers. As promised, that's where the JavaScript and
+  WebAssembly will come to play.
+</p>
+
+<p>As always, thank you for reading and until the next time!</p>

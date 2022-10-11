@@ -1,0 +1,30 @@
+<svg viewBox="0.00 0.00 266.24 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="353px" height="154px">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 262.24,-112 262.24,4 -4,4"></polygon>
+<g id="node1" class="node">
+<title>inserter</title>
+<ellipse fill="none" stroke="black" cx="46.15" cy="-90" rx="46.29" ry="18"></ellipse>
+<text text-anchor="middle" x="46.15" y="-86.3" font-family="Times-Roman" font-size="14.00">inserter</text>
+</g>
+<g id="node2" class="node">
+<title>logistic_science_pack</title>
+<ellipse fill="none" stroke="black" cx="115.15" cy="-18" rx="106.68" ry="18"></ellipse>
+<text text-anchor="middle" x="115.15" y="-14.3" font-family="Times-Roman" font-size="14.00">logistic_science_pack</text>
+</g>
+<g id="edge1" class="edge">
+<title>inserter-&gt;logistic_science_pack</title>
+<path fill="none" stroke="black" d="M62.15,-72.76C70.78,-64.01 81.6,-53.03 91.21,-43.28"></path>
+<polygon fill="black" stroke="black" points="93.74,-45.7 98.27,-36.12 88.75,-40.79 93.74,-45.7"></polygon>
+</g>
+<g id="node3" class="node">
+<title>transport_belt</title>
+<ellipse fill="none" stroke="black" cx="184.15" cy="-90" rx="74.19" ry="18"></ellipse>
+<text text-anchor="middle" x="184.15" y="-86.3" font-family="Times-Roman" font-size="14.00">transport_belt</text>
+</g>
+<g id="edge2" class="edge">
+<title>transport_belt-&gt;logistic_science_pack</title>
+<path fill="none" stroke="black" d="M167.79,-72.41C159.24,-63.73 148.61,-52.95 139.14,-43.34"></path>
+<polygon fill="black" stroke="black" points="141.37,-40.62 131.86,-35.96 136.39,-45.54 141.37,-40.62"></polygon>
+</g>
+</g>
+</svg>

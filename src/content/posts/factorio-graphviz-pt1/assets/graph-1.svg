@@ -1,0 +1,46 @@
+<svg viewBox="0.00 0.00 430.57 98.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="573px" height="130px">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 94)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-94 426.57,-94 426.57,4 -4,4"></polygon>
+<g id="node1" class="node">
+<title>Patryk</title>
+<ellipse fill="none" stroke="black" cx="39" cy="-45" rx="38.99" ry="18"></ellipse>
+<text text-anchor="middle" x="39" y="-41.3" font-family="Times-Roman" font-size="14.00">Patryk</text>
+</g>
+<g id="node2" class="node">
+<title>Dafne</title>
+<ellipse fill="none" stroke="black" cx="151.69" cy="-45" rx="37.89" ry="18"></ellipse>
+<text text-anchor="middle" x="151.69" y="-41.3" font-family="Times-Roman" font-size="14.00">Dafne</text>
+</g>
+<g id="edge1" class="edge">
+<title>Patryk--Dafne</title>
+<path fill="none" stroke="black" d="M78.09,-45C89.6,-45 102.21,-45 113.65,-45"></path>
+</g>
+<g id="node3" class="node">
+<title>Niko</title>
+<ellipse fill="none" stroke="black" cx="263.73" cy="-72" rx="30.59" ry="18"></ellipse>
+<text text-anchor="middle" x="263.73" y="-68.3" font-family="Times-Roman" font-size="14.00">Niko</text>
+</g>
+<g id="edge2" class="edge">
+<title>Dafne--Niko</title>
+<path fill="none" stroke="black" d="M185.71,-53.1C201.53,-56.98 220.27,-61.58 235.3,-65.27"></path>
+</g>
+<g id="node4" class="node">
+<title>Dulcia</title>
+<ellipse fill="none" stroke="black" cx="263.73" cy="-18" rx="38.19" ry="18"></ellipse>
+<text text-anchor="middle" x="263.73" y="-14.3" font-family="Times-Roman" font-size="14.00">Dulcia</text>
+</g>
+<g id="edge3" class="edge">
+<title>Dafne--Dulcia</title>
+<path fill="none" stroke="black" d="M185.71,-36.9C199.51,-33.51 215.52,-29.58 229.36,-26.19"></path>
+</g>
+<g id="node5" class="node">
+<title>Charlie</title>
+<ellipse fill="none" stroke="black" cx="380.33" cy="-18" rx="42.49" ry="18"></ellipse>
+<text text-anchor="middle" x="380.33" y="-14.3" font-family="Times-Roman" font-size="14.00">Charlie</text>
+</g>
+<g id="edge4" class="edge">
+<title>Dulcia--Charlie</title>
+<path fill="none" stroke="black" d="M302.25,-18C313.61,-18 326.15,-18 337.76,-18"></path>
+</g>
+</g>
+</svg>

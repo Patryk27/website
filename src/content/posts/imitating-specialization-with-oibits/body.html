@@ -1,0 +1,836 @@
+<p>Why does the code below compile?</p>
+
+<listing lang="rust">
+  <!--
+    use std::thread;
+    
+    struct Chinchilla(&'static str);
+    
+    fn main() {
+        let chinchilla = Chinchilla("Flora");
+    
+        thread::spawn(move || {
+            println!("{}", chinchilla.0);
+        });
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    This article introduces reader to the concept of Rust's
+    <i>auto traits</i> and later builds on that knowledge to demonstrate a kind
+    of a <i>hack</i> allowing one to imitate a behavior functionally similar to
+    <i>specialization</i>.
+  </p>
+
+  <p>
+    I assume you know a bit about Rust (beginner~intermediate, so that at least
+    the code above doesn't baffle you) and I'll try to explain more advanced
+    concepts as we go.
+  </p>
+
+  <p>
+    If you don't feel like reading English today, feel free to jump straight
+    into <a href="#_the_code">The Code</a> :-)
+  </p>
+</aside>
+
+<h2 id="_where_t_send">
+  <a href="#_where_t_send">where T: Send</a>
+</h2>
+
+<p>
+  One would be completely sane to ask
+  <code>why <i>shouldn't</i> that code compile??</code>, and so in order to
+  understand why our initial question makes sense, let our journey begin with a
+  quick look-up on the definition of
+  <a href="https://doc.rust-lang.org/stable/std/thread/fn.spawn.html"
+    ><code>std::thread::spawn</code></a
+  >:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub fn spawn<F, T>(f: F) -> JoinHandle<T>
+    where
+        F: FnOnce() -> T,
+        F: Send + 'static,
+        T: Send + 'static,
+    {
+        // ...
+    }
+  -->
+</listing>
+
+<p>
+  Among all the noise (types, duh!), one bound might catch an astute reader's
+  attention: <code>F: Send</code>.
+</p>
+
+<p>
+  <a href="https://doc.rust-lang.org/stable/std/marker/trait.Send.html"
+    ><code>Send</code></a
+  >
+  is a trait used to determine which types can travel across so-called
+  <b>thread boundary</b> - in other words: values of types that implement the
+  <code>Send</code> trait can be created on thread A and then safely
+  <i>moved</i> into thread B and <i>dropped</i> there.
+</p>
+
+<p>
+  Most of the values (e.g. those of type <code>String</code> or
+  <code>Vec&lt;u8&gt;</code>) are perfectly safe to be moved willy-nilly from
+  one thread to another, but there exist a few that require extra care - for
+  instance
+  <a href="https://doc.rust-lang.org/stable/std/rc/index.html"
+    ><code>Rc</code></a
+  >.
+</p>
+
+<p>
+  <code>Rc</code> provides simple garbage-collector-like semantics: when you
+  invoke <code>Rc::clone()</code>, it doesn't actually clone the value contained
+  inside it - instead, it keeps track of how many <code>Rc</code>-s are alive
+  (with <code>Rc::clone()</code> increasing that counter and
+  <code>Rc::drop()</code> decreasing), and it's only when that internal counter
+  gets down to zero (i.e. when the last <code>Rc</code> gets out of the scope)
+  that the contained value gets dropped.
+</p>
+
+<p>
+  <code>Rc</code>, contrary to <code>Arc</code>, keeps track of those remaining
+  instances by using a non-atomic counter - <i>non-atomic</i> meaning "unsafe to
+  access from many threads at the same time", and the way Rust protects us from
+  shooting our feet is by making <code>Rc</code> not implement
+  <code>Send</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    use std::rc::Rc;
+    use std::thread;
+    
+    fn main() {
+        let value = Rc::new(
+            "c-rustacean is a Rust programmer who likes C better"
+        );
+    
+        // ok: `Rc::clone()` happens on the same thread as `Rc::new()`
+        let value2 = Rc::clone(&value);
+    
+        thread::spawn(move || {
+            drop(value2); // err
+        });
+    }
+    
+    // error[E0277]: `Rc<&str>` cannot be sent between threads safely
+    //    -\-> src/main.rs:12:5
+    //     |
+    // 12  |       thread::spawn(move || {
+    //     |  _____^^^^^^^^^^^^^_-
+    //     | |     |
+    //     | |     `Rc<&str>` cannot be sent between threads safely
+    // 13  | |         drop(value2); // err
+    // 14  | |     });
+    //     | |_____- within this `[closure@src/main.rs:12:19: 14:6]`
+    //     |
+    //     = help: within `[closure@src/main.rs:12:19: 14:6]`, the
+    //             trait `Send` is not implemented for `Rc<&str>`
+    //     = note: required because it appears within the type
+    //             `[closure@src/main.rs:12:19: 14:6`
+  -->
+</listing>
+
+<p>
+  Though the message might be a bit cryptic (especially if you're not used to
+  working with multi-threading in Rust), the most important part stands out,
+  yelling: <code>Rc&lt;&str&gt; cannot be sent between threads safely</code>.
+</p>
+
+<p>
+  In order for our code to work, we would have to use
+  <code>Send</code>-implementing <code>Arc&lt;&str&gt;</code> - a type that has
+  been designed from ground-up to be multithreading-friendly by leaning on
+  atomic counters.
+</p>
+
+<h2 id="_oibits">
+  <a href="#_oibits">OIBITs</a>
+</h2>
+
+<p>
+  So far we've talked about the <i>role</i> <code>Send</code> plays in Rust's
+  standard library, but actually the most captivating fact about this trait is
+  that, contrary to most of the other traits, this one's
+  <b>implemented automatically</b> by the compiler!
+</p>
+
+<p>
+  You don't have to take my word for it -
+  <a
+    href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=b01be31088c6de40013cb125ee002a16"
+    >check out this code</a
+  >:
+</p>
+
+<listing lang="rust">
+  <!--
+    use std::fmt::Display;
+    
+    struct Chinchilla(&'static str);
+    
+    fn assert_display(_: impl Display) {
+        //
+    }
+    
+    fn assert_send(_: impl Send) {
+        //
+    }
+    
+    fn main() {
+        assert_display(Chinchilla("Fauna"));
+        assert_send(Chinchilla("Flora"));
+    }
+    
+    // error[E0277]: `Chinchilla` doesn't implement `Display`
+    //   -\-> src/main.rs:15:20
+    //    |
+    // 5  | fn assert_display(_: impl Display) {
+    //    |                           ------- required by this bound
+    //    |                                   in `assert_display`
+    // ...
+    // 14 |     assert_display(Chinchilla("Flora"));
+    //    |                    ^^^^^^^^^^^^^^^^^^^
+  -->
+</listing>
+
+<p>
+  Since we didn't provide <code>impl Display for Chinchilla</code>, our
+  <code>assert_display(…​)</code> fails - that's reasonable.
+</p>
+
+<p>
+  But we didn't provide <code>impl Send for Chinchilla</code> either, so
+  shouldn't <code>assert_send(…​)</code> fail, too?
+</p>
+
+<p>
+  <a
+    href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md"
+    >As it turns out</a
+  >, some of our Rust's traits are <b>opt-out</b> instead of <i>opt-in</i> -
+  that is: some traits are implemented automatically for all types
+  <i>unless</i> you (or, in some cases, compiler) opt-out of them via
+  <code>impl !Trait for Type</code> (yeah, that's an exclamation mark).
+</p>
+
+<p>
+  Such traits are called OIBITs, standing for
+  <code>opt-in built-in traits</code> -
+  <a
+    href="https://internals.rust-lang.org/t/pre-rfc-renaming-oibits-and-changing-their-declaration-syntax/3086"
+    >eventually</a
+  >
+  though that name was found to be confusing and the whole feature was renamed
+  into <code>auto traits</code>, so we'll go with the latter from now on.
+</p>
+
+<h2 id="_auto_traits">
+  <a href="#_auto_traits">Auto traits</a>
+</h2>
+
+<p>
+  Regular traits are opt-in, meaning that they don't apply unless you explicitly
+  provide an <code>impl Trait for Type</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    trait Foo {
+        //
+    }
+    
+    impl Foo for &str {
+        //
+    }
+    
+    fn test(_: impl Foo) {
+        //
+    }
+    
+    fn main() {
+        test(123); // err: the trait bound ... is not satisfied
+        test("hi!"); // ok
+    }
+  -->
+</listing>
+
+<p>Auto traits, on the other hand, are <b>opt-out</b>:</p>
+
+<listing lang="rust">
+  <!--
+    #![feature(auto_traits)]
+    #![feature(negative_impls)]
+    
+    auto trait Foo {
+        //
+    }
+    
+    impl !Foo for &str {
+        //
+    }
+    
+    fn test(_: impl Foo) {
+        //
+    }
+    
+    fn main() {
+        test(123); // ok
+        test("hi!"); // err: the trait bound ... is not satisfied
+    }
+  -->
+</listing>
+
+<p>Since auto traits cannot contain methods or associated items:</p>
+
+<listing lang="rust">
+  <!--
+    auto trait Foo {
+        type Type; // err
+        fn function(&self); // err
+    }
+  -->
+</listing>
+
+<p>... they function as so-called <b>marker traits</b>.</p>
+
+<p>
+  While regular traits provide <i>behavior</i> (e.g. methods), marker traits
+  determine <i>properties</i> of values of given types.
+</p>
+
+<p>
+  For instance <code>Send</code> is a great example of a marker trait, as it's
+  used to determine whether a value of given type can be sent into another
+  thread, without providing any behavior on its own (i.e.
+  <code>Send</code> exists purely as a compile-time type helper).
+</p>
+
+<p>
+  We can even see how <code>Send</code> is defined by taking a look into the
+  standard library:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub unsafe auto trait Send {
+        // empty.
+    }
+  -->
+</listing>
+
+<p>... additionally, in <code>std/alloc/rc.rs</code> we can find that:</p>
+
+<listing lang="rust">
+  <!--
+    impl<T: ?Sized> !Send for Rc<T> {}
+  -->
+</listing>
+
+<p>See, no magic!</p>
+
+<p>
+  To finish this section on auto traits, let's just walk through the most
+  important rule related to this mechanism: for a type to implement an auto
+  trait, none of its fields must be of type that has been <code>impl !</code>-d,
+  i.e.:
+</p>
+
+<listing lang="rust">
+  <!--
+    #![feature(auto_traits)]
+    #![feature(negative_impls)]
+    
+    auto trait Arbitrary {
+        //
+    }
+    
+    impl !Arbitrary for &str {
+        //
+    }
+    
+    // implements `Arbitrary`
+    struct Yass;
+    
+    // implements `Arbitrary`
+    struct Foo {
+        value: usize,
+    }
+    
+    // doesn't implement `Arbitrary`
+    struct Bar {
+        value: &'static str,
+    }
+    
+    // doesn't implement `Arbitrary` because `value_2` of type `Bar`
+    // doesn't implement `Arbitrary` too
+    struct Zar {
+        value_1: Foo,
+        value_2: Bar,
+    }
+  -->
+</listing>
+
+<p class="text-attached">
+  <i
+    >(as always, you can find more information
+    <a
+      href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md"
+      >in the RFC</a
+    >.)</i
+  >
+</p>
+
+<h2 id="_specialization">
+  <a href="#_specialization">Specialization</a>
+</h2>
+
+<p>
+  Let's stash all that boring-auto-trait-knowledge somewhere else for now and
+  imagine we're in a Silicon Valley, starting a brand-new start-up -
+  <i>surely</i> the first thing we've gotta do is to invent a brand-new file
+  format: we're too cool for XML and JSON is already the story of the past (<a
+    href="http://fileformats.archiveteam.org/wiki/No_Code"
+    >No Code, anyone?</a
+  >).
+</p>
+
+<p>
+  And so we open <code>emacs</code>, writing lines that will become the very
+  first three of our monolithic microservice's:
+</p>
+
+<listing lang="rust">
+  <!--
+    trait Serialize {
+        fn serialize_in_place(&self, buffer: &mut String);
+    }
+  -->
+</listing>
+
+<p>
+  Seizing the day, let's add a blanket impl for <code>serialize()</code>, to
+  make our lives easier during testing:
+</p>
+
+<listing lang="rust">
+  <!--
+    trait Serialize {
+        fn serialize_in_place(&self, buffer: &mut String);
+    
+        fn serialize(&self) -> String {
+            let mut buffer = String::new();
+            self.serialize_in_place(&mut buffer);
+            buffer
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Our investors say that we're going to be crunching lots of booleans, so why
+  don't we start with them:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl Serialize for bool {
+        fn serialize_in_place(&self, buffer: &mut String) {
+            if *self {
+                buffer.push_str("b(true)");
+            } else {
+                buffer.push_str("b(false)");
+            }
+        }
+    }
+    
+    #[test]
+    fn test_bool() {
+        assert_eq!("b(true)", true.serialize());
+        assert_eq!("b(false)", false.serialize());
+    }
+  -->
+</listing>
+
+<p>They were saying something about <code>strings attached</code> too, so:</p>
+
+<listing lang="rust">
+  <!--
+    impl Serialize for &str {
+        fn serialize_in_place(&self, buffer: &mut String) {
+            buffer.push_str("s(");
+            buffer.push_str(self);
+            buffer.push_str(")");
+        }
+    }
+    
+    #[test]
+    fn test_str() {
+        assert_eq!("s(hummus)", "hummus".serialize());
+    }
+  -->
+</listing>
+
+<p>
+  Obviously, a single string or a boolean is of no use - we're professional
+  programmers, so a plethora of <code>Vec&lt;T&gt;</code> is more than certain
+  to appear:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl<T> Serialize for Vec<T> where T: Serialize {
+        fn serialize_in_place(&self, buffer: &mut String) {
+            buffer.push_str("v(");
+    
+            for (item_idx, item) in self.iter().enumerate() {
+                if item_idx > 0 {
+                    buffer.push_str(", ");
+                }
+    
+                item.serialize_in_place(buffer);
+            }
+    
+            buffer.push_str(")");
+        }
+    }
+    
+    #[test]
+    fn test_vec() {
+        assert_eq!(
+            "v(b(true), b(false))",
+            vec![true, false].serialize(),
+        );
+    
+        assert_eq!(
+            "v(s(foo), s(bar))",
+            vec!["foo", "bar"].serialize(),
+        );
+    }
+  -->
+</listing>
+
+<p>
+  Great - our code, though rudimentary, is already able to serialize an infinite
+  number of types: <code>bool</code>, <code>&str</code>,
+  <code>Vec&lt;bool&gt;</code>, <code>Vec&lt;&str&gt;</code>,
+  <code>Vec&lt;Vec&lt;…​&gt;&gt;</code> and so on.
+</p>
+
+<p>
+  While venture cash's flowin', we might optimize our format by adding a
+  <i>dedicated</i> (specialized) impl only for <code>Vec&lt;bool&gt;</code>, so
+  that it's serialized in a more compact way than regular
+  <code>Vec&lt;T&gt;</code>.
+</p>
+
+<p>
+  That is: instead of storing <code>vec![true, true, false, false]</code> as
+  <code>v(b(true), b(true), b(false), b(false))</code>, we could use a bitset
+  instead: <code>vb(12)</code> (<code>12_dec</code> = <code>1100_bin</code>).
+</p>
+
+<p>
+  So let's do just that, simply by adding another impl for
+  <code>Vec&lt;bool&gt;</code>:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl Serialize for Vec<bool> {
+        fn serialize_in_place(&self, buffer: &mut String) {
+            todo!()
+        }
+    }
+    
+    // error[E0119]: conflicting implementations of trait `Serialize`
+    //               for type `Vec<bool>`:
+    //   -\-> src/lib.rs:45:1
+    //    |
+    // 29 | impl<T> Serialize for Vec<T> where T: Serialize {
+    //    | -------------------------------- first implementation here
+    // ...
+    // 45 | impl Serialize for Vec<bool> {
+    //    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation
+    //                                   for `Vec<bool>`
+  -->
+</listing>
+
+<p>... and wait, what's that error message?</p>
+
+<p>
+  The compiler says we've got conflicting implementations:
+  <code>Serialize</code> is already implemented for
+  <code>Vec&lt;T&gt;</code> and our <code>Vec&lt;bool&gt;</code>
+  <i>overlaps</i> that implementation, yielding the compiler unable to tell
+  which code is the one we actually want to invoke.
+</p>
+
+<p>
+  Nightly Rust offers a dedicated solution to this problem: a feature called
+  <a
+    href="https://github.com/rust-lang/rfcs/blob/master/text/1210-impl-specialization.md"
+    >specialization</a
+  >.
+</p>
+
+<p>
+  Specialization allows for methods and associated items to be marked as
+  <code>default</code>, making it possible for downstream impls to override
+  them; in our case, we'd have to mark <code>Vec&lt;T&gt;</code>-'s
+  <code>serialize_in_place()</code> as <code>default</code>, like so:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl<T> Serialize for Vec<T> where T: Serialize {
+        default fn serialize_in_place(&self, buffer: &mut String) {
+            // this is the default implementation for all `Vec`-s
+        }
+    }
+    
+    impl Serialize for Vec<bool> {
+        fn serialize_in_place(&self, buffer: &mut String) {
+            // this is a dedicated implementation only for `Vec<bool>`
+        }
+    }
+  -->
+</listing>
+
+<p>
+  Specialization is <i>the</i> state of the art solution for this kind of
+  issues, but it's actually not <i>the only</i> one - as the title of this
+  article says: it's, to some degree, possible to imitate specialization with
+  auto traits.
+</p>
+
+<h2 id="_specialization_with_auto_traits">
+  <a href="#_specialization_with_auto_traits"
+    >Specialization with auto traits</a
+  >
+</h2>
+
+<p>Since the issue with our current implementation:</p>
+
+<listing lang="rust">
+  <!--
+    impl<T> Serialize for Vec<T> where T: Serialize {
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  ... is that it overlaps with <code>Vec&lt;bool&gt;</code> (as
+  <code>bool: Serialize</code> is met), what we want to achieve is more or less:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl<T> Serialize for Vec<T> where T: Serialize, T != bool {
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  Though Rust doesn't support the <code>!=</code> operator in this position, a
+  similar outcome can be achieved via auto traits; for starters, let's create
+  one:
+</p>
+
+<listing lang="rust">
+  <!--
+    auto trait BlanketVecImpl {
+        //
+    }
+  -->
+</listing>
+
+<p>... and un-implement it for <code>bool</code>:</p>
+
+<listing lang="rust">
+  <!--
+    impl !BlanketVecImpl for bool {
+        //
+    }
+  -->
+</listing>
+
+<p>
+  We can then adjust our previous impl for <code>Vec&lt;T&gt;</code> to say:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  Voilà - this impl provides a <code>Serialize</code> for all
+  <code>Vec&lt;T&gt;</code> <i>except</i> <code>Vec&lt;bool&gt;</code>, which we
+  now can provide manually:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl Serialize for Vec<bool> {
+        /* ... */
+    }
+  -->
+</listing>
+
+<h2 id="_the_code">
+  <a href="#_the_code">The Code</a>
+</h2>
+
+<p>
+  The entire solution leans on two nightly features: <code>auto_traits</code> &
+  <code>negative_impls</code>, and while I wouldn't recommend to use it in
+  production code, it serves quite an educational purpose and was a fun piece of
+  code to write:
+</p>
+
+<div class="listing-title">
+  <a
+    href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=c9cbd4c7cc6810e2ed4e773437751181"
+    >open in playground</a
+  >
+</div>
+
+<listing lang="rust">
+  <!--
+    #![feature(auto_traits)]
+    #![feature(negative_impls)]
+    
+    trait Serialize {
+        fn serialize_in_place(&self, buffer: &mut String);
+    
+        fn serialize(&self) -> String {
+            let mut buffer = String::new();
+            self.serialize_in_place(&mut buffer);
+            buffer
+        }
+    }
+    
+    mod bool {
+        use super::*;
+    
+        impl Serialize for bool {
+            fn serialize_in_place(&self, buffer: &mut String) {
+                if *self {
+                    buffer.push_str("b(true)");
+                } else {
+                    buffer.push_str("b(false)");
+                }
+            }
+        }
+    
+        #[test]
+        fn test_bool() {
+            assert_eq!("b(true)", true.serialize());
+            assert_eq!("b(false)", false.serialize());
+        }
+    }
+    
+    mod str {
+        use super::*;
+    
+        impl Serialize for &str {
+            fn serialize_in_place(&self, buffer: &mut String) {
+                buffer.push_str("s(");
+                buffer.push_str(self);
+                buffer.push_str(")");
+            }
+        }
+    
+        #[test]
+        fn test_str() {
+            assert_eq!("s(hummus)", "hummus".serialize());
+        }
+    }
+    
+    mod vec {
+        use super::*;
+        use std::fmt::Write;
+    
+        pub auto trait BlanketVecImpl {
+            //
+        }
+    
+        impl !BlanketVecImpl for bool {
+            //
+        }
+    
+        impl BlanketVecImpl for Vec<bool> {
+            //
+        }
+    
+        impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
+            fn serialize_in_place(&self, buffer: &mut String) {
+                buffer.push_str("v(");
+    
+                for (item_idx, item) in self.iter().enumerate() {
+                    if item_idx > 0 {
+                        buffer.push_str(", ");
+                    }
+    
+                    item.serialize_in_place(buffer);
+                }
+    
+                buffer.push_str(")");
+            }
+        }
+    
+        impl Serialize for Vec<bool> {
+            fn serialize_in_place(&self, buffer: &mut String) {
+                let mut bits = 0u8;
+    
+                if self.len() > 8 {
+                    unimplemented!("what is this, big-data?");
+                }
+    
+                for (item_idx, &item) in self.iter().rev().enumerate() {
+                    if item {
+                        bits |= 1 << item_idx;
+                    }
+                }
+    
+                write!(buffer, "vb({})", bits).unwrap();
+            }
+        }
+    
+        #[test]
+        fn test_vec() {
+            assert_eq!(
+                "vb(12)",
+                vec![true, true, false, false].serialize(),
+            );
+    
+            assert_eq!(
+                "v(vb(2), vb(1))",
+                vec![vec![true, false], vec![false, true]].serialize(),
+            );
+    
+            assert_eq!(
+                "v(s(foo), s(bar))",
+                vec!["foo", "bar"].serialize(),
+            );
+        }
+    }
+  -->
+</listing>

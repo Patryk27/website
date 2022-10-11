@@ -1,0 +1,1089 @@
+<p>
+  Graphviz is a software that renders graphs, Factorio is a game in which you
+  build and maintain factories; let's explore how both can complement each
+  other.
+</p>
+
+<aside class="note">
+  <p>
+    I assume you know a bit about Factorio and, as for the rest of concepts,
+    I'll introduce you to them as we go. If you haven't played Factorio yet, I
+    highly encourage you to give it a try!
+  </p>
+</aside>
+
+<h2 id="_case_study_logistic_science_pack">
+  <a href="#_case_study_logistic_science_pack"
+    >Case study: Logistic science pack</a
+  >
+</h2>
+
+<p>
+  The story goes: we've started the game, built a few mining drills
+  (particularly for coal, iron, and copper), and got a basic electrical grid set
+  up - <b>time for science!</b>
+</p>
+
+<p>Certainly, we need a handful of laboratories:</p>
+
+<figure>
+  <img src="{{ assets }}/factorio-laboratories.jpg" />
+</figure>
+
+<p>
+  For our laboratories to work, we need a production line that will provide a
+  constant flow of science packs; since automation science packs are turbo-easy
+  to produce, let's ignore them and focus right-away on
+  <a href="https://wiki.factorio.com/Logistic_science_pack"
+    >logistic science packs</a
+  >.
+</p>
+
+<p>As we can find on Factorio's Wiki:</p>
+
+<ul>
+  <li>
+    <p>
+      To produce <code>1 logistic science pack</code>, we'll need
+      <code>1 inserter</code> and <code>1 transport belt</code>.
+    </p>
+  </li>
+  <li>
+    <p>
+      Before though, to produce that <code>1 inserter</code>, we'll need
+      <code>1 electronic circuit</code>, <code>1 iron gear wheel</code>, and
+      <code>1 iron plate</code>.
+    </p>
+  </li>
+  <li>
+    <p>
+      Before though, to produce <i>that</i> <code>1 electronic circuit</code>,
+      we'll need…​ well, describing this in English gets tedious; what do you
+      say we invent some notation to make the our recipe just a tad more
+      legible?
+    </p>
+  </li>
+</ul>
+
+<p>Let's start with a minimalistic textual format of:</p>
+
+<listing>
+  <!--
+    product
+        requirements
+  -->
+</listing>
+
+<p>
+  <i
+    >Oh, thinking about all the stuff we can do with this grammar-boi gives me
+    shivers running down my spine!</i
+  >
+</p>
+
+<p>Translating the former ingredients, we get:</p>
+
+<listing>
+  <!--
+    logistic_science_pack
+        inserter
+        transport_belt
+  -->
+</listing>
+
+<p>
+  Since both <code>inserter</code> and <code>transport_belt</code> need to be
+  produced too, let's include them as well:
+</p>
+
+<listing>
+  <!--
+    logistic_science_pack
+        inserter
+        transport_belt
+    
+    inserter
+        electronic_circuit
+        iron_gear_wheel
+        iron_plate
+    
+    transport_belt
+        iron_gear_wheel
+        iron_plate
+  -->
+</listing>
+
+<p>
+  Similarly, we'll need to produce <code>electronic_circuit</code>,
+  <code>iron_gear_wheel</code>, and - generally - everything that's not
+  primitive (which in my case means that I'll need to produce everything up to
+  <code>iron_plate</code> and <code>copper_plate</code>):
+</p>
+
+<listing>
+  <!--
+    logistic_science_pack
+        inserter
+        transport_belt
+    
+    inserter
+        electronic_circuit
+        iron_gear_wheel
+        iron_plate
+    
+    transport_belt
+        iron_gear_wheel
+        iron_plate
+    
+    electronic_circuit
+        copper_cable
+        iron_plate
+    
+    copper_cable
+        copper_plate
+    
+    iron_gear_wheel
+        iron_plate
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Some people like to build
+    <a href="https://wiki.factorio.com/Tutorial:Main_bus">main buses</a> with
+    different constituents - if you have an abundance of e.g. iron gear wheels,
+    feel free to skip them from the recipe.
+  </p>
+</aside>
+
+<p>This was the first step.</p>
+
+<p>
+  So far, we've gathered all the knowledge about what needs to be fetched
+  (think: copper plates) and what needs to be built (think: iron gear wheels) -
+  our original problem remains open though:
+  <b>where to place those assembly machines?</b>
+</p>
+
+<p>That's when graphs come into play.</p>
+
+<h2 id="_introduction_to_graphs">
+  <a href="#_introduction_to_graphs">Introduction to graphs</a>
+</h2>
+
+<p>
+  Graphs are structures used to model <b>relationships</b> between objects -
+  using graphs you can represent things like family trees or networks of
+  friends:
+</p>
+
+<figure>
+  <img src="{{ assets }}/graph-1.svg"/>
+</figure>
+
+<p>
+  Graphs consist of <b>nodes</b> (<code>Patryk</code>, <code>Dafne</code> etc.
+  on the image above) and <b>edges</b> (the lines connecting nodes).
+</p>
+
+<p>Graphs can be <b>undirected</b> (like the one above) or <b>directed</b>:</p>
+
+<figure>
+  <img src="{{ assets }}/graph-2.svg"/>
+</figure>
+
+<p>
+  Graphs can be <b>rendered by computers</b> (like the one above) or, obviously,
+  <b>by hand</b>:
+</p>
+
+<figure class="w-40">
+  <img src="{{ assets }}/hand-drawn-graph.svg" />
+</figure>
+
+<p>
+  Since this post is all about automating stuff, we're going to focus solely on
+  the computer-generated graphs - using
+  <a href="https://www.graphviz.org">Graphviz</a>.
+</p>
+
+<p>
+  Graphviz is a software that transforms description of a graph (written in the
+  <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)"
+    >DOT language</a
+  >) into an image; for instance, here's source code of the directed graph you
+  saw above:
+</p>
+
+<listing lang="dot">
+  <!--
+    # This instruction starts a directed graph
+    digraph {
+        # This instruction makes the graph go left-to-right
+        rankdir = "LR"
+    
+        # Those instructions define nodes and edges ("connections")
+        Patryk -> Dafne
+        Dafne -> Patryk
+        Dafne -> Niko
+        Dafne -> Dulcia
+        Dulcia -> Charlie
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    There are lots of fantastic <b>online</b> tools you can use to preview
+    graphs written in the DOT language; I frequently use
+    <a href="https://dreampuf.github.io/GraphvizOnline"
+      >https://dreampuf.github.io/GraphvizOnline</a
+    >
+    and
+    <a href="https://rsms.me/graphviz/"
+      >https://rsms.me/graphviz/</a
+    >.
+  </p>
+
+  <p>
+    You can just open the page, copy & paste graph's code and get a nice image
+    in return.
+  </p>
+</aside>
+
+<p>
+  What's peculiar about the DOT language, and what we're going to exploit in a
+  second, is the fact that we don't have to specify <b>where</b> our nodes and
+  edges should be located - we just say <code>Patryk → Dafne</code>,
+  <code>Dafne → Niko</code> and the program, almost magically,
+  <b>lays out</b> everything for us in an aesthetically-pleasant way.
+</p>
+
+<p>
+  Let's see how we can use this feature to answer the problem we had in the
+  previous section.
+</p>
+
+<aside class="note">
+  <p>
+    The overall subject of pretty-printing graphs is called
+    <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing"
+      >force-directed graph drawing</a
+    >
+    - it's a nice rabbit hole to go down for a side programming project!
+  </p>
+</aside>
+
+<h2 id="_case_study_logistic_science_pack_cont">
+  <a href="#_case_study_logistic_science_pack_cont"
+    >Case study: Logistic science pack (cont.)</a
+  >
+</h2>
+
+<p>Let's recall our recipe:</p>
+
+<listing>
+  <!--
+    logistic_science_pack
+        inserter
+        transport_belt
+    
+    inserter
+        electronic_circuit
+        iron_gear_wheel
+        iron_plate
+    
+    transport_belt
+        iron_gear_wheel
+        iron_plate
+    
+    electronic_circuit
+        copper_cable
+        iron_plate
+    
+    copper_cable
+        copper_plate
+    
+    iron_gear_wheel
+        iron_plate
+  -->
+</listing>
+
+<p>
+  Since Graphviz doesn't understand our notation (we've just invented it,
+  right?), first we have to translate it into the DOT language.
+</p>
+
+<p>Let's start with <code>logistic_science_pack</code>:</p>
+
+<div class="col-graph">
+  <div class="cg-body">
+    <div data-state="collapsed" class="cg-code">
+      <listing lang="dot">
+        <!--
+          digraph {
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-3.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>Now it's time for <code>inserter</code> and <code>transport_belt</code>:</p>
+
+<div class="col-graph">
+  <div class="cg-body">
+    <div class="cg-code">
+      <listing lang="dot">
+        <!--
+          digraph {
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+
+        =     electronic_circuit -> inserter
+        =     iron_gear_wheel -> inserter
+        =     iron_plate -> inserter
+
+        =     iron_gear_wheel -> transport_belt
+        =     iron_plate -> transport_belt
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-4.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>And so on, and so forth, until we finally end up with:</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+              # ...
+
+        =     copper_cable -> electronic_circuit
+        =     iron_plate -> electronic_circuit
+
+        =     copper_plate -> copper_cable
+
+        =     iron_plate -> iron_gear_wheel
+          }
+        -->
+      </listing>
+    </div>
+
+    <div class="cg-code" data-state="expanded">
+      <listing lang="dot">
+        <!--
+          digraph {
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+
+        =     copper_cable -> electronic_circuit
+        =     iron_plate -> electronic_circuit
+
+        =     copper_plate -> copper_cable
+
+        =     iron_plate -> iron_gear_wheel
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-5.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>
+  Neat, we've finally extracted some <i>new</i> information from the system:
+  <b>placement</b> and <b>wiring</b>!
+</p>
+
+<p>
+  Granted, it's not perfect (fat chance those curvy transport belts would
+  actually work in the game), but it's a nice starting point - now let's try to
+  improve it.
+</p>
+
+<p>
+  Since transport belts must be straight, let's start by forcing the edges to be
+  in line via <code>splines = ortho</code>:
+</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+        =     splines = ortho
+
+              # ...
+          }
+        -->
+      </listing>
+    </div>
+
+    <div class="cg-code" data-state="expanded">
+      <listing lang="dot">
+        <!--
+          digraph {
+        =     splines = ortho
+
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              copper_plate -> copper_cable
+              iron_plate -> iron_gear_wheel
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-6.svg"/>
+    </figure>
+  </div>
+</div>
+
+<aside class="note">
+  <p>
+    There are many other spline algorithms you can experiment with - you can
+    find them all in the
+    <a href="https://www.graphviz.org/doc/info/attrs.html#d:splines"
+      >documentation</a
+    >.
+  </p>
+</aside>
+
+<p>It looks somewhat better, but still kinda sloppy.</p>
+
+<p>
+  Since in my factory I'm going to transport copper plates next to iron plates,
+  it will be helpful to align
+  <code>copper_plate</code> on the same level as <code>iron_plate</code> (since
+  both will effectively function as "inputs" to our module).
+</p>
+
+<p>To align nodes, we can use the <code>rank</code> instruction:</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div data-state="collapsed" class="cg-code">
+      <listing lang="dot">
+        <!--
+          digraph {
+              # ...
+
+        =     {
+        =         # This instruction tells Graphviz
+        =         # to align all nodes located in
+        =         # this block next to each other
+        =         rank = same
+        =
+        =         copper_plate
+        =         iron_plate
+        =     }
+
+              # ...
+          }
+        -->
+      </listing>
+    </div>
+
+    <div data-state="expanded" class="cg-code">
+      <listing lang="dot">
+        <!--
+          digraph {
+              splines = ortho
+
+        =     {
+        =         rank = same
+        =
+        =         copper_plate
+        =         iron_plate
+        =     }
+
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              copper_plate -> copper_cable
+              iron_plate -> iron_gear_wheel
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-7.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>
+  Well, our new layout is both technically correct and a bit disappointing -
+  even though we've managed to get <code>copper_plate</code> and
+  <code>iron_plate</code> on the same level, we've also ended up with two
+  crossing edges (next to <code>transport_belt</code>), which is a no-go for
+  such a small module.
+</p>
+
+<p>
+  Let's help Graphviz by additionally aligning <code>inserter</code> and
+  <code>transport_belt</code> on the same level:
+</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+              # ...
+
+        =     {
+        =         rank = same
+        =
+        =         inserter
+        =         transport_belt
+        =     }
+
+              # ...
+          }
+        -->
+      </listing>
+    </div>
+
+    <div class="cg-code" data-state="expanded">
+      <listing lang="dot">
+        <!--
+          digraph {
+              splines = ortho
+
+              {
+                  rank = same
+
+                  copper_plate
+                  iron_plate
+              }
+
+        =     {
+        =         rank = same
+        =
+        =         inserter
+        =         transport_belt
+        =     }
+
+              copper_plate -> copper_cable
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+              iron_plate -> iron_gear_wheel
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-8.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>
+  ... at least this time we've got something we could <i>actually build</i> in
+  the game!
+</p>
+
+<p>
+  No reason to rest on our laurels so soon though - since Factorio's assembly
+  machines are squares, it would make sense to make our appropriate nodes look
+  like squares too:
+</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+              # ...
+
+        =     copper_cable [shape = box]
+        =     electronic_circuit [shape = box]
+        =     iron_gear_wheel [shape = box]
+        =     inserter [shape = box]
+        =     transport_belt [shape = box]
+        =     logistic_science_pack [shape = box]
+
+              # ...
+          }
+        -->
+      </listing>
+    </div>
+
+    <div class="cg-code" data-state="expanded">
+      <listing lang="dot">
+        <!--
+          digraph {
+              splines = ortho
+
+              {
+                  rank = same
+
+                  copper_plate
+                  iron_plate
+              }
+
+              {
+                  rank = same
+
+                  inserter
+                  transport_belt
+              }
+
+        =     copper_cable [shape = box]
+        =     electronic_circuit [shape = box]
+        =     iron_gear_wheel [shape = box]
+        =     inserter [shape = box]
+        =     transport_belt [shape = box]
+        =     logistic_science_pack [shape = box]
+
+              copper_plate -> copper_cable
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+              iron_plate -> iron_gear_wheel
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-9.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>Seizing the day, let's make them all of the same size as well:</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+              /* ... */
+
+        =     copper_cable [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     electronic_circuit [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+              /* ... */
+          }
+        -->
+      </listing>
+    </div>
+
+    <div data-state="expanded" class="cg-code">
+      <listing lang="dot">
+        <!--
+          digraph {
+              splines = ortho
+
+              {
+                  rank = same
+
+                  copper_plate
+                  iron_plate
+              }
+
+              {
+                  rank = same
+
+                  inserter
+                  transport_belt
+              }
+
+        =     copper_cable [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     electronic_circuit [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     iron_gear_wheel [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     inserter [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     transport_belt [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+        =     logistic_science_pack [
+        =         shape = box,
+        =         width = 1.5,
+        =         height = 1.5,
+        =         fixedsize = true
+        =     ]
+
+              copper_plate -> copper_cable
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              electronic_circuit -> inserter
+              iron_gear_wheel -> inserter
+              iron_plate -> inserter
+              iron_plate -> iron_gear_wheel
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+              iron_gear_wheel -> transport_belt
+              iron_plate -> transport_belt
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-10.svg">
+    </figure>
+  </div>
+</div>
+
+<p>
+  Not sure about you, but I am <b>in awe</b> seeing how well Graphviz managed to
+  lay our graph out - we could reconstruct it almost 1:1 in the game!
+</p>
+
+<p>There's just one itsy-bitsy tiny thing we may still iterate on:</p>
+
+<p>Do you see that <code>iron_gear_wheel</code> near the centre?</p>
+
+<p>
+  Currently it's responsible for producing wheels both for
+  <code>transport_belt</code> and <code>inserter</code>, which means we'd have
+  to apply a splitter - this seems overly troublesome by my standards, so let's
+  just create two separate assembly machines instead:
+</p>
+
+<div class="col-graph">
+  <input class="cg-expander" type="checkbox"/>
+  <label class="cg-expander-label">[ expand code ]</label>
+
+  <div class="cg-body">
+    <div class="cg-code" data-state="collapsed">
+      <listing lang="dot">
+        <!--
+          digraph {
+              /* ... */
+
+        =     iron_plate -> iron_gear_wheel_1
+        =     iron_gear_wheel_1 -> inserter
+
+        =     iron_plate -> iron_gear_wheel_2
+        =     iron_gear_wheel_2 -> transport_belt
+
+              /* ... */
+          }
+        -->
+      </listing>
+    </div>
+
+    <div class="cg-code" data-state="expanded">
+      <listing lang="dot">
+        <!--
+          digraph {
+              splines = ortho
+
+              {
+                  rank = same
+
+                  copper_plate
+                  iron_plate
+              }
+
+              {
+                  rank = same
+
+                  inserter
+                  transport_belt
+              }
+
+              copper_cable [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              electronic_circuit [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              iron_gear_wheel_1 [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              iron_gear_wheel_2 [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              inserter [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              transport_belt [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              logistic_science_pack [
+                  shape = box,
+                  width = 1.5,
+                  height = 1.5,
+                  fixedsize = true
+              ]
+
+              copper_plate -> copper_cable
+              copper_cable -> electronic_circuit
+              iron_plate -> electronic_circuit
+              electronic_circuit -> inserter
+        =     iron_gear_wheel_1 -> inserter
+              iron_plate -> inserter
+        =     iron_plate -> iron_gear_wheel_1
+        =     iron_plate -> iron_gear_wheel_2
+              inserter -> logistic_science_pack
+              transport_belt -> logistic_science_pack
+        =     iron_gear_wheel_2 -> transport_belt
+              iron_plate -> transport_belt
+          }
+        -->
+      </listing>
+    </div>
+
+    <figure class="cg-graph">
+      <img src="{{ assets }}/graph-11.svg"/>
+    </figure>
+  </div>
+</div>
+
+<p>Seems like we've made it! -- this our our toy at work:</p>
+
+<figure>
+  <video
+    controls=""
+    src="{{ assets }}/factorio-finished.webm">
+  </video>
+</figure>
+
+<p>
+  The first potion gets produced at 0:25, which is a rather long time, but -
+  even so - <b>it's a success</b>!
+</p>
+
+<p>Now, there's a vast array of things we could still work on - mainly:</p>
+
+<p>
+  Up to this point we didn't really care about <i>how long</i> it takes to
+  produce each part - and so at 0:33 we can see that everything gets
+  bottle-necked at the final, <code>logistic_science_pack</code> assembly
+  machine.
+</p>
+
+<p>Solving this issue is left as an exercise for the reader :-)</p>
+
+<h2 id="_case_study_chemical_science_pack">
+  <a href="#_case_study_chemical_science_pack"
+    >Case study: Chemical science pack</a
+  >
+</h2>
+
+<p>
+  This one is actually going to be way shorter - let's skip all the ceremony and
+  jump straight into the recipe:
+</p>
+
+<listing>
+  <!--
+    chemical_science_pack
+        advanced_circuit
+        engine_unit
+        sulfur
+    
+    advanced_circuit
+        copper_cable
+        electronic_circuit
+        plastic_bar
+    
+    copper_cable
+        copper_plate
+    
+    electronic_circuit
+        copper_cable
+        iron_plate
+    
+    plastic_bar
+        coal
+        petroleum_gas
+    
+    engine_unit
+        iron_gear_wheel
+        pipe
+        steel_plate
+    
+    iron_gear_wheel
+        iron_plate
+    
+    pipe
+        iron_plate
+    
+    steel_plate
+        iron_plate
+    
+    sulfur
+        petroleum_gas
+        water
+  -->
+</listing>
+
+<p>
+  Now, since I don't enjoy arduous, repetitive tasks, I've prepared a tiny
+  application that can do the graphing for me:
+</p>
+
+<p class="text-center">
+  <a href="https://factorio-layouter.pwy.io">
+    https://factorio-layouter.pwy.io
+  </a>
+</p>
+
+<h2 id="_summary_future_work">
+  <a href="#_summary_future_work">Summary & future work</a>
+</h2>
+
+<p>As with everything, so doesn't using Graphviz solve all our problems.</p>
+
+<p>
+  I find it helpful in planning the <b>initial sketches</b> of various modules
+  (which I later reiterate on a piece of paper before eventually reconstructing
+  in Factorio), and that's why I wanted to share this method with you.
+</p>
+
+<script>
+  document.querySelectorAll(".cg-expander-label").forEach(function (label) {
+    label.onclick = function() {
+      for (const child of label.parentNode.childNodes) {
+        if (child.tagName && child.tagName.toLowerCase() == "input") {
+          child.click();
+          break;
+        }
+      }
+    };
+  });
+</script>

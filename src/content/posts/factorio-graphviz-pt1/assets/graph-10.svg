@@ -1,0 +1,100 @@
+<svg viewBox="0.00 0.00 376.89 620.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="501px" height="824px">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 616)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-616 372.89,-616 372.89,4 -4,4"></polygon>
+<g id="node1" class="node">
+<title>copper_plate</title>
+<ellipse fill="none" stroke="black" cx="68.89" cy="-594" rx="68.79" ry="18"></ellipse>
+<text text-anchor="middle" x="68.89" y="-590.3" font-family="Times-Roman" font-size="14.00">copper_plate</text>
+</g>
+<g id="node5" class="node">
+<title>copper_cable</title>
+<polygon fill="none" stroke="black" points="122.89,-540 14.89,-540 14.89,-432 122.89,-432 122.89,-540"></polygon>
+<text text-anchor="middle" x="68.89" y="-482.3" font-family="Times-Roman" font-size="14.00">copper_cable</text>
+</g>
+<g id="edge1" class="edge">
+<title>copper_plate-&gt;copper_cable</title>
+<path fill="none" stroke="black" d="M68.89,-575.68C68.89,-575.68 68.89,-550.29 68.89,-550.29"></path>
+<polygon fill="black" stroke="black" points="72.39,-550.29 68.89,-540.29 65.39,-550.29 72.39,-550.29"></polygon>
+</g>
+<g id="node2" class="node">
+<title>iron_plate</title>
+<ellipse fill="none" stroke="black" cx="239.89" cy="-594" rx="54.69" ry="18"></ellipse>
+<text text-anchor="middle" x="239.89" y="-590.3" font-family="Times-Roman" font-size="14.00">iron_plate</text>
+</g>
+<g id="node3" class="node">
+<title>inserter</title>
+<polygon fill="none" stroke="black" points="242.89,-252 134.89,-252 134.89,-144 242.89,-144 242.89,-252"></polygon>
+<text text-anchor="middle" x="188.89" y="-194.3" font-family="Times-Roman" font-size="14.00">inserter</text>
+</g>
+<g id="edge6" class="edge">
+<title>iron_plate-&gt;inserter</title>
+<path fill="none" stroke="black" d="M201.1,-581.27C201.1,-581.27 201.1,-262.36 201.1,-262.36"></path>
+<polygon fill="black" stroke="black" points="204.6,-262.36 201.1,-252.36 197.6,-262.36 204.6,-262.36"></polygon>
+</g>
+<g id="node4" class="node">
+<title>transport_belt</title>
+<polygon fill="none" stroke="black" points="368.89,-252 260.89,-252 260.89,-144 368.89,-144 368.89,-252"></polygon>
+<text text-anchor="middle" x="314.89" y="-194.3" font-family="Times-Roman" font-size="14.00">transport_belt</text>
+</g>
+<g id="edge11" class="edge">
+<title>iron_plate-&gt;transport_belt</title>
+<path fill="none" stroke="black" d="M294.65,-594C320.97,-594 346.89,-594 346.89,-594 346.89,-594 346.89,-262.23 346.89,-262.23"></path>
+<polygon fill="black" stroke="black" points="350.39,-262.23 346.89,-252.23 343.39,-262.23 350.39,-262.23"></polygon>
+</g>
+<g id="node6" class="node">
+<title>electronic_circuit</title>
+<polygon fill="none" stroke="black" points="160.89,-396 52.89,-396 52.89,-288 160.89,-288 160.89,-396"></polygon>
+<text text-anchor="middle" x="106.89" y="-338.3" font-family="Times-Roman" font-size="14.00">electronic_circuit</text>
+</g>
+<g id="edge3" class="edge">
+<title>iron_plate-&gt;electronic_circuit</title>
+<path fill="none" stroke="black" d="M185.13,-594C166.06,-594 149.34,-594 149.34,-594 149.34,-594 149.34,-406.06 149.34,-406.06"></path>
+<polygon fill="black" stroke="black" points="152.84,-406.06 149.34,-396.06 145.84,-406.06 152.84,-406.06"></polygon>
+</g>
+<g id="node7" class="node">
+<title>iron_gear_wheel</title>
+<polygon fill="none" stroke="black" points="324.89,-396 216.89,-396 216.89,-288 324.89,-288 324.89,-396"></polygon>
+<text text-anchor="middle" x="270.89" y="-338.3" font-family="Times-Roman" font-size="14.00">iron_gear_wheel</text>
+</g>
+<g id="edge7" class="edge">
+<title>iron_plate-&gt;iron_gear_wheel</title>
+<path fill="none" stroke="black" d="M255.69,-576.68C255.69,-576.68 255.69,-406.23 255.69,-406.23"></path>
+<polygon fill="black" stroke="black" points="259.19,-406.23 255.69,-396.23 252.19,-406.23 259.19,-406.23"></polygon>
+</g>
+<g id="node8" class="node">
+<title>logistic_science_pack</title>
+<polygon fill="none" stroke="black" points="305.89,-108 197.89,-108 197.89,0 305.89,0 305.89,-108"></polygon>
+<text text-anchor="middle" x="251.89" y="-50.3" font-family="Times-Roman" font-size="14.00">logistic_science_pack</text>
+</g>
+<g id="edge8" class="edge">
+<title>inserter-&gt;logistic_science_pack</title>
+<path fill="none" stroke="black" d="M220.39,-143.97C220.39,-143.97 220.39,-118.33 220.39,-118.33"></path>
+<polygon fill="black" stroke="black" points="223.89,-118.33 220.39,-108.33 216.89,-118.33 223.89,-118.33"></polygon>
+</g>
+<g id="edge9" class="edge">
+<title>transport_belt-&gt;logistic_science_pack</title>
+<path fill="none" stroke="black" d="M283.39,-143.97C283.39,-143.97 283.39,-118.33 283.39,-118.33"></path>
+<polygon fill="black" stroke="black" points="286.89,-118.33 283.39,-108.33 279.89,-118.33 286.89,-118.33"></polygon>
+</g>
+<g id="edge2" class="edge">
+<title>copper_cable-&gt;electronic_circuit</title>
+<path fill="none" stroke="black" d="M87.89,-431.97C87.89,-431.97 87.89,-406.33 87.89,-406.33"></path>
+<polygon fill="black" stroke="black" points="91.39,-406.33 87.89,-396.33 84.39,-406.33 91.39,-406.33"></polygon>
+</g>
+<g id="edge4" class="edge">
+<title>electronic_circuit-&gt;inserter</title>
+<path fill="none" stroke="black" d="M147.89,-287.97C147.89,-287.97 147.89,-262.33 147.89,-262.33"></path>
+<polygon fill="black" stroke="black" points="151.39,-262.33 147.89,-252.33 144.39,-262.33 151.39,-262.33"></polygon>
+</g>
+<g id="edge5" class="edge">
+<title>iron_gear_wheel-&gt;inserter</title>
+<path fill="none" stroke="black" d="M229.89,-287.97C229.89,-287.97 229.89,-262.33 229.89,-262.33"></path>
+<polygon fill="black" stroke="black" points="233.39,-262.33 229.89,-252.33 226.39,-262.33 233.39,-262.33"></polygon>
+</g>
+<g id="edge10" class="edge">
+<title>iron_gear_wheel-&gt;transport_belt</title>
+<path fill="none" stroke="black" d="M292.89,-287.97C292.89,-287.97 292.89,-262.33 292.89,-262.33"></path>
+<polygon fill="black" stroke="black" points="296.39,-262.33 292.89,-252.33 289.39,-262.33 296.39,-262.33"></polygon>
+</g>
+</g>
+</svg>
