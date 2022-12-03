@@ -1,4 +1,17 @@
 {
+  "2022-doome" = {
+    title = "Doomé";
+    subtitle = "What we didn’t know we didn’t know";
+    when = { y = 2022; m = 12; d = 1; };
+    where = "Rust Wrocław";
+
+    resources = [
+      { label = "video"; link = "https://www.youtube.com/watch?v=S85Tw0dVtmw&t=5306s"; }
+      { label = "game"; link = "https://dzejkop.itch.io/doome"; }
+      { label = "code"; link = "https://github.com/patryk27/doome"; }
+    ];
+  };
+
   "2022-ast-virtual-machine" = {
     title = "Let's implement (an AST-based) virtual machine!";
     when = { y = 2022; m = 10; d = 6; };
