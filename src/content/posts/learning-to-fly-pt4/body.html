@@ -3394,8 +3394,8 @@
 <p>
   ... when we juxtapose <i>both</i> of them on a circle, we might just spot that
   what <code>cos(angle)</code> returns in practice is the
-  <code>x</code> coordinate of a point "rotated" with given angle — and,
-  similarly, <code>sin(angle)</code> yields the <code>y</code> coordinate:
+  <code>y</code> coordinate of a point "rotated" with given angle — and,
+  similarly, <code>sin(angle)</code> gives the <code>x</code> coordinate:
 </p>
 
 <figure class="sketch w-50">
@@ -3411,6 +3411,12 @@
     mathematicians among you will forgive me for I have semantically-sinned in a
     <i>good faith</i>.
   </p>
+
+  <p>
+    Also, foreshadowing a bit: we're actually going to use
+    <code>x = -sin(angle)</code>, because Nalgebra understands rotations
+    counterclockwise.
+  </p>
 </aside>
 
 <p>Speaking in code-terms — if what we have currently is:</p>
@@ -3423,13 +3429,13 @@
 
 <p>
   ... then rotating the <code>x</code> coordinate requires applying
-  <code>+ cos()</code>:
+  <code>- sin()</code>:
 </p>
 
 <listing lang="javascript">
   <!--
     this.moveTo(
-  =     x + Math.cos(rotation) * size,
+  =     x - Math.sin(rotation) * size,
         y,
     );
   -->
@@ -3437,14 +3443,14 @@
 
 <p>
   ... and rotating the <code>y</code> coordinate requires applying
-  <code>+ sin()</code>:
+  <code>+ cos()</code>:
 </p>
 
 <listing lang="javascript">
   <!--
     this.moveTo(
-        x + Math.cos(rotation) * size,
-  =     y + Math.sin(rotation) * size,
+        x - Math.sin(rotation) * size,
+  =     y + Math.cos(rotation) * size,
     );
   -->
 </listing>
@@ -3486,25 +3492,27 @@
 <p>... two more to go!</p>
 
 <p>
-  Since interior angles of a triangle
-  <a href="https://en.wikipedia.org/wiki/Sum_of_angles_of_a_triangle"
-    >sum up to 180° degrees</a
-  >, then inside our <i>equilateral triangle</i>, each vertex must be of angle =
-  180° / 3 = 60°.
+  Since the entire circle takes 360° and we've got three vertices to draw, then
+  each vertex is going to occupy 360° / 3 = 120°; considering that first vertex
+  lays on 0°, the second vertex is going to be located at 120°.
 </p>
 
 <p>A quick conversion to radians, using proportions:</p>
 
 <listing lang="text">
   <!--
-    2 * PI = 360°
-         x = 60°
-    
-    360° * x = 2 * PI * 60°    | divide by 2
-    180° * x = PI * 60°        | divide by 180°
-           x = PI * 60° / 180° | simplify
-           x = PI * 2 / 3      | shuffle constant to left
-           x = 2 / 3 * PI      | enjoy
+    { 2 * PI = 360°
+    {      x = 120°
+
+             ^
+             |
+             v
+
+    360° * x = 2 * PI * 120°    | divide by 2
+    180° * x = PI * 120°        | divide by 180°
+           x = PI * 120° / 180° | simplify
+           x = PI * 2 / 3       | shuffle constant to left
+           x = 2 / 3 * PI       | enjoy
   -->
 </listing>
 
@@ -3513,13 +3521,13 @@
 <listing lang="javascript">
   <!--
     this.moveTo(
-        x + Math.cos(rotation) * size,
-        y + Math.sin(rotation) * size,
+        x - Math.sin(rotation) * size,
+        y + Math.cos(rotation) * size,
     );
     
   = this.lineTo(
-  =     x + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
-  =     y + Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+  =     x - Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+  =     y + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
   = );
   -->
 </listing>
@@ -3530,12 +3538,12 @@
   />
 </figure>
 
-<p>Similarly, the third vertex will be 60° away from the second vertex:</p>
+<p>Similarly, for the third vertex:</p>
 
 <listing lang="text">
   <!--
     2 * PI = 360°
-         x = 60° + 60°
+         x = 120° + 120°
     
     /* ... */
     
@@ -3548,18 +3556,18 @@
 <listing lang="javascript">
   <!--
     this.moveTo(
-        x + Math.cos(rotation) * size,
-        y + Math.sin(rotation) * size,
+        x - Math.sin(rotation) * size,
+        y + Math.cos(rotation) * size,
     );
     
     this.lineTo(
-        x + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
-        y + Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+        x - Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+        y + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
     );
     
   = this.lineTo(
-  =     x + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
-  =     y + Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+  =     x - Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+  =     y + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
   = );
   -->
 </listing>
@@ -3580,8 +3588,8 @@
   <listing lang="javascript">
     <!--
       this.lineTo(
-          x + Math.cos(rotation - 2.0 / 3.0 * Math.PI) * size,
-          y + Math.sin(rotation - 2.0 / 3.0 * Math.PI) * size,
+          x - Math.sin(rotation - 2.0 / 3.0 * Math.PI) * size,
+          y + Math.cos(rotation - 2.0 / 3.0 * Math.PI) * size,
       );
     -->
   </listing>
@@ -3613,13 +3621,13 @@
     /* ... */
     
     this.lineTo(
-        x + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
-        y + Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+        x - Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+        y + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
     );
     
   = this.lineTo(
-  =     x + Math.cos(rotation) * size,
-  =     y + Math.sin(rotation) * size,
+  =     x - Math.sin(rotation) * size,
+  =     y + Math.cos(rotation) * size,
   = );
   -->
 </listing>
@@ -3637,23 +3645,23 @@
   =         this.beginPath();
   = 
   =         this.moveTo(
-  =             x + Math.cos(rotation) * size,
-  =             y + Math.sin(rotation) * size,
+  =             x - Math.sin(rotation) * size,
+  =             y + Math.cos(rotation) * size,
   =         );
   = 
   =         this.lineTo(
-  =             x + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
-  =             y + Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+  =             x - Math.sin(rotation + 2.0 / 3.0 * Math.PI) * size,
+  =             y + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
   =         );
   = 
   =         this.lineTo(
-  =             x + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
-  =             y + Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+  =             x - Math.sin(rotation + 4.0 / 3.0 * Math.PI) * size,
+  =             y + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
   =         );
   = 
   =         this.lineTo(
-  =             x + Math.cos(rotation) * size,
-  =             y + Math.sin(rotation) * size,
+  =             x - Math.sin(rotation) * size,
+  =             y + Math.cos(rotation) * size,
   =         );
   = 
   =         this.stroke();
@@ -3687,15 +3695,15 @@
             this.beginPath();
     
             this.moveTo(
-  =             x + Math.cos(rotation) * size * 1.5,
-  =             y + Math.sin(rotation) * size * 1.5,
+  =             x - Math.sin(rotation) * size * 1.5,
+  =             y + Math.cos(rotation) * size * 1.5,
             );
     
             /* ... */
     
             this.lineTo(
-  =             x + Math.cos(rotation) * size * 1.5,
-  =             y + Math.sin(rotation) * size * 1.5,
+  =             x - Math.sin(rotation) * size * 1.5,
+  =             y + Math.cos(rotation) * size * 1.5,
             );
     
             this.stroke();
@@ -3812,7 +3820,7 @@
 <listing lang="rust">
   <!--
     /* ... */
-  = animal.position += animal.rotation * na::Vector2::new(animal.speed, 0.0);
+  = animal.position += animal.rotation * na::Vector2::new(0.0, animal.speed);
     /* ... */
   -->
 </listing>
@@ -3829,7 +3837,7 @@
 
 <aside class="note">
   <blockquote>
-    <p>Wait, wait — why <code>::new(animal.speed, 0.0)</code>?</p>
+    <p>Wait, wait — why <code>::new(0.0, animal.speed)</code>?</p>
   </blockquote>
 
   <p>
@@ -3846,15 +3854,15 @@
   </figure>
 
   <p>
-    So that's the issue our <code>::new(animal.speed, 0.0)</code> solves — it
-    says that we're interested in rotating relative to the <code>x</code> axis,
-    that is: a bird with rotation of 0° will fly <b>to the right</b>.
+    So that's the issue our <code>::new(0.0, animal.speed)</code> solves — it
+    says that we're interested in rotating relative to the <code>y</code> axis,
+    that is: a bird with rotation of 0° will fly <b>upwards</b>.
   </p>
 
   <p>
     All said, this is a rather arbitrary decision that just neatly aligns with
     how we render triangles on <code>&lt;canvas&gt;</code>; we might've as well
-    done e.g. <code>::new(0.0, animal.speed)</code> and adjust our
+    done e.g. <code>::new(-animal.speed, 0.0)</code> and adjust our
     <code>drawTriangle()</code> to account for that.
   </p>
 </aside>
@@ -4031,7 +4039,7 @@
         pub fn step(&mut self) {
             for animal in &mut self.world.animals {
                 animal.position +=
-                    animal.rotation * na::Vector2::new(animal.speed, 0.0);
+                    animal.rotation * na::Vector2::new(0.0, animal.speed);
     
   =             animal.position.x = na::wrap(animal.position.x, 0.0, 1.0);
   =             animal.position.y = na::wrap(animal.position.y, 0.0, 1.0);
@@ -4316,7 +4324,7 @@
   =     fn process_movements(&mut self) {
   =         for animal in &mut self.world.animals {
   =             animal.position +=
-  =                 animal.rotation * na::Vector2::new(animal.speed, 0.0);
+  =                 animal.rotation * na::Vector2::new(0.0, animal.speed);
   = 
   =             animal.position.x = na::wrap(animal.position.x, 0.0, 1.0);
   =             animal.position.y = na::wrap(animal.position.y, 0.0, 1.0);
