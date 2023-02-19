@@ -1,11 +1,13 @@
 fw: { src, labels }:
 
 let
-  inherit (fw) pkgs;
+  inherit (fw) pkgs linuxPkgs;
   inherit (pkgs) lib stdenv;
 
+  inkscape = linuxPkgs.inkscape;
+
   # Some of those tools are unfree, but we don't need them anyway:
-  image_optim = pkgs.image_optim.override {
+  image_optim = linuxPkgs.image_optim.override {
     withPngcrush = false;
     withPngout = false;
     withAdvpng = false;
@@ -19,10 +21,10 @@ let
   };
 
   renderSketch = sketchIdx: sketchLabel:
-    pkgs.runCommand "sketch-${toString sketchIdx}--${sketchLabel}" { } ''
+    linuxPkgs.runCommand "sketch-${toString sketchIdx}--${sketchLabel}" { } ''
       echo "[+] Rendering"
 
-      ${pkgs.inkscape}/bin/inkscape \
+      ${inkscape}/bin/inkscape \
           --export-filename=/tmp/sketch.svg \
           --pdf-page="${toString sketchIdx}" \
           --export-area-drawing \

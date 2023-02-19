@@ -33,6 +33,11 @@
         defaultPackage = import ./src/framework.nix {
           inherit pkgs;
 
+          # TODO needed for Inkscape
+          linuxPkgs = import nixpkgs {
+            system = "x86_64-linux";
+          };
+
           rev = self.rev or "dirty";
           content = import ./src/content.nix pkgs;
 
@@ -73,8 +78,10 @@
             '';
 
           in
-          pkgs.writeShellScriptBin "run-website" ''
-            ${pkgs.python3}/bin/python ${app}
-          '';
+          utils.lib.mkApp {
+            drv = pkgs.writeShellScriptBin "run-website" ''
+              ${pkgs.python3}/bin/python ${app}
+            '';
+          };
       });
 }
