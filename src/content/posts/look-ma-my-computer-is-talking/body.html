@@ -1,0 +1,1172 @@
+<p>
+  In this article I'll show you a fun & simple algorithm (&lt; 200 lines of Rust
+  code, no cheating) that can be trained on some text and later used to generate
+  plausibly-looking <i>new</i> text from it.
+</p>
+
+<p>
+  Here's an example of that, having trained it on Shakespeare:
+</p>
+
+<listing lang="text">
+  <!--
+    > ACT IV
+    ACT IV. Scene I.
+    The coast of Kent
+
+    Alarum. Enter Falstaff solus.
+
+      Gent. Ay, gentle Thurio; for you are senseless.
+      CLOTEN. I cannot forget
+        But thou art not here.
+      BARDOLPH. Sir John, as you may:
+        Will tie you to this vault to die,
+        Or with the Emperor in his banishment.
+  -->
+</listing>
+
+... a few Wikipedia articles:
+
+<listing lang="text">
+  <!--
+    > Salmon thinks
+    Salmon thinks, again contrary to Kant, that it is he whom Wanda will marry,
+    and she placed fourth behind Mia Farrow, Jane Fonda, Peter Fonda, Oliver Reed,
+    Ashton met the Australian dental surgeon Phil Rasmussen, who gave him the name
+    Valor.
+  -->
+</listing>
+
+<p>
+  ... and, as is the custom, on <a href="https://github.com/torvalds/linux">The
+  Kernel</a> itself:
+</p>
+
+<listing lang="text">
+  <!--
+    > switch (
+    switch (skdev->state) {
+            case MT6323_CHIP_ID:
+                    if (m->gpio[MAX1600_GPIO_0VPP]) {
+                    tsi_err(&pdev->dev, DMA_BIT_MASK(32);
+  -->
+</listing>
+
+<p>
+  My hopes are to spark your interest in the topic of language models and then,
+  if you'd like to learn more, at the end of this post I'll leave a link to my
+  favorite article from Andrej Karpathy on the topic of <b>recurrent neural
+  networks</b> which can be used to approximate languages <i>crazy good</i>, of
+  course with the caveat that they require somewhat more advanced math than what
+  I'm going to show here :-)
+</p>
+
+<p>
+  Anyway, let's buckle up and start! -- no particular knowledge is required, the
+  main audience for this article are Rust begginers and/or people simply
+  interested in statistics.
+</p>
+
+<p>
+  (as always, source code is <a href="https://github.com/Patryk27/chatgpt-at-home">available at my GitHub</a>.)
+</p>
+
+<h2 id="naivete">
+  <a href="#naivete">
+    Naïveté
+  </a>
+</h2>
+
+<p>
+  So, what we want to achieve is an application that can can be trained on a
+  dataset and later used to generate something new that <b>feels like</b> it
+  originates from that original dataset without actually being copied verbatim.
+</p>
+
+<p>
+  That is to say, an overview of our program is:
+</p>
+
+<listing lang="rust">
+  <!--
+    struct Brain {
+        /* ... */
+    }
+
+    impl Brain {
+        pub fn train(&mut self, text: &str) {
+            /* ... */
+        }
+
+        pub fn prompt(&self, prompt: &str, length: usize) -> String {
+            /* ... */
+        }
+    }
+
+    fn main() {
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>
+  ... and a very naive implementation could fit on a larger handkerchief:
+</p>
+
+<listing lang="rust">
+  <!--
+  = use rand::seq::SliceRandom;
+  =
+  = #[derive(Default)]
+  = struct Brain {
+  =     words: Vec<String>,
+  = }
+  =
+  = impl Brain {
+  =     pub fn train(&mut self, text: &str) {
+  =         // Split the input text into words
+  =         self.words = text.split(' ').map(|word| word.to_string()).collect();
+  =     }
+  =
+  =     pub fn prompt(&self, prompt: &str, length: usize) -> String {
+  =         let mut out: Vec<_> = prompt
+  =             .split(' ')
+  =             .map(|word| word.to_string())
+  =             .collect();
+  =
+  =         let mut rng = rand::thread_rng();
+  =
+  =         while out.len() < length {
+  =             // Complete prompt by choosing random words from the input text
+  =             // until the user is fed
+  =             out.push(self.words.choose(&mut rng).unwrap().clone());
+  =         }
+  =
+  =         out.join(" ")
+  =     }
+  = }
+  -->
+</listing>
+
+<p>
+  Before we start ranting about what makes that approach bad, let's at least see
+  it in action:
+</p>
+
+<listing lang="shell">
+  <!--
+    $ cargo new chatgpt-at-home
+    $ cd chatgpt-at-home
+    $ cargo add rand
+    # fill-in src/main.rs
+  -->
+</listing>
+
+<p>
+  Let's train it on, say, Orwell's <i>Nineteen Eighty-Four</i>:
+</p>
+
+<listing lang="shell">
+  <!--
+    $ wget http://gutenberg.net.au/ebooks01/0100021.txt -O 1984.txt
+  -->
+</listing>
+
+<listing lang="rust">
+  <!--
+  = fn main() {
+  =     let mut brain = Brain::default();
+  =
+  =     brain.train(include_str!("../1984.txt"));
+  =
+  =     println!("{}", brain.prompt("It was a", 64));
+  = }
+  -->
+</listing>
+
+<p>
+  ... aaaand:
+</p>
+
+<div class="listing-title">
+  $ cargo run
+</div>
+
+<listing lang="text">
+  <!--
+    It was a the
+    bullet, sensuality, tiny--helpless!
+    How warm as Americans will earliest bluebells. the and
+    resentment vague five-cent another. It on
+    the they crashed of I it
+    was motive English darkness,' had and or time it he varicose designed stormed. the war tormented, it ran:
+
+
+     as that idea Even
+    the the was An the no the 'It's he to with go white. the to pleasure Socialist he This on
+  -->
+</listing>
+
+<p>
+  Oof, owie <i>(surprised pikatchu face)</i>, that's pretty bad - what's going
+  on?
+</p>
+
+<h2 id="context">
+  <a href="#context">
+    Context
+  </a>
+</h2>
+
+<p>
+  Arguably, generating random words yields bad prose because usually words in
+  a sentence are somewhat related to each other (grand discovery, send me a
+  nobel prize, i know) -- and our implementation doesn't care about that.
+</p>
+
+<p>
+  A low hanging fruit would be to redesign the application so that instead of
+  keeping words as a plain list, it keeps track of their <b>context</b> as well:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[derive(Default)]
+    struct Brain {
+  =     words: HashMap<String, HashMap<String, usize>>,
+    }
+  -->
+</listing>
+
+<p>
+  In this design, the outer map contains all of the words and the inner map
+  contains words that <i>follow</i> given word at least once (with
+  <code>usize</code> counting how many times this following occurred).
+</p>
+
+<p>
+  That is to say, given this sentence:
+</p>
+
+<listing lang="text">
+  <!--
+    Hello, World! Hello, Joe! Hello, World!
+  -->
+</listing>
+
+<p>
+  ... we'd expect the map to look like this:
+</p>
+
+<listing lang="javascript">
+  <!--
+    {
+      "Hello,": {
+          "World!": 2,
+          "Joe!": 1,
+      },
+      "World!": {
+          "Hello,": 1,
+      },
+      "Joe!": {
+          "Hello,": 1,
+      },
+    }
+  -->
+</listing>
+
+<p>
+  As compared to a pure list, a map is pretty neat because it tells us the
+  <i>relationships</i> between words.
+</p>
+
+<p>
+  For instance, we can see that directly after <code>Hello,</code> our dataset
+  followed twice with <code>World!</code> and once with <code>Joe!</code>, but
+  never with another <code>Hello,</code> - and we can use this knowledge to
+  fine-tune the prompter to choose words based on their frequency:
+</p>
+
+<listing lang="rust">
+  <!--
+    use rand::seq::SliceRandom;
+  = use std::collections::HashMap;
+
+    #[derive(Default)]
+    struct Brain {
+        words: HashMap<String, HashMap<String, usize>>,
+    }
+
+    impl Brain {
+        pub fn train(&mut self, text: &str) {
+  =         let mut prev_word = None;
+  =
+  =         for word in text.split(' ') {
+  =             if let Some(prev_word) = prev_word.replace(word) {
+  =                 *self
+  =                     .words
+  =                     .entry(prev_word.to_string())
+  =                     .or_default()
+  =                     .entry(word.to_string())
+  =                     .or_default() += 1;
+  =             }
+  =         }
+        }
+
+        pub fn prompt(&self, prompt: &str, length: usize) -> String {
+            let mut out: Vec<_> = prompt
+                .split(' ')
+                .map(|str| str.to_string())
+                .collect();
+
+            let mut rng = rand::thread_rng();
+
+            while out.len() < length {
+  =             // Here comes the contextuality - let's look at the latest word
+  =             // and try to find the most probable follower:
+  =             let last_word = out.last().unwrap();
+  =
+  =             if let Some(next_words) = self.words.get(last_word) {
+  =                 // rand's `.choose_weighted()` works on a `Vec`, so we have
+  =                 // to collect the follower-candidates first:
+  =                 let next_words: Vec<_> = next_words.iter().collect();
+  =
+  =                 // And finally, we can choose the next word based on its
+  =                 // frequency:
+  =                 let next_word = next_words
+  =                     .choose_weighted(&mut rng, |(_word, frequency)| *frequency)
+  =                     .unwrap();
+  =
+  =                 out.push(next_word.0.to_string());
+  =             } else {
+  =                 // If this branch is taken, then it means we've stumbled
+  =                 // upon an unknown word - e.g. someone has given us a prompt
+  =                 // with a word that wasn't seen during the training phase.
+  =                 //
+  =                 // To recover from this situation, we could either generate
+  =                 // a completely random word (to push *something* to `out` so
+  =                 // that over the next iteration we have a different word to
+  =                 // lookup) or we can just simply bail out; let's do the
+  =                 // latter.
+  =                 break;
+  =             }
+            }
+
+            out.join(" ")
+        }
+    }
+
+    fn main() {
+        let mut brain = Brain::default();
+
+  =     brain.train("Hello, World! Hello, Joe! Hello, World!");
+
+  =     println!("{}", brain.prompt("Hello,", 16));
+    }
+  -->
+</listing>
+
+<div class="listing-title">
+  $ cargo run
+</div>
+
+<listing lang="text">
+  <!--
+    Hello, World! Hello, World! Hello, World! Hello, Joe! Hello, World! Hello, World! Hello, Joe! Hello, World!
+  -->
+</listing>
+
+<p>
+  Hey, that's some progress! Let's see what it thinks of Orwell back again:
+</p>
+
+<listing lang="rust">
+  <!--
+  =   brain.train(include_str!("../1984.txt"));
+  =
+  =   println!("{}", brain.prompt("It was a", 64));
+  -->
+</listing>
+
+<div class="listing-title">
+  $ cargo run
+</div>
+
+<listing lang="text">
+  <!--
+    It was a different person.
+
+    'You see through the Party's sexual desire, they could. I collaborated in Newspeak
+    it was ambivalent in books, he had not know that
+    Newspeak is no words of thing into his mother said, speaking to grow not
+    less but when you remember the beginning there
+    had been issued yet. The face against all hours. He picked herself was awake he had racked my
+    brains. There
+  -->
+</listing>
+
+<p>
+  Now we're talking! -- the first sentence is correct English, feels like it
+  could come from 1984, and it doesn't come verbatim from the source text; if
+  that isn't huge success, I don't know what is!
+</p>
+
+<p class="text-dim">
+  (👉👈 so circling back to that nobel prize thingie 👉👈)
+</p>
+
+<p>
+  Would you guess it, the thing we've just invented actually exists and has its
+  own name - it's called <b>n-grams</b>; in particular, what we've created is a
+  <b>2-gram</b> (bigram) model of that book.
+</p>
+
+<p>
+  In general, n-grams are just "sliding windows" of the input data:
+</p>
+
+<listing lang="rust">
+  <!--
+    fn main() {
+        let input = "Onions have layers. Ogres have layers. Onions have layers.";
+        let words: Vec<_> = input.split(' ').collect();
+        let bigram: Vec<_> = words.windows(2).collect();
+        let trigram: Vec<_> = words.windows(3).collect();
+
+        println!("{:?}", bigram);
+        println!("{:?}", trigram);
+    }
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+    [["Onions", "have"], ["have", "layers."], ["layers.", "Ogres"], ...]
+    [["Onions", "have", "layers."], ["have", "layers.", "Ogres"], ["layers.", "Ogres", "have"], ...]
+  -->
+</listing>
+
+<p>
+  ... and they come handy pretty often when working with text, e.g. when
+  <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-ngram-tokenizer.html">designing search engines</a>;
+  or, you know, just having fun.
+</p>
+
+<aside class="note">
+  <p>
+    What's more, the algorithm in <code>.prompt()</code> <i>also</i> has its own
+    name, albeit more fancy one: it's called <b>Markov chain</b>.
+  </p>
+
+  <p>
+    Simplifying a bit, Markov chains are when you decide what to do next based
+    on the current state of the world and a set of future-state-candidates that
+    have some probabilities - just like in the call to
+    <code>.choose_weighted()</code>.
+  </p>
+</aside>
+
+<p>
+  Terminology aside - what can we do to make the text generation better?
+</p>
+
+<p>
+  At the moment our <span class="text-rainbow">brain</span> "sees" only within
+  the context of one word (<code>out.last()</code>) - this means that in any
+  given sentence:
+</p>
+
+<listing lang="text">
+  <!--
+    Mary   had    a      little  lamb
+    word0  word1  word2  word3   word4
+  -->
+</listing>
+
+<p>
+  ... <code>word1</code> is only influenced by <code>word0</code>,
+  <code>word2</code> is only influenced by <code>word1</code> etc., without
+  any "long distance" relationships happening.
+</p>
+
+<p>
+  Among other things, this means that when we train our algorithm on a larger
+  dataset, it will most likely start generating <i>more</i> garbled data instead
+  of less, because the probabilities will get "blurred" between more words.
+</p>
+
+<p>
+  So, there are (at least) two (easy) things we can do to improve it.
+</p>
+
+<h2 id="tokens">
+  <a href="#tokens">
+    All My Tokens Gone
+  </a>
+</h2>
+
+<p>
+  n-grams (and lots of other text algorithms, for that matter) require for the
+  input data to be split into smaller, "reasonable" chunks - for instance, it
+  wouldn't make sense to do <code>self.words["some very long sentence"]</code>, it
+  needs to be split into words first.
+</p>
+
+<p>
+  The process of splitting input data into "smaller chunks" is called
+  <b>tokenization</b> and the "smaller chunks" themselves are called
+  <b>tokens</b>.
+</p>
+
+<p>
+  So far our tokenization has been pretty simple:
+</p>
+
+<listing lang="rust">
+  <!--
+    text.split(' ')
+  -->
+</listing>
+
+<p>
+  ... and while simplicity is generally desirable, in this case it leaves us
+  with a subpar approach.
+</p>
+
+<p>
+  For instance, it will leave <code>Hello,</code> as a single token (with comma
+  glued to it), while if we splitted it into <code>["Hello", ","]</code>, the
+  algorithm could "generalize" better over the input dataset, since it could
+  "connect" <code>Hello</code>s inside <code>Hello, World!</code> and
+  <code>Hello! World!</code>.
+</p>
+
+<p>
+  As you might imagine, there are ~million ways to tokenize a sentence (by
+  words, by lowercased words, by letters, with punctuation, without punctuation,
+  including spaces, excluding spaces etc.) - for the purposes of this article,
+  I propose a tokenizer which, upon finding a letter or a digit, simply reads
+  the entire word (or number), passing other characters through:
+</p>
+
+<listing lang="rust">
+  <!--
+    /* ... */
+  = use std::{collections::HashMap, iter};
+
+    impl Brain {
+        /* ... */
+
+  =     fn tokenize(s: &str) -> impl Iterator<Item = &str> {
+  =         let mut chars = s.char_indices().peekable();
+  =
+  =         iter::from_fn(move || loop {
+  =             let (idx, ch) = chars.next()?;
+  =
+  =             if ch.is_alphanumeric() {
+  =                 // If the current character is a letter or a number, let's
+  =                 // read it until its end (i.e. let's read as long as we
+  =                 // still have a character or a number to read).
+  =
+  =                 let idx_from = idx;
+  =                 let mut idx_to = idx + ch.len_utf8(); // `+ len_utf8()` allows us
+  =                                                       // to handle UTF-8 chars
+  =
+  =                 while let Some((idx, ch)) = chars.peek() {
+  =                     if ch.is_alphanumeric() {
+  =                         idx_to = idx + ch.len_utf8();
+  =                         chars.next();
+  =                     } else {
+  =                         break;
+  =                     }
+  =                 }
+  =
+  =                 return Some(&s[idx_from..idx_to]);
+  =             } else {
+  =                 // If the current character is not a letter nor a number,
+  =                 // let's emit it verbatim.
+  =                 //
+  =                 // This handles punctuation, spaces etc.
+  =
+  =                 let idx_from = idx;
+  =                 let idx_to = idx + ch.len_utf8();
+  =
+  =                 return Some(&s[idx_from..idx_to]);
+  =             }
+  =         })
+  =     }
+    }
+
+    /* ... */
+
+  = #[cfg(test)]
+  = mod tests {
+  =     use super::*;
+  =
+  =     // cargo add test-case --dev
+  =     use test_case::test_case;
+  =
+  =     #[test_case(
+  =         "Hello, World!",
+  =         &["Hello", ",", " ", "World", "!"]
+  =     )]
+  =     #[test_case(
+  =         "#include <coffee.h>",
+  =         &["#", "include", " ", "<", "coffee", ".", "h", ">"]
+  =     )]
+  =     #[test_case(
+  =         "123 + 234 = 0xCAFEBABE",
+  =         &["123", " ", "+", " ", "234", " ", "=", " ", "0xCAFEBABE"]
+  =     )]
+  =     fn tokenize(given: &str, expected: &[&str]) {
+  =         let actual: Vec<_> = Brain::tokenize(given).collect();
+  =
+  =         let expected: Vec<_> = expected
+  =             .iter()
+  =             .map(|token| token.to_string())
+  =             .collect();
+  =
+  =         assert_eq!(expected, actual);
+  =     }
+  = }
+  -->
+</listing>
+
+<p>
+  ... which we can now call:
+</p>
+
+<listing lang="rust">
+  <!--
+    impl Brain {
+        pub fn train(&mut self, text: &str) {
+            /* ... */
+
+  =         for word in Self::tokenize(text) {
+                /* ... */
+            }
+        }
+
+        pub fn prompt(&self, prompt: &str, length: usize) -> String {
+  =         let mut out: Vec<_> = Self::tokenize(prompt)
+                .map(|str| str.to_string())
+                .collect();
+
+            let mut rng = rand::thread_rng();
+
+            /* ... */
+
+  =         // Spaces are now just tokens, so there's no need to join by them
+  =         // anymore:
+  =         out.join("")
+        }
+    }
+  -->
+</listing>
+
+<p>
+  ... and:
+</p>
+
+<div class="listing-title">
+  $ cargo run
+</div>
+
+<listing lang="text">
+  <!--
+    It was a stronger are the
+
+    existed Ministry with arm. endless had world Then was 1930, game booklets was at who day children, bulletin!"'s vast the a
+
+    these
+  -->
+</listing>
+
+<p>
+  Huh, it's... <i>somewhat worse</i>?
+</p>
+
+<p>
+  Don't get me wrong, it wasn't exactly a candidate for Pulitzer before either -
+  but this so-called "better" tokenizer downright destroyed the output. This, of
+  course, makes sense if you notice that space is now a separate token - it
+  means that what before was:
+</p>
+
+<listing lang="javascript">
+  <!--
+    {
+      "Hello,": {
+          "World!": 2,
+          "Joe!": 1,
+      },
+      "World!": {
+          "Hello,": 1,
+      },
+      "Joe!": {
+          "Hello,": 1,
+      },
+    }
+  -->
+</listing>
+
+<p>
+  ... has now become:
+</p>
+
+<listing lang="javascript">
+  <!--
+    {
+        "World": {
+            "!": 2,
+        },
+        "!": {
+            " ": 2,
+        },
+        "Joe": {
+            "!": 1,
+        },
+        "Hello": {
+            ",": 3,
+        },
+        ",": {
+            " ": 3,
+        },
+        " ": {
+            "Hello": 2,
+            "World": 2,
+            "Joe": 1,
+        },
+    }
+  -->
+</listing>
+
+<p>
+  ... and so after emitting e.g. <code>Hello</code>, the only next possible
+  token is comma, after which the only next token is space, after which we are
+  back to randomly choosing between <code>Hello</code>, <code>World</code> and
+  <code>Joe</code>, since with just single-token lookbehind we don't remember
+  that <code>Hello, Hello</code> is not a "valid" sentence anymore!
+</p>
+
+<p>
+  Fortunately, in this case what was easily broken can be (relatively) easily
+  fixed.
+</p>
+
+<h2 id="more-context">
+  <a href="#more-context">
+    More context, More Context, MORE. CONTEXT.
+  </a>
+</h2>
+
+<p>
+  If currently we're generating <i>bi</i>grams, then maybe generating
+  <i>longer</i>-grams would help? Let's try:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[derive(Default)]
+    struct Brain {
+  =     tokens: HashMap<[String; 4], HashMap<String, usize>>,
+    }
+
+    impl Brain {
+        pub fn train(&mut self, text: &str) {
+  =         let mut context: Vec<&str> = Vec::new();
+  =
+            for token in Self::tokenize(text) {
+  =             if let &[c4, c3, c2, c1] = context.as_slice() {
+  =                 *self
+  =                     .tokens
+  =                     .entry([
+  =                         c4.to_string(),
+  =                         c3.to_string(),
+  =                         c2.to_string(),
+  =                         c1.to_string(),
+  =                     ])
+  =                     .or_default()
+  =                     .entry(token.to_string())
+  =                     .or_default() += 1;
+  =             }
+  =
+  =             context.push(token);
+  =
+  =             if context.len() > 4 {
+  =                 context.remove(0);
+  =             }
+            }
+        }
+
+        pub fn prompt(&self, prompt: &str, length: usize) -> String {
+  =         let mut out: Vec<_> = Self::tokenize(prompt).collect();
+            let mut rng = rand::thread_rng();
+
+            while out.len() < length {
+  =             let context = [
+  =                 out[out.len() - 4].to_string(),
+  =                 out[out.len() - 3].to_string(),
+  =                 out[out.len() - 2].to_string(),
+  =                 out[out.len() - 1].to_string(),
+  =             ];
+
+  =             if let Some(next_tokens) = self.tokens.get(&context) {
+  =                 let next_tokens: Vec<_> = next_tokens.iter().collect();
+
+  =                 let next_token = next_tokens
+  =                     .choose_weighted(&mut rng, |(_token, frequency)| *frequency)
+  =                     .unwrap();
+
+  =                 out.push(&next_token.0);
+                } else {
+                    break;
+                }
+            }
+
+            out.join("")
+        }
+    }
+
+    fn main() {
+        /* ... */
+
+  =     println!("{}", brain.prompt("It was a failure.", 64));
+    }
+  -->
+</listing>
+
+<aside class="note">
+  <p>
+    Nota bene, desining this map with <code>[String; ...]</code> as keys is
+    incredibly inefficient here, because not only all of the input words will be
+    duplicated multiple times throughout the memory, but also our lookup is
+    pretty awkward - we can't just do <code>tokens.get(&["foo", "bar", "zar", "dar"])</code>,
+    since we are forced to provide <code>&[String]</code>.
+  </p>
+
+  <p>
+    A much better solution would be adding the tokens during the training phase
+    and later looking them up by ids:
+  </p>
+
+  <listing lang="rust">
+    <!--
+      type Token = String;
+      type TokenId = usize;
+      type TokenFrequency = usize;
+
+      #[derive(Default)]
+      struct Brain {
+          token_to_id: HashMap<Token, TokenId>,
+          id_to_token: HashMap<TokenId, Token>,
+          frequencies: HashMap<Vec<TokenId>, HashMap<TokenId, TokenFrequency>>,
+      }
+    -->
+  </listing>
+
+  <p>
+    ... but for the purposes of this article strings-strings will be just fine.
+  </p>
+</aside>
+
+<p>
+  ... and:
+</p>
+
+<listing lang="text">
+  <!--
+    It was a failure. It had faded but before
+    O'Brien smiled faintly. 'You are thinking,' he said.
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+    It was a failure. It was gin that revived him every morning.
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+    It was a failure. It was somehow slightly frightening, like the beams of a dental plate fell out of him under the banner of equality
+  -->
+</listing>
+
+<p>
+  Ha, ha!
+</p>
+
+<p>
+  Unfortunately, not everything's so great - because now we require for the
+  context to contain exactly four tokens, prompts with less:
+</p>
+
+<listing lang="rust">
+  <!--
+    fn main() {
+        /* ... */
+
+  =     println!("{}", brain.prompt("It was", 64));
+    }
+  -->
+</listing>
+
+<p>
+  ... cause <span class="text-rainbow">panic! at the brain</span>:
+</p>
+
+<listing lang="text">
+  <!--
+    thread 'main' panicked at 'slice index starts at 18446744073709551614 but ends at 3'
+  -->
+</listing>
+
+<p>
+  Can <i>even more</i> statistics save us?
+</p>
+
+<h2 id="everywhere">
+  <a href="#everywhere">
+    N-grams Everywhere All at Once
+  </a>
+</h2>
+
+<p>
+  Using bigrams allows us to start prompts with just one word, but it generates
+  a pretty poor, basically contextless text.
+</p>
+
+<p>
+  Using bigger-grams allows to generate better text (usually (up to some point)),
+  but it requires bigger-prompts.
+</p>
+
+<p>
+  Is there a middle ground? Sorta!
+</p>
+
+<p>
+  This might sound surprising, but it's actually totally legal to simply build
+  <i>multiple</i> n-grams and sample from many of them at will - scientists hate
+  this one simple trick:
+</p>
+
+<listing lang="rust">
+  <!--
+    #[derive(Default)]
+    struct Brain {
+  =     // Instead of hardcoding it to `[String; n]`, let's use a vector so that
+  =     // we can have `vec![one]`, `vec![one, two]` etc.:
+  =     tokens: HashMap<Vec<String>, HashMap<String, usize>>,
+    }
+
+    impl Brain {
+  =     /// Maximum number of words to lookbehind; 1 creates bigrams, 2 creates
+  =     /// trigrams etc.
+  =     const MAX_CONTEXT_SIZE: usize = 5;
+  =
+        pub fn train(&mut self, text: &str) {
+  =         let mut context: Vec<&str> = Vec::new();
+  =
+            for token in Self::tokenize(text) {
+  =             // Using the context, generate bigrams, trigrams etc.
+  =             for cs in 1..=context.len() {
+  =                 let context = context[(context.len() - cs)..context.len()]
+  =                     .iter()
+  =                     .map(|token| token.to_string())
+  =                     .collect();
+  =
+  =                 *self
+  =                     .tokens
+  =                     .entry(context)
+  =                     .or_default()
+  =                     .entry(token.to_string())
+  =                     .or_default() += 1;
+  =             }
+  =
+  =             context.push(token);
+  =
+  =             // Since we're only interested in at most `MAX_CONTEXT_SIZE` last
+  =             // tokens, no point in keeping on to the already-processed ones
+  =             if context.len() > Self::MAX_CONTEXT_SIZE {
+  =                 context.remove(0);
+  =             }
+            }
+        }
+
+        pub fn prompt(&self, prompt: &str, length: usize) -> String {
+            let mut out: Vec<_> = Self::tokenize(prompt).collect();
+            let mut rng = rand::thread_rng();
+
+            while out.len() < length {
+  =             let mut next_token = None;
+  =
+  =             // Lookup starting from the biggest n-grams and, if no match was
+  =             // found, proceed down.
+  =             //
+  =             // That is, we first lookup 6-grams - if no match was found, we
+  =             // lookup 5-grams etc.; this allows us to find a better match if
+  =             // the context is known, but also generate something reasonable if
+  =             // only a single word is around.
+  =             //
+  =             // This is a simplified version of Kneser–Ney smoothing.
+  =             for cs in (1..=Self::MAX_CONTEXT_SIZE).rev() {
+  =                 if cs > out.len() {
+  =                     continue;
+  =                 }
+  =
+  =                 let context: Vec<_> = out[(out.len() - cs)..out.len()]
+  =                     .iter()
+  =                     .map(|token| token.to_string())
+  =                     .collect();
+  =
+  =                 if let Some(next_tokens) = self.tokens.get(&context) {
+  =                     let next_tokens: Vec<_> = next_tokens.iter().collect();
+  =
+  =                     next_token = Some(
+  =                         next_tokens
+  =                             .choose_weighted(&mut rng, |(_token, frequency)| {
+  =                                 *frequency
+  =                             })
+  =                             .unwrap()
+  =                             .0,
+  =                     );
+  =
+  =                     break;
+  =                 }
+  =             }
+  =
+  =             if let Some(next_token) = next_token {
+  =                 out.push(next_token);
+  =             } else {
+  =                 break;
+  =             }
+  =         }
+
+            out.join("")
+        }
+
+        /* ... */
+    }
+
+    fn main() {
+        /* ... */
+
+  =     println!("{}", brain.prompt("It was", 256));
+    }
+  -->
+</listing>
+
+<p>
+  ... which gives us:
+</p>
+
+<div class="listing-title">
+  $ cargo run
+</div>
+
+<listing lang="text">
+  <!--
+    It was as inscrutable as everybody else's.
+
+    'Three thousand,' he went on and on until the original message and any notes
+    that he expected Winston to speak. She
+    walked obliquely away across the table looking at him. The
+    guard was laughing at his wrist-watch again.
+
+    Ampleforth marched clumsily out between the three dead men had become quasi-instinctive throughout almost
+    the whole world, and
+    everyone else was that bird singing? No mate,
+    no rival was watching at the table, dipped his pen, and wrote:
+
+
+    GOD IS POWER
+  -->
+</listing>
+
+<p>
+  Heyo! (ka ching (nobel prize))
+</p>
+
+<h2 id="summary">
+  <a href="#summary">
+    Summary
+  </a>
+</h2>
+
+<p>
+  So, what we created here is an application that can be trained on a dataset
+  and later used to generate some relatively-fresh portions of texts sampled
+  from that initial dataset.
+</p>
+
+<p>
+  Is it ChatGPT?
+</p>
+
+<p>
+  I mean, no; I mean, kinda.
+</p>
+
+<p>
+  The technology is obviously much different - n-grams and Markov chains are not
+  that great at following context, so there's no way to <i>talk</i> with them
+  the same way you <i>talk</i> with ChatGPT.
+</p>
+
+<p>
+  Though, all said, I think that for the trade-off they make, they <i>are</i> a
+  pretty nice piece of math!
+
+<p>
+  I mean, all of this here can be coded entirely from scratch in like a half an
+  hour, then trained on all of Shakespeare's works in literally fifteen seconds,
+  and then used to generate something relatively readable and fun. So yeah, I'm
+  a fan of Markov chains!
+</p>
+
+<p>
+  Also, we are not <i>that</i> far away from ChatGPT either - some people would
+  <s>certainly fight</s> politely argue on this stance, but both ChatGPT and
+  Markov chains (as presented here) are just statistical text generation methods;
+  ChatGPT yields better results, of course, but underneath it there are just
+  matrices of numbers based on the probability from its dataset, no magic.
+</p>
+
+<p>
+  I mean, <i>a bit</i> of ✨ magic ✨ - which brings me to my last point, that
+  article I mentioned:
+</p>
+
+<p class="text-center">
+  <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">
+    The Unreasonable Effectiveness of Recurrent Neural Networks
+  </a>
+</p>
+
+<p>
+  Andrej Karpathy presents there an approach based on recurrent neural networks,
+  which - in principle - can keep track of arbitrary-lengthed context; they are
+  also able to learn that e.g. <code>(</code> should be eventually closed or that
+  <code>{</code> should be (probably) preceeded with a few spaces, to match the
+  surroundings. And they all learn that "on their own".
+</p>
+
+<p>
+  To me, the most captivating part of that article is somewhere in the middle,
+  when Andrej inspects the state of a working network and sees that some
+  neuron-activity correlates with the position of a word in the sentence, some
+  other neuron responds to brackets etc., all working together to pretty-print a
+  pretty-text.
+</p>
+
+<p>
+  And they all learn it from scratch, on their own; that is to say, you don't
+  program neuron #123 to respond to brackets and neuron #2137 to respond to
+  punctuation - they all "figure it out" during the training process.
+</p>
+
+<p>
+  And that, I must admit, <i>is</i> magical.
+</p>
