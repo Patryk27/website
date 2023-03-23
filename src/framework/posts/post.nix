@@ -96,7 +96,7 @@ let
 
             <meta property="og:image" content="https://pwy.io/favicon.png">
             <meta property="og:site_name" content="pwy.io">
-            <meta property="og:title" content="pwy.io - throwing algorithms at problems and observing what happens!">
+            <meta property="og:title" content="${post.title}">
             <meta property="og:type" content="article">
             <meta property="og:url" content="https://pwy.io/posts/${postId}">
 
