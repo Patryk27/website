@@ -1,5 +1,5 @@
 {
-  title = "Look Ma: My computer is talking; let's create a simplified ChatGPT!";
+  title = "Look Ma: My computer is talking; let's Markov-chain some n-grams!";
   tags = [ "ai" "shorts" "rust" ];
   publishedAt = { y = 2023; m = 3; d = 23; };
 
