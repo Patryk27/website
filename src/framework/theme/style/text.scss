@@ -238,7 +238,22 @@ table {
   padding: $para-indent / 2;
   border-radius: $border-radius;
   color: #000000;
-  background: hsl(51, 100%, 50%);
+  background: #ffc800;
+
+  &.note-from-the-future {
+    position: relative;
+    background: #ff8427;
+
+    &::after {
+      content: '!';
+      position: absolute;
+      top: -27px;
+      left: -22px;
+      color: #dc3545;
+      font-size: 2em;
+      transform: rotate(-17.25deg);
+    }
+  }
 
   > *:first-child {
     margin-top: 0;
