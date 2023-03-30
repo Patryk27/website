@@ -5113,12 +5113,12 @@
             //
             // This is not to be confused with Rust's `Vec` or C++'s
             // `std::vector`, which technically *are* vectors, but in a more
-            // abstract sense -- better not overthink it.
+            // abstract sense -- better not to overthink it.
             //
             // (https://stackoverflow.com/questions/581426/why-is-a-c-vector-called-a-vector).
-        
+            //
             // ---
-            // | Fancy way to say "length of the vector".
+            // | Fancy way of saying "length of the vector".
             // ----------- v----v
       =     let dist = vec.norm();
       = 
@@ -5161,7 +5161,7 @@
             // (if you've been measuring rotations before - this is atan2
             // in disguise.)
       =     let angle = na::Rotation2::rotation_between(
-      =         &na::Vector2::x(),
+      =         &na::Vector2::y(),
       =         &vec,
       =     ).angle();
         
@@ -5174,17 +5174,17 @@
             //   = angle of 2*PI
             //   = angle of PI    (because 2*PI >= PI)
             //   = angle of 0     (          PI >= PI)
-            //                    (           0 < PI; fin.)
+            //                    (           0 < PI)
             //
             //  angle of 2*PI + PI/2
             //  = angle of 1*PI + PI/2  (because 2*PI + PI/2 >= PI)
             //  = angle of PI/2         (          PI + PI/2 >= PI)
-            //                          (               PI/2 < PI; fin.)
+            //                          (               PI/2 < PI)
             //
             //  angle of -2.5*PI
             //  = angle of -1.5*PI  (because -2.5*PI <= -PI)
             //  = angle of -0.5*PI  (        -1.5*PI <= -PI)
-            //                      (        -0.5*PI > -PI; fin.)
+            //                      (        -0.5*PI > -PI)
             //
             // Intuitively:
             //
@@ -5781,43 +5781,47 @@
         /// During tests in this module, we're using a world that looks
         /// like this:
         ///
-        /// ------------
-        /// |          |
-        /// |          |
-        /// |    @>   %|
-        /// |          |
-        /// |          |
-        /// ------------
+        /// -------------
+        /// |           |
+        /// |           |
+        /// |     @     |
+        /// |     v     | `v` here indicates where the birdie is looking at
+        /// |           |
+        /// |     %     |
+        /// -------------
         ///
         /// Each test gradually reduces our birdie's field of view and
-        /// compares what the birdie sees:
+        /// checks what the birdie sees:
         ///
-        /// ------------
-        /// |        /.|
-        /// |      /...|
-        /// |    @>...%|
-        /// |      \...|
-        /// |        \.|
-        /// ------------
+        /// -------------
+        /// |           |
+        /// |           |
+        /// |     @     |
+        /// |    /v\    |
+        /// |  /.....\  | `.` here indicates the part of view the birdie sees
+        /// |/....%....\|
+        /// -------------
         ///
-        /// ------------
-        /// |          |
-        /// |      /.| |
-        /// |    @>..|%|
-        /// |      \.| |
-        /// |          |
-        /// ------------
+        /// -------------
+        /// |           |
+        /// |           |
+        /// |     @     |
+        /// |    /v\    |
+        /// |  /.....\  |
+        /// |     %     |
+        /// -------------
         ///
-        /// ------------
-        /// |          |
-        /// |          |
-        /// |    @>.| %|
-        /// |          |
-        /// |          |
-        /// ------------
+        /// -------------
+        /// |           |
+        /// |           |
+        /// |     @     |
+        /// |    /.\    |
+        /// |           |
+        /// |     %     |
+        /// -------------
         ///
         /// Over time, what we see is the food gradually disappearing
-        /// into an emptiness:
+        /// into the emptiness:
         ///
         /// (well, technically the food and bird remain stationary - it's
         /// only the birdie's own field of view that gets reduced.)
@@ -5833,7 +5837,7 @@
   =     #[test_case(0.1, "             ")]
         fn test(fov_range: f32, expected_vision: &'static str) {
             TestCase {
-  =             foods: vec![food(1.0, 0.5)],
+  =             foods: vec![food(0.5, 1.0)],
   =             fov_angle: FRAC_PI_2,
   =             x: 0.5,
   =             y: 0.5,
@@ -5919,55 +5923,63 @@
     
         /// World:
         ///
-        /// ------------
-        /// |          |
-        /// |          |
-        /// |    @>    |
-        /// |          |
-        /// |         %|
-        /// ------------
+        /// -------------
+        /// |           |
+        /// |           |
+        /// |%    @     |
+        /// |     v     |
+        /// |           |
+        /// -------------
         ///
         /// Test cases:
         ///
-        /// ------------
-        /// |..........|
-        /// |..........|
-        /// |....@>....|
-        /// |..........|
-        /// |.........%|
-        /// ------------
+        /// -------------
+        /// |...........|
+        /// |...........|
+        /// |%....@.....|
+        /// |.....v.....|
+        /// |...........|
+        /// -------------
         ///
-        /// ------------
-        /// |..........|
-        /// |..........|
-        /// |....@.....|
-        /// |....v.....|
-        /// |.........%|
-        /// ------------
+        /// -------------
+        /// |...........|
+        /// |...........|
+        /// |%...<@.....|
+        /// |...........|
+        /// |...........|
+        /// -------------
         ///
-        /// ------------
-        /// |..........|
-        /// |..........|
-        /// |...<@.....|
-        /// |..........|
-        /// |.........%|
-        /// ------------
+        /// -------------
+        /// |...........|
+        /// |.....^.....|
+        /// |%....@.....|
+        /// |...........|
+        /// |...........|
+        /// -------------
+        ///
+        /// -------------
+        /// |...........|
+        /// |...........|
+        /// |%....@>....|
+        /// |...........|
+        /// |...........|
+        /// -------------
         ///
         /// ... and so on, until we do a full circle, 360° rotation:
   =     #[test_case(0.00 * PI, "         +   ")] // Food is to our right
   =     #[test_case(0.25 * PI, "        +    ")]
-  =     #[test_case(0.50 * PI, "      +      ")]
+  =     #[test_case(0.50 * PI, "      +      ")] // Food is in front of us
   =     #[test_case(0.75 * PI, "    +        ")]
-  =     #[test_case(1.00 * PI, "   +         ")] // Food is behind us
-  =     #[test_case(1.25 * PI, " +           ")] // (we continue to see it
-  =     #[test_case(1.50 * PI, "            +")] // due to 360° fov_angle.)
-  =     #[test_case(1.75 * PI, "           + ")]
-  =     #[test_case(2.00 * PI, "         +   ")] // Here we've done 360°
-  =     #[test_case(2.25 * PI, "        +    ")] // (and a bit more, to
-  =     #[test_case(2.50 * PI, "      +      ")] // prove the numbers wrap.)
+  =     #[test_case(1.00 * PI, "   +         ")] // Food is to our left
+  =     #[test_case(1.25 * PI, " +           ")]
+  =     #[test_case(1.50 * PI, "            +")] // Food is behind us
+  =     #[test_case(1.75 * PI, "           + ")] // (we continue to see it
+  =     #[test_case(2.00 * PI, "         +   ")] // due to 360° fov_angle.)
+  =     #[test_case(2.25 * PI, "        +    ")]
+  =     #[test_case(2.50 * PI, "      +      ")]
   =     fn test(rot: f32, expected_vision: &'static str) {
   =         TestCase {
-  =             foods: vec![food(0.5, 1.0)],
+  =             foods: vec![food(0.0, 0.5)],
   =             fov_range: 1.0,
   =             fov_angle: 2.0 * PI,
   =             x: 0.5,
@@ -5982,7 +5994,7 @@
   -->
 </listing>
 
-<p>Testing position is even more fun:</p>
+<p>Testing positions is even more fun:</p>
 
 <div class="listing-title">libs/simulation/src/eye.rs</div>
 
@@ -6076,7 +6088,7 @@
   =             foods: vec![food(1.0, 0.4), food(1.0, 0.6)],
   =             fov_range: 1.0,
   =             fov_angle: FRAC_PI_2,
-  =             rot: 0.0,
+  =             rot: 3.0 * FRAC_PI_2,
   =             x,
   =             y,
   =             expected_vision,
@@ -6136,6 +6148,14 @@
         /// |%  %|.%..%|
         /// ------------
         ///
+        /// ------------
+        /// |%.\% .%..%|
+        /// |   \......|
+        /// |    @>....|
+        /// |   /......|
+        /// |%./%..%..%|
+        /// ------------
+        ///
         /// ... and so on, until we reach the full, 360° FOV
   =     #[test_case(0.25 * PI, " +         + ")] // FOV is narrow = 2 foods
   =     #[test_case(0.50 * PI, ".  +     +  .")]
@@ -6160,7 +6180,7 @@
   =             fov_range: 1.0,
   =             x: 0.5,
   =             y: 0.5,
-  =             rot: 0.0,
+  =             rot: 3.0 * FRAC_PI_2,
   =             fov_angle,
   =             expected_vision,
   =         }.run()
