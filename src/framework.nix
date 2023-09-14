@@ -34,11 +34,17 @@ let
   theme = import ./framework/theme.nix fw;
 
 in
-pkgs.linkFarm "website" ([
-  { name = "index.html"; path = index; }
-  { name = "feed.xml"; path = feed; }
-  { name = "posts"; path = posts; }
-  { name = "tags"; path = tags; }
-  { name = "talks"; path = talks; }
-  { name = "theme"; path = theme; }
-] ++ content.resources)
+pkgs.symlinkJoin {
+  name = "website";
+
+  paths = [
+    (pkgs.linkFarm "website" [
+      { name = "index.html"; path = index; }
+      { name = "feed.xml"; path = feed; }
+      { name = "posts"; path = posts; }
+      { name = "tags"; path = tags; }
+      { name = "talks"; path = talks; }
+      { name = "theme"; path = theme; }
+    ])
+  ] ++ [ content.static ];
+}

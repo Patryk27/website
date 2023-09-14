@@ -1,4 +1,15 @@
 {
+  "2023-emacs" = {
+    title = "(r)IDE on a (t)IDE with my IDE";
+    subtitle = "Why Emacs + Rust?";
+    when = { y = 2023; m = 6; d = 22; };
+    where = "Rust Wrocław";
+
+    resources = [
+      { label = "video"; link = "https://www.youtube.com/watch?v=7_oh3QfgVbo&t=5064s"; }
+    ];
+  };
+
   "2022-doome" = {
     title = "Doomé";
     subtitle = "What we didn’t know we didn’t know";
@@ -32,7 +43,7 @@
 
     resources = [
       { label = "video"; link = "https://youtube.com/watch?v=3o_lzQMLU5Q"; }
-      { label = "slides"; link = "https://pwy.io/en/talks/2022-microdosing-rust.pdf"; }
+      { label = "slides"; link = "https://pwy.io/talks/2022-microdosing-rust.pdf"; }
       { label = "codes"; link = "https://github.com/Patryk27/talks/tree/main/2022-microdosing-rust/codes"; }
     ];
   };
@@ -45,7 +56,7 @@
 
     resources = [
       { label = "video"; link = "https://www.youtube.com/watch?v=LBrWwZOjsQ4"; }
-      { label = "slides"; link = "https://pwy.io/en/talks/2020-cant-hack-this.pdf"; }
+      { label = "slides"; link = "https://pwy.io/talks/2020-cant-hack-this.pdf"; }
     ];
   };
 
@@ -57,7 +68,7 @@
 
     resources = [
       { label = "video"; link = "https://www.youtube.com/watch?v=6Qi5-VU-kS0"; }
-      { label = "slides"; link = "https://pwy.io/en/talks/2020-scary-acronyms.pdf"; }
+      { label = "slides"; link = "https://pwy.io/talks/2020-scary-acronyms.pdf"; }
     ];
   };
 
@@ -68,7 +79,7 @@
     where = "Rust Wrocław";
 
     resources = [
-      { label = "slides"; link = "https://pwy.io/en/talks/2020-fantastic-actors.pdf"; }
+      { label = "slides"; link = "https://pwy.io/talks/2020-fantastic-actors.pdf"; }
       { label = "codes"; link = "https://github.com/Patryk27/talks/tree/main/2020-fantastic-actors/codes"; }
     ];
   };
