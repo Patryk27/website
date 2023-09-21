@@ -10,6 +10,17 @@
     ];
   };
 
+  "2023-wait-why" = {
+    title = "wait, why (??)";
+    subtitle = "Surprising corners of Rust";
+    when = { y = 2023; m = 4; d = 13; };
+    where = "Rust Wrocław";
+
+    resources = [
+      { label = "video"; link = "https://www.youtube.com/watch?v=8Q3xKQGEDKA&t=3925s"; }
+    ];
+  };
+
   "2022-doome" = {
     title = "Doomé";
     subtitle = "What we didn’t know we didn’t know";
