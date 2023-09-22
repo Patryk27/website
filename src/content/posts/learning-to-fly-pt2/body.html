@@ -1455,12 +1455,12 @@
         let mut built_layers = Vec::new();
     
         for i in 0..(layers.len() - 1) {
-            let input_neurons = layers[i].neurons;
-            let output_neurons = layers[i + 1].neurons;
+            let input_size = layers[i].neurons;
+            let output_size = layers[i + 1].neurons;
     
             built_layers.push(Layer::random(
-                input_neurons,
-                output_neurons,
+                input_size,
+                output_size,
             ));
         }
     
@@ -1503,12 +1503,12 @@
         /* ... */
     
         for adjacent_layers in layers.windows(2) {
-            let input_neurons = adjacent_layers[0].neurons;
-            let output_neurons = adjacent_layers[1].neurons;
+            let input_size = adjacent_layers[0].neurons;
+            let output_size = adjacent_layers[1].neurons;
     
             built_layers.push(Layer::random(
-                input_neurons,
-                output_neurons,
+                input_size,
+                output_size,
             ));
         }
     
@@ -1669,13 +1669,13 @@
   <!--
     impl Layer {
         pub fn random(
-            input_neurons: usize,
-            output_neurons: usize,
+            input_size: usize,
+            output_size: usize,
         ) -> Self {
             let mut neurons = Vec::new();
     
-            for _ in 0..output_neurons {
-                neurons.push(Neuron::random(input_neurons));
+            for _ in 0..output_size {
+                neurons.push(Neuron::random(input_size));
             }
     
             Self { neurons }
@@ -1688,9 +1688,9 @@
 
 <listing lang="rust">
   <!--
-    pub fn random(input_neurons: usize, output_neurons: usize) -> Self {
-        let neurons = (0..output_neurons)
-            .map(|_| Neuron::random(input_neurons))
+    pub fn random(input_size: usize, output_size: usize) -> Self {
+        let neurons = (0..output_size)
+            .map(|_| Neuron::random(input_size))
             .collect();
     
         Self { neurons }
@@ -1766,10 +1766,10 @@
 <listing lang="rust">
   <!--
     impl Neuron {
-        pub fn random(output_size: usize) -> Self {
+        pub fn random(input_size: usize) -> Self {
             let bias = todo!();
     
-            let weights = (0..output_size)
+            let weights = (0..input_size)
                 .map(|_| todo!())
                 .collect();
     
@@ -1824,12 +1824,12 @@
 
 <listing lang="rust">
   <!--
-    pub fn random(output_size: usize) -> Self {
+    pub fn random(input_size: usize) -> Self {
         let mut rng = rand::thread_rng();
     
         let bias = rng.gen_range(-1.0..=1.0);
     
-        let weights = (0..output_size)
+        let weights = (0..input_size)
             .map(|_| rng.gen_range(-1.0..=1.0))
             .collect();
     
@@ -1951,7 +1951,7 @@
     }
     
     impl Neuron {
-        pub fn random(output_size: usize) -> Self {
+        pub fn random(input_size: usize) -> Self {
             /* ... */
         }
     }
@@ -2006,7 +2006,7 @@
 
 <listing lang="rust">
   <!--
-    pub fn random(output_size: usize) -> Self {
+    pub fn random(input_size: usize) -> Self {
         let mut rng = rand::thread_rng();
     
         /* ... */
@@ -2023,7 +2023,7 @@
   <!--
     pub fn random(
         rng: &mut dyn rand::RngCore,
-        output_size: usize,
+        input_size: usize,
     ) -> Self {
         /* ... */
     }
