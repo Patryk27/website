@@ -85,7 +85,7 @@ struct Post {
 
 impl Post {
     fn into_feed(self) -> Item {
-        let link = format!("https://pwy.io/{}", self.id);
+        let link = format!("https://pwy.io/posts/{}", self.id);
         let guid = GuidBuilder::default().value(&link).permalink(true).build();
 
         ItemBuilder::default()
@@ -159,9 +159,9 @@ mod tests {
 
                         <item>
                             <title>Hello, World!</title>
-                            <link>https://pwy.io/hello-world</link>
+                            <link>https://pwy.io/posts/hello-world</link>
                             <description><![CDATA[This is my first post ~~ "fancy!"]]></description>
-                            <guid>https://pwy.io/hello-world</guid>
+                            <guid>https://pwy.io/posts/hello-world</guid>
                             <pubDate>Wed, 14 Mar 2018 00:00:00 +0000</pubDate>
                         </item>
                     </channel>
