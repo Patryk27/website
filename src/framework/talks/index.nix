@@ -10,27 +10,13 @@ let
       (builtins.attrNames fw.content.talks);
 
   renderTalk = talkId:
-    let
-      talk = fw.content.talks.${talkId};
-
-      renderResource = { label, link }:
-        ''<a href="${link}">${label}</a>'';
-
-      renderedResources = builtins.concatStringsSep ", " (
-        builtins.map renderResource talk.resources
-      );
-
-      renderedTitle =
-        if talk ? subtitle then
-          "<b>${talk.title}</b>:<br>${talk.subtitle}"
-        else
-          "<b>${talk.title}</b>";
-
-    in
     ''
-      <li class="talk">
-        ${renderedTitle}<br>
-        (${renderedResources}; ${fw.components.date "%0d.%0m.%y" talk.when}, ${talk.where})
+      <li>
+        ${
+          fw.components.talkItem {
+            inherit talkId;
+          }
+        }
       </li>
     '';
 
@@ -41,7 +27,7 @@ fw.components.page
   layout = "talks";
 } ''
   <p>
-    Source codes & related materials for all my talks are available
+    Source codes & related materials for talks are available
     <a href="https://github.com/Patryk27/talks">at my GitHub repository</a>.
   </p>
 

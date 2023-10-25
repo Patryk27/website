@@ -6,13 +6,19 @@ let
     path = import ./talks/index.nix fw;
   };
 
+  talk = talkId: {
+    name = talkId;
+
+    path = fw.pkgs.linkFarm "talk-${talkId}" [{
+      name = "index.html";
+      path = import ./talks/talk.nix fw talkId;
+    }];
+  };
+
   static = ../content/talks/static;
 
 in
-fw.pkgs.symlinkJoin {
-  name = "talks";
-
-  paths = [
-    (fw.pkgs.linkFarm "talks" [ index ])
-  ] ++ [ static ];
-}
+fw.pkgs.linkFarm "talks" (
+  [ index ]
+  ++ (map talk (builtins.attrNames fw.content.talks))
+)

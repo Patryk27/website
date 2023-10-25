@@ -1,7 +1,6 @@
 pkgs: {
-  index = import ./content/index.nix;
+  meta = import ./content/meta.nix;
   posts = import ./content/posts.nix pkgs;
-  talks = import ./content/talks.nix;
-
   static = ./content/static;
+  talks = import ./content/talks.nix;
 }

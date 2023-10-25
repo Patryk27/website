@@ -20,14 +20,40 @@ let
         (builtins.filter
           (postId: builtins.elem tag content.posts.${postId}.tags)
           (builtins.attrNames content.posts));
+
+      objects =
+        let
+          posts = builtins.map
+            (id: {
+              inherit id;
+              type = "post";
+              date = fw.content.posts.${id}.publishedAt;
+            })
+            (builtins.attrNames fw.content.posts);
+
+          talks = builtins.map
+            (id: {
+              inherit id;
+              type = "talk";
+              date = fw.content.talks.${id}.when;
+            })
+            (builtins.attrNames fw.content.talks);
+
+        in
+        (builtins.sort
+          (a: b:
+            fw.utils.dateLessThat
+              b.date
+              a.date)
+          (posts ++ talks));
     };
 
     components = import ./framework/components.nix fw;
     utils = import ./framework/utils.nix fw;
   };
 
-  index = content.index fw;
   feed = import ./framework/feed.nix fw;
+  index = import ./framework/index.nix fw;
   posts = import ./framework/posts.nix fw;
   tags = import ./framework/tags.nix fw;
   talks = import ./framework/talks.nix fw;
@@ -39,8 +65,9 @@ pkgs.symlinkJoin {
 
   paths = [
     (pkgs.linkFarm "website" [
-      { name = "index.html"; path = index; }
       { name = "feed.xml"; path = feed; }
+      { name = "index.html"; path = index; }
+
       { name = "posts"; path = posts; }
       { name = "tags"; path = tags; }
       { name = "talks"; path = talks; }

@@ -1,0 +1,54 @@
+h2 {
+  margin-top: ($para-indent / 2);
+  border-bottom: 2px dotted $hr-fg;
+
+  @media only screen and (min-width: 992px) {
+    position: relative;
+
+    &::before {
+      content: '>';
+      font-family: $header-font;
+      position: absolute;
+      left: -0.9em;
+    }
+  }
+}
+
+h3 {
+  margin-top: ($para-indent / 2);
+  border-bottom: 1px solid $hr-fg;
+
+  & + .paragraph, & + .ulist {
+    margin-top: ($para-indent / 2);
+  }
+}
+
+.post-meta {
+  margin-top: 0.2em;
+  border-bottom: 2px dotted $hr-fg;
+}
+
+.post-series {
+  border-bottom: 2px dotted $hr-fg;
+  padding: 1.2em;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  ol, ul {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    padding-inline-start: 0;
+  }
+
+  li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    list-style-position: inside;
+    line-height: 1.4;
+    padding-bottom: 2px;
+  }
+}

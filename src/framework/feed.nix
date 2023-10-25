@@ -3,29 +3,43 @@ fw:
 let
   generateFeed = import ./feed/generate-feed.nix fw;
 
-  postIds =
-    builtins.sort
-      (a: b:
-        fw.utils.dateLessThat
-          fw.content.posts.${b}.publishedAt
-          fw.content.posts.${a}.publishedAt)
-      (builtins.attrNames fw.content.posts);
+  mkObject = { id, type, ... }:
+    if type == "post" then
+      (mkObjectPost id)
+    else if type == "talk" then
+      (mkObjectTalk id)
+    else
+      throw "unknown object type: ${type}";
 
-  mkPost = postId:
+  mkObjectPost = id:
     let
-      post = fw.content.posts.${postId};
+      post = fw.content.posts.${id};
 
     in
     {
-      id = postId;
+      type = "post";
+      id = id;
       title = post.title;
       summary = builtins.readFile post.summary;
-      publishedAt = post.publishedAt;
+      date = post.publishedAt;
+    };
+
+  mkObjectTalk = id:
+    let
+      talk = fw.content.talks.${id};
+
+    in
+    {
+      type = "talk";
+      id = id;
+      title = talk.title;
+      subtitle = talk.subtitle or null;
+      date = talk.when;
     };
 
 in
 fw.utils.prettifyXml "feed.xml" (
   generateFeed {
-    posts = builtins.map mkPost postIds;
+    objects = builtins.map mkObject fw.content.objects;
   }
 )

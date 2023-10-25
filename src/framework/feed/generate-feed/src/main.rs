@@ -37,7 +37,7 @@ fn try_main(mut stdin: impl Read, mut stdout: impl Write) -> Result<()> {
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Website {
-    posts: Vec<Post>,
+    objects: Vec<Object>,
 }
 
 impl Website {
@@ -65,7 +65,7 @@ impl Website {
 
         channel
             .items
-            .extend(self.posts.into_iter().map(|post| post.into_feed()));
+            .extend(self.objects.into_iter().map(|post| post.into_feed()));
 
         channel
     }
@@ -74,37 +74,84 @@ impl Website {
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "camelCase")]
-struct Post {
-    id: String,
-    title: String,
-    summary: String,
-    published_at: PublishedAt,
+#[serde(tag = "type")]
+enum Object {
+    Post {
+        id: String,
+        title: String,
+        summary: String,
+        date: Date,
+    },
+
+    Talk {
+        id: String,
+        title: String,
+        subtitle: Option<String>,
+        date: Date,
+    },
 }
 
-impl Post {
+impl Object {
     fn into_feed(self) -> Item {
-        let link = format!("https://pwy.io/posts/{}", self.id);
-        let guid = GuidBuilder::default().value(&link).permalink(true).build();
+        match self {
+            Object::Post {
+                id,
+                title,
+                summary,
+                date,
+            } => {
+                let link = format!("https://pwy.io/posts/{}", id);
 
-        ItemBuilder::default()
-            .title(self.title)
-            .link(link)
-            .description(strip_tags(&self.summary).trim().to_owned())
-            .guid(guid)
-            .pub_date(self.published_at.into_chrono().to_rfc2822())
-            .build()
+                let guid =
+                    GuidBuilder::default().value(&link).permalink(true).build();
+
+                ItemBuilder::default()
+                    .title(title)
+                    .link(link)
+                    .description(strip_tags(&summary).trim().to_owned())
+                    .guid(guid)
+                    .pub_date(date.into_chrono().to_rfc2822())
+                    .build()
+            }
+
+            Object::Talk {
+                id,
+                title,
+                subtitle,
+                date,
+            } => {
+                let link = format!("https://pwy.io/talks/{}", id);
+
+                let guid =
+                    GuidBuilder::default().value(&link).permalink(true).build();
+
+                let description = if let Some(subtitle) = subtitle {
+                    format!("{}: {}", title, subtitle)
+                } else {
+                    title.clone()
+                };
+
+                ItemBuilder::default()
+                    .title(title)
+                    .link(link)
+                    .description(description)
+                    .guid(guid)
+                    .pub_date(date.into_chrono().to_rfc2822())
+                    .build()
+            }
+        }
     }
 }
 
 #[derive(Copy, Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-struct PublishedAt {
+struct Date {
     y: i32,
     m: u32,
     d: u32,
 }
 
-impl PublishedAt {
+impl Date {
     fn into_chrono(self) -> DateTime<Utc> {
         Utc.from_utc_date(&NaiveDate::from_ymd(self.y, self.m, self.d))
             .and_hms(0, 0, 0)
@@ -122,15 +169,38 @@ mod tests {
     fn smoke() {
         let stdin = r#"
             {
-              "posts": [
+              "objects": [
                 {
+                  "type": "post",
                   "id": "hello-world",
                   "title": "Hello, World!",
                   "summary": "  This is my <i>first post</i> ~~ \"fancy!\"  ",
-                  "publishedAt": {
+                  "date": {
                     "y": 2018,
                     "m": 3,
                     "d": 14
+                  }
+                },
+                {
+                  "type": "talk",
+                  "id": "whats-up-pt1",
+                  "title": "What's Up, part 1",
+                  "subtitle": null,
+                  "date": {
+                    "y": 2018,
+                    "m": 3,
+                    "d": 15
+                  }
+                },
+                {
+                  "type": "talk",
+                  "id": "whats-up-pt2",
+                  "title": "What's Up, part 2",
+                  "subtitle": "I'm talking talk",
+                  "date": {
+                    "y": 2018,
+                    "m": 3,
+                    "d": 16
                   }
                 }
               ]
@@ -161,6 +231,22 @@ mod tests {
                             <description><![CDATA[This is my first post ~~ "fancy!"]]></description>
                             <guid>https://pwy.io/posts/hello-world</guid>
                             <pubDate>Wed, 14 Mar 2018 00:00:00 +0000</pubDate>
+                        </item>
+
+                        <item>
+                            <title>What&apos;s Up, part 1</title>
+                            <link>https://pwy.io/talks/whats-up-pt1</link>
+                            <description><![CDATA[What's Up, part 1]]></description>
+                            <guid>https://pwy.io/talks/whats-up-pt1</guid>
+                            <pubDate>Thu, 15 Mar 2018 00:00:00 +0000</pubDate>
+                        </item>
+
+                        <item>
+                            <title>What&apos;s Up, part 2</title>
+                            <link>https://pwy.io/talks/whats-up-pt2</link>
+                            <description><![CDATA[What's Up, part 2: I'm talking talk]]></description>
+                            <guid>https://pwy.io/talks/whats-up-pt2</guid>
+                            <pubDate>Fri, 16 Mar 2018 00:00:00 +0000</pubDate>
                         </item>
                     </channel>
                 </rss>

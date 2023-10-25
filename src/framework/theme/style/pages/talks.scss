@@ -1,0 +1,15 @@
+.talks {
+  margin-top: 0;
+
+  .talk-title {
+    font-size: 1.2em;
+  }
+
+  li {
+    margin-bottom: 0;
+
+    &:not(:first-child) {
+      margin-top: 1em;
+    }
+  }
+}
