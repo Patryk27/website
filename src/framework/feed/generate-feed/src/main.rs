@@ -1,10 +1,8 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, NaiveDate, TimeZone, Utc};
-use rss::{
-    extension::atom::{self, AtomExtensionBuilder, Link},
-    validation::Validate,
-    Channel, ChannelBuilder, GuidBuilder, Item, ItemBuilder,
-};
+use rss::extension::atom::{self, AtomExtensionBuilder, Link};
+use rss::validation::Validate;
+use rss::{Channel, ChannelBuilder, GuidBuilder, Item, ItemBuilder};
 use serde::Deserialize;
 use std::io::{Read, Write};
 use voca_rs::strip::strip_tags;

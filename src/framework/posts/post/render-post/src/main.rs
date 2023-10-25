@@ -61,7 +61,9 @@ fn render(input: &str) -> Result<String> {
                         (k, v)
                     };
 
-                    result.with_context(|| anyhow!("Invalid key-value syntax: {}", attr))
+                    result.with_context(|| {
+                        anyhow!("Invalid key-value syntax: {}", attr)
+                    })
                 })
                 .collect::<Result<_, _>>()
                 .with_context(|| format!("At line {}", line_idx))?;
@@ -73,7 +75,10 @@ fn render(input: &str) -> Result<String> {
                     .with_context(|| format!("At line {}", line_idx))?;
 
                 if listing_line.trim() == "<!--" {
-                    break listing_line.bytes().take_while(|&n| n == b' ').count();
+                    break listing_line
+                        .bytes()
+                        .take_while(|&n| n == b' ')
+                        .count();
                 }
             };
 
@@ -100,15 +105,18 @@ fn render(input: &str) -> Result<String> {
                     _ => (),
                 }
 
-                let (listing_line_indent, listing_line) = if listing_line.len() < indent + 2 {
-                    (listing_line, "")
-                } else {
-                    listing_line.split_at(indent + 2)
-                };
+                let (listing_line_indent, listing_line) =
+                    if listing_line.len() < indent + 2 {
+                        (listing_line, "")
+                    } else {
+                        listing_line.split_at(indent + 2)
+                    };
 
-                if !listing_line_indent.bytes().all(|c| c == b' ' || c == b'=') {
-                    return Err(anyhow!("Misindented listing"))
-                        .with_context(|| format!("At line {}", listing_line_idx));
+                if !listing_line_indent.bytes().all(|c| c == b' ' || c == b'=')
+                {
+                    return Err(anyhow!("Misindented listing")).with_context(
+                        || format!("At line {}", listing_line_idx),
+                    );
                 }
 
                 if listing_line_indent.contains('=') {
@@ -163,7 +171,8 @@ fn render_listing(
     }
 
     if !highlights.is_empty() {
-        command.args(["-O", &format!("hl_lines={}", highlights.iter().join(" "))]);
+        command
+            .args(["-O", &format!("hl_lines={}", highlights.iter().join(" "))]);
     }
 
     let mut child = command
@@ -184,7 +193,8 @@ fn render_listing(
 
     output.status.exit_ok()?;
 
-    String::from_utf8(output.stdout).context("Stdout is not a valid UTF-8 string")
+    String::from_utf8(output.stdout)
+        .context("Stdout is not a valid UTF-8 string")
 }
 
 #[cfg(test)]
