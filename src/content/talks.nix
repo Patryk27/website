@@ -1,4 +1,15 @@
 {
+  "2023-wait-why-pt2" = {
+    title = "wait, why (??) - part 2";
+    subtitle = "Surprising corners of Rust";
+    when = { y = 2023; m = 10; d = 19; };
+    where = "Rust Wrocław";
+
+    resources = [
+      { label = "video"; link = "https://www.youtube.com/watch?v=FRki8MIMgis&t=4720s"; }
+    ];
+  };
+
   "2023-emacs" = {
     title = "(r)IDE on a (t)IDE with my IDE";
     subtitle = "Why Emacs + Rust?";
@@ -10,8 +21,8 @@
     ];
   };
 
-  "2023-wait-why" = {
-    title = "wait, why (??)";
+  "2023-wait-why-pt1" = {
+    title = "wait, why (??) - part 1";
     subtitle = "Surprising corners of Rust";
     when = { y = 2023; m = 4; d = 13; };
     where = "Rust Wrocław";
