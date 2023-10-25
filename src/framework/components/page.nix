@@ -11,9 +11,10 @@ let
     let
       items = [
         { path = "/"; title = "~/"; }
-        { path = "/posts"; title = "~/posts"; }
-        { path = "/tags"; title = "~/tags"; }
-        { path = "/talks"; title = "~/talks"; }
+        { path = "/posts"; title = "posts"; }
+        { path = "/talks"; title = "talks"; }
+        { path = "/tags"; title = "tags"; }
+        { path = "/contact"; title = "contact"; }
       ];
 
       renderItem = { path, title }:

@@ -52,6 +52,7 @@ let
     utils = import ./framework/utils.nix fw;
   };
 
+  contact = import ./framework/contact.nix fw;
   feed = import ./framework/feed.nix fw;
   index = import ./framework/index.nix fw;
   posts = import ./framework/posts.nix fw;
@@ -68,6 +69,7 @@ pkgs.symlinkJoin {
       { name = "feed.xml"; path = feed; }
       { name = "index.html"; path = index; }
 
+      { name = "contact"; path = contact; }
       { name = "posts"; path = posts; }
       { name = "tags"; path = tags; }
       { name = "talks"; path = talks; }
