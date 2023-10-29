@@ -19,7 +19,7 @@
         <h3>Want to talk?</h3>
 
         <ul>
-          <li><code>pwychowaniec [@at@] pm.me</code></li>
+          <li><code>pwychowaniec [@at@] pm.me</code> (if you use GPG, <a href="/pwy.asc">here's my signature</a>)</li>
           <li><a href="https://github.com/patryk27">github.com/patryk27</a></li>
           <li><a href="https://twitter.com/piterolex">twitter.com/piterolex</a></li>
         </ul>
