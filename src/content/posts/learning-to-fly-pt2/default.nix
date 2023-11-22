@@ -5,7 +5,7 @@
   subtitle = "The Neural Network";
   publishedAt = { y = 2021; m = 2; d = 1; };
 
-  assets = ./assets.nix;
+  assets = ./assets;
   body = ./body.html;
   summary = ./summary.html;
 }

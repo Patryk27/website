@@ -46,6 +46,12 @@
           };
         };
 
+        apps = {
+          render-sketch = utils.lib.mkApp {
+            drv = import ./src/utils/render-sketch.nix pkgs;
+          };
+        };
+
         defaultApp =
           let
             app = pkgs.writeText "app.py" ''
@@ -79,7 +85,7 @@
 
           in
           utils.lib.mkApp {
-            drv = pkgs.writeShellScriptBin "run-website" ''
+            drv = pkgs.writeShellScriptBin "run" ''
               ${pkgs.python3}/bin/python ${app}
             '';
           };

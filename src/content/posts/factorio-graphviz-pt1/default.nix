@@ -3,7 +3,7 @@
   tags = [ "dot" "factorio" "graph" "graphviz" ];
   publishedAt = { y = 2020; m = 3; d = 3; };
 
-  assets = ./assets.nix;
+  assets = ./assets;
   body = ./body.html;
   summary = ./summary.html;
 }

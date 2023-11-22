@@ -116,7 +116,7 @@ let
     if post ? assets then
       [{
         name = "assets";
-        path = import post.assets fw;
+        path = post.assets;
       }]
     else
       [ ];

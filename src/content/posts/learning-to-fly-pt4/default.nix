@@ -5,7 +5,7 @@
   subtitle = "The User Interface";
   publishedAt = { y = 2021; m = 6; d = 10; };
 
-  assets = ./assets.nix;
+  assets = ./assets;
   body = ./body.html;
   summary = ./summary.html;
 }

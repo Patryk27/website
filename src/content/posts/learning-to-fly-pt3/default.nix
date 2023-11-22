@@ -5,7 +5,7 @@
   subtitle = "The Genetic Algorithm";
   publishedAt = { y = 2021; m = 3; d = 24; };
 
-  assets = ./assets.nix;
+  assets = ./assets;
   body = ./body.html;
   summary = ./summary.html;
 }

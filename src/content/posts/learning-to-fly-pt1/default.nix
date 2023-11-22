@@ -5,7 +5,7 @@
   subtitle = "The Domain";
   publishedAt = { y = 2021; m = 1; d = 4; };
 
-  assets = ./assets.nix;
+  assets = ./assets;
   body = ./body.html;
   summary = ./summary.html;
 }
