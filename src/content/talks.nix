@@ -1,4 +1,16 @@
 {
+  "2023-trace-me-a-river" = {
+    title = "Trace Me a River";
+    subtitle = "Computing stuff on GPU using Rust";
+    when = { y = 2023; m = 11; d = 16; };
+    where = "code::dive";
+
+    resources = [
+      { label = "video"; link = "https://www.youtube.com/watch?v=npOI15aSAL8"; }
+      { label = "code"; link = "https://github.com/Patryk27/sdf-playground"; }
+    ];
+  };
+
   "2023-wait-why-pt2" = {
     title = "wait, why (??) - part 2";
     subtitle = "Surprising corners of Rust";
