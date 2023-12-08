@@ -33,11 +33,6 @@
         defaultPackage = import ./src/framework.nix {
           inherit pkgs;
 
-          # TODO needed for Inkscape
-          linuxPkgs = import nixpkgs {
-            system = "x86_64-linux";
-          };
-
           rev = self.rev or "dirty";
           content = import ./src/content.nix pkgs;
 

@@ -1,10 +1,10 @@
-{ rev, pkgs, linuxPkgs, libs, content }:
+{ rev, pkgs, libs, content }:
 
 let
   inherit (fw.pkgs) lib;
 
   fw = {
-    inherit rev pkgs linuxPkgs libs;
+    inherit rev pkgs libs;
 
     content = content // {
       tags =
