@@ -3855,7 +3855,7 @@
 
   <p>
     So that's the issue our <code>::new(0.0, animal.speed)</code> solves — it
-    says that we're interested in rotating relative to the <code>y</code> axis,
+    says that we're interested in rotating relative to the <code>Y</code> axis,
     that is: a bird with rotation of 0° will fly <b>upwards</b>.
   </p>
 
@@ -5157,14 +5157,15 @@
         for food in foods {
             /* ... */
         
-            // Returns vector's direction relative to the X axis, that is:
+            // Returns vector's direction relative to the Y axis, that is:
             //
-            //   -\-> = 0° = 0
+            //    ^
+            //    |  = 0° = 0
             //
-            //    |  = 90° = PI / 2
+            //   ---> = 90° = -PI / 2
+            //
+            //    |  = 180° = -PI
             //    v
-            //
-            //   <--- = 180° = PI
             //
             // (if you've been measuring rotations before - this is atan2
             // in disguise.)
