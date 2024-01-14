@@ -1,4 +1,16 @@
 {
+  "2024-trace-me-a-river-v2" = {
+    title = "Trace Me a River (v2)";
+    subtitle = "Computing stuff on GPU using Rust";
+    when = { y = 2024; m = 1; d = 11; };
+    where = "Rust Wrocław";
+
+    resources = [
+      { label = "video"; link = "https://youtu.be/RfAx_pkQFTY?t=4192"; }
+      { label = "code"; link = "https://github.com/Patryk27/sdf-playground"; }
+    ];
+  };
+
   "2023-trace-me-a-river" = {
     title = "Trace Me a River";
     subtitle = "Computing stuff on GPU using Rust";
