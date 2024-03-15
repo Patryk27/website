@@ -1778,7 +1778,7 @@
       <listing lang="rust">
         <!--
           pub struct GeneticAlgorithm<'r> {
-              rng: &'mut dyn RngCore,
+              rng: &'r mut dyn RngCore,
           }
           
           impl<'r> GeneticAlgorithm<'r> {
