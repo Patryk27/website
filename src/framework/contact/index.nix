@@ -1,6 +1,7 @@
 fw:
 
-fw.components.page {
+fw.components.page
+{
   title = "~/contact";
   layout = "contact";
 } ''

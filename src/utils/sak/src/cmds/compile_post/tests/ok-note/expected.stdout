@@ -1,0 +1,22 @@
+<p>
+  before notes
+</p>
+
+<aside class="note">
+  <p>Hello, World!</p>
+</aside>
+
+<aside class="note">
+  <p>this is a listing:</p>
+
+  <div class="listing"><pre><span></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Hello, World!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+  <p>mucho importanto</p>
+</aside>
+
+<p>
+  after notes
+</p>

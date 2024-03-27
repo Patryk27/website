@@ -6,15 +6,14 @@ $body-font: 'PT Sans';
 $body-width: 900px;
 
 $hr-fg: lighten($body-bg, 30%);
-$border-radius: 4px;
 
 $header-font: 'DM Serif Display';
-$para-indent: 1.4em;
+$para-indent: 1.4em; // TODO get rid of
 $link-underline: #c86b85;
 
 $code-font: 'Iosevka Custom';
 $code-bg: lighten($body-bg, 20%);
-$code-fg: $body-fg;
+$code-fg: #ffffff;
 $pre-bg: darken($body-bg, 5%);
 
 // -----

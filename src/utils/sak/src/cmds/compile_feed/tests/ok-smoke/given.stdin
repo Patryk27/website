@@ -1,0 +1,37 @@
+{
+  "objects": [
+    {
+      "type": "post",
+      "id": "hello-world",
+      "title": "Hello, World!",
+      "summary": "  This is my <i>first post</i> ~~ \"fancy!\"  ",
+      "date": {
+        "y": 2018,
+        "m": 3,
+        "d": 14
+      }
+    },
+    {
+      "type": "talk",
+      "id": "whats-up-pt1",
+      "title": "What's Up, part 1",
+      "subtitle": null,
+      "date": {
+        "y": 2018,
+        "m": 3,
+        "d": 15
+      }
+    },
+    {
+      "type": "talk",
+      "id": "whats-up-pt2",
+      "title": "What's Up, part 2",
+      "subtitle": "I'm talking talk",
+      "date": {
+        "y": 2018,
+        "m": 3,
+        "d": 16
+      }
+    }
+  ]
+}

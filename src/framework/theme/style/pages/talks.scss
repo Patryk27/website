@@ -1,15 +1,16 @@
 .talks {
-  margin-top: 0;
+  .talk {
+    margin-bottom: 1.5em;
 
-  .talk-title {
-    font-size: 1.2em;
-  }
+    .talk-summary {
+      p {
+        margin: 0.8em 0;
+        line-height: 1.2;
 
-  li {
-    margin-bottom: 0;
-
-    &:not(:first-child) {
-      margin-top: 1em;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 }

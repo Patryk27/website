@@ -1,7 +1,7 @@
 <p>
-  This is third part of the <b>Learning to Fly</b> series in which we're coding
-  a simulation of evolution using <b>neural network</b> and
-  <b>genetic algorithm</b>:
+  This is the third part of the <b>Learning to Fly</b> series in which we're
+  coding a simulation of evolution using <b>neural network</b> and <b>genetic
+  algorithm</b>:
 </p>
 
 <figure>
@@ -10,9 +10,7 @@
   </a>
 
   <figcaption>
-    <div class="title">
-      <a href="https://shorelark.pwy.io">shorelark.pwy.io</a>
-    </div>
+    <a href="https://shorelark.pwy.io" />
   </figcaption>
 </figure>
 
@@ -32,31 +30,34 @@
 
 <p>But how can we <b>train</b> a bunch of <code>Vec&lt;f32&gt;</code>?</p>
 
-<h2 id="plan">
-  <a href="#plan">Plan</a>
-</h2>
+<header id="plan">
+  Plan
+</header>
 
 <p>
+  <ref id="selection">
+    https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
+  </ref>
+
+  <ref id="crossover">
+    https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
+  </ref>
+
+  <ref id="mutation">
+    https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)
+  </ref>
+
   Plan for today is straightforward: we'll learn how a genetic algorithm works
   by implementing one in Rust. We'll examine in-depth how
-  <a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)"
-    >selection</a
-  >,
-  <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)"
-    >crossover</a
-  >, and
-  <a href="https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)"
-    >mutation</a
-  >
-  all play together, allowing for a computer to find complex answers seemingly
-  out of thin air.
+  <a ref="selection">selection</a>, <a ref="crossover">crossover</a> and
+  <a ref="mutation">mutation</a> all play together, allowing for computer to
+  find complex answers seemingly out of thin air.
 </p>
 
 <p>
   We'll try to remain <b>generic</b>, meaning that instead of hard-coding a
-  particular selection or crossover algorithm, we'll use
-  <a href="https://doc.rust-lang.org/book/ch10-02-traits.html">traits</a> to
-  create a versatile library that could be even published to
+  particular selection or crossover algorithm, we'll use traits to create a
+  versatile library that could be even published to
   <a href="https://crates.io">crates.io</a>!
 </p>
 
@@ -70,9 +71,9 @@
   implemented it on my own!
 </p>
 
-<h2 id="intro">
-  <a href="#intro">Introduction</a>
-</h2>
+<header id="intro">
+  Introduction
+</header>
 
 <p>
   First, let's recap how does a genetic algorithm work and what's the point of
@@ -86,13 +87,13 @@
   combinations in our lifetime.
 </p>
 
-<aside class="note">
+<note>
   <p>
     As you might remember, all the possible parameters in general are called a
     <b>search space</b>; so an erudite would say that our problem's search space
     is <i>huuuuge</i> and then run away.
   </p>
-</aside>
+</note>
 
 <p>
   What we can do is to kinda <i>mimic</i> the nature: if we started with a bunch
@@ -113,22 +114,20 @@
   <img src="{{ assets }}/intro-1.svg" />
 
   <figcaption>
-    <div class="title">
-      Overview of the genetic algorithm; starting from top and and going
-      clockwise: (1) estimating current solutions with a fitness function, (2)
-      performing crossover and mutation, (3) starting the entire proces over on
-      the new, improved population
-    </div>
+    Overview of the genetic algorithm; starting from top and and going
+    clockwise: (1) estimating current solutions with a fitness function, (2)
+    performing crossover and mutation, (3) starting the entire proces over on
+    the new, improved population
   </figcaption>
 </figure>
 
-<aside class="note">
+<note>
   <p>
     Because genetic algorithm involves working on random numbers, it's an
     example of a
-    <a href="https://en.wikipedia.org/wiki/Randomized_algorithm"
-      >probabilistic method</a
-    >.
+    <a href="https://en.wikipedia.org/wiki/Randomized_algorithm">
+      probabilistic method
+    </a>.
   </p>
 
   <p>
@@ -136,7 +135,7 @@
     don't always return the best answers, but usually get
     <i>Pretty Close Pretty Cheaply ®</i>.
   </p>
-</aside>
+</note>
 
 <p>
   Vegetable manufacturers don't want you to know this, but there exists a
@@ -190,16 +189,16 @@
   </li>
 </ul>
 
-<h2 id="coding-outline">
-  <a href="#coding-outline">Coding: Outline</a>
-</h2>
+<header id="coding-outline">
+  Coding: Outline
+</header>
 
 <p>We'll start by creating a second crate inside our workspace:</p>
 
 <listing lang="shell">
   <!--
     $ cd shorelark/libs
-    $ cargo new genetic-algorithm --lib
+    $ cargo new genetic-algorithm --name lib-genetic-algorithm --lib
   -->
 </listing>
 
@@ -222,10 +221,9 @@
 
 <p>
   Our genetic algorithm, as all
-  <a
-    href="https://exceptionnotfound.net/god-objects-the-daily-software-anti-pattern/"
-    >good objects</a
-  >
+  <a href="https://exceptionnotfound.net/god-objects-the-daily-software-anti-pattern/">
+    good objects
+  </a>
   do, will provide only one functionality - sometimes it's called
   <code>iterate</code>, sometimes it's called <code>step</code> or
   <code>process</code>; I've tossed a coin and decided on:
@@ -258,8 +256,8 @@
 <p>
   Our actual problem will depend on neural networks, but since we want for this
   library to be generic, we can't force it to accept a hard-coded
-  <code>NeuralNetwork</code> - instead, we can introduce a
-  <b>type parameter</b>:
+  <code>NeuralNetwork</code> - instead, we can introduce a <b>type
+  parameter</b>:
 </p>
 
 <listing lang="rust">
@@ -272,7 +270,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p><code>I</code> stands for <b>individual</b>.</p>
 
   <p>As for the Rust's terminology:</p>
@@ -294,23 +292,19 @@
   </listing>
 
   <p class="text-attached">
-    <i
-      >(<a
-        href="https://doc.rust-lang.org/reference/items/functions.html"
-       
-        >https://doc.rust-lang.org/reference/items/functions.html</a
-      >)</i
-    >
+    <i>
+      (<a href="https://doc.rust-lang.org/reference/items/functions.html" />)
+    </i>
   </p>
 
   <p>If you wanted to read this signature aloud, you'd say:</p>
 
   <p>
-    <i
-      >public function <code>foo</code> is <b>generic over</b> lifetime
+    <i>
+      public function <code>foo</code> is <b>generic over</b> lifetime
       <code>a</code> and type <code>T</code>, and it <b>accepts</b> a single
-      parameter named <code>bar</code> that is a reference to <code>T</code>.</i
-    >
+      parameter named <code>bar</code> that is a reference to <code>T</code>.
+    </i>
   </p>
 
   <p>
@@ -337,7 +331,7 @@
     <i>parameter</i>) is universal across all the programming languages, so it's
     worth remembering.
   </p>
-</aside>
+</note>
 
 <p>Learning from past mistakes, let's not forget about <b>preconditions</b>:</p>
 
@@ -370,9 +364,9 @@
   -->
 </listing>
 
-<h2 id="coding-selection">
-  <a href="#coding-selection">Coding: Selection</a>
-</h2>
+<header id="coding-selection">
+  Coding: Selection
+</header>
 
 <p>
   At this point, inside the loop, we have to pick two individuals - they will
@@ -380,19 +374,23 @@
 </p>
 
 <p class="text-dim">
-  <i
-    >(imagining that chip made of sand can create "offspring" hits my
-    <a href="https://en.wikipedia.org/wiki/Uncanny_valley">uncanny valley</a>
-    right in the feels.)</i
-  >
+  <i>
+    <ref id="uv">
+      https://en.wikipedia.org/wiki/Uncanny_valley
+    </ref>
+
+    (imagining that chip made of sand can create "offspring" hits my
+    <a ref="uv">uncanny valley</a> right in the feels.)
+  </i>
 </p>
 
 <p>
-  Choosing individuals is called the
-  <a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)"
-    >selection stage</a
-  >
-  of a genetic algorithm, and it should satisfy following two properties:
+  <ref id="sel">
+    https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
+  </ref>
+
+  Choosing individuals is called the <a ref="sel">selection stage</a> of a
+  genetic algorithm and it should satisfy following two properties:
 </p>
 
 <ul>
@@ -486,21 +484,22 @@
 </ul>
 
 <p>
-  My guts vote 133:7 for introducing a trait (a trait that, as you'll see later,
+  My guts vote 213:7 for introducing a trait (a trait that, as you'll see later,
   we would need anyway), so a trait it is.
 </p>
 
 <p>
+  <ref id="fps">
+    https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
+  </ref>
+
   As for the selection method, we'll use an algorithm called
-  <a
-    href="https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm"
-    >fitness proportionate selection</a
-  >
-  (also known as <b>roulette wheel selection</b>), as it's easy to reason about;
-  to understand how it works, let's imagine we have following three individuals:
+  <a ref="fps">fitness proportionate selection</a> (also known as <b>roulette
+  wheel selection</b>), as it's easy to reason about; to understand how it
+  works, let's imagine we have following three individuals:
 </p>
 
-<table class="tableblock frame-all grid-all stretch">
+<table>
   <colgroup>
     <col style="width: 20%" />
     <col style="width: 20%" />
@@ -508,47 +507,47 @@
   </colgroup>
   <thead>
     <tr>
-      <th class="tableblock halign-left valign-top">Individual</th>
-      <th class="tableblock halign-left valign-top">Fitness score</th>
-      <th class="tableblock halign-left valign-top">Fitness score %</th>
+      <th>Individual</th>
+      <th>Fitness score</th>
+      <th>Fitness score %</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">A</p>
+      <td>
+        <p>A</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">3</p>
+      <td>
+        <p>3</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">
+      <td>
+        <p>
           <code>3 / (1 + 2 + 3)</code> = <code>3 / 6</code> = <code>50%</code>
         </p>
       </td>
     </tr>
     <tr>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">B</p>
+      <td>
+        <p>B</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">2</p>
+      <td>
+        <p>2</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">
+      <td>
+        <p>
           <code>2 / (1 + 2 + 3)</code> = <code>2 / 6</code> = <code>33%</code>
         </p>
       </td>
     </tr>
     <tr>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">C</p>
+      <td>
+        <p>C</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">1</p>
+      <td>
+        <p>1</p>
       </td>
-      <td class="tableblock halign-left valign-top">
-        <p class="tableblock">
+      <td>
+        <p>
           <code>1 / (1 + 2 + 3)</code> = <code>1 / 6</code> = <code>16%</code>
         </p>
       </td>
@@ -566,10 +565,8 @@
   <img src="{{ assets }}/coding-selection-1.svg" />
 
   <figcaption>
-    <div class="title">
-      A pie chart - or a roulette wheel, if you squeeze your eyes enough -
-      illustrating individuals from the table above
-    </div>
+    A pie chart - or a roulette wheel, if you squeeze your eyes enough -
+    illustrating individuals from the table above
   </figcaption>
 </figure>
 
@@ -582,7 +579,7 @@
   <img src="{{ assets }}/coding-selection-2.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     In practice, fitness proportionate selection is rather frowned upon - it's
     because it allows for the best individuals to <b>dominate</b> the
@@ -629,15 +626,11 @@
 
   <p>
     For simplicity, we'll continue with the roulette wheel selection - but
-    should you feel frisky, I'll just say that
-    <a
-      href="https://setu677.medium.com/how-to-perform-roulette-wheel-and-rank-based-selection-in-a-genetic-algorithm-d0829a37a189"
-      >rank selection</a
-    >
-    is example of an algorithm that doesn't exhibit this dominating behavior,
-    and it will work with our birdies, too!
+    should you feel frisky, I'll just say that <b>rank selection</b> is example
+    of an algorithm that doesn't exhibit this dominating behavior and it will
+    work with our birdies, too!
   </p>
-</aside>
+</note>
 
 <p>
   Living up to the generic-ness promise, instead of hard-coding our library to
@@ -694,14 +687,14 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Each crate in a workspace has <b>its own</b> set of dependencies - the
     <code>rand</code> we've previously added to
     <code>libs/neural-network/Cargo.toml</code> is <i>not</i> automatically
     visible in any other crate in the workspace.
   </p>
-</aside>
+</note>
 
 <p>
   Learning from our past troubles with <code>thread_rng()</code>, let's already
@@ -726,7 +719,7 @@
 
 <p>Ain't that a beautiful signature?</p>
 
-<aside class="note">
+<note>
   <p>
     You might be wondering why we don't take a step further and make
     <code>select()</code> generic over the PRNG, too:
@@ -832,12 +825,11 @@
     you could do it twofold:
   </p>
 
-  <div class="listing-title">
-    <a
-      href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d5d734320717f0fda4d16de1f2600764"
-      >open in playground</a
-    >
-  </div>
+  <listing-title>
+    <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d5d734320717f0fda4d16de1f2600764">
+      open in playground
+    </a>
+  </listing-title>
 
   <listing lang="rust">
     <!--
@@ -895,8 +887,8 @@
 
   <p>
     At this point you can see why it's called <i>static</i> dispatch -
-    underneath, compiler replaces <i>dynamic</i> traits with
-    <i>static</i> types.
+    underneath, compiler replaces <i>dynamic</i> traits with <i>static</i>
+    types.
   </p>
 
   <p>
@@ -910,7 +902,7 @@
   <p>
     <code>print_kind_dynamic()</code>, on the other hand, uses a technique
     called <b>vtable</b> ("virtual table"), where each implementation is created
-    a dedicated "proxy table" that maps to concrete functions:
+    a dedicated table mapping to concrete functions:
   </p>
 
   <listing lang="rust">
@@ -965,10 +957,10 @@
   </p>
 
   <p>
-    Because we won't be invoking this PRNG million times per second, and so the
-    additional maintenance burden is - to me - a cake not worth the candle.
+    Because we won't be invoking this PRNG million times per second, the extra
+    maintenance burden is - to me - a cake not worth the candle.
   </p>
-</aside>
+</note>
 
 <p>As for the implementation, we <i>could</i> do it by hand:</p>
 
@@ -1025,13 +1017,17 @@
 </p>
 
 <p>
-  If you go through
-  <a href="https://docs.rs/rand/0.8.3/rand/"
-    ><code>rand</code>-'s documentation</a
-  >, you might just spot a trait called
-  <a href="https://docs.rs/rand/0.8.3/rand/seq/trait.SliceRandom.html"
-    ><code>SliceRandom</code></a
-  >; if you take a look inside it, you might just spot a method called
+  <ref id="doc1">
+    https://docs.rs/rand/0.8.3/rand/
+  </ref>
+
+  <ref id="doc2">
+    https://docs.rs/rand/0.8.3/rand/seq/trait.SliceRandom.html
+  </ref>
+
+  If you go through <a ref="doc1"><code>rand</code>'s documentation</a>, you
+  might just spot a trait called <a ref="doc2"><code>SliceRandom</code></a> - if
+  you take a look inside it, you might just spot a method called
   <code>choose_weighted()</code> that happens to be doing exactly the thing we
   need:
 </p>
@@ -1056,12 +1052,11 @@
 </listing>
 
 <p class="text-attached">
-  <i
-    >(thanks to <a href="https://github.com/javiertury">@javiertury</a> for
-    <a href="https://github.com/Patryk27/shorelark/pull/2"
-      >pointing out that this method exists</a
-    >.)</i
-  >
+  <i>
+    (thanks to <a href="https://github.com/javiertury">@javiertury</a> for
+    <a href="https://github.com/Patryk27/shorelark/pull/2">pointing out that
+    this method exists</a>.)
+  </i>
 </p>
 
 <p>
@@ -1084,7 +1079,7 @@
 </listing>
 
 <p>
-  Path to the TDD-nirvana is a path strawn with roses, and we're about to get
+  Path to the TDD-nirvana is a path strawn with roses and we're about to get
   bit by one of their thorns:
 </p>
 
@@ -1218,7 +1213,7 @@
 
 <p>
   ... doesn't inspire confidence, as it doesn't <b>prove</b> that fitness scores
-  are being considered; a hypothetical, <i>invalid</i> implementation:
+  are being considered - a hypothetical, <i>invalid</i> implementation:
 </p>
 
 <listing lang="rust">
@@ -1248,15 +1243,13 @@
   <img src="{{ assets }}/coding-selection-4.svg" />
 
   <figcaption>
-    <div class="title">
-      A histogram - <code>X</code> axis represents items, <code>Y</code> axis
-      represents frequency; also, to make hay while the sun shines, I hereby dub
-      this type of histogram the
-      <a
-        href="https://duckduckgo.com/?q=johnny+bravo&amp;t=h_&amp;iax=images&amp;ia=images"
-        >The Johnny Bravo Chart</a
-      >
-    </div>
+    <ref id="jb">
+      https://duckduckgo.com/?q=johnny+bravo&amp;t=h_&amp;iax=images&amp;ia=images
+    </ref>
+
+    A histogram - <code>X</code> axis represents items, <code>Y</code> axis
+    represents frequency; also, to make hay while the sun shines, I hereby dub
+    this type of histogram the <a ref="jb">The Johnny Bravo Chart</a>
   </figcaption>
 </figure>
 
@@ -1303,7 +1296,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Notice that while building the histogram, we're <b>casting</b> fitness
     scores from <code>f32</code> to <code>i32</code>:
@@ -1318,21 +1311,20 @@
   </listing>
 
   <p>
+    <ref id="ord">
+      https://doc.rust-lang.org/std/cmp/trait.Ord.html
+    </ref>
+
     We have to do that, because floating-point numbers in Rust don't implement
-    the
-    <a href="https://doc.rust-lang.org/std/cmp/trait.Ord.html"
-      ><code>Ord</code></a
-    >
-    trait, making it impossible to use them as a <code>BTreeMap</code>-'s
-    <i>key</i>:
+    the <a ref="ord"><code>Ord</code></a> trait, making it impossible to use
+    them as a <code>BTreeMap</code>'s <i>key</i>:
   </p>
 
-  <div class="listing-title">
-    <a
-      href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=535648a70ce2e61f12b8c38021fddbef"
-      >open in playground</a
-    >
-  </div>
+  <listing-title>
+    <a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=535648a70ce2e61f12b8c38021fddbef">
+      open in playground
+    </a>
+  </listing-title>
 
   <listing lang="rust">
     <!--
@@ -1359,7 +1351,7 @@
     <a href="https://floating-point-gui.de/">IEEE 754</a> standard, are not a
     <a href="https://en.wikipedia.org/wiki/Total_order">totally ordered set</a>
     - namely, comparing
-    <a href="https://en.wikipedia.org/wiki/NaN#Comparison_with_NaN">NaN</a>-s is
+    <a href="https://en.wikipedia.org/wiki/NaN#Comparison_with_NaN">NaN</a>s is
     problematic, because:
   </p>
 
@@ -1372,22 +1364,25 @@
   <p>
     Practically, it means that had you ever inserted a <code>NaN</code> into a
     map, not only would you be unable to retrieve that particular entry using
-    <code>.get()</code>, but you could break <code>BTreeMap</code>-'s internal
+    <code>.get()</code>, but you could break <code>BTreeMap</code>'s internal
     structure, making it impossible to retrieve <i>any</i> item.
   </p>
 
   <p>
-    <i
-      >(by the way, that's also true for custom implementations of
+    <i>
+      <ref id="assym">
+        https://en.wikipedia.org/wiki/Asymmetry#In_mathematics
+      </ref>
+
+      <ref id="trans">
+        https://simple.wikipedia.org/wiki/Transitivity_(mathematics)
+      </ref>
+
+      (by the way, that's also true for custom implementations of
       <code>Ord</code> and <code>PartialOrd</code> - if they don't satisfy
-      <a href="https://en.wikipedia.org/wiki/Asymmetry#In_mathematics"
-        >asymmetry</a
-      >
-      and
-      <a href="https://simple.wikipedia.org/wiki/Transitivity_(mathematics)"
-        >transitivity</a
-      >, you're gonna have a bad time.)</i
-    >
+      <a ref="assym">asymmetry</a> and <a ref="trans">transitivity</a>, you're
+      gonna have a bad time.)
+    </i>
   </p>
 
   <p>If you feel like exploring this topic more:</p>
@@ -1395,42 +1390,26 @@
   <ul>
     <li>
       <p>
-        <a
-         
-          href="https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html"
-          >https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html</a
-        >
+        <a href="https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html" />
       </p>
     </li>
     <li>
       <p>
-        <a
-         
-          href="https://www.reddit.com/r/rust/comments/cbrpll/why_doesnt_stdcmpord_is_implemented_for_floats/"
-          >https://www.reddit.com/r/rust/comments/cbrpll/why_doesnt_stdcmpord_is_implemented_for_floats/</a
-        >
+        <a href="https://www.reddit.com/r/rust/comments/cbrpll/why_doesnt_stdcmpord_is_implemented_for_floats/" />
       </p>
     </li>
     <li>
       <p>
-        <a
-          href="https://www.reddit.com/r/rust/comments/29kia3/no_ord_for_f32/"
-         
-          >https://www.reddit.com/r/rust/comments/29kia3/no_ord_for_f32/</a
-        >
+        <a href="https://www.reddit.com/r/rust/comments/29kia3/no_ord_for_f32/" />
       </p>
     </li>
     <li>
       <p>
-        <a
-          href="https://stackoverflow.com/questions/26489701/why-does-rust-not-implement-total-ordering-via-the-ord-trait-for-f64-and-f32"
-         
-          >https://stackoverflow.com/questions/26489701/why-does-rust-not-implement-total-ordering-via-the-ord-trait-for-f64-and-f32</a
-        >
+        <a href="https://stackoverflow.com/questions/26489701/why-does-rust-not-implement-total-ordering-via-the-ord-trait-for-f64-and-f32" />
       </p>
     </li>
   </ul>
-</aside>
+</note>
 
 <p>
   <code>cargo test</code> (or <code>cargo test --workspace</code>, if you're in
@@ -1521,12 +1500,12 @@
 </listing>
 
 <p>
-  Moreover, we can use
-  <a
-    href="https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.fold"
-    ><code>Iterator::fold()</code></a
-  >
-  to simplify the loop:
+  <ref id="fold">
+    https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.fold
+  </ref>
+
+  Moreover, we can use <a ref="fold"><code>Iterator::fold()</code></a> to
+  simplify the loop:
 </p>
 
 <listing lang="rust">
@@ -1550,7 +1529,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     <code>as _</code> means "compiler, pretty please <b>infer</b> what type is
     required and cast this value into it".
@@ -1565,10 +1544,10 @@
   </p>
 
   <p>
-    <i
-      >(it wouldn't be wrong to repeat the type and write <code>as i32</code> -
-      it's just my preference to avoid duplicating type annotations.)</i
-    >
+    <i>
+      (it wouldn't be wrong to repeat the type and write <code>as i32</code> -
+      it's just my preference to avoid duplicating type annotations.)
+    </i>
   </p>
 
   <p>Another way we could've written this code is:</p>
@@ -1591,7 +1570,7 @@
     All those three approaches (including the initial one with an explicit loop)
     are equally valid Rust code - use whichever one you find the most readable.
   </p>
-</aside>
+</note>
 
 <p>Having the selection algorithm ready, let's recap where we stopped:</p>
 
@@ -1739,7 +1718,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     You might be wondering why <code>rng</code> is passed via
     <code>.evolve()</code> instead of going through the constructor - surely the
@@ -1891,28 +1870,20 @@
   <ul>
     <li>
       <p>
-        <a
-          href="https://stackoverflow.com/questions/32300132/why-cant-i-store-a-value-and-a-reference-to-that-value-in-the-same-struct"
-         
-          >https://stackoverflow.com/questions/32300132/why-cant-i-store-a-value-and-a-reference-to-that-value-in-the-same-struct</a
-        >
+        <a href="https://stackoverflow.com/questions/32300132/why-cant-i-store-a-value-and-a-reference-to-that-value-in-the-same-struct" />
       </p>
     </li>
     <li>
       <p>
-        <a
-          href="https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/"
-         
-          >https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/</a
-        >
+        <a href="https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/" />
       </p>
     </li>
   </ul>
-</aside>
+</note>
 
-<h2 id="coding-crossover">
-  <a href="#coding-crossover">Coding: Crossover</a>
-</h2>
+<header id="coding-crossover">
+  Coding: Crossover
+</header>
 
 <p>
   Now that we have chosen two parent-individuals, it's time for the
@@ -1948,9 +1919,9 @@
 
 <p>
   A chromosome (also called <b>genotype</b>, though I'm convinced a biologist
-  dies each time someone juxtaposes both terms) is usually built from
-  <b>genes</b>, and its structure depends on the underlying problem - sometimes
-  it's convenient to model a chromosome as a bitset:
+  dies each time someone mixes both terms) is usually built from <b>genes</b>,
+  and its structure depends on the underlying problem - sometimes it's
+  convenient to model a chromosome as a bitset:
 </p>
 
 <figure class="sketch w-50">
@@ -1984,7 +1955,7 @@
 </listing>
 
 <p>
-  Instead of exposing genes directly (via <code>pub genes: …​</code>), we'll
+  Instead of exposing genes directly (via <code>pub genes: ...​</code>), we'll
   provide a handful of functions allowing to peek inside the chromosome:
 </p>
 
@@ -2078,11 +2049,12 @@
 <ol>
   <li>
     <p>
-      There's
-      <a href="https://doc.rust-lang.org/stable/std/ops/trait.Index.html"
-        ><code>Index</code></a
-      >, which allows to use the <b>indexing operator</b> - <code>[]</code> - on
-      your type:
+      <ref id="index">
+        https://doc.rust-lang.org/stable/std/ops/trait.Index.html
+      </ref>
+
+      There's <a ref="index"><code>Index</code></a>, which allows you to use the
+      <b>indexing operator</b> - <code>[]</code> - on your type:
     </p>
 
     <listing lang="rust">
@@ -2128,11 +2100,12 @@
   </li>
   <li>
     <p>
-      There's
-      <a
-        href="https://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html"
-        ><code>FromIterator</code></a
-      >, which allows to <code>.collect()</code> <i>into</i> your type:
+      <ref id="fi">
+        https://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html
+      </ref>
+
+      There's <a ref="fi"><code>FromIterator</code></a>, which allows you to
+      <code>.collect()</code> <i>into</i> your type:
     </p>
 
     <listing lang="rust">
@@ -2178,16 +2151,17 @@
   </li>
   <li>
     <p>
+      <ref id="ii">
+        https://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html
+      </ref>
+
       Finally, there's also a reverse trait -
-      <a
-        href="https://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html"
-        ><code>IntoIterator</code></a
-      >:
+      <a ref="ii"><code>IntoIterator</code></a>:
     </p>
 
     <listing lang="rust">
       <!--
-        #![feature(min_type_alias_impl_trait)]
+        #![feature(impl_trait_in_assoc_type)]
         
         /* ... */
         
@@ -2227,14 +2201,15 @@
   </li>
 </ol>
 
-<aside class="note">
+<note>
   <p>
+    <ref id="tait">
+      https://github.com/rust-lang/rust/issues/63063
+    </ref>
+
     Our last implementation uses a <i>nightly</i> feature called
-    <a href="https://github.com/rust-lang/rust/issues/63063"
-      ><code>min_type_alias_impl_trait</code></a
-    >
-    - it allows to use <code>impl Trait</code> in places such as associated
-    types:
+    <a ref="tait"><code>impl_trait_in_assoc_type</code></a> - it allows to use
+    <code>impl Trait</code> in places such as associated types:
   </p>
 
   <listing lang="rust">
@@ -2250,13 +2225,14 @@
   </listing>
 
   <p>
-    <i
-      >(by the way, <code>impl Trait</code> in this position is called
-      <a
-        href="https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html"
-        >an existential type</a
-      >.)</i
-    >
+    <ref id="et">
+      https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html
+    </ref>
+
+    <i>
+      (by the way, <code>impl Trait</code> in this position is called
+      <a ref="et">an existential type</a>.)
+    </i>
   </p>
 
   <p>If not for this feature, we'd have to figure out the type on our own:</p>
@@ -2280,15 +2256,9 @@
 
   <p>
     So yeah, I guess you could call me a
-    <code>#![feature(min_type_alias_impl_trait)]</code>-'s fan #1.
+    <code>#![feature(impl_trait_in_assoc_type]</code>'s fan #1.
   </p>
-</aside>
-
-<aside class="note note-from-the-future">
-  Note from the future: this feature has been renamed into
-  <code>type_alias_impl_trait</code>; if you follow this article with a newer
-  compiler, use this newer name.
-</aside>
+</note>
 
 <p>As I said few minutes before:</p>
 
@@ -2344,13 +2314,14 @@
 </listing>
 
 <p>
-  As for the crossover itself, there are
-  <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples"
-    >many</a
-  >
-  algorithms we could implement - usually it's best to try a few of them and see
-  whichever plays best with given problem; for simplicity, we'll go with
-  <b>uniform crossover</b>, which can be described with a single drawing:
+  <ref id="cross">
+    https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples
+  </ref>
+
+  As for the crossover itself, there are <a ref="cross">many</a> algorithms we
+  could implement - usually it's best to try a few of them and see whichever
+  plays best with given problem; for simplicity, we'll go with <b>uniform
+  crossover</b>, which can be described with a single drawing:
 </p>
 
 <figure class="sketch">
@@ -2431,12 +2402,13 @@
 </listing>
 
 <p>
-  Second, let's use a <span class="text-rainbow">combinator</span>; we already
-  know this one from the previous post - it's
-  <a
-    href="https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.zip"
-    ><code>.zip()</code></a
-  >:
+  <ref id="zip">
+    https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.zip
+  </ref>
+
+  Second, let's use a <span class="text-rainbow">combinator</span> - we already
+  know this one from the previous post, it's
+  <a ref="zip"><code>.zip()</code></a>:
 </p>
 
 <listing lang="rust">
@@ -2458,16 +2430,13 @@
 <p>How neat!</p>
 
 <p>
-  Notice how by implementing <code>.iter()</code> and
-  <code>FromIterator</code> a moment ago, we were able to reduce code in here to
-  a bare minimum that conveys the <i>essence</i> of the uniform crossover. Apart
-  from improved readability, what I love about combinators the most is that they
-  don't sacrifice performance - if anything, the variant above will be faster
-  (preallocation!).
+  Notice how by implementing <code>.iter()</code> and <code>FromIterator</code>
+  a moment ago, we were able to reduce code in here to a bare minimum that
+  conveys the <i>essence</i> of the uniform crossover.
 </p>
 
 <p>
-  Your internal sceptic might still be alerted that something's missing…​ hmm…​
+  Your internal sceptic might still be alerted that something's missing...​ hmm...​
   ah, tests!
 </p>
 
@@ -2597,7 +2566,7 @@
 
 <p>
   ... meaning that our <code>child</code> got 49% of its genome from
-  <code>parent_a</code>, and 51% from <code>parent_b</code>; this ultimately
+  <code>parent_a</code> and 51% from <code>parent_b</code> - this ultimately
   proves our uniform crossover picks genes from both parents at equal
   probability.
 </p>
@@ -2638,16 +2607,16 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
+    <ref id="to">
+      https://doc.rust-lang.org/book/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects
+    </ref>
+
     Contrary to <code>SelectionMethod::select()</code>,
     <code>CrossoverMethod::crossover()</code> doesn't contain any generic
-    parameters -
-    <a
-      href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects"
-      >that’s why</a
-    >
-    we can <code>Box</code> it; another solution would be:
+    parameters and <a ref="to">that’s why</a> we can <code>Box</code> it -
+    another solution could be:
   </p>
 
   <listing lang="rust">
@@ -2685,22 +2654,23 @@
   </p>
 
   <p>
-    Because Rust makes it so easy to create genetic parameter upon generic
-    parameter,
-    <a href="http://troubles.md/rust-optimization/#avoid-box-trait"
-      >some people</a
-    >
-    argue that using <code>Box</code> - which has a theoretical performance
-    penalty - makes for a less idiomatic, slower Rust code.
+    <ref id="avoid">
+      http://troubles.md/rust-optimization/#avoid-boxtrait
+    </ref>
+
+    Because Rust makes it so easy to add genetic parameter upon generic
+    parameter, <a ref="avoid">some people</a> argue that using <code>Box</code>
+    - which has a slight performance penalty - makes for a less idiomatic Rust
+    code.
   </p>
 
   <p>
-    My personal stance is that <code>Box</code> is a convenient mechanism whose
-    potential runtime trade-off is paid by keeping a code that's easier to
-    maintain; I'd say: use <code>Box</code> unless benchmarks prove it's an
-    issue / unless it makes the code awkward to read.
+    My stance is that <code>Box</code> is a convenient mechanism whose potential
+    runtime trade off is paid by keeping a code that's easier to maintain; I'd
+    say: use <code>Box</code> unless benchmarks prove it's an issue / unless it
+    makes the code awkward to read.
   </p>
-</aside>
+</note>
 
 <p>... and then:</p>
 
@@ -2722,9 +2692,9 @@
   -->
 </listing>
 
-<h2 id="coding-mutation">
-  <a href="#coding-mutation">Coding: Mutation</a>
-</h2>
+<header id="coding-mutation">
+  Coding: Mutation
+</header>
 
 <p>
   Now that we have a semi-new chromosome at hand, it's time to introduce some
@@ -3053,7 +3023,7 @@
 
 <p>
   Now we can pass <code>MutationMethod</code> next to
-  <code>SelectionMethod</code>; there are no generics inside
+  <code>SelectionMethod</code> - there are no generics inside
   <code>MutationMethod::mutate()</code>, so let's not hesitate on a
   <code>Box</code>:
 </p>
@@ -3103,9 +3073,9 @@
   -->
 </listing>
 
-<h2 id="coding-creating-individuals">
-  <a href="#coding-creating-individuals">Coding: Creating individuals</a>
-</h2>
+<header id="coding-creating-individuals">
+  Coding: Creating individuals
+</header>
 
 <p>Behold, our entire function so far:</p>
 
@@ -3180,14 +3150,14 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Naming's important - sometimes instead of abstract "create", it makes more
     sense to talk in terms of "where from" and "where to".
   </p>
 
   <p>
-    For instance, compare which one of these feels more <i>natural</i> to you:
+    For instance, compare:
   </p>
 
   <listing lang="rust">
@@ -3200,6 +3170,8 @@
     -->
   </listing>
 
+  <p>... with:</p>
+
   <listing lang="rust">
     <!--
       pub trait Individual {
@@ -3211,7 +3183,7 @@
   </listing>
 
   <p>
-    As usually when it comes to naming, there's no single best answer; we'll
+    As usually when it comes to naming, there's no single best answer - we'll
     continue with <code>::create()</code>, because we have to decide on
     <i>something</i>, but keep this example in mind next time you're scratching
     you head, thinking "What to name this function?".
@@ -3232,7 +3204,7 @@
 
   <p>
     ... although I wouldn't recommend it, because supertraits make
-    <code>impl</code>-s look less compact:
+    <code>impl</code>s look less compact:
   </p>
 
   <listing lang="rust">
@@ -3262,7 +3234,7 @@
       }
     -->
   </listing>
-</aside>
+</note>
 
 <p>Back to the loop:</p>
 
@@ -3316,9 +3288,9 @@
   -->
 </listing>
 
-<h2 id="the-test">
-  <a href="#the-test">The Test</a>
-</h2>
+<header id="the-test">
+  The Test
+</header>
 
 <p>
   Having <code>.evolve()</code> ready, the time has come for perhaps the most
@@ -3397,16 +3369,16 @@
 </listing>
 
 <p class="text-dim">
-  <i
-    >(instead of <code>enum</code>, you could also create two separate types
+  <ref id="ent">
+    https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition
+  </ref>
+
+  <i>
+    (instead of <code>enum</code>, you could also create two separate types
     like <code>TestIndividualWithChromosome</code> and
     <code>TestIndividualWithFitness</code> - but that feels
-    <a
-      href="https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition"
-      >too enterprise-y</a
-    >
-    for me, so I'll take a rain check)</i
-  >
+    <a ref="ent">too enterprise-y</a> for me, so I'll take a rain check)
+  </i>
 </p>
 
 <p>Since we're already here, let's derive <code>PartialEq</code>:</p>
@@ -3422,7 +3394,7 @@
 </listing>
 
 <p>
-  We'll need <code>PartialEq</code> for <code>Chromosome</code> too; to avoid
+  We'll need <code>PartialEq</code> for <code>Chromosome</code> too - to avoid
   funky floating-point surprises, let's write it by hand using
   <code>approx</code>:
 </p>
@@ -3443,7 +3415,7 @@
 
 <p>
   As for the test, nothing scary - we'll start with a few individuals, evolve
-  them over a few generations, and compare the output population:
+  them over a few generations and compare the output population:
 </p>
 
 <listing lang="rust">
@@ -3570,7 +3542,7 @@
   -->
 </listing>
 
-<p>Yes…​ ha ha ha…​ <u>yes</u>? ta-da? hey presto - we got…​ numbers?</p>
+<p>Yes...​ ha ha ha...​ <u>yes</u>? ta-da? hey presto - we got...​ numbers?</p>
 
 <p>
   What's certain is that we've got <i>some</i> output - but how do we know those
@@ -3594,20 +3566,18 @@
 </listing>
 
 <p>
-  <i
-    >As the clandestine averages begin to caress my neurons, a juggernaut shout
+  <i>
+    As the clandestine averages begin to caress my neurons, a juggernaut shout
     leaves my throat: it works! it works! our genetic algorithm <b>is</b> the
-    apex predator of computer science!</i
-  >
+    apex predator of computer science!
+  </i>
 </p>
 
 <figure class="sketch">
   <img src="{{ assets }}/the-test-1.svg" />
 
   <figcaption>
-    <div class="title">
-      <a href="https://knowyourmeme.com/memes/stonks">stonks</a>
-    </div>
+    <a href="https://knowyourmeme.com/memes/stonks">stonks</a>
   </figcaption>
 </figure>
 
@@ -3650,9 +3620,9 @@
 
 <p>... and see how they affect the output population.</p>
 
-<h2 id="closing-thoughts">
-  <a href="#closing-thoughts">Closing thoughts</a>
-</h2>
+<header id="closing-thoughts">
+  Closing thoughts
+</header>
 
 <p>
   So far, learning <i>whoa so much</i> on the way, we've implemented two
@@ -3665,5 +3635,3 @@
   of floating-point numbers. As promised, that's where the JavaScript and
   WebAssembly will come to play.
 </p>
-
-<p>As always, thank you for reading and until the next time!</p>

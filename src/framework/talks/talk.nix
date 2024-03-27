@@ -2,7 +2,7 @@ fw: talkId:
 
 fw.components.page
 {
-  title = "~/talks/${talkId}";
+  title = fw.content.talks.${talkId}.title;
   layout = "talk";
 } ''
   ${

@@ -1,0 +1,19 @@
+[package]
+name = "sak"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+ariadne = "0.4.0"
+chrono = "0.4.35"
+clap = { version = "4.5.3", features = ["derive"] }
+itertools = "0.12.1"
+rss = { version = "2.0.7", features = ["atom", "validation"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+voca_rs = "1.15.2"
+
+[dev-dependencies]
+pretty_assertions = "1.4.0"
+test-case = "3.3.1"
