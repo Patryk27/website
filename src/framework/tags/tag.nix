@@ -20,7 +20,7 @@ fw.components.page
   layout = "tag";
 } ''
   <h1>
-    Posts tagged #${tag}:
+    ~/tags/${tag}:
   </h1>
 
   <div class="posts">

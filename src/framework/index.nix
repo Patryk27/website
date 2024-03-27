@@ -1,9 +1,7 @@
 fw:
 
 let
-  inherit (fw.pkgs) lib;
-
-  recentObjects =
+  objects =
     let
       render = { id, type, ... }:
         if type == "post" then
@@ -26,27 +24,26 @@ let
     in
     map
       (object: "<li>${render object}</li>")
-      (lib.lists.take 5 fw.content.objects);
+      fw.content.objects;
 
 in
 fw.components.page
 {
-  title = "pwy.io";
+  title = "pwy.io | Patryk Wychowaniec";
   layout = "index";
 } ''
   ${fw.content.meta.intro}
+  ${fw.content.meta.contact}
 
   <hr>
 
-  <section class="newest-stuff">
-    <h3>Newest stuff</h3>
+  <section class="posts-and-talks">
+    <h3>
+      <a href="/posts">Posts</a> & <a href="/talks">Talks</a>
+    </h3>
 
     <ul>
-      ${toString recentObjects}
+      ${toString objects}
     </ul>
   </section>
-
-  <hr>
-
-  ${fw.content.meta.contact}
 ''

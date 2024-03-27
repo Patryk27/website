@@ -1,0 +1,398 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "p",
+                span: Span {
+                    beg: 1,
+                    end: 1,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Hello, World!\n",
+                        span: Span {
+                            beg: 3,
+                            end: 19,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 23,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 24,
+            end: 25,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "table",
+                span: Span {
+                    beg: 27,
+                    end: 31,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 33,
+                            end: 35,
+                        },
+                    },
+                ),
+                Element(
+                    Spanned {
+                        inner: Element {
+                            name: Spanned {
+                                inner: "thead",
+                                span: Span {
+                                    beg: 37,
+                                    end: 41,
+                                },
+                            },
+                            attrs: [],
+                            children: [
+                                Text(
+                                    Spanned {
+                                        inner: "\n    ",
+                                        span: Span {
+                                            beg: 43,
+                                            end: 47,
+                                        },
+                                    },
+                                ),
+                                Element(
+                                    Spanned {
+                                        inner: Element {
+                                            name: Spanned {
+                                                inner: "tr",
+                                                span: Span {
+                                                    beg: 49,
+                                                    end: 50,
+                                                },
+                                            },
+                                            attrs: [],
+                                            children: [
+                                                Text(
+                                                    Spanned {
+                                                        inner: "\n      ",
+                                                        span: Span {
+                                                            beg: 52,
+                                                            end: 58,
+                                                        },
+                                                    },
+                                                ),
+                                                Element(
+                                                    Spanned {
+                                                        inner: Element {
+                                                            name: Spanned {
+                                                                inner: "td",
+                                                                span: Span {
+                                                                    beg: 60,
+                                                                    end: 61,
+                                                                },
+                                                            },
+                                                            attrs: [],
+                                                            children: [
+                                                                Text(
+                                                                    Spanned {
+                                                                        inner: "first",
+                                                                        span: Span {
+                                                                            beg: 63,
+                                                                            end: 67,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            ],
+                                                        },
+                                                        span: Span {
+                                                            beg: 59,
+                                                            end: 72,
+                                                        },
+                                                    },
+                                                ),
+                                                Text(
+                                                    Spanned {
+                                                        inner: "\n    ",
+                                                        span: Span {
+                                                            beg: 73,
+                                                            end: 77,
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        },
+                                        span: Span {
+                                            beg: 48,
+                                            end: 82,
+                                        },
+                                    },
+                                ),
+                                Text(
+                                    Spanned {
+                                        inner: "\n  ",
+                                        span: Span {
+                                            beg: 83,
+                                            end: 85,
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        span: Span {
+                            beg: 36,
+                            end: 93,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 94,
+                            end: 96,
+                        },
+                    },
+                ),
+                Element(
+                    Spanned {
+                        inner: Element {
+                            name: Spanned {
+                                inner: "tbody",
+                                span: Span {
+                                    beg: 98,
+                                    end: 102,
+                                },
+                            },
+                            attrs: [],
+                            children: [
+                                Text(
+                                    Spanned {
+                                        inner: "\n    ",
+                                        span: Span {
+                                            beg: 104,
+                                            end: 108,
+                                        },
+                                    },
+                                ),
+                                Element(
+                                    Spanned {
+                                        inner: Element {
+                                            name: Spanned {
+                                                inner: "tr",
+                                                span: Span {
+                                                    beg: 110,
+                                                    end: 111,
+                                                },
+                                            },
+                                            attrs: [],
+                                            children: [
+                                                Text(
+                                                    Spanned {
+                                                        inner: "\n      ",
+                                                        span: Span {
+                                                            beg: 113,
+                                                            end: 119,
+                                                        },
+                                                    },
+                                                ),
+                                                Element(
+                                                    Spanned {
+                                                        inner: Element {
+                                                            name: Spanned {
+                                                                inner: "td",
+                                                                span: Span {
+                                                                    beg: 121,
+                                                                    end: 122,
+                                                                },
+                                                            },
+                                                            attrs: [],
+                                                            children: [
+                                                                Text(
+                                                                    Spanned {
+                                                                        inner: "second",
+                                                                        span: Span {
+                                                                            beg: 124,
+                                                                            end: 129,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            ],
+                                                        },
+                                                        span: Span {
+                                                            beg: 120,
+                                                            end: 134,
+                                                        },
+                                                    },
+                                                ),
+                                                Text(
+                                                    Spanned {
+                                                        inner: "\n    ",
+                                                        span: Span {
+                                                            beg: 135,
+                                                            end: 139,
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        },
+                                        span: Span {
+                                            beg: 109,
+                                            end: 144,
+                                        },
+                                    },
+                                ),
+                                Text(
+                                    Spanned {
+                                        inner: "\n    ",
+                                        span: Span {
+                                            beg: 145,
+                                            end: 149,
+                                        },
+                                    },
+                                ),
+                                Comment(
+                                    Spanned {
+                                        inner: " comment ",
+                                        span: Span {
+                                            beg: 154,
+                                            end: 163,
+                                        },
+                                    },
+                                ),
+                                Text(
+                                    Spanned {
+                                        inner: "\n  ",
+                                        span: Span {
+                                            beg: 166,
+                                            end: 168,
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        span: Span {
+                            beg: 97,
+                            end: 176,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n",
+                        span: Span {
+                            beg: 177,
+                            end: 177,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 26,
+            end: 185,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 186,
+            end: 187,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "p",
+                span: Span {
+                    beg: 189,
+                    end: 189,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Hello, ",
+                        span: Span {
+                            beg: 191,
+                            end: 200,
+                        },
+                    },
+                ),
+                Element(
+                    Spanned {
+                        inner: Element {
+                            name: Spanned {
+                                inner: "b",
+                                span: Span {
+                                    beg: 202,
+                                    end: 202,
+                                },
+                            },
+                            attrs: [],
+                            children: [
+                                Text(
+                                    Spanned {
+                                        inner: "World",
+                                        span: Span {
+                                            beg: 204,
+                                            end: 208,
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        span: Span {
+                            beg: 201,
+                            end: 212,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "!\n",
+                        span: Span {
+                            beg: 213,
+                            end: 214,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 188,
+            end: 218,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 219,
+            end: 219,
+        },
+    },
+)

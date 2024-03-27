@@ -1,10 +1,10 @@
-{ rev, pkgs, libs, content }:
+{ rev, pkgs, content }:
 
 let
   inherit (fw.pkgs) lib;
 
   fw = {
-    inherit rev pkgs libs;
+    inherit rev pkgs;
 
     content = content // {
       tags =
@@ -13,12 +13,12 @@ let
           (lib.lists.unique
             (lib.lists.flatten
               (map
-                (postId: content.posts.${postId}.tags)
+                (postId: (content.posts.${postId}.tags or [ ]))
                 (builtins.attrNames content.posts))));
 
       findPostsByTag = tag:
         (builtins.filter
-          (postId: builtins.elem tag content.posts.${postId}.tags)
+          (postId: builtins.elem tag (content.posts.${postId}.tags or [ ]))
           (builtins.attrNames content.posts));
 
       objects =

@@ -1,0 +1,65 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "listing",
+                span: Span {
+                    beg: 1,
+                    end: 7,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 9,
+                            end: 11,
+                        },
+                    },
+                ),
+                Comment(
+                    Spanned {
+                        inner: "\n    fn main() {\n        println!(\"hello\");\n    }\n  ",
+                        span: Span {
+                            beg: 16,
+                            end: 68,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n\n  ",
+                        span: Span {
+                            beg: 71,
+                            end: 74,
+                        },
+                    },
+                ),
+                Comment(
+                    Spanned {
+                        inner: "\n    fn main() {\n        println!(\"world\");\n    }\n  ",
+                        span: Span {
+                            beg: 79,
+                            end: 131,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n",
+                        span: Span {
+                            beg: 134,
+                            end: 134,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 144,
+        },
+    },
+)

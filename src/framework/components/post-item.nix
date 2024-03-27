@@ -24,7 +24,7 @@ in
       </time>
 
       <div class="post-meta-tags">
-        ${toString (map renderTag post.tags)}
+        ${toString (map renderTag (post.tags or []))}
       </div>
     </div>
 

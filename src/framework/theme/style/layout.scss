@@ -8,18 +8,33 @@ body {
   font-size: 18px;
 
   @media only screen and (min-width: 992px) {
-    font-size: 22px;
+    font-size: 21px;
   }
 }
 
 footer {
   @extend hr;
-  margin-top: 1.5em;
-  padding-top: 1.5em;
+
+  margin-bottom: 0.5em !important;
+  padding-top: 0.5em;
   text-align: right;
 
   @media only screen and (min-width: 992px) {
     text-align: center;
+  }
+
+  .footer-item {
+    display: block;
+    margin-top: 1em;
+
+    &.footer-item-rev {
+      text-align: right;
+      opacity: 0.3;
+
+      @media only screen and (min-width: 992px) {
+        margin-top: 0;
+      }
+    }
   }
 }
 

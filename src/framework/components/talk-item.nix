@@ -14,19 +14,45 @@ in
 ''
   <article class="talk">
     <${titleTag} class="talk-title">
-      ${talk.title}
+      ${
+        if talk ? link then
+          ''<a href="${talk.link}">${talk.title}</a>''
+        else
+          ''${talk.title}''
+      }
+      <span class="talk-title-camera">🎥</span>
     </${titleTag}>
 
+    <div class="talk-meta">
+      <time class="talk-meta-time">
+        ${fw.components.date "%M %d, %y" talk.when}
+      </time>
+
+      <div class="talk-meta-place">
+        ${talk.where}
+      </div>
+
+      ${
+        if talk ? resources then
+          ''
+            <div class="talk-meta-resources">
+              ${renderedResources}
+            </div>
+          ''
+        else
+          ""
+      }
+    </div>
+
     ${
-      if talk ? subtitle then
+      if talk ? summary then
         ''
-          ${talk.subtitle}
-          <br>
+          <div class="talk-summary">
+            ${talk.summary}
+          </div>
         ''
       else
         ""
      }
-
-    (${renderedResources}; ${fw.components.date "%0d.%0m.%y" talk.when}, ${talk.where})
   </article>
 ''

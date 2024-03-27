@@ -1,0 +1,21 @@
+<p>
+  Hello, World!
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <td>first</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>second</td>
+    </tr>
+    <!-- comment -->
+  </tbody>
+</table>
+
+<p>
+  Hello, <b>World</b>!
+</p>

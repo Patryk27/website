@@ -7,6 +7,10 @@ main {
     @import 'pages/post';
   }
 
+  &#posts {
+    @import 'pages/posts';
+  }
+
   &#tag {
     @import 'pages/tag';
   }
