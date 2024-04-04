@@ -1,8 +1,6 @@
 fw:
 
 let
-  generateFeed = import ./feed/generate-feed.nix fw;
-
   mkObject = { id, type, ... }:
     if type == "post" then
       (mkObjectPost id)
@@ -38,8 +36,10 @@ let
     };
 
 in
-fw.utils.prettifyXml "feed.xml" (
-  generateFeed {
-    objects = builtins.map mkObject fw.content.objects;
+fw.pkgs.writeText "feed.xml" (
+  fw.utils.sak.compileFeed {
+    website = {
+      objects = map mkObject fw.content.objects;
+    };
   }
 )

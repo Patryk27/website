@@ -34,22 +34,6 @@ let
               serifs = "sans";
               no-cv-ss = true;
               no-ligation = true;
-
-              metric-override = {
-                leading = 1025;
-              };
-
-              widths = {
-                normal = {
-                  menu = 5;
-                  css = "normal";
-                  shape = 480;
-                };
-              };
-
-              variants = {
-                inherits = "ss08";
-              };
             };
           };
 

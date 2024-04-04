@@ -1,0 +1,16 @@
+<ref id="a">
+    http://a.com
+</ref>
+
+<ref id="b">
+    http://b.com
+</ref>
+
+<a ref="a">a.com</a>
+<a ref="b">b.com</a>
+
+<ref>http://c.com</ref>
+<a ref>c.com</a>
+
+<ref>http://d.com</ref>
+<a ref>d.com</a>

@@ -1,7 +1,7 @@
 <p>
-  This is second part of the <b>Learning to Fly</b> series in which we're coding
-  a simulation of evolution using <b>neural network</b> and
-  <b>genetic algorithm</b>:
+  This is the second part of the <b>Learning to Fly</b> series in which we're
+  coding a simulation of evolution using <b>neural network</b> and <b>genetic
+  algorithm</b>:
 </p>
 
 <figure>
@@ -10,9 +10,7 @@
   </a>
 
   <figcaption>
-    <div class="title">
-      <a href="https://shorelark.pwy.io">shorelark.pwy.io</a>
-    </div>
+    <a href="https://shorelark.pwy.io" />
   </figcaption>
 </figure>
 
@@ -20,344 +18,151 @@
   In this post we'll lay the foundations for our project and implement a basic
   feed-forward neural network that'll later become a brain; we'll also take a
   look at many intricacies and idioms you might find in common Rust code,
-  including those inside tests.
+  including in tests.
 </p>
 
 <p>
-  Strap your straps, seatbelt your seatbelts, and get ready for some coding!
+  Strap your straps, seatbelt your seatbelts and get ready for some coding!
 </p>
 
-<h2 id="prerequisites">
-  <a href="#prerequisites">Prerequisites</a>
-</h2>
+<header id="setup">
+  Setup
+</header>
 
 <p>
-  We'll be using <b>Rust 1.53.0</b> — to avoid unpleasant unpleasentaries, don't
-  forget to either execute:
+  Oh, the joys of starting a new project!
 </p>
 
 <listing lang="shell">
   <!--
-    $ rustup default nightly-2021-03-25
-  -->
-</listing>
-
-<p>
-  ... or create a file next to <code>Cargo.toml</code> called
-  <a href="https://rust-lang.github.io/rustup/overrides.html"
-    ><code>rust-toolchain</code></a
-  >
-  that says:
-</p>
-
-<div class="listing-title">rust-toolchain</div>
-
-<listing lang="text">
-  <!--
-    nightly-2021-03-25
-  -->
-</listing>
-
-<h2 id="workspaces">
-  <a href="#workspaces">Workspaces</a>
-</h2>
-
-<p>Our previous post ended with a cliffhanger:</p>
-
-<blockquote>
-  <p>Let's end this post with a cliffhanger:</p>
-
-  <listing lang="rust">
-    <!--
-      $ mkdir shorelark
-    -->
-  </listing>
-</blockquote>
-
-<p>
-  Instead of launching <code>cargo new shorelark</code>, as one usually does, we
-  went with <code>mkdir</code> - it's because we're going to use a feature of
-  Cargo's called
-  <a href="https://doc.rust-lang.org/cargo/reference/workspaces.html"
-    >workspaces</a
-  >.
-</p>
-
-<p>
-  Workspaces allow to split a single project into multiple, standalone crates
-  (separate "subprojects"), which has many advantages:
-</p>
-
-<ul>
-  <li>
-    <p>
-      it makes it easier for humans to reason about project's structure (as each
-      crate is more or less self-contained),
-    </p>
-  </li>
-  <li>
-    <p>
-      it's easy to setup & extend (crates can be kept in the same repository or
-      scattered across different ones, whatever's more convenient for you),
-    </p>
-  </li>
-  <li>
-    <p>it allows for Cargo to compile project's code <b>in parallel</b>.</p>
-  </li>
-</ul>
-
-<p>Let's focus on the last point.</p>
-
-<p>
-  You might've noticed that when you do <code>cargo build</code>, it sometimes
-  prints crate names <i>inline</i> during the <code>Building</code> phase:
-</p>
-
-<listing lang="text">
-  <!--
-    Updating crates.io index
-     Downloaded log v0.4.13
-     Downloaded serde v1.0.119
-     Downloaded thread_local v1.1.0
-     Downloaded byteorder v1.4.2
-      Compiling libc v0.2.82
-      Compiling cfg-if v1.0.0
-      Compiling arrayref v0.3.6
-      Compiling matches v0.1.8
-       Building [>           ] 6/153: byteorder, matches, cc, byte-tools
-  -->
-</listing>
-
-<p>It means that it's building those crates <b>in parallel</b>.</p>
-
-<p>
-  Usually only some parts of the <b>dependency tree</b> can be built in parallel
-  - if you have crate <code>A</code> that depends on crates <code>B</code> +
-  <code>C</code>, the latter two can be built at the same time, but
-  <code>A</code> has to wait until <code>B</code> and <code>C</code> have both
-  finished compiling.
-</p>
-
-<p>
-  Furthermore, it's pointless trying to simultaneously compile more crates than
-  the amount of CPU cores available, as it would only slow down the process, so
-  Cargo has a tall order figuring it out.
-</p>
-
-<p>
-  On the other side of the spectrum, we've got rustc - it's the actual compiler
-  that Cargo invokes for each crate it has to built, and rustc itself is at the
-  moment
-  <a href="https://pingcap.com/blog/rust-huge-compilation-units"
-    >mostly single-threaded</a
-  >.
-</p>
-
-<p>
-  It means that, practically, if your application depends on some external
-  crates (e.g. from <code>crates.io</code>), those crates will be compiled in
-  parallel, but your application <b>itself</b> (as a single-crate entity) will
-  remain built on a single core.
-</p>
-
-<p>
-  To internalize the potential issues & gains, let's say we're working on a 100k
-  <abbr title="lines of code">LOC</abbr> application - if compiling our app,
-  excluding its dependencies, takes 5 minutes now, then by splitting it into 5
-  separate 20k LOC crates, we might reduce this time to as low as 1~2 minutes.
-</p>
-
-<p class="text-dim">
-  <i
-    >(due diligence: that's a good-day scenario, sometimes it might not be
-    possible to split the code, please remember to always consult your doctor
-    before refactoring.)</i
-  >
-</p>
-
-<p>
-  Granted - in the grand scheme of things, 3 minutes might not seem like much,
-  but let's not forget that it applies to the development process, too.
-</p>
-
-<p>
-  If you've already had the pleasure of working on a gigantic project, you might
-  know the pain of
-  <a href="https://xkcd.com/303/">waiting for the compiler to finish</a>: you've
-  changed some error message, wanted to quickly see how it looks in the context
-  and - ｏｈ ｇｏｄ - do you hear this sound? it's not a military aircraft, it's
-  your computer's fans preparing for some hot & long code munching; it's
-  daunting.
-</p>
-
-<p>
-  When it comes to Rust, one of the ways to alleviate issues around compile
-  times is then to simply split your application into separate crates.
-</p>
-
-<aside class="note">
-  <p>
-    One of the bigger - if not the biggest - workspace-based project I know is
-    the almighty
-    <a href="https://github.com/rust-lang/rust/tree/master/compiler">rustc</a>.
-  </p>
-</aside>
-
-<p>
-  Considering our toy project won't reach 10k LOC, why am I even talking about
-  all those workspaces and crates?
-</p>
-
-<p>
-  <a href="https://www.youtube.com/watch?v=J2eud_tEIj8"
-    >I just think they’re neat.</a
-  >
-</p>
-
-<p>
-  Also, I consider them to be a <b>good practice</b>: workspaces allow to
-  introduce clear-cut boundaries between project's modules, and - when applied
-  within reason - not only make the code cleaner, but <i>force it</i> to be.
-</p>
-
-<p>
-  Having established that workspaces are not elder magic, let's circle back to
-  our original question: why <code>mkdir</code> instead of
-  <code>cargo new</code>?
-</p>
-
-<p>
-  Simply because
-  <a href="https://github.com/rust-lang/cargo/issues/8365"
-    >Cargo doesn’t support <code>cargo new --workspace</code> yet</a
-  >.
-</p>
-
-<h2 id="structure">
-  <a href="#structure">Structure</a>
-</h2>
-
-<p>Breath in, breath out, and let's enter the no man's land:</p>
-
-<listing lang="shell">
-  <!--
+    $ mkdir shorelark
     $ cd shorelark
-    $ ls -al
+
+    # If you're using Git, it's also the time for:
+    $ git init
   -->
 </listing>
 
-<listing lang="text">
+<p>
+  First things first, we have to establish which toolchain version we'll be
+  using - otherwise, if you happened to have an older toolchain installed, some
+  parts of the code could not work for you.
+</p>
+
+<p>
+  As of March 2024, the latest stable version of Rust is 1.76, so let's go ahead
+  and create a file called <code>rust-toolchain</code> that says:
+</p>
+
+<listing-title>
+  rust-toolchain
+</listing-title>
+
+<listing>
   <!--
-    total 0
-    drwxr-xr-x  2 ppp users  40 01-16 19:14 .
-    drwxrwxrwt 22 ppp users 520 01-16 20:27 ..
+  = 1.76.0
   -->
 </listing>
 
 <p>
-  Before we're able to write our first line of code, we have to decide on our
-  project's structure.
+  Phew!
 </p>
 
 <p>
-  There are many approaches for organizing workspace-based projects - I'm
-  personally fond of this one, which separates application-like crates from
-  those library-like ones:
+  <ref id>
+    https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html
+  </ref>
+
+  Now, for the more difficult part - we have to decide how our project's
+  structure will look like. Because our project will consist of many independent
+  submodules (such as the neural network and genetic algorithm), a
+<a ref>workspace</a> will come handy:
 </p>
 
-<listing lang="text">
-  <!--
-    project
-    ├─ Cargo.toml
-    ├─ app
-    │  ├─ Cargo.toml
-    │  └─ src
-    │      └─ main.rs
-    └─ libs
-       ├─ subcrate-a
-       │  ├─ Cargo.toml
-       │  └─ src
-       │     └─ lib.rs
-       └─ subcrate-b
-          ├─ Cargo.toml
-          └─ src
-             └─ lib.rs
-  -->
-</listing>
-
-<aside class="note">
-  <p>
-    Another popular approach is to simply dump all crates into the same
-    directory called e.g. <code>src</code> or <code>crates</code>.
-  </p>
-</aside>
-
-<p>
-  Scaffolding such project is as easy as creating a
-  <code>Cargo.toml</code> manifest with:
-</p>
+<listing-title>
+  Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
-    [workspace]
-    members = [
-        "libs/*", # look má, wildcards!
-    ]
+  = [workspace]
+  = resolver = "2"
+  =
+  = members = [
+  =     "libs/*",
+  = ]
   -->
 </listing>
 
-<aside class="note">
+<p>
+  What this means is that instead of having <code>src/main.rs</code> right away,
+  we'll create a directory called <code>libs</code> and put our hand-written
+  libraries (aka <i>crates</i>) in there:
+</p>
+
+<listing lang="shell">
+  <!--
+  $ mkdir libs
+  $ cd libs
+  $ cargo new neural-network --name lib-neural-network --lib
+  -->
+</listing>
+
+<note>
   <p>
-    Most manifests contain a section called <code>[package]</code> that defines
-    crate's metadata:
+    There are many approaches for organizing workspaces - instead of keeping
+    everything in a directory called <code>libs</code>, you could dump
+    everything into a directory called <code>crates</code> -- or you could
+    create two separate directories, one for application-crates and another one
+    for library-crates:
   </p>
 
-  <listing lang="toml">
+  <listing lang="text">
     <!--
-      [package]
-      name = "brexit-loss-calculator"
-      version = "0.0.0"
-      authors = ["B.J."]
-      edition = "2018"
+      project
+      ├─ Cargo.toml
+      ├─ app
+      │  ├─ Cargo.toml
+      │  └─ src
+      │      └─ main.rs
+      └─ libs
+         ├─ subcrate-a
+         │  ├─ Cargo.toml
+         │  └─ src
+         │     └─ lib.rs
+         └─ subcrate-b
+            ├─ Cargo.toml
+            └─ src
+               └─ lib.rs
     -->
   </listing>
 
   <p>
-    Our <code>Cargo.toml</code> does not, as it's used to merely
-    <i>group</i> all the packages together without being a crate on its own;
-    formally speaking, our <code>Cargo.toml</code> is a
-    <a
-      href="https://doc.rust-lang.org/cargo/reference/workspaces.html#virtual-manifest"
-      >virtual manifest</a
-    >.
+    There's no standard guideline, follow your gut (unless you're following this
+    tutorial, in which case - follow this tutorial).
   </p>
-</aside>
+</note>
 
-<p>... and then proceeding with <code>cargo new --lib</code> as usual:</p>
-
-<listing lang="shell">
-  <!--
-    $ mkdir libs
-    $ cd libs
-    $ cargo new neural-network --lib
-  -->
-</listing>
-
-<h2 id="coding-propagate">
-  <a href="#coding-propagate">Coding: <code>propagate()</code></a>
-</h2>
+<header id="coding-propagate">
+  Coding: <code>propagate()</code>
+</header>
 
 <p>It's time to get down to business.</p>
 
 <p>
   We'll start <b>top-down</b>, with a structure modelling the entire network -
-  it will provide sort of an <b>entry point</b> to our crate; let's open
-  <code>libs/neural-network/src/lib.rs</code> and write:
+  it will provide an <b>entry point</b> to our crate; let's open
+  <code>lib.rs</code> and write:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    pub struct Network;
+  = #[derive(Debug)]
+  = pub struct Network;
   -->
 </listing>
 
@@ -369,17 +174,24 @@
 
 <p>... so:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    impl Network {
-        pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-            todo!()
-        }
-    }
+    #[derive(Debug)]
+    pub struct Network;
+
+  = impl Network {
+  =     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+  =         todo!()
+  =     }
+  = }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>While some languages allow to leave "work-in-progress" functions empty:</p>
 
   <listing lang="cpp">
@@ -413,7 +225,7 @@
     -->
   </listing>
 
-  <p>It's due to the fact that almost everything in Rust is an expression:</p>
+  <p>That's because almost everything in Rust is an expression:</p>
 
   <listing lang="rust">
     <!--
@@ -444,16 +256,18 @@
   </listing>
 
   <p>
-    ... with <code>()</code> being called
-    <a href="https://doc.rust-lang.org/std/primitive.unit.html">unit value</a>
-    (or <b>unit type</b>, depending on the context).
+    <ref>
+      https://doc.rust-lang.org/std/primitive.unit.html
+    </ref>
+
+    ... with <code>()</code> being called <a ref>unit value</a> (or <b>unit
+    type</b>, depending on context).
   </p>
 
   <p>
-    To answer the problem of
-    <i>but i really don't know how this function should look like just yet</i>,
-    Rust provides two macros: <code>todo!()</code>, and its older cousin -
-    <code>unimplemented!()</code>.
+    To answer the problem of <i>but i really don't know how this function should
+    look like just yet</i>, Rust provides two macros: <code>todo!()</code> and
+    its older cousin - <code>unimplemented!()</code>.
   </p>
 
   <p>
@@ -466,11 +280,10 @@
       thread 'main' panicked at 'not yet implemented'
     -->
   </listing>
-</aside>
+</note>
 
 <p>
-  Similarly to an ocean filled with water droplets, a network is built from
-  layers:
+  Similarly to an ocean filled with droplets, a network is built from layers:
 </p>
 
 <figure class="sketch w-70">
@@ -479,13 +292,19 @@
 
 <p>... so:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub struct Network {
-        layers: Vec<Layer>,
-    }
-    
-    struct Layer;
+  = #[derive(Debug)]
+  = pub struct Network {
+  =     layers: Vec<Layer>,
+  = }
+  =
+  = #[derive(Debug)]
+  = struct Layer;
   -->
 </listing>
 
@@ -497,11 +316,16 @@
 
 <p>... giving us:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    struct Layer {
-        neurons: Vec<Neuron>,
-    }
+    #[derive(Debug)]
+  = struct Layer {
+  =     neurons: Vec<Neuron>,
+  = }
   -->
 </listing>
 
@@ -511,32 +335,31 @@
   <img src="{{ assets }}/coding-propagate-4.svg" />
 </figure>
 
-<p>... so:</p>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    struct Neuron {
-        bias: f32,
-        weights: Vec<f32>,
-    }
+  = #[derive(Debug)]
+  = struct Neuron {
+  =     bias: f32,
+  =     weights: Vec<f32>,
+  = }
   -->
 </listing>
 
-<p>Let's see our crude design in its entriety:</p>
+<p>Let's see our initial design in its entriety:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
+    #[derive(Debug)]
     pub struct Network {
         layers: Vec<Layer>,
-    }
-    
-    struct Layer {
-        neurons: Vec<Neuron>,
-    }
-    
-    struct Neuron {
-        bias: f32,
-        weights: Vec<f32>,
     }
     
     impl Network {
@@ -544,70 +367,94 @@
             todo!()
         }
     }
+
+    #[derive(Debug)]
+    struct Layer {
+        neurons: Vec<Neuron>,
+    }
+
+    #[derive(Debug)]
+    struct Neuron {
+        bias: f32,
+        weights: Vec<f32>,
+    }
   -->
 </listing>
 
 <p>Nice.</p>
 
-<p>
-  If you're lucky or perceptive, you might've noticed that only two of our
-  objects are public: <code>Network</code> and
-  <code>Network::propagate()</code> - it's because <code>Layer</code> and
-  <code>Neuron</code> will remain an <b>implementation detail</b>, we won't
-  expose them outside.
-</p>
+<note>
+  <p>
+    If you're perceptive or lucky, you might've noticed that only two of our
+    objects are public: <code>Network</code> and
+    <code>Network::propagate()</code>.
+  </p>
+
+  <p>
+    That's because <code>Layer</code> and <code>Neuron</code> will remain an
+    <b>implementation detail</b>, we won't expose them outside (that is, we
+    won't make them public).
+  </p>
+
+  <p>
+    Thanks to this approach, we'll be able to introduce changes to our
+    implementation without imposing breaking changes on the <b>downstream</b>
+    crates (the users of our library).
+  </p>
+
+  <p>
+    <ref>
+      https://towardsdatascience.com/diy-ai-an-old-school-matrix-nn-401a00021a55
+    </ref>
+
+    For instance, Real Neural Networks™ are usually implemented using
+    <a ref>matrices</a> - if we ever decided to rewrite our network to use
+    matrices as well, then it wouldn't be a breaking change:
+    <code>Network::propagate()</code>'s signature would remain the same and
+    since users can't access <code>Layer</code> and <code>Neuron</code>, they
+    wouldn't be able to notice these two being gone.
+  </p>
+</note>
 
 <p>
-  Thanks to this approach, we'll be able to introduce changes to our
-  implementation without imposing breaking changes on the
-  <b>downstream</b> crates (i.e. our library's users).
+  Next, since numbers have to be shoved through each layer, we'll need to have a
+  <code>propagate()</code> in there, too:
 </p>
 
-<p>
-  For instance, professional neural networks (for performance reasons) are
-  usually implemented using
-  <a
-    href="https://towardsdatascience.com/diy-ai-an-old-school-matrix-nn-401a00021a55"
-    >matrices</a
-  >
-  - if we ever decided to rewrite our network to use matrices, then it wouldn't
-  be a breaking change: <code>Network::propagate()</code>-s signature would
-  remain the same and since users can't access <code>Layer</code> and
-  <code>Neuron</code>, they wouldn't be able to notice these two structs being
-  gone.
-</p>
-
-<p>
-  Going next - since numbers have to be shoved through each layer, we'll need to
-  have a <code>propagate()</code> in there, too:
-</p>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    impl Layer {
-        fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-            todo!()
-        }
-    }
+  = impl Layer {
+  =     fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+  =         todo!()
+  =     }
+  = }
   -->
 </listing>
 
 <p>
-  Having <code>Layer::propagate()</code>, we can actually go back and implement
+  Having <code>Layer::propagate()</code>, we can go back and implement
   <code>Network::propagate()</code>:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     impl Network {
-        fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-            let mut inputs = inputs;
-    
-            for layer in &self.layers {
-                inputs = layer.propagate(inputs);
-            }
-    
-            inputs
+        pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+  =         let mut inputs = inputs;
+  =
+  =         for layer in &self.layers {
+  =             inputs = layer.propagate(inputs);
+  =         }
+  =
+  =         inputs
         }
     }
   -->
@@ -615,7 +462,7 @@
 
 <p>
   This is quite a satisfying, correct piece of code - but it's also
-  <b>non-idiomatic</b>: we can write it better, more <b>rustic</b>; let's see
+  <b>non-idiomatic</b> - we can write it better, more <b>rustic</b>; let's see
   how!
 </p>
 
@@ -623,48 +470,55 @@
   <img src="{{ assets }}/coding-propagate-5.svg" />
 
   <figcaption>
-    <div class="title">
-      Ecstasy of Saint Ferris (upon seeing idiomatic code), colorized
-    </div>
+    Ecstasy of Saint Ferris (upon seeing idiomatic code), colorized
   </figcaption>
 </figure>
 
 <p>First of all, this is called a <b>rebinding</b> (or <i>shadowing</i>):</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    let mut inputs = inputs;
+  = let mut inputs = inputs;
   -->
 </listing>
 
 <p>
   ... and it's unnecessary, because we might as well move this
-  <code>mut</code> into function's parameters:
+  <code>mut</code> into the function's parameter:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    fn propagate(&self, mut inputs: Vec<f32>) -> Vec<f32> {
-        for layer in &self.layers {
-            inputs = layer.propagate(inputs);
+    impl Network {
+  =     pub fn propagate(&self, mut inputs: Vec<f32>) -> Vec<f32> {
+            for layer in &self.layers {
+                inputs = layer.propagate(inputs);
+            }
+
+            inputs
         }
-    
-        inputs
     }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
-    But hey, won't this force our <i>callers</i> to pass mutable values? Nope!
+    But hey, won't this force our callers to pass mutable values? Nope!
   </p>
 
-  <div class="listing-title">
-    <a
-      href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=945c2c2852ccbeb143ea569747038626"
-      >open in playground</a
-    >
-  </div>
+  <listing-title>
+    <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=945c2c2852ccbeb143ea569747038626">
+      open in playground
+    </a>
+  </listing-title>
 
   <listing lang="rust">
     <!--
@@ -726,7 +580,7 @@
     -->
   </listing>
 
-  <p>... and bindings, contrary to types, are <b>local</b> to a function:</p>
+  <p>... and bindings, contrary to types, are <b>local</b> to the function:</p>
 
   <listing lang="rust">
     <!--
@@ -754,12 +608,16 @@
       }
     -->
   </listing>
-</aside>
+</note>
 
 <p>
   There's one more refinement we can apply to our code - this very pattern is
   known as <b>folding</b>:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -771,69 +629,82 @@
 
 <p>... and Rust's standard library provides a dedicated function for it:</p>
 
-<listing lang="rust">
-  <!--
-    fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-        self.layers
-            .iter()
-            .fold(inputs, |inputs, layer| layer.propagate(inputs))
-    }
-  -->
-</listing>
-
-<p class="text-dim">
-  <i
-    >(one could argue whether our final code is actually more readable or
-    <b>less</b>; while I'm personally fond of the built-in combinators such as
-    <code>.fold()</code>, if you find them obscure - that's fine, too! you do
-    you, i ain't no judge)</i
-  >
-</p>
-
-<p>
-  Voilà - after all, thanks to the closure, we didn't even need that
-  <code>mut inputs</code>; now you can brag about your code being all functional
-  and Haskell-y.
-</p>
-
-<p>
-  Let's move on to neurons - a single neuron accepts many inputs and returns a
-  <i>single</i> output, so:
-</p>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    struct Neuron {
-        bias: f32,
-        weights: Vec<f32>,
-    }
-    
-    impl Neuron {
-        fn propagate(&self, inputs: Vec<f32>) -> f32 {
-            todo!()
+    impl Network {
+  =     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+  =         self.layers
+  =             .iter()
+  =             .fold(inputs, |inputs, layer| layer.propagate(inputs))
         }
     }
   -->
 </listing>
 
-<p>As before, we can backtrack to implement <code>Layer::propagate()</code>:</p>
+<p class="text-attached">
+  (one could argue whether our final code is actually more readable or less -
+  while I'm fond of the built-in combinators such as <code>.fold()</code>, if
+  you find them obscure - that's fine, you do you!)
+</p>
+
+<p>
+  Voilà - after all, thanks to the closure, we didn't even need that
+  <code>mut inputs</code> - now you can brag about your code being all
+  functional and Haskell-y.
+</p>
+
+<p>
+  Let's move on to neurons - a single neuron accepts many inputs and returns a
+  single output, so:
+</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
+    #[derive(Debug)]
+    struct Neuron {
+        bias: f32,
+        weights: Vec<f32>,
+    }
+    
+  = impl Neuron {
+  =     fn propagate(&self, inputs: Vec<f32>) -> f32 {
+  =         todo!()
+  =     }
+  = }
+  -->
+</listing>
+
+<p>As before, we can backtrack to implement <code>Layer::propagate()</code>:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
+<listing lang="rust">
+  <!--
+    #[derive(Debug)]
     struct Layer {
         neurons: Vec<Neuron>,
     }
     
     impl Layer {
         fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-            let mut outputs = Vec::new();
-    
-            for neuron in &self.neurons {
-                let output = neuron.propagate(inputs);
-                outputs.push(output);
-            }
-    
-            outputs
+  =         let mut outputs = Vec::new();
+  =
+  =         for neuron in &self.neurons {
+  =             let output = neuron.propagate(inputs);
+  =             outputs.push(output);
+  =         }
+  =
+  =         outputs
         }
     }
   -->
@@ -850,7 +721,7 @@
        |                         ------ move occurs because `inputs` has
        |                                type `Vec<f32>`, which does not
        |                                implement the `Copy` trait
-    ...
+      ...
        |             let output = neuron.propagate(inputs);
        |                                           ^^^^^^
        |                                value moved here, in previous
@@ -861,14 +732,17 @@
 <p>
   Obviously, the compiler is right: after invoking
   <code>neuron.propagate(inputs)</code>, we lose ownership of
-  <code>inputs</code>, so we can't possibly use it inside loop's consecutive
-  iterations.
+  <code>inputs</code>, so we can't use it in the loop's consecutive iterations.
 </p>
 
 <p>
-  Fortunately, the fix is rather easy and boils down to making
+  Fortunately, the fix is easy and boils down to making
   <code>Neuron::propagate()</code> work on <b>borrowed</b> values:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -877,17 +751,18 @@
             /* ... */
     
             for neuron in &self.neurons {
-                let output = neuron.propagate(&inputs);
-                //                            ^
+  =             let output = neuron.propagate(&inputs);
+                /* ... */
             }
     
             /* ... */
         }
     }
+
+    /* ... */
     
     impl Neuron {
-        fn propagate(&self, inputs: &[f32]) -> f32 {
-            //                      ^^^^^^
+  =     fn propagate(&self, inputs: &[f32]) -> f32 {
             /* ... */
         }
     }
@@ -895,6 +770,10 @@
 </listing>
 
 <p>To reiterate, the code we have at the moment is:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -914,98 +793,26 @@
 </listing>
 
 <p>
-  The way we wrote our algorithm is correct, but <i>inefficient</i> - since we
-  know how many output values we'll have, we can use this information to
-  <b>preallocate</b> our vector:
+  ... and, would you believe it, this particular pattern is called
+  <b>mapping</b> and the standard library also provides a method for it!
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-        let mut outputs = Vec::with_capacity(self.neurons.len());
-    
-        /* ... */
+    impl Layer {
+        fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+  =         self.neurons
+  =             .iter()
+  =             .map(|neuron| neuron.propagate(&inputs))
+  =             .collect()
+        }
     }
   -->
 </listing>
-
-<p>
-  In order to understand preallocation, we've gotta go one abstraction layer
-  below and take a look at how <code>Vec</code> works.
-</p>
-
-<p>
-  Since <code>Vec</code> doesn't know how many elements it will contain, it
-  starts <i>empty</i> and then every other invocation of
-  <code>.push()</code> causes it to <b>grow</b> larger and larger. Growing is a
-  "relatively slow" operation, because it requires for the vector's entire
-  memory to be moved into another place in RAM that contains enough space.
-</p>
-
-<p>
-  If we know - or we can estimate - a vector's size up-front, we might then
-  create it using <code>Vec::with_capacity()</code>, which accepts a single
-  argument determining how big the returned vector should be; e.g.
-  <code>Vec::with_capacity(10)</code> means that you'll be able to use
-  <code>.push()</code> at least 10 times without causing the returned vector to
-  grow.
-</p>
-
-<aside class="note">
-  <p>
-    <code>Vec::with_capacity()</code> can be a great low-hanging fruit if your
-    application allocates lots of <i>large</i> vectors, but using it is not
-    always worth the hassle; as usually when it comes to performance, a
-    benchmark's your best friend.
-  </p>
-</aside>
-
-<p>
-  Using <code>with_capacity()</code> might be awkward at times and so Rust,
-  fulfilling its promise of zero-cost abstractions, allows to invoke it somewhat
-  transparently:
-</p>
-
-<listing lang="rust">
-  <!--
-    fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-        self.neurons
-            .iter()
-            .map(|neuron| neuron.propagate(&inputs))
-            .collect()
-    }
-  -->
-</listing>
-
-<p>
-  There's no explicit <code>Vec::with_capacity()</code> and yet both codes do
-  essentially the same (including preallocation!) - how come?
-</p>
-
-<p>
-  Well, iterators contain a method called
-  <a
-    href="https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html#method.size_hint"
-    ><code>Iterator::size_hint()</code></a
-  >
-  - it returns an iterator's length (or <code>None</code>, if the length's not
-  known). When you do <code>vec.iter()</code>, it simply creates an iterator
-  that knows its length and then
-  <a
-    href="https://github.com/rust-lang/rust/blob/9775ffef2a4c3a36cadb58b72ea60cefb92c86ae/library/alloc/src/vec/spec_from_iter_nested.rs#L27"
-    ><code>.collect()</code></a
-  >
-  uses that information to automatically create a vector that's large enough; no
-  magic!
-</p>
-
-<p>
-  As you can see, even though our refactored code is technically
-  <i>more</i> complex (we're using an anonymous function and iterators, after
-  all), it's at least equally performant and way more readable; writing
-  optimized Rust code frequently cuts down to using high-level structures
-  instead of trying to outsmart the compiler with fancy, hand-written loops.
-</p>
 
 <p>
   Currently we've got nowhere else to go, but to complete
@@ -1013,23 +820,27 @@
   <a href="https://en.wikipedia.org/wiki/Superfund">superfund</a>-ish version:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
-            let mut output = 0.0;
-    
-            for i in 0..inputs.len() {
-                output += inputs[i] * self.weights[i];
-            }
-    
-            output += self.bias;
-    
-            if output > 0.0 {
-                output
-            } else {
-                0.0
-            }
+  =         let mut output = 0.0;
+  =
+  =         for i in 0..inputs.len() {
+  =             output += inputs[i] * self.weights[i];
+  =         }
+  =
+  =         output += self.bias;
+  =
+  =         if output > 0.0 {
+  =             output
+  =         } else {
+  =             0.0
+  =         }
         }
     }
   -->
@@ -1042,23 +853,23 @@
 
 <p>
   Since we're iterating through <code>self.weights</code> using length from
-  <code>inputs</code>, there are three edge cases we have to consider:
+  <code>inputs</code>, we've got three edge cases:
 </p>
 
 <ol>
   <li>
-    <p>Given <code>inputs.len() &lt; self.weights.len()</code>,</p>
+    <p>When <code>inputs.len() &lt; self.weights.len()</code>,</p>
   </li>
   <li>
-    <p>Given <code>inputs.len() == self.weights.len()</code>,</p>
+    <p>When <code>inputs.len() == self.weights.len()</code>,</p>
   </li>
   <li>
-    <p>Given <code>inputs.len() &gt; self.weights.len()</code>.</p>
+    <p>When <code>inputs.len() &gt; self.weights.len()</code>.</p>
   </li>
 </ol>
 
 <p>
-  Our code lays on the assumption that #2 is <b>always true</b>, but it's a
+  Our code lays on the assumption that #2 is always true, but it's a
   <b>silent</b> assumption: we don't enforce it anywhere! If we mistakenly
   passed less or more inputs, we'd get either an invalid result or a crash.
 </p>
@@ -1074,16 +885,18 @@
 
     <listing lang="rust">
       <!--
-        fn propagate(&self, inputs: &[f32]) -> Result<f32, String> {
-            if inputs.len() != self.weights.len() {
-                return Err(format!(
-                    "got {} inputs, but {} inputs were expected",
-                    inputs.len(),
-                    self.weights.len(),
-                ));
+        impl Neuron {
+            fn propagate(&self, inputs: &[f32]) -> Result<f32, String> {
+                if inputs.len() != self.weights.len() {
+                    return Err(format!(
+                        "got {} inputs, but {} inputs were expected",
+                        inputs.len(),
+                        self.weights.len(),
+                    ));
+                }
+
+                /* ... */
             }
-        
-            /* ... */
         }
       -->
     </listing>
@@ -1099,9 +912,7 @@
         
         #[derive(Debug, Error)]
         pub enum Error {
-            #[error(
-                "got {got} inputs, but {expected} inputs were expected"
-            )]
+            #[error("got {got} inputs, but {expected} inputs were expected")]
             MismatchedInputSize {
                 got: usize,
                 expected: usize,
@@ -1109,31 +920,36 @@
         }
         
         /* ... */
-        
-        fn propagate(&self, inputs: &[f32]) -> Result<f32> {
-            if inputs.len() != self.weights.len() {
-                return Err(Error::MismatchedInputSize {
-                    got: inputs.len(),
-                    expected: self.weights.len(),
-                });
+
+        impl Neuron {
+            fn propagate(&self, inputs: &[f32]) -> Result<f32> {
+                if inputs.len() != self.weights.len() {
+                    return Err(Error::MismatchedInputSize {
+                        got: inputs.len(),
+                        expected: self.weights.len(),
+                    });
+                }
+
+                /* ... */
             }
-        
-            /* ... */
         }
       -->
     </listing>
   </li>
+
   <li>
     <p>
-      We could use the <code>assert_eq!()</code> / <code>panic!()</code> macros:
+      We could use <code>assert_eq!()</code> / <code>panic!()</code>:
     </p>
 
     <listing lang="rust">
       <!--
-        fn propagate(&self, inputs: &[f32]) -> f32 {
-            assert_eq!(inputs.len(), self.weights.len());
-        
-            /* ... */
+        impl Neuron {
+            fn propagate(&self, inputs: &[f32]) -> f32 {
+                assert_eq!(inputs.len(), self.weights.len());
+
+                /* ... */
+            }
         }
       -->
     </listing>
@@ -1142,16 +958,16 @@
 
 <p>
   In most cases, the first variant is better, because it allows for the caller
-  to <b>catch</b> the error and <b>handle</b> it - in our case though, the error
-  reporting is simply not worth it, because:
+  to <b>catch</b> the error and <b>handle</b> it easily - in our case though,
+  the error reporting is simply not worth it, because:
 </p>
 
 <ol>
   <li>
     <p>
       If this assertion ever fails, it means that our implementation is most
-      likely wrong and there's nothing users could do on their side to mitigate
-      it.
+      likely wrong and there's nothing users could do <i>on their side</i> to
+      mitigate the issue.
     </p>
   </li>
   <li>
@@ -1164,23 +980,17 @@
 
 <p>So:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    fn propagate(&self, inputs: &[f32]) -> f32 {
-        assert_eq!(inputs.len(), self.weights.len());
-    
-        let mut output = 0.0;
-    
-        for i in 0..inputs.len() {
-            output += inputs[i] * self.weights[i];
-        }
-    
-        output += self.bias;
-    
-        if output > 0.0 {
-            output
-        } else {
-            0.0
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+  =         assert_eq!(inputs.len(), self.weights.len());
+
+            /* ... */
         }
     }
   -->
@@ -1188,59 +998,97 @@
 
 <p>As for the idioms - this one:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    if output > 0.0 {
-        output
-    } else {
-        0.0
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+            /* ... */
+
+            if output > 0.0 {
+                output
+            } else {
+                0.0
+            }
+        }
     }
   -->
 </listing>
 
-<p>
-  ... is
-  <a href="https://doc.rust-lang.org/stable/std/primitive.f32.html#method.max"
-    ><code>f32::max()</code></a
-  >
-  in disguise:
-</p>
+<p>... is <code>f32::max()</code> in disguise:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    output.max(0.0)
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+            /* ... */
+
+  =         output.max(0.0)
+        }
+    }
   -->
 </listing>
 
 <p>While this one:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    let mut output = 0.0;
-    
-    for i in 0..inputs.len() {
-        output += inputs[i] * self.weights[i];
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+            /* ... */
+
+            let mut output = 0.0;
+
+            for i in 0..inputs.len() {
+                output += inputs[i] * self.weights[i];
+            }
+
+            /* ... */
+        }
     }
   -->
 </listing>
 
 <p>... can be simplified first with <code>.zip()</code>:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    let mut output = 0.0;
-    
-    for (&input, &weight) in inputs.iter().zip(&self.weights) {
-        output += input * weight;
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+            /* ... */
+
+            let mut output = 0.0;
+
+  =         for (&input, &weight) in inputs.iter().zip(&self.weights) {
+  =             output += input * weight;
+  =         }
+
+            /* ... */
+        }
     }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
-    Array-indexing operations (such as <code>inputs[i]</code>) always perform a
-    so-called <b>bounds check</b> - it's a piece of code that ensures index lays
-    within array bounds, panicking when it's too big:
+    Array-indexing operations such as <code>inputs[i]</code> always perform a
+    so-called <b>bounds check</b> - it's a piece of code which ensures that
+    index lays within the array bounds, panicking when it's too big:
   </p>
 
   <listing lang="rust">
@@ -1261,49 +1109,70 @@
 
   <p>
     When instead of indexing, you use combinators such as <code>.zip()</code> or
-    <code>.map()</code>, you make it <i>easier</i> for the compiler to remove
-    overzealous bound checks, making your code a bit faster.
+    <code>.map()</code>, you make it easier for the compiler to elide those
+    checks, making your code not only more readable¹, but also faster.
   </p>
 
-  <p>Another point for higher-level code!</p>
-</aside>
+  <p>
+    ¹ arguably, ofc.
+  </p>
+</note>
 
 <p>... and then using <code>.map()</code> + <code>.sum()</code>:</p>
 
-<listing lang="rust">
-  <!--
-    let output = input
-        .iter()
-        .zip(&self.weights)
-        .map(|(input, weight)| input * weight)
-        .sum::<f32>();
-  -->
-</listing>
-
-<aside class="note">
-  <p>
-    The <code>::&lt;&gt;</code> syntax used in the last line is called
-    <a href="https://techblog.tonsser.com/posts/what-is-rusts-turbofish"
-      >turbofish</a
-    >
-    - it allows to provide explicit generic arguments when the compiler has
-    troubles inferring them.
-  </p>
-</aside>
-
-<p>Voilà:</p>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
-            let output = inputs
-                .iter()
-                .zip(&self.weights)
-                .map(|(input, weight)| input * weight)
-                .sum::<f32>();
-    
-            (self.bias + output).max(0.0)
+            /* ... */
+
+  =         let mut output = input
+  =             .iter()
+  =             .zip(&self.weights)
+  =             .map(|(input, weight)| input * weight)
+  =             .sum::<f32>();
+
+            /* ... */
+        }
+    }
+  -->
+</listing>
+
+<note>
+  <p>
+    <ref>
+      https://techblog.tonsser.com/posts/what-is-rusts-turbofish
+    </ref>
+
+    The <code>::&lt;&gt;</code> syntax used in the last line is called
+    <a ref>turbofish</a> - it allows to provide explicit generic arguments when
+    the compiler has troubles inferring them.
+  </p>
+</note>
+
+<p>Voilà:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
+<listing lang="rust">
+  <!--
+    impl Neuron {
+        fn propagate(&self, inputs: &[f32]) -> f32 {
+            assert_eq!(inputs.len(), self.weights.len());
+
+  =         let output = inputs
+  =             .iter()
+  =             .zip(&self.weights)
+  =             .map(|(input, weight)| input * weight)
+  =             .sum::<f32>();
+  =
+  =         (self.bias + output).max(0.0)
         }
     }
   -->
@@ -1314,9 +1183,9 @@
   cat? Can we use it to predict future Dogecoin prices?
 </p>
 
-<h2 id="coding-new">
-  <a href="#coding-new">Coding: <code>new()</code></a>
-</h2>
+<header id="coding-new">
+  Coding: <code>new()</code>
+</header>
 
 <p>
   Up to this point we were focused so much on the algorithm that we gave little
@@ -1329,8 +1198,13 @@
   <abbr title="no-operation, i.e. doing nothing">no-op</abbr> function of:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
+    #[derive(Debug)]
     pub struct Network {
         layers: Vec<Layer>,
     }
@@ -1339,14 +1213,16 @@
         pub fn new(layers: Vec<Layer>) -> Self {
             Self { layers }
         }
+
+        /* ... */
     }
   -->
 </listing>
 
 <p>
-  ... which won't do in this case, because - as we've already established - we'd
-  like to keep <code>Layer</code> and <code>Neuron</code> outside the public
-  interface.
+  ... but it won't do in this case, because - as we've already established -
+  we'd like to keep <code>Layer</code> and <code>Neuron</code> outside the
+  public interface.
 </p>
 
 <p>
@@ -1354,6 +1230,10 @@
   about random numbers - so if there's one thing I'm certain, it's that we'll
   need something in the lines of:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1371,34 +1251,47 @@
   vector:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(neurons_per_layer: Vec<usize>) -> Self {
-        todo!()
+    impl Network {
+        pub fn random(neurons_per_layer: Vec<usize>) -> Self {
+            todo!()
+        }
     }
   -->
 </listing>
 
 <p>... or, in a bit more elegant way:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub struct LayerTopology {
-        pub neurons: usize,
+  = #[derive(Debug)]
+  = pub struct LayerTopology {
+  =     pub neurons: usize,
+  = }
+
+    impl Network {
+  =     pub fn random(layers: Vec<LayerTopology>) -> Self {
+  =         todo!()
+  =     }
+
+        /* ... */
     }
     
-    /* ... */
-    
-    pub fn random(layers: Vec<LayerTopology>) -> Self {
-        todo!()
-    }
-    
-    // By the way, notice how creating a separate type allowed us to
-    // untangle argument's name to be just `layers`.
+    // By the way, notice how creating a separate type allowed us to untangle
+    // argument's name to just `layers`.
     //
-    // Initially we went with `neurons_per_layer`, because `Vec<usize>`
-    // doesn't provide enough information to tell what this `usize`
-    // represents - using a separate type makes the intention explicit.
+    // Initially we went with `neurons_per_layer`, because `Vec<usize>` doesn't
+    // provide enough information to tell what this `usize` represents - using a
+    // separate type makes the intention explicit.
   -->
 </listing>
 
@@ -1410,7 +1303,7 @@
 
 <p>
   ... perhaps you'll notice that it's actually defined by <b>two</b> numbers:
-  its <i>input</i> and <i>output</i> size; does it mean our single-field
+  its input and output size - does it mean our single-field
   <code>LayerTopology</code> is wrong? Au contraire!
 </p>
 
@@ -1418,16 +1311,17 @@
   What we've done is, as I like to call it, <b>exploiting domain knowledge</b>.
 </p>
 
-<p>Inside a FFNN, all layers are connected consecutively, back-to-back:</p>
+<p>Inside a FFNN, all layers are connected consecutively, front-to-back:</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/coding-new-2.svg" />
 </figure>
 
-<p>... because layer A's output is layer B's input, <b>if</b> we went with:</p>
+<p>... because layer A's output is layer B's input, if we went with:</p>
 
 <listing lang="rust">
   <!--
+    #[derive(Debug)]
     pub struct LayerTopology {
         pub input_neurons: usize,
         pub output_neurons: usize,
@@ -1436,52 +1330,64 @@
 </listing>
 
 <p>
-  ... not only would we make our interface unwieldy, but - what's even more
+  ... then not only would we make our interface unwieldy, but - what's more
   gruesome - we'd have to implement an additional validation ensuring that
-  <code>layer[0].output_neurons == layer[1].input_neurons</code>, and so on, are
-  met; pure nonsense.
+  <code>layer[0].output_neurons == layer[1].input_neurons</code> etc. are met -
+  pure nonsense!
 </p>
 
 <p>
   Noting this simple fact that consecutive layers must have matching inputs &
-  outputs allows us to simplify the code before it's been even written!
+  outputs allows us to simplify the code before it's been even written.
 </p>
 
-<p>As for the implementation, a naïve, unidiomatic approach could be:</p>
+<p>As for the implementation, a crude approach would be:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    pub fn random(layers: Vec<LayerTopology>) -> Self {
-        let mut built_layers = Vec::new();
-    
-        for i in 0..(layers.len() - 1) {
-            let input_size = layers[i].neurons;
-            let output_size = layers[i + 1].neurons;
-    
-            built_layers.push(Layer::random(
-                input_size,
-                output_size,
-            ));
+    impl Network {
+        pub fn random(layers: Vec<LayerTopology>) -> Self {
+  =         let mut built_layers = Vec::new();
+  =
+  =         for i in 0..(layers.len() - 1) {
+  =             let input_size = layers[i].neurons;
+  =             let output_size = layers[i + 1].neurons;
+  =
+  =             built_layers.push(Layer::random(
+  =                 input_size,
+  =                 output_size,
+  =             ));
+  =         }
+  =
+  =         Self { layers: built_layers }
         }
-    
-        Self { layers: built_layers }
     }
   -->
 </listing>
 
 <p>
-  Now, let's rustify it! Care to guess what happens when you call
+  ... and now let's rustify it -- care to guess what happens when you call
   <code>Network::random(vec![])</code>?
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(layers: Vec<LayerTopology>) -> Self {
-        // Network with just one layer is technically doable, but doesn't
-        // make much sense:
-        assert!(layers.len() > 1);
-    
-        /* ... */
+    impl Network {
+        pub fn random(layers: Vec<LayerTopology>) -> Self {
+  =         // Network with just one layer is technically doable, but doesn't
+  =         // make much sense:
+  =         assert!(layers.len() > 1);
+
+            /* ... */
+        }
     }
   -->
 </listing>
@@ -1490,40 +1396,41 @@
 
 <p>
   As for the <code>for</code> loop - iterating by <b>adjacent</b> items is
-  another pattern covered by the Rust's standard library, via function called
-  <a
-    href="https://doc.rust-lang.org/stable/std/primitive.slice.html#method.windows"
-    ><code>.windows()</code></a
-  >:
+  another pattern covered by the standard library, via a function called
+  <code>.windows()</code>:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    pub fn random(layers: Vec<LayerTopology>) -> Self {
-        /* ... */
-    
-        for adjacent_layers in layers.windows(2) {
-            let input_size = adjacent_layers[0].neurons;
-            let output_size = adjacent_layers[1].neurons;
-    
-            built_layers.push(Layer::random(
-                input_size,
-                output_size,
-            ));
+    impl Network {
+        pub fn random(layers: Vec<LayerTopology>) -> Self {
+            /* ... */
+
+  =         for adjacent_layers in layers.windows(2) {
+  =             let input_size = adjacent_layers[0].neurons;
+  =             let output_size = adjacent_layers[1].neurons;
+
+                /* ... */
+            }
+
+            /* ... */
         }
-    
-        /* ... */
     }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
-    If you know a thing or two about
-    <a
-      href="https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html#destructuring-to-break-apart-values"
-      >destructuring</a
-    >, you might've thought of rewriting this loop even further:
+    <ref>
+      https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html#destructuring-to-break-apart-values
+    </ref>
+
+    If you know about <a ref>destructuring</a>, you might've thought of
+    rewriting this loop even further:
   </p>
 
   <listing lang="rust">
@@ -1534,14 +1441,7 @@
     -->
   </listing>
 
-  <p>
-    <i
-      >(<code>fst</code> and <code>snd</code> are typical to the functional
-      world where they mean <code>first</code> and <code>second</code>.)</i
-    >
-  </p>
-
-  <p>Regrettably, computer says no:</p>
+  <p>... but, regrettably, computer says no:</p>
 
   <listing lang="text">
     <!--
@@ -1564,20 +1464,16 @@
   </p>
 
   <p>
-    <i
-      >(by the way, that's what <b>refutable pattern</b> means: it's a pattern
-      that doesn't match all the possible cases; the antonym is
-      <b>irrefutable pattern</b> and only those are allowed in Rust.)</i
-    >
+    <i>
+      (by the way, that's what <b>refutable pattern</b> means: it's a pattern
+      that doesn't match all the possible cases - the antonym is <b>irrefutable
+      pattern</b> and only those are allowed in places like those.)
+    </i>
   </p>
 
   <p>
     Nightly Rust, having parts of <b>const generics</b> stabilized, offers a
-    solution - a peachy function called
-    <a
-      href="https://doc.rust-lang.org/stable/std/primitive.slice.html#method.array_windows"
-      ><code>.array_windows()</code></a
-    >:
+    solution - <code>.array_windows()</code>:
   </p>
 
   <listing lang="rust">
@@ -1591,26 +1487,28 @@
   </listing>
 
   <p>
-    For simplicity, we'll stay away from const generics and continue with the
-    previous version.
+    ... but, for simplicity, we'll stay away from const generics and continue
+    with the stable function.
   </p>
-</aside>
+</note>
 
 <p>In this case, switching to iterators is a no-brainer for me:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(layers: Vec<LayerTopology>) -> Self {
-        /* ... */
-    
-        let layers = layers
-            .windows(2)
-            .map(|layers| {
-                Layer::random(layers[0].neurons, layers[1].neurons)
-            })
-            .collect();
-    
-        Self { layers }
+    impl Network {
+        pub fn random(layers: Vec<LayerTopology>) -> Self {
+  =         let layers = layers
+  =             .windows(2)
+  =             .map(|layers| Layer::random(layers[0].neurons, layers[1].neurons))
+  =             .collect();
+  =
+  =         Self { layers }
+        }
     }
   -->
 </listing>
@@ -1620,18 +1518,24 @@
   practice to accept <b>borrowed</b> values instead of owned:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(layers: &[LayerTopology]) -> Self {
-        /* ... */
+    impl Network {
+  =     pub fn random(layers: &[LayerTopology]) -> Self {
+            /* ... */
+        }
     }
   -->
 </listing>
 
 <p>
-  More often than not, accepting borrowed values doesn't change much
-  <i>inside</i> the function, but makes it more versatile - i.e. with a borrowed
-  array one can now do:
+  More often than not, accepting borrowed values doesn't change much inside the
+  function, but it makes it more versatile - i.e. with a borrowed array one can
+  now do:
 </p>
 
 <listing lang="rust">
@@ -1661,50 +1565,60 @@
 </listing>
 
 <p>
-  What's next, what's next…​ <i>checks notes</i>…​ ah,
+  What's next, what's next...​ <i>checks notes</i>...​ ah,
   <code>Layer::random()</code>!
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     impl Layer {
-        pub fn random(
-            input_size: usize,
-            output_size: usize,
-        ) -> Self {
-            let mut neurons = Vec::new();
-    
-            for _ in 0..output_size {
-                neurons.push(Neuron::random(input_size));
-            }
-    
+  =     fn random(input_size: usize, output_size: usize) -> Self {
+  =         let mut neurons = Vec::new();
+  =
+  =         for _ in 0..output_size {
+  =             neurons.push(Neuron::random(input_size));
+  =         }
+  =
+  =         Self { neurons }
+  =     }
+
+        /* ... */
+    }
+  -->
+</listing>
+
+<p>... or:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
+<listing lang="rust">
+  <!--
+    impl Layer {
+        fn random(input_size: usize, output_size: usize) -> Self {
+  =         let neurons = (0..output_size)
+  =             .map(|_| Neuron::random(input_size))
+  =             .collect();
+
             Self { neurons }
         }
     }
   -->
 </listing>
 
-<p>Let's skip the pleasantries:</p>
-
-<listing lang="rust">
-  <!--
-    pub fn random(input_size: usize, output_size: usize) -> Self {
-        let neurons = (0..output_size)
-            .map(|_| Neuron::random(input_size))
-            .collect();
-    
-        Self { neurons }
-    }
-  -->
-</listing>
-
-<aside class="note">
+<note>
   <p>
-    <code>|_|</code>, also known as
-    <a
-      href="https://www.reddit.com/r/rustjerk/comments/8udbth/a_new_war_begins_choose_your_side/"
-      >toilet closure</a
-    >, is a function that accepts an argument it doesn't care about.
+    <ref>
+      https://www.reddit.com/r/rustjerk/comments/8udbth/a_new_war_begins_choose_your_side/
+    </ref>
+
+    <code>|_|</code>, also known as <a ref>toilet closure</a>, is a function
+    which accepts an argument it doesn't care about.
   </p>
 
   <p>We might've written as well:</p>
@@ -1723,11 +1637,12 @@
   </p>
 
   <p>
-    Also, the <code>_</code> itself is called a
-    <a href="https://doc.rust-lang.org/reference/patterns.html#destructuring"
-      >placeholder</a
-    >
-    and it can be used in a few different contexts:
+    <ref>
+      https://doc.rust-lang.org/reference/patterns.html#destructuring
+    </ref>
+
+    Also, the <code>_</code> itself is called a <a ref>placeholder</a> and it
+    can be used in a few different contexts:
   </p>
 
   <listing lang="rust">
@@ -1759,32 +1674,40 @@
       }
     -->
   </listing>
-</aside>
+</note>
 
 <p>Finally, the last piece of our chain - <code>Neuron::random()</code>:</p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     impl Neuron {
-        pub fn random(input_size: usize) -> Self {
-            let bias = todo!();
-    
-            let weights = (0..input_size)
-                .map(|_| todo!())
-                .collect();
-    
-            Self { bias, weights }
-        }
+  =     fn random(input_size: usize) -> Self {
+  =         let bias = todo!();
+  =
+  =         let weights = (0..input_size)
+  =             .map(|_| todo!())
+  =             .collect();
+  =
+  =         Self { bias, weights }
+  =     }
+
+        /* ... */
     }
   -->
 </listing>
 
 <p>
-  Contrary to C++'s or Python's standard libraries, the Rust's one doesn't
-  provide any pseudo-random number generator (PRNG) - do you know what it means?
+  Contrary to C++ or Python, Rust's standard library doesn't provide any
+  pseudorandom number generator - do you know what it means?
 </p>
 
-<p class="text-center text-large text-rainbow">it's crate time!</p>
+<p class="text-center text-large text-rainbow">
+  it's crates.io time!
+</p>
 
 <p>Which crate should we choose? Well, let's see:</p>
 
@@ -1795,50 +1718,62 @@
 </figure>
 
 <p>
+  <ref>
+    https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
+  </ref>
+
   When it comes to PRNGs,
   <a href="https://crates.io/crates/rand"><code>rand</code></a> is the
-  <b>de facto standard</b>,
-  <a
-    href="https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html"
-    >extremely versatile</a
-  >
-  crate that allows to generate not only pseudo-random numbers, but also other
-  types such as strings.
+  <b>de facto standard</b>, <a ref>extremely versatile</a> crate which allows to
+  generate not only pseudo-random numbers, but also other types such as strings.
 </p>
 
 <p>
   In order to fetch <code>rand</code>, we have to add it to our
-  <code>libs/neural-network/Cargo.toml</code>:
+  <code>Cargo.toml</code>:
 </p>
+
+<listing-title>
+  libs/neural-network/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
     # ...
     
     [dependencies]
-    rand = "0.8"
+  = rand = "0.8"
   -->
 </listing>
 
 <p>... and then:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(input_size: usize) -> Self {
-        let mut rng = rand::thread_rng();
-    
-        let bias = rng.gen_range(-1.0..=1.0);
-    
-        let weights = (0..input_size)
-            .map(|_| rng.gen_range(-1.0..=1.0))
-            .collect();
-    
-        Self { bias, weights }
+  = use rand::Rng;
+
+    /* ... */
+
+    impl Neuron {
+        fn random(input_size: usize) -> Self {
+  =         let mut rng = rand::thread_rng();
+  =         let bias = rng.gen_range(-1.0..=1.0);
+
+            let weights = (0..input_size)
+  =             .map(|_| rng.gen_range(-1.0..=1.0))
+                .collect();
+
+            Self { bias, weights }
+        }
     }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     <code>0..3</code> is a <b>half-open interval</b> that matches
     <code>0</code>, <code>1</code> and <code>2</code>.
@@ -1848,26 +1783,25 @@
     <code>0..=3</code> is a <b>closed interval</b> that matches <code>3</code>,
     too.
   </p>
-</aside>
+</note>
 
 <p>Neat.</p>
 
 <p>
   Certainly, <code>rng.gen_range(-1.0..=1.0)</code> predicts Dogecoin prices
-  quite accurately - but is there a way we could ensure our
-  <i>entire</i> network works as intended?
+  quite accurately - but is there a way we could ensure our <i>entire</i>
+  network works as intended?
 </p>
 
-<h2 id="testing">
-  <a href="#testing">Testing</a>
-</h2>
+<header id="testing">
+  Testing
+</header>
 
 <p>
   A <a href="https://en.wikipedia.org/wiki/Pure_function">pure function</a> is a
-  function whose given the same arguments, always returns the same value.
+  function whose given the same arguments, always returns the same value - for
+  instance, this is a pure function:
 </p>
-
-<p>For instance, this is a pure function:</p>
 
 <listing lang="rust">
   <!--
@@ -1887,31 +1821,29 @@
   -->
 </listing>
 
-<p class="text-dim">
-  <i
-    >(<code>add(1, 2)</code> will always return <code>3</code>, while
-    <code>read("file.txt")</code> will return different strings depending on
-    what given file happens to contain at the moment.)</i
-  >
+<p class="text-attached">
+  (<code>add(1, 2)</code> will always return <code>3</code>, while
+  <code>read("file.txt")</code> will return different strings depending on what
+  the file happens to contain at the moment.)
 </p>
 
-<p>Pure functions are nice, because they can be easily tested in isolation:</p>
+<p>Pure functions are nice, because they can be tested in isolation:</p>
 
 <listing lang="rust">
   <!--
     // This test always succeeds
-    // (i.e this test is *deterministic*)
+    // (i.e it is *deterministic*)
     #[test]
     fn test_add() {
         assert_eq!(add(1, 2), 3);
     }
     
-    // This test might succeed or it might fail, hard to anticipate
-    // (i.e. this test is *indeterministic*)
+    // This test might succeed or it might fail, impossible to anticipate
+    // (i.e. it is *indeterministic*)
     #[test]
     fn test_read() {
         assert_eq!(
-            read("serials-to-watch.txt"),
+            std::fs::read_to_string("serials-to-watch.txt"),
             "killing eve",
         );
     }
@@ -1919,9 +1851,9 @@
 </listing>
 
 <p>
-  Unfortunately, the way we randomize numbers inside our
-  <code>Neuron::random()</code> makes it impure, which can be easily proven
-  with:
+  Unfortunately, the way we generate numbers inside
+  <code>Neuron::random()</code> makes it <b>impure</b>, which can be easily
+  proven with:
 </p>
 
 <listing lang="rust">
@@ -1931,8 +1863,8 @@
         let neuron_a = Neuron::random(4);
         let neuron_b = Neuron::random(4);
     
-        // If `Neuron::random()` was pure, then both neurons would always
-        // have to be the same:
+        // If `Neuron::random()` was pure, then both neurons would always have
+        // to be the same:
         assert_eq!(neuron_a, neuron_b);
     }
   -->
@@ -1943,34 +1875,25 @@
   <b>reliably</b>:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    struct Neuron {
-        bias: f32,
-        weights: Vec<f32>,
-    }
-    
-    impl Neuron {
-        pub fn random(input_size: usize) -> Self {
-            /* ... */
-        }
-    }
-    
-    #[cfg(test)]
-    mod tests {
-        use super::*;
-    
-        mod random {
-            use super::*;
-    
-            #[test]
-            fn test() {
-                let neuron = Neuron::random(4);
-    
-                assert!(/* what? */);
-            }
-        }
-    }
+    /* ... */
+
+  = #[cfg(test)]
+  = mod tests {
+  =     use super::*;
+  =
+  =     #[test]
+  =     fn random() {
+  =         let neuron = Neuron::random(4);
+  =
+  =         assert!(/* what? */);
+  =     }
+  = }
   -->
 </listing>
 
@@ -1988,28 +1911,28 @@
 </listing>
 
 <p>
-  ... but that's a development counterpart of a
-  <a href="https://en.wikipedia.org/wiki/False_friend">false friend</a> - though
-  it's better than no test at all, it doesn't check much.
+  ... but that's a useless test, it doesn't actually prove anything.
 </p>
 
 <p>
-  On the other hand, making <code>Neuron::random()</code> a pure-pure function
-  seems…​ preposterous? What's the point of <i>randomizing</i>, if the outcome
-  would always remain the same?
+  On the other hand, making <code>Neuron::random()</code> a pure function
+  seems...​ preposterous? What's the point of randomizing, if the outcome would
+  always remain the same?
 </p>
 
 <p>
-  Well, the way I usually reconcile both worlds is by looking at the origin of
-  impurity - in our case, it's <code>rand::thread_rng()</code>:
+  The way I usually reconcile both worlds is by looking at the source of
+  impurity - in this case, it is:
 </p>
 
 <listing lang="rust">
   <!--
-    pub fn random(input_size: usize) -> Self {
-        let mut rng = rand::thread_rng();
-    
-        /* ... */
+    impl Neuron {
+        fn random(input_size: usize) -> Self {
+            let mut rng = rand::thread_rng(); // whoopsie
+
+            /* ... */
+        }
     }
   -->
 </listing>
@@ -2019,12 +1942,50 @@
   the randomizer:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    pub fn random(
-        rng: &mut dyn rand::RngCore,
-        input_size: usize,
-    ) -> Self {
+  = use rand::{Rng, RngCore};
+
+    /* ... */
+
+    impl Network {
+  =     pub fn random(rng: &mut dyn RngCore, layers: &[LayerTopology]) -> Self {
+            let layers = layers
+                .windows(2)
+  =             .map(|layers| Layer::random(rng, layers[0].neurons, layers[1].neurons))
+                .collect();
+
+            /* ... */
+        }
+
+        /* ... */
+    }
+
+    /* ... */
+
+    impl Layer {
+  =     fn random(rng: &mut dyn RngCore, input_size: usize, output_size: usize) -> Self {
+            let neurons = (0..output_size)
+  =             .map(|_| Neuron::random(rng, input_size))
+                .collect();
+
+            /* ... */
+        }
+
+        /* ... */
+    }
+
+    /* ... */
+
+    impl Neuron {
+  =     fn random(rng: &mut dyn RngCore, input_size: usize) -> Self {
+            /* ... */
+        }
+
         /* ... */
     }
   -->
@@ -2035,9 +1996,9 @@
   users would simply pass an actual PRNG of their choosing.
 </p>
 
-<aside class="note">
+<note>
   <p>
-    You can use a similar pattern to test your application's output; if instead
+    You can use a similar pattern to test your application's output - if instead
     of:
   </p>
 
@@ -2050,7 +2011,7 @@
     -->
   </listing>
 
-  <p>... you do:</p>
+  <p>... you did:</p>
 
   <listing lang="rust">
     <!--
@@ -2061,7 +2022,7 @@
     -->
   </listing>
 
-  <p>... then you'll be able to test its output quite easily:</p>
+  <p>... then you'd be able to test the output quite easily:</p>
 
   <listing lang="rust">
     <!--
@@ -2076,21 +2037,22 @@
   </listing>
 
   <p>
-    Side note: I've done it
-    <a
-      href="https://github.com/Patryk27/lxd-snapper/blob/9b096962122988abb3677a69ced244ea7cec2fa2/src/cmds/backup.rs#L159"
-      >in the past</a
-    >
-    and it's proven to be convenient.
+    <ref>
+      https://github.com/Patryk27/lxd-snapper/blob/9b096962122988abb3677a69ced244ea7cec2fa2/src/cmds/backup.rs#L159
+    </ref>
+
+    I've done this <a ref>in the past</a> and it's proven to be very convenient.
   </p>
 
   <p>
-    Due diligence, for all the <i>purists</i> out there: both
-    <code>do_something()</code>-s and <code>random()</code>-s technically are
-    <i>not</i> pure functions as they all lack a property called
-    <a href="https://en.wikipedia.org/wiki/Referential_transparency"
-      >referential transparency</a
-    >. Though, if one's insistent, there's always:
+    <ref>
+      https://en.wikipedia.org/wiki/Referential_transparency
+    </ref>
+
+    Due diligence: both <code>do_something()</code> and <code>random()</code>
+    technically are <i>not</i> pure functions as they all lack a property called
+    <a ref>referential transparency</a> - although, if one's insistent, there's
+    always:
   </p>
 
   <listing lang="rust">
@@ -2100,58 +2062,76 @@
       }
     -->
   </listing>
-</aside>
+</note>
 
 <p>
   Because the <code>rand</code> crate doesn't provide a predictable or seedable
-  PRNG, we have to make use of another crate - I like
-  <code>rand_chacha</code> (easy to remember, you've probably already memorized
-  it):
+  PRNG, we have to make use of another crate - I like <code>rand_chacha</code>
+  (easy to remember, you've probably already memorized it):
 </p>
+
+<listing-title>
+  libs/neural-network/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
     # ...
-    
-    [dev-dependencies]
-    rand_chacha = "0.3"
+
+    [dependencies]
+    rand = "0.8"
+
+  = [dev-dependencies]
+  = rand_chacha = "0.3"
   -->
 </listing>
 
 <p>... which allows us to do:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
-    use rand::SeedableRng;
-    use rand_chacha::ChaCha8Rng;
-    
-    #[test]
-    fn test() {
-        // Because we always use the same seed, our `rng` in here will
-        // always return the same set of values
-        let mut rng = ChaCha8Rng::from_seed(Default::default());
-        let neuron = Neuron::random(&mut rng, 4);
-    
-        assert_eq!(neuron.bias, /* ... */);
-        assert_eq!(neuron.weights, &[/* ... */]);
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+  =     use rand::SeedableRng;
+  =     use rand_chacha::ChaCha8Rng;
+
+        #[test]
+        fn random() {
+  =         // Because we always use the same seed, our `rng` in here will
+  =         // always return the same set of values
+  =         let mut rng = ChaCha8Rng::from_seed(Default::default());
+  =         let neuron = Neuron::random(&mut rng, 4);
+  =
+  =         assert_eq!(neuron.bias, /* ... */);
+  =         assert_eq!(neuron.weights, &[/* ... */]);
+        }
     }
   -->
 </listing>
 
 <p>
   We don't know which numbers will be returned just yet, but finding out is
-  pretty easy: we'll just start with zeros and then copy-paste numbers from
-  test's output:
+  easy - we'll just start with zeros and then copy-paste numbers from the test's
+  output:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     #[test]
-    fn test() {
+    fn random() {
         /* ... */
     
-        assert_eq!(neuron.bias, 0.0);
-        assert_eq!(neuron.weights, &[0.0, 0.0, 0.0, 0.0]);
+  =     assert_eq!(neuron.bias, 0.0);
+  =     assert_eq!(neuron.weights, &[0.0, 0.0, 0.0, 0.0]);
     }
   -->
 </listing>
@@ -2168,13 +2148,17 @@
 
 <p>... so:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
     #[test]
-    fn test() {
+    fn random() {
         /* ... */
     
-        assert_eq!(neuron.bias, -0.6255188);
+  =     assert_eq!(neuron.bias, -0.6255188);
     
         /* ... */
     }
@@ -2193,18 +2177,20 @@
 
 <p>... and we end up with:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
     #[test]
-    fn test() {
+    fn random() {
         /* ... */
-    
-        assert_eq!(neuron.weights, &[
-            0.67383957,
-            0.8181262,
-            0.26284897,
-            0.5238807,
-        ]);
+
+  =     assert_eq!(
+  =         neuron.weights,
+  =         &[0.67383957, 0.8181262, 0.26284897, 0.5238807]
+  =     );
     }
   -->
 </listing>
@@ -2212,24 +2198,24 @@
 <p>
   Notice the numbers are <i>different</i> and that's alright - they are allowed
   to be different as long as each <code>cargo test</code> consistently works on
-  the same <b>set</b> of numbers (and it does, because we used a PRNG with a
-  constant seed).
+  the same set of numbers (and it does, because we used a PRNG with a constant
+  seed).
 </p>
 
 <p>
-  Before moving on to another test, there's one touch we really should apply
-  here - it stems from <b>floating-point inaccuracies</b>.
+  Before moving on, there's one more topic we have to cover here:
+  <b>floating-point inaccuracies</b>.
 </p>
 
 <p>
   The type we're using, <code>f32</code>, models a 32-bit floating-point number
   that can represent values between <code>~1.2*10^-38</code> and
-  <code>~3.4*10^38</code> - alas, it cannot represent <i>all</i> of those
-  numbers, just <i>some</i>.
+  <code>~3.4*10^38</code> - alas, it cannot represent all of those numbers, just
+  some.
 </p>
 
 <p>
-  For instance, with <code>f32</code> you cannot encode <i>exactly</i>
+  For instance, with <code>f32</code> you cannot encode exactly
   <code>0.15</code> - it'll always be off by a bit:
 </p>
 
@@ -2242,7 +2228,7 @@
   -->
 </listing>
 
-<p>... or <code>0.45</code>:</p>
+<p>... same with, say, <code>0.45</code>:</p>
 
 <listing lang="rust">
   <!--
@@ -2278,9 +2264,9 @@
 
 <p>
   To avoid reinventing the wheel, I'll just drop this link:
-  <a href="https://floating-point-gui.de"
-    >What Every Programmer Should Know About Floating-Point Arithmetic</a
-  >
+  <a href="https://floating-point-gui.de">
+    What Every Programmer Should Know About Floating-Point Arithmetic
+  </a>
   - if you haven't read about floating-point numbers yet, I encourage you to
   give it a shot!
 </p>
@@ -2303,12 +2289,14 @@
 </listing>
 
 <p>
-  This is <i>the</i> standard way to compare floats across all programming
-  languages that implement
-  <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a> (so, like,
-  basically all the languages): instead of fishing for an <b>exact</b> result,
-  you simply compare both numbers with some <b>margin of error</b> (also called
-  <b>tolerance</b>).
+  <ref>
+    https://en.wikipedia.org/wiki/IEEE_754
+  </ref>
+
+  This is the standard way to compare floats across all programming languages
+  that implement <a ref>IEEE 754</a> (so, like, all programming languages) -
+  instead of fishing for an exact result, you compare both numbers with a
+  <b>margin of error</b> (also called <b>tolerance</b>).
 </p>
 
 <p>
@@ -2353,78 +2341,85 @@
   <code>Cargo.toml</code>:
 </p>
 
+<listing-title>
+  libs/neural-network/Cargo.toml
+</listing-title>
+
 <listing lang="toml">
   <!--
     # ...
     
     [dev-dependencies]
-    approx = "0.4"
+  = approx = "0.4"
+    rand_chacha = "0.3"
   -->
 </listing>
 
 <p>... and then adjust the tests:</p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
+    use super::*;
+  = use approx::assert_relative_eq;
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+
     #[test]
-    fn test() {
+    fn random() {
         let mut rng = ChaCha8Rng::from_seed(Default::default());
         let neuron = Neuron::random(&mut rng, 4);
     
-        assert_relative_eq!(neuron.bias, -0.6255188);
-    
-        assert_relative_eq!(neuron.weights.as_slice(), [
-            0.67383957,
-            0.8181262,
-            0.26284897,
-            0.5238807,
-        ].as_ref());
+  =     assert_relative_eq!(neuron.bias, -0.6255188);
+
+  =     assert_relative_eq!(
+  =         neuron.weights.as_slice(),
+  =         [0.67383957, 0.8181262, 0.26284897, 0.5238807].as_ref()
+  =     );
     }
   -->
 </listing>
 
 <p>
   This covers half of neuron's functions - thankfully, knowing what we know now,
-  writing a test for <code>Neuron::propagate()</code> should go easy:
+  writing a test for <code>Neuron::propagate()</code> will go easy:
 </p>
+
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
-        use super::*;
-    
-        mod random {
-            use super::*;
-    
-            #[test]
-            fn test() {
-                /* ... */
-            }
+        /* ... */
+
+        #[test]
+        fn random() {
+            /* ... */
         }
-    
-        mod propagate {
-            use super::*;
-    
-            #[test]
-            fn test() {
-                todo!()
-            }
-        }
+  =
+  =     #[test]
+  =     fn propagate() {
+  =         todo!()
+  =     }
     }
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
-    You might've heard that instead of naming a test <code>test</code>, you
-    should strive to describe what given test <b>does</b> and what are its
-    <b>preconditions</b>.
+    You might've heard that it's useful to name tests based on their
+    <b>preconditions</b> and <b>expectations</b>.
   </p>
 
   <p>
-    Usually that's true - if we were writing a shop that sells Monsteras, it'd
-    be wise to structure tests as such:
+    Usually that's true - if we were writing a shop, it could be useful to
+    structure its tests like so:
   </p>
 
   <listing lang="rust">
@@ -2464,24 +2459,23 @@
 
   <p>
     The sitch is that our <code>Neuron</code> isn't typical "business code" and
-    lots of "business code patterns" don't quite work with mathematical code.
+    lots of "business code patterns" don't quite work with mathematical code. If
+    we had some <b>edge cases</b> to consider, say:
   </p>
-
-  <p><i>If</i> we had some <b>edge cases</b> to consider, say:</p>
 
   <listing lang="rust">
     <!--
-      fn propagate(...) {
-          if ... {
-              do_something()
+      fn propagate(/* ... */) {
+          if /* ... */ {
+              do_foo()
           } else {
-              do_something_else()
+              do_bar()
           }
       }
     -->
   </listing>
 
-  <p>... then it'd make sense to create two separate tests like so:</p>
+  <p>... then it'd make sense to create two separate tests:</p>
 
   <listing lang="rust">
     <!--
@@ -2496,7 +2490,7 @@
                   use super::*;
       
                   #[test]
-                  fn does_something() {
+                  fn fooifies_it() {
                       /* ... */
                   }
               }
@@ -2505,7 +2499,7 @@
                   use super::*;
       
                   #[test]
-                  fn does_something_else() {
+                  fn bars_it() {
                       /* ... */
                   }
               }
@@ -2515,39 +2509,43 @@
   </listing>
 
   <p>
-    But having the code we have - we'll be better off with simple
-    <code>fn test()</code>.
+    ... but having the code we have - we're better off with simple
+    <code>fn random()</code> and <code>fn propagate()</code>.
   </p>
-</aside>
+</note>
 
 <p>
   How can we ensure <code>propagate()</code> works correctly? By computing the
   expected response manually:
 </p>
 
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
+
 <listing lang="rust">
   <!--
     #[test]
-    fn test() {
-        let neuron = Neuron {
-            bias: 0.5,
-            weights: vec![-0.3, 0.8],
-        };
-    
-        // Ensures `.max()` (our ReLU) works:
-        approx::assert_relative_eq!(
-            neuron.propagate(&[-10.0, -10.0]),
-            0.0,
-        );
-    
-        // `0.5` and `1.0` chosen by a fair dice roll:
-        approx::assert_relative_eq!(
-            neuron.propagate(&[0.5, 1.0]),
-            (-0.3 * 0.5) + (0.8 * 1.0) + 0.5,
-        );
-    
-        // We could've written `1.15` right away, but showing the entire
-        // formula makes our intentions clearer
+    fn propagate() {
+  =     let neuron = Neuron {
+  =         bias: 0.5,
+  =         weights: vec![-0.3, 0.8],
+  =     };
+  =
+  =     // Ensures `.max()` (our ReLU) works:
+  =     assert_relative_eq!(
+  =         neuron.propagate(&[-10.0, -10.0]),
+  =         0.0,
+  =     );
+  =
+  =     // `0.5` and `1.0` chosen by a fair dice roll:
+  =     assert_relative_eq!(
+  =         neuron.propagate(&[0.5, 1.0]),
+  =         (-0.3 * 0.5) + (0.8 * 1.0) + 0.5,
+  =     );
+  =
+  =     // We could've written `1.15` right away, but showing the entire
+  =     // formula makes our intentions clearer
     }
   -->
 </listing>
@@ -2558,11 +2556,11 @@
   exercise for the reader :-)
 </p>
 
-<h2 id="closing-thoughts">
-  <a href="#closing-thoughts">Closing thoughts</a>
-</h2>
+<header id="closing-thoughts">
+  Closing thoughts
+</header>
 
-<h3>What have we created, exactly?</h3>
+<h3>What've we created, exactly?</h3>
 
 <p>
   It might seem that what we've implemented has nothing to do with learning or
@@ -2583,83 +2581,46 @@
 
 <p>
   ... but that's only because the neural network itself, while being a
-  relatively complex piece of our codebase, doesn't do much on its own; thou
-  shall not worry though, as in the end all the pieces will fit together.
+  relatively complex piece of our codebase, doesn't do much on its own - thou
+  shall not worry, though, for in the end all the pieces shall fit together.
 </p>
 
 <p>
-  In the meantime, feel free to checkout the <b>entire</b> source code at
-  <a href="https://github.com/Patryk27/shorelark/tree/main/libs/neural-network"
-    >my GitHub repository</a
-  >.
-</p>
+  <ref>
+    https://github.com/Patryk27/shorelark/tree/main/libs/neural-network
+  </ref>
 
-<h3>What about rustfmt?</h3>
-
-<p>
-  This might come off like an advertisement, but let's give it a shot anyway:
-</p>
-
-<p>
-  Code formatting <i>is</i> important - doesn't matter if your project's big or
-  small,
-  <a href="https://github.com/rust-lang/rustfmt" class="text-rainbow"
-    >rustfmt</a
-  >
-  is the way to go!
-</p>
-
-<h3>What about TDD?</h3>
-
-<p>
-  Test-driven development is a programming methodology in which you
-  <i>first</i> write tests and <i>only then</i> start to work on the
-  implementation; I use it more often than not, but while writing this article,
-  I've decided that starting with implementation will be more educational than
-  the adventure TDD would take us on.
-</p>
-
-<p>
-  So if you're wondering whether TDD is worth pursuing in Rust - it totally is!
-  Though, as always - not always :-)
+  In the meantime, feel free to checkout <a ref>the source code</a>.
 </p>
 
 <h3>Why is our design inflated?</h3>
 
 <p>
-  When you gogoduck for <code>python neural network from scratch</code>, you'll
-  see lots of articles that encapsulate FFNNs in a handful lines of Python code
-  - compared to them, our design seems bean-to-the-square-inflated; why is that
-  so?
+  When you search for <code>python neural network from scratch</code>, you'll
+  find lots of articles which encapsulate FFNNs in a few lines of Python code -
+  compared to them, our design seems inflated, why is that so?
 </p>
 
 <p>
+  <ref id="nalgebra">
+    https://nalgebra.org/
+  </ref>
+
+  <ref id="nn-crates">
+    https://www.arewelearningyet.com/neural-networks/
+  </ref>
+
   It's because we could learn more this way - we <i>could've</i> coded our
-  network in 1/10th of its current size by using
-  <a href="https://nalgebra.org/">nalgebra</a>, we <i>could've</i> used one of
-  the
-  <a href="https://www.arewelearningyet.com/neural-networks/"
-    >already-existing crates</a
-  >, but it's not the destination that matters, it's the journey.
+  network in 1/10th of its current size by using <a ref="nalgebra">nalgebra</a>,
+  we <i>could've</i> used one of the <a ref="nn-crates">already-existing
+  crates</a>, but it's not the destination that matters, it's the journey.
 </p>
 
 <h3>What’s next?</h3>
 
 <p>
-  To avoid closing our closing thoughts on some cheesy waltz, let's establish
-  what's coming next.
-</p>
-
-<p>
-  At the moment we've got a working, bare-bones neural network - in the upcoming
-  article, we'll <code>cargo new genetic-algorithm --lib</code> and we'll see
-  what our current implementation is <b>missing</b> in order to make it
-  compatible with genetic algorithms.
-</p>
-
-<p>
-  The last, fourth post, will be about WebAssembly-ing all our crates together
+  At the moment we've got a bare-bones FFNN at hand - in the next article we'll
+  be implementing the genetic algoritm and we'll be connecting it to our neural
+  network. The last post will be all about WebAssembly-ing our crates together
   to end up with our opus magnum: flying birds.
 </p>
-
-<p class="text-rainbow">Until then!</p>

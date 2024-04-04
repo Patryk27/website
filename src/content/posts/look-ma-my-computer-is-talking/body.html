@@ -71,11 +71,9 @@
   (as always, source code is <a href="https://github.com/Patryk27/chatgpt-at-home">available at my GitHub</a>.)
 </p>
 
-<h2 id="naivete">
-  <a href="#naivete">
-    Naïveté
-  </a>
-</h2>
+<header id="naivete">
+  Naïveté
+</header>
 
 <p>
   So, what we want to achieve is an application that can can be trained on a
@@ -188,9 +186,9 @@
   ... aaaand:
 </p>
 
-<div class="listing-title">
+<listing-title>
   $ cargo run
-</div>
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -212,11 +210,9 @@
   on?
 </p>
 
-<h2 id="context">
-  <a href="#context">
-    Context
-  </a>
-</h2>
+<header id="context">
+  Context
+</header>
 
 <p>
   Arguably, generating random words yields bad prose because usually words in
@@ -366,9 +362,9 @@
   -->
 </listing>
 
-<div class="listing-title">
+<listing-title>
   $ cargo run
-</div>
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -388,9 +384,9 @@
   -->
 </listing>
 
-<div class="listing-title">
+<listing-title>
   $ cargo run
-</div>
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -452,7 +448,7 @@
   or, you know, just having fun.
 </p>
 
-<aside class="note">
+<note>
   <p>
     What's more, the algorithm in <code>.prompt()</code> <i>also</i> has its own
     name, albeit more fancy one: it's called <b>Markov chain</b>.
@@ -464,7 +460,7 @@
     have some probabilities - just like in the call to
     <code>.choose_weighted()</code>.
   </p>
-</aside>
+</note>
 
 <p>
   Terminology aside - what can we do to make the text generation better?
@@ -499,11 +495,9 @@
   So, there are (at least) two (easy) things we can do to improve it.
 </p>
 
-<h2 id="tokens">
-  <a href="#tokens">
-    All My Tokens Gone
-  </a>
-</h2>
+<header id="tokens">
+  All My Tokens Gone
+</header>
 
 <p>
   n-grams (and lots of other text algorithms, for that matter) require for the
@@ -668,9 +662,9 @@
   ... and:
 </p>
 
-<div class="listing-title">
+<listing-title>
   $ cargo run
-</div>
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -754,11 +748,9 @@
   fixed.
 </p>
 
-<h2 id="more-context">
-  <a href="#more-context">
-    More context, More Context, MORE. CONTEXT.
-  </a>
-</h2>
+<header id="more-context">
+  More context, More Context, MORE. CONTEXT.
+</header>
 
 <p>
   If currently we're generating <i>bi</i>grams, then maybe generating
@@ -836,7 +828,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Nota bene, desining this map with <code>[String; ...]</code> as keys is
     incredibly inefficient here, because not only all of the input words will be
@@ -868,7 +860,7 @@
   <p>
     ... but for the purposes of this article strings-strings will be just fine.
   </p>
-</aside>
+</note>
 
 <p>
   ... and:
@@ -926,11 +918,9 @@
   Can <i>even more</i> statistics save us?
 </p>
 
-<h2 id="everywhere">
-  <a href="#everywhere">
-    N-grams Everywhere All at Once
-  </a>
-</h2>
+<header id="everywhere">
+  N-grams Everywhere All at Once
+</header>
 
 <p>
   Using bigrams allows us to start prompts with just one word, but it generates
@@ -1062,9 +1052,9 @@
   ... which gives us:
 </p>
 
-<div class="listing-title">
+<listing-title>
   $ cargo run
-</div>
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -1089,11 +1079,9 @@
   Heyo! (ka ching (nobel prize))
 </p>
 
-<h2 id="summary">
-  <a href="#summary">
-    Summary
-  </a>
-</h2>
+<header id="summary">
+  Summary
+</header>
 
 <p>
   So, what we created here is an application that can be trained on a dataset
@@ -1118,6 +1106,7 @@
 <p>
   Though, all said, I think that for the trade-off they make, they <i>are</i> a
   pretty nice piece of math!
+</p>
 
 <p>
   I mean, all of this here can be coded entirely from scratch in like a half an
@@ -1170,19 +1159,3 @@
 <p>
   And that, I must admit, <i>is</i> magical.
 </p>
-
-<h2 id="discussion">
-  <a href="#disvussion">
-    Discussion
-  </a>
-</h2>
-
-<p></p>
-
-<ul>
-  <li>
-    <a href="https://www.reddit.com/r/rust/comments/123irn9/look_ma_my_computer_is_talking_lets_markovchain/">
-      Reddit
-    </a>
-  </li>
-</ul>

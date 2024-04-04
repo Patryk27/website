@@ -1,6 +1,6 @@
 <p>
-  In this series we'll create a simulation of <b>evolution</b> using
-  <b>neural network</b> and <b>genetic algorithm</b>.
+  In this series we'll create a simulation of <b>evolution</b> using <b>neural
+  network</b> and <b>genetic algorithm</b>.
 </p>
 
 <p>
@@ -15,13 +15,11 @@
   </a>
 
   <figcaption>
-    <div class="title">
-      <a href="https://shorelark.pwy.io">shorelark.pwy.io</a>
-    </div>
+    <a href="https://shorelark.pwy.io" />
   </figcaption>
 </figure>
 
-<aside class="note">
+<note>
   <p>
     This series is intended for <b>Rust beginners</b> - I'm assuming you know a
     thing or two about Rust and I'll introduce you to rest of the concepts (such
@@ -29,7 +27,7 @@
   </p>
 
   <p>No fancy mathematics or IT background is required.</p>
-</aside>
+</note>
 
 <p>This series will be divided into a few posts, roughly:</p>
 
@@ -47,25 +45,18 @@
     <p>Implementing a genetic algorithm,</p>
   </li>
   <li>
-    <p>Implementing eyes, brain, and the simulation itself.</p>
+    <p>Implementing eyes, brain and the simulation itself.</p>
   </li>
 </ol>
-
-<p>
-  Due diligence: I'll do my best to explain all the concepts, but if at any
-  point you feel lost, feel free to take a look at this article's last section -
-  it contains links to external (mostly popular science) sources that might
-  prove to be helpful in understanding the domain.
-</p>
 
 <p>
   Curious? Hop on the bus, Gus, and onto the first chapter:
   <a href="#design">Design</a>.
 </p>
 
-<h2 id="design">
-  <a href="#design">Design</a>
-</h2>
+<header id="design">
+  Design
+</header>
 
 <p>
   Let's start by clearly defining our objective: what are we going to simulate,
@@ -107,18 +98,18 @@
 </p>
 
 <p>
-  Our magic touch will lay in the fact that instead of <i>hard-coding</i> our
-  birds to some specific behavior (e.g. "go to the nearest food in your
-  eyesight"), we'll take a more intriguing route:
+  Our magic touch will lay in the fact that instead of hard-coding our birds to
+  some specific behavior (e.g. "go to the nearest food in your eyesight"), we'll
+  take a more interesting route:
 </p>
 
 <p class="text-center">
   We'll make our birds able to <b>learn</b> and <b>evolve</b>.
 </p>
 
-<h2 id="brain">
-  <a href="#brain">Brain</a>
-</h2>
+<header id="brain">
+  Brain
+</header>
 
 <p>
   If you squint your eyes hard enough, you'll see that a brain is nothing but a
@@ -129,9 +120,9 @@
   <img src="{{ assets }}/brain-1.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>You're a precious mathematical formula, remember that.</p>
-</aside>
+</note>
 
 <p>
   Since our birds will have only one sensory input, their brains can be then
@@ -145,8 +136,7 @@
 <p>
   Mathematically, we can represent this function's input (i.e. biological
   <i>eye</i>) as a list of numbers, with each number (i.e. biological
-  <i>photoreceptor</i>) describing <i>how close</i> the nearest object (i.e.
-  food) is:
+  <i>photoreceptor</i>) describing how close the nearest object (i.e. food) is:
 </p>
 
 <figure class="sketch w-70">
@@ -154,22 +144,22 @@
 </figure>
 
 <p class="text-center">
-  <i
-    >(<code>0.0</code> - no object in sight, <code>1.0</code> - object right in
-    front of us.)</i
-  >
+  <i>
+    (<code>0.0</code> - no object in sight, <code>1.0</code> - object right in
+    front of us.)
+  </i>
 </p>
 
-<aside class="note">
+<note>
   <p>
     Our birds won't see color, but that's just for simplicity - you could use
     e.g.
-    <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"
-      >raytracing</a
-    >
+    <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html">
+      raytracing
+    </a>
     to make the eyes more realistic.
   </p>
-</aside>
+</note>
 
 <p>
   As for the output, we'll make our function return a tuple of
@@ -183,15 +173,14 @@
   "body, please keep our course steady".
 </p>
 
-<aside class="note">
+<note>
   <p>
-    It's important that we use <i>relative</i> values (so
-    <code>delta speed</code> and <code>delta rotation</code>), as our brain
-    won't be aware of its own location & rotation respective to the world -
-    passing that information would increase our brain's complexity for no real
-    benefit.
+    It's important that we use relative values (so <code>delta speed</code> and
+    <code>delta rotation</code>), as our brain won't be aware of its own
+    location & rotation respective to the world - passing that information would
+    increase our brain's complexity for no real benefit.
   </p>
-</aside>
+</note>
 
 <p>
   Finally, let's address the elephant in the room: so a brain is basically
@@ -203,9 +192,9 @@
   <code>f(eyes) = what?</code>
 </p>
 
-<h2 id="nn-intro">
-  <a href="#nn-intro">Neural network: Introduction</a>
-</h2>
+<header id="nn-intro">
+  Neural network: Introduction
+</header>
 
 <p>
   As a fellow human, you might be aware that brains are made of neurons
@@ -216,7 +205,7 @@
   <img src="{{ assets }}/nn-1.svg" />
 
   <figcaption>
-    <div class="title">My attempt at drawing neurons; not to scale</div>
+    My attempt at drawing neurons - not to scale
   </figcaption>
 </figure>
 
@@ -228,26 +217,32 @@
 </p>
 
 <p>
-  Due to their
-  <a href="https://en.wikipedia.org/wiki/Biological_neuron_model"
-    >inherent complexity</a
-  >, biological neural networks are not among the easiest to simulate (one could
-  argue that neurons are thus not
-  <a href="https://www.youtube.com/watch?v=b2F-DItXtZs">Web Scale</a>), which
-  made some smart people invent a class of mathematical structures called
-  <b>artificial neural networks</b>, which allow to approximate - with a pinch
-  of salt - brain-like behavior using math.
+  <ref id="neuron">
+    https://en.wikipedia.org/wiki/Biological_neuron_model
+  </ref>
+
+  <ref id="webscale">
+    https://www.youtube.com/watch?v=b2F-DItXtZs
+  </ref>
+
+  Due to their <a ref="neuron">inherent complexity</a>, biological neural
+  networks are not among the easiest to simulate (one could argue that neurons
+  are thus not <a ref="webscale">Web Scale</a>), which made some smart people
+  invent a class of mathematical structures called <b>artificial neural
+  networks</b>, which allow to approximate - with a pinch of salt - brain-like
+  behavior using math.
 </p>
 
 <p>
+  <ref>
+    https://en.wikipedia.org/wiki/Google_Neural_Machine_Translation
+  </ref>
+
   Artificial neural networks (which I'm going to call just neural networks) are
   prominent at <b>generalizing</b> over datasets (e.g. learning how a cat looks
   like), so they found their use in face recognition (e.g. for cameras),
-  language translation (e.g. for
-  <a href="https://en.wikipedia.org/wiki/Google_Neural_Machine_Translation"
-    >GNMT</a
-  >), and - in our case - to steer colorful pixels for a handful of reddit
-  karma.
+  language translation (e.g. for <a ref>GNMT</a>), and - in our case - to steer
+  colorful pixels for a handful of Reddit karma.
 </p>
 
 <p>
@@ -255,19 +250,26 @@
   <code>feedforward neural network</code> (FFNN)…​
 </p>
 
-<aside class="note">
+<note>
   <p>
-    Cool bear's hot tip: FFNNs are sometimes called
-    <a href="https://en.wikipedia.org/wiki/Multilayer_perceptron"
-      >multilayer perceptrons</a
-    >
-    and they are one of the building blocks of
-    <a
-      href="https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53"
-      >convolutional neural networks</a
-    >, such as <a href="https://en.wikipedia.org/wiki/DeepDream">DeepDream</a>.
+    <ref id="mlp">
+      https://en.wikipedia.org/wiki/Multilayer_perceptron
+    </ref>
+
+    <ref id="cnn">
+      https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
+    </ref>
+
+    <ref id="dd">
+      https://en.wikipedia.org/wiki/DeepDream
+    </ref>
+
+    Cool bear's hot tip: FFNNs are sometimes called <a ref="mlp">multilayer
+    perceptrons</a> and they are one of the building blocks of
+    <a ref="cnn">convolutional neural networks</a> such as
+    <a ref="dd">DeepDream</a>.
   </p>
-</aside>
+</note>
 
 <p>... and it looks like this:</p>
 
@@ -275,9 +277,7 @@
   <img src="{{ assets }}/nn-2.svg" />
 
   <figcaption>
-    <div class="title">
-      Example of a multilayer perceptron (MLP), also called FFNN
-    </div>
+    Example of a multilayer perceptron (MLP), also called FFNN
   </figcaption>
 </figure>
 
@@ -295,7 +295,7 @@
   understand, to a certain degree).
 </p>
 
-<aside class="note">
+<note>
   <p>
     A
     <a href="https://www.youtube.com/watch?v=rA5qnZUXcqo">similar process</a>
@@ -303,13 +303,13 @@
     <a href="https://en.wikipedia.org/wiki/Visual_cortex">visual cortex</a>,
     too.
   </p>
-</aside>
+</note>
 
 <p>
   Contrary to biological neural networks (which piggyback on electric signals),
   FFNNs work by accepting some <b>numbers</b> at their input and propagating
-  (<i>feedforwarding</i>) those numbers layer-by-layer across the entire
-  network; numbers that appear at the last layer determine network's answer.
+  (feedforwarding) those numbers layer-by-layer across the entire network;
+  numbers that appear at the last layer determine network's answer.
 </p>
 
 <p>
@@ -339,8 +339,8 @@
 </ul>
 
 <p>
-  It's also possible for a network to return <i>many</i> values (the number of
-  output values is equal to the number of neurons in the output layer):
+  It's also possible for a network to return many values (the number of output
+  values is equal to the number of neurons in the output layer):
 </p>
 
 <ul>
@@ -366,39 +366,39 @@
   that picture, you should return 0.0").
 </p>
 
-<aside class="note">
+<note>
   <p>
-    You might've as well created a network that, say,
-    <a
-      href="https://www.researchgate.net/publication/320662740_Identification_and_counting_of_mature_apple_fruit_based_on_BP_feed_forward_neural_network"
-      >identifies mature apples</a
-    >
-    - sky's the limit.
+    <ref>
+      https://www.researchgate.net/publication/320662740_Identification_and_counting_of_mature_apple_fruit_based_on_BP_feed_forward_neural_network
+    </ref>
+
+    You might've as well created a network that, say, <a ref>identifies mature
+    apples</a> - sky's the limit.
   </p>
-</aside>
+</note>
 
 <p>
   Having the general overview of FFNNs in mind, let's now take the next major
   step and learn about the magic allowing for all of this to happen.
 </p>
 
-<h2 id="nn-deep-dive">
-  <a href="#nn-deep-dive">Neural network: Deep dive</a>
-</h2>
+<header id="nn-deep-dive">
+  Neural network: Deep dive
+</header>
 
 <p>FFNNs lean on two building blocks: <b>neurons</b> and <b>synapses</b>.</p>
 
 <p>
   A <b>neuron</b> (usually represented with a circle) accepts some input values,
-  processes them, and returns some output value; each neuron has
-  <i>at least</i> one input and <i>at most</i> one output:
+  processes them and returns some output value - each neuron has at least one
+  input and at most one output:
 </p>
 
 <figure class="sketch">
   <img src="{{ assets }}/nn-3.svg" />
 
   <figcaption>
-    <div class="title">A single neuron with three synapses</div>
+    A single neuron with three synapses
   </figcaption>
 </figure>
 
@@ -408,39 +408,37 @@
   <img src="{{ assets }}/nn-4.svg" />
 
   <figcaption>
-    <div class="title">
-      A single neuron with three synapses and annotated bias value
-    </div>
+    A single neuron with three synapses and annotated bias value
   </figcaption>
 </figure>
 
 <p>
   Bias is like a neuron's <code>if</code> statement - it allows for a neuron to
-  stay inactive (return an output of zero) <i>unless</i> the input is strong
-  (high) enough. Formally we'd say that bias allows to regulate neuron's
-  <b>activation threshold</b>.
+  stay inactive (return an output of zero) unless> the input is strong (high)
+  enough. Formally we'd say that bias allows to regulate neuron's <b>activation
+  threshold</b>.
 </p>
 
 <p>
   Imagine you've got a neuron with three inputs, with each input determining
   whether it sees a lasagna (<code>1.0</code>) or not (<code>0.0</code>) - now,
-  if you wanted to create a neuron that's activated when it sees
-  <i>at least two</i> lasagnas, you'd simply create a neuron with a bias of
+  if you wanted to create a neuron that's activated when it sees <i>at least
+  two</i> lasagnas, you'd simply create a neuron with a bias of
   <code>-1.0</code>; this way your neuron's "natural" state would be
   <code>-1.0</code> (inactive), with one lasagna - <code>0.0</code> (still
   inactive), and with two - <code>1.0</code> (active, voilà).
 </p>
 
-<aside class="note">
+<note>
   <p>
-    If my lasagna metaphor doesn't appeal to you, you might find
-    <a
-      href="https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks"
-      >this math-oriented explanation</a
-    >
-    more helpful.
+    <ref>
+      https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
+    </ref>
+
+    If my lasagna metaphor doesn't appeal to you, you might find <a ref>this
+    math-oriented explanation</a> more helpful.
   </p>
-</aside>
+</note>
 
 <p>
   Apart from neurons, we've got <b>synapses</b> - a synapse is like a wire that
@@ -452,22 +450,20 @@
   <img src="{{ assets }}/nn-5.svg" />
 
   <figcaption>
-    <div class="title">
-      A single neuron with three synapses with annotated weights
-    </div>
+    A single neuron with three synapses with annotated weights
   </figcaption>
 </figure>
 
 <p>
-  A weight is a <i>factor</i> (hence the <code>x</code> before each number, to
+  A weight is a factor (hence the <code>x</code> before each number, to
   emphasize its multiplicative nature), so a weight of:
 </p>
 
 <ul>
   <li>
     <p>
-      <code>0.0</code> means that a synapse is effectively <i>dead</i> (it
-      doesn't pass any information from one neuron into the another),
+      <code>0.0</code> means that a synapse is effectively dead (it doesn't pass
+      any information from one neuron into the another),
     </p>
   </li>
   <li>
@@ -478,8 +474,8 @@
   </li>
   <li>
     <p>
-      <code>1.0</code> means that a synapse is effectively <i>passthrough</i> -
-      if neuron A returns <code>0.7</code>, neuron B will receive
+      <code>1.0</code> means that a synapse is effectively passthrough - if
+      neuron A returns <code>0.7</code>, neuron B will receive
       <code>0.7 * 1.0 = 0.7</code>.
     </p>
   </li>
@@ -534,25 +530,28 @@
 </p>
 
 <p>
+  <ref>
+    https://doc.rust-lang.org/stable/std/primitive.f32.html#method.max
+  </ref>
+
   The simplest activation function is
   <b>rectified linear unit</b> (<code>ReLU</code>), which is basically
-  <a href="https://doc.rust-lang.org/stable/std/primitive.f32.html#method.max"
-    ><code>f32::max</code></a
-  >:
+  <a ref><code>f32::max</code></a>:
 </p>
 
 <figure class="sketch w-50">
   <img src="{{ assets }}/nn-8.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
+    <ref>
+      https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks
+    </ref>
+
     Another popular activation function is <code>tanh</code> - its graph looks
-    slightly different (like an <code>s</code>) and it's got
-    <a
-      href="https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks"
-      >different properties</a
-    >.
+    slightly different (like an <code>s</code>) and it's got <a ref>different
+    properties</a>.
   </p>
 
   <p>
@@ -561,7 +560,7 @@
     <code>&lt;-1.0, 1.0&gt;</code> instead of <code>&lt;0.0, +inf&gt;</code>, as
     compared to <code>ReLU</code>.
   </p>
-</aside>
+</note>
 
 <p>
   As you can see, when our weighted-sum-with-a-bias is lower than zero, the
@@ -625,19 +624,20 @@
 </p>
 
 <p>
-  <i
-    >(since it's just an exercise on a totally made-up network, this number
-    doesn't mean anything - it's just some output value.)</i
-  >
+  <i>
+    (since it's just an exercise on a totally made-up network, this number
+    doesn't mean anything - it's just some output value.)
+  </i>
 </p>
 
 <p>
+  <ref>
+    https://medium.com/@jayeshbahire/the-xor-problem-in-neural-networks-50006411840b
+  </ref>
+
   Overall, that's one of the simplest FFNNs possible - given appropriate
-  weights, it's able to solve
-  <a
-    href="https://medium.com/@jayeshbahire/the-xor-problem-in-neural-networks-50006411840b"
-    >the XOR problem</a
-  >, but probably lacks computational capacity to steer a bird.
+  weights, it's able to solve <a ref>the XOR problem</a>, but probably lacks the
+  capacity to steer a bird.
 </p>
 
 <p>More complex FFNNs, such as this one:</p>
@@ -653,11 +653,11 @@
 </p>
 
 <p>
-  <i
-    >(on that particular diagram some of the synapses overlap, but it doesn't
+  <i>
+    (on that particular diagram some of the synapses overlap, but it doesn't
     mean anything: it's just that representing multidimensional graphs on a flat
-    screen is unfortunate.)</i
-  >
+    screen is unfortunate.)
+  </i>
 </p>
 
 <p>
@@ -669,15 +669,15 @@
 
 <p>
   If you're accustomed to deterministic algorithms (bubble sort, anyone?), this
-  might feel non-diegetic to you, but it's
-  <i>the</i> way things go for networks containing more than a few neurons: you
-  cross your fingers, randomize the initial weights, and work with what you got.
+  might feel itchy to you, but it's the way things go for networks containing
+  more than a few neurons: you cross your fingers, randomize the initial weights
+  and work with what you got.
 </p>
 
 <p>
   Notice I said <i>initial</i> weights - having some non-zero weights in place,
-  there are certain algorithms that you can apply on your network to
-  <i>improve</i> it (so, essentially, to teach it).
+  there are certain algorithms that you can apply on your network to improve it
+  (so, essentially, to teach it).
 </p>
 
 <p>
@@ -688,11 +688,11 @@
 <p>
   You show your network lots (think: hundredths of thousands) of examples in the
   form of "for this input, you should return that" (think: "for this picture of
-  <i>dakimakura</i>, you should return <i>pillow</i>"), and backpropagation
+  <i>dakimakura</i>, you should return <i>pillow</i>") and backpropagation
   slowly adjusts your network's weights until it gets the answers right.
 </p>
 
-<aside class="note">
+<note>
   <p>
     Or not - a network might get stuck at a
     <a href="https://en.wikipedia.org/wiki/Local_optimum">local optimum</a> and
@@ -702,45 +702,43 @@
   <p>
     Also, if you ever find yourself doing a neural network crossword, remember
     that backpropagation is an example of
-    <a href="https://en.wikipedia.org/wiki/Supervised_learning"
-      >supervised learning</a
-    >.
+    <a href="https://en.wikipedia.org/wiki/Supervised_learning">
+      supervised learning
+    </a>.
   </p>
-</aside>
+</note>
 
 <p>
-  Backpropagation is a great tool if you have a rich set of
-  <i>labeled</i> examples (such as photos or statistics), and that's why it
-  doesn't fit our original assumption:
+  Backpropagation is a great tool if you have a rich set of labeled examples
+  (such as photos or statistics) and that's why it doesn't fit our original
+  assumption:
 </p>
 
 <p>
   We ain't no statisticians, the world is a cruel place, so we want for our
-  birds to figure out all the learning <i>on their own</i> (contrary to being
-  given concrete examples of "for this vision, go left", "for this vision, go
-  right").
+  birds to figure out all the learning on their own (contrary to being given
+  concrete examples of "for this vision, go left", "for this vision, go right").
 </p>
 
 <p>Solution?</p>
 
 <p class="text-center">
   <del>biology</del> genetic algorithms and the magic of
-  <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">
-    large numbers</a
-  >
+  <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">large numbers</a>
 </p>
 
-<h2 id="ga-intro">
-  <a href="#ga-intro">Genetic algorithm: Introduction</a>
-</h2>
+<header id="ga-intro">
+  Genetic algorithm: Introduction
+</header>
 
 <p>
+  <ref>
+    https://en.wikipedia.org/wiki/Universal_approximation_theorem
+  </ref>
+
   To recap, from the mathematical point of view our underlying problem is that
-  we have a function (<a
-    href="https://en.wikipedia.org/wiki/Universal_approximation_theorem"
-    >represented</a
-  >
-  using a neural network) that's defined by a whole lot of <b>parameters</b>:
+  we have a function (<a ref>represented</a> using a neural network) that's
+  defined by a whole lot of <b>parameters</b>:
 </p>
 
 <figure class="sketch w-90">
@@ -748,10 +746,10 @@
 </figure>
 
 <p>
-  <i
-    >(I didn't bother to draw all the weights, but I hope you get the point -
-    there's a lot of them.)</i
-  >
+  <i>
+    (I didn't bother to draw all the weights, but I hope you get the point -
+    there's a lot of them.)
+  </i>
 </p>
 
 <p>
@@ -767,37 +765,35 @@
 </listing>
 
 <p class="text-attached">
-  <i
-    >(<a
-      href="https://jameshoward.us/2015/09/09/how-many-floating-point-numbers-are-there/"
-      >how-many-floating-point-numbers-are-there</a
-    >)</i
-  >
+  (<a href="https://jameshoward.us/2015/09/09/how-many-floating-point-numbers-are-there/">
+  how-many-floating-point-numbers-are-there
+  </a>)
 </p>
 
 <p>
-  ... that the universe would sooner meet its
-  <a href="https://en.wikipedia.org/wiki/Heat_death_of_the_universe"
-    >ultimate fate</a
-  >
-  than we'd be done checking them all; we certainly need to be smarter!
+  <ref>
+    https://en.wikipedia.org/wiki/Heat_death_of_the_universe
+  </ref>
+
+  ... that the universe would sooner meet its <a ref>ultimate fate</a> than we'd
+  be done checking them all - we certainly need to be smarter!
 </p>
 
-<aside class="note">
+<note>
   <p>All the possible sets of parameters are called a <b>search space</b>.</p>
-</aside>
+</note>
 
 <p>
   Since iterating through our search space looking for the single best answer is
   off the table, we can focus on a much simpler task of finding a list of
-  <i>suboptimal</i> answers.
+  suboptimal answers.
 </p>
 
 <p class="text-center">And in order to do that, we must <b>dig deeper</b>.</p>
 
-<h2 id="ga-deep-dive">
-  <a href="#ga-deep-dive">Genetic algorithm: Deep dive</a>
-</h2>
+<header id="ga-deep-dive">
+  Genetic algorithm: Deep dive
+</header>
 
 <p>This is a wild carrot together with its domesticated form:</p>
 
@@ -806,18 +802,19 @@
 </figure>
 
 <p>
+  <ref>
+    https://en.wikipedia.org/wiki/Selective_breeding
+  </ref>
+
   This domesticated, widely known form didn't appear out of blue - it's an
-  outcome of hundredths of years of
-  <a href="https://en.wikipedia.org/wiki/Selective_breeding"
-    >selective breeding</a
-  >
-  with certain factors - like taproot's texture or color - in mind.
+  outcome of hundredths of years of <a ref>selective breeding</a> with certain
+  factors - like taproot's texture or color - in mind.
 </p>
 
 <p>
   Wouldn't it be awesome if we could do a similar thing with our neural brains?
   If we just, like, created a bunch of random birds and selectively bred the
-  ones who seemed the most prominent…​
+  ones which seemed the most prominent…​
 </p>
 
 <p class="text-center">
@@ -825,28 +822,32 @@
 </p>
 
 <p>
+  <ref>
+    https://en.wikipedia.org/wiki/Evolutionary_computation
+  </ref>
+
   As it turns out, we're not the first to stumble upon this idea - there already
   exists a widely researched branch of computer science called
-  <a href="https://en.wikipedia.org/wiki/Evolutionary_computation"
-    >evolutionary computation</a
-  >
-  that's all about solving problems "just the way nature would do".
+  <a ref>evolutionary computation</a> that's all about solving problems "just
+  the way nature would do".
 </p>
 
 <p>
+  <ref>
+    https://en.wikipedia.org/wiki/Genetic_algorithm
+  </ref>
+
   Out of all the evolutionary algorithms, the concrete subclass we'll be
-  studying is called
-  <a href="https://en.wikipedia.org/wiki/Genetic_algorithm">genetic algorithm</a
-  >.
+  studying is called <a ref>genetic algorithm</a>.
 </p>
 
-<aside class="note">
+<note>
   <p>
     Similarly as with neural networks, there's no <i>the</i> genetic algorithm -
     it's a variety of different algorithms; so to avoid burning the midnight
-    oil, we'll take a look at how things work <i>generally</i>.
+    oil, we'll take a look at how things work in general.
   </p>
-</aside>
+</note>
 
 <p>Starting top-bottom, a genetic algorithm starts with a <b>population</b>:</p>
 
@@ -864,9 +865,8 @@
 </figure>
 
 <p>
-  An <b>individual</b> (or an <b>agent</b>) is a
-  <i>single possible solution</i> to given problem (a population is thus a
-  <i>set</i> of some possible solutions).
+  An <b>individual</b> (or an <b>agent</b>) is a single possible solution to
+  given problem (a population is thus a set of possible solutions).
 </p>
 
 <p>
@@ -878,28 +878,31 @@
 <ul>
   <li>
     <p>
-      If you were trying to, say,
-      <a href="https://en.wikipedia.org/wiki/Evolved_antenna"
-        >evolve an antenna</a
-      >, a single individual would be a single antenna.
+      <ref>
+        https://en.wikipedia.org/wiki/Evolved_antenna
+      </ref>
+
+      If you were trying to, say, <a ref>evolve an antenna</a>, a single
+      individual would be a single antenna.
     </p>
   </li>
   <li>
     <p>
-      If you were trying to, say,
-      <a href="https://www.postgresql.org/docs/8.3/geqo-intro2.html"
-        >evolve a query plan</a
-      >, a single individual would be a single query plan.
+      <ref>
+        https://www.postgresql.org/docs/8.3/geqo-intro2.html
+      </ref>
+
+      If you were trying to, say, <a ref>evolve a query plan</a>, a single
+      individual would be a single query plan.
     </p>
   </li>
 </ul>
 
-<aside class="note">
+<note>
   <p>
-    An individual represents <i>some</i> solution, but not necessarily
-    <i>the best</i> or even a remotely desirable one.
+    An individual represents some solution, but not necessarily the best one.
   </p>
-</aside>
+</note>
 
 <p>
   An individual is built from <b>genes</b> (collectively named <b>genome</b>):
@@ -909,17 +912,15 @@
   <img src="{{ assets }}/ga-4.svg" />
 
   <figcaption>
-    <div class="title">
-      A genome represented with neural network’s weights; a genome might be a
-      list of numbers, a graph or anything else that is able to model a solution
-      to the problem
-    </div>
+    A genome represented with neural network’s weights; a genome might be a list
+    of numbers, a graph or anything else that is able to model a solution to the
+    problem
   </figcaption>
 </figure>
 
 <p>
-  A <b>gene</b> is a single parameter that's being <i>evaluated</i> and
-  <i>tuned</i> by the genetic algorithm.
+  A <b>gene</b> is a single parameter that's being evaluated and tuned by the
+  genetic algorithm.
 </p>
 
 <p>
@@ -928,29 +929,29 @@
 </p>
 
 <p>
-  For instance, if you were trying to
-  <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem"
-    >help a fellow salesman</a
-  >, where the underlying problem isn't based on neural networks at all, a
-  single gene could be a tuple of <code>(x, y)</code>
-  coordinates determining a part of a salesman's journey (consequently, an
-  individual would then describe a salesman's entire path):
+  <ref>
+    https://en.wikipedia.org/wiki/Travelling_salesman_problem
+  </ref>
+
+  For instance, if you were trying to <a ref>help a fellow salesman</a>, where
+  the underlying problem isn't based on neural networks at all, a single gene
+  could be a tuple of <code>(x, y)</code> coordinates determining a part of the
+  salesman's journey (consequently, an individual would then describe the
+  salesman's entire path):
 </p>
 
 <figure class="sketch">
   <img src="{{ assets }}/ga-5.svg" />
 
   <figcaption>
-    <div class="title">
-      A hypothetical approach to the travelling salesman problem - each box
-      represents a probable, suggested path for the salesman to travel
-    </div>
+    A hypothetical approach to the travelling salesman problem - each box
+    represents a possible path for the salesman to travel
   </figcaption>
 </figure>
 
 <p>
-  Now, let's say we've got a <i>random population</i> of fifty birds - we pass
-  them to a genetic algorithm, what happens?
+  Now, let's say we've got a random population of fifty birds - we pass them to
+  a genetic algorithm, what happens?
 </p>
 
 <p>
@@ -966,18 +967,16 @@
 
 <p>
   Evaluation happens using so-called <b>fitness function</b> that returns a
-  <b>fitness score</b> quantifying <i>how good</i> a particular individual (so a
-  particular <i>solution</i>) is:
+  <b>fitness score</b> quantifying how good a particular individual (so a
+  particular solution) is:
 </p>
 
 <figure class="sketch">
   <img src="{{ assets }}/ga-6.svg" />
 
   <figcaption>
-    <div class="title">
-      An example of a fitness function that quantifies carrots by their
-      taproot’s color and radius
-    </div>
+    An example of a fitness function that quantifies carrots by their taproot’s
+    color and radius
   </figcaption>
 </figure>
 
@@ -989,16 +988,16 @@
 </p>
 
 <p>
-  <i
-    >(even our imaginative carrot has at least three metrics: taproot's color,
-    radius, and taste, that have to be squashed into a single number.)</i
-  >
+  <i>
+    (even our imaginative carrot has at least three metrics: taproot's color,
+    radius and taste, and they all have to be squashed into a single number.)
+  </i>
 </p>
 
 <p>
   Fortunately, when it comes to birds, we don't have much to choose from anyway:
   we'll just say that a bird is as good as the amount of food it ate during the
-  course of current <b>generation</b>.
+  course of the current generation.
 </p>
 
 <p>
@@ -1006,13 +1005,13 @@
   <code>20</code>, simple as that.
 </p>
 
-<aside class="note">
+<note>
   <p>
-    Negating a fitness function makes a genetic algorithm return the
-    <i>worst</i> solutions instead of the best ones; just an amusing trick to
-    remember for later.
+    Negating a fitness function makes a genetic algorithm return the worst
+    solutions instead of the best ones - just an amusing trick to remember for
+    later.
   </p>
-</aside>
+</note>
 
 <p>
   Now, the time has come for the genetic algorithm's <i>crème de la crème</i>:
@@ -1021,7 +1020,7 @@
 
 <p>
   Broadly speaking, reproduction is the process of building a new (hopefully -
-  <i>slightly improved</i>) population starting from the current one.
+  slightly improved) population starting from the current one.
 </p>
 
 <p>
@@ -1030,8 +1029,8 @@
 </p>
 
 <p>
-  What happens is that the genetic algorithm chooses <i>two</i> individuals at
-  random (prioritizing the ones with the higher fitness scores) and uses them to
+  What happens is that the genetic algorithm chooses two individuals at random
+  (prioritizing the ones with the higher fitness scores) and uses them to
   produce two <i>new</i> individuals (a so-called <b>offspring</b>):
 </p>
 
@@ -1040,26 +1039,29 @@
 </figure>
 
 <p>
+  <ref id="cc">
+    https://en.wikipedia.org/wiki/Chromosomal_crossover
+  </ref>
+
+  <ref id="mut">
+    https://en.wikipedia.org/wiki/Mutation
+  </ref>
+
   Offspring is produced by taking genomes of both parents and performing
-  <a href="https://en.wikipedia.org/wiki/Chromosomal_crossover"
-    ><strong>crossover</strong></a
-  >
-  &
-  <a href="https://en.wikipedia.org/wiki/Mutation"><strong>mutation</strong></a>
-  on them:
+  <a ref="cc"><b>crossover</b></a> and <a ref="mut"><b>mutation</b></a> on them:
 </p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/ga-8.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     <b>Crossover</b> allows to mix two different gnomes to get an approximate
-    in-between solution, while <b>mutation</b> allows to discover
-    <i>new</i> solutions that weren't present in the initial population.
+    in-between solution, while <b>mutation</b> allows to discover new solutions
+    that weren't present in the initial population.
   </p>
-</aside>
+</note>
 
 <p>
   Both newly-spawned individuals are pushed into the pool of
@@ -1075,78 +1077,3 @@
 </p>
 
 <p class="text-center">this cannot <i>actually</i> work, can it?</p>
-
-<h2 id="code">
-  <a href="#code">The Code</a>
-</h2>
-
-<p>Let's end this post with a cliffhanger:</p>
-
-<listing lang="shell">
-  <!--
-    $ mkdir shorelark
-  -->
-</listing>
-
-<p>Can you guess why I didn't use <code>cargo new</code>?</p>
-
-<p>
-  In the second part we'll implement a working, bare-bones feed-forward neural
-  network - until then!
-</p>
-
-<h2 id="sources">
-  <a href="#sources">Sources</a>
-</h2>
-
-<p>
-  Here are some of the sources that I've personally found useful while learning
-  about topics presented in this article:
-</p>
-
-<h3>Neural networks</h3>
-
-<ul>
-  <li>
-    <p>
-      <a href="https://www.youtube.com/watch?v=aircAruvnKk"
-        >YouTube, <strong>3Blue1Brown</strong> - But what is a Neural
-        Network?</a
-      >
-    </p>
-  </li>
-  <li>
-    <p>
-      <a href="https://www.youtube.com/watch?v=rA5qnZUXcqo"
-        >YouTube, <strong>Vsauce</strong> - The Stilwell Brain</a
-      >
-    </p>
-  </li>
-</ul>
-
-<h3>Genetic algorithms</h3>
-
-<ul>
-  <li>
-    <p>
-      <a href="https://www.youtube.com/watch?v=7J-DfS52bnI"
-        >YouTube, <strong>Jeremy Fisher</strong> - Genetic Algorithms</a
-      >
-    </p>
-  </li>
-  <li>
-    <p>
-      <a href="https://www.obitko.com/tutorials/genetic-algorithms/index.php"
-        ><strong>obitko.com</strong> - Genetic Algorithms Tutorial</a
-      >
-    </p>
-  </li>
-  <li>
-    <p>
-      <a
-        href="https://ibug.doc.ic.ac.uk/media/uploads/documents/courses/GeneticAlgorithm-tutorial.pdf"
-        ><strong>Darrell Whitley</strong> - A Genetic Algorithm Tutorial</a
-      >
-    </p>
-  </li>
-</ul>

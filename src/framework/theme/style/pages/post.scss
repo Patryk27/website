@@ -1,5 +1,5 @@
 h2 {
-  margin-top: ($para-indent / 2);
+  margin-top: 1.5em;
   border-bottom: 2px dotted $hr-fg;
 
   @media only screen and (min-width: 992px) {
@@ -25,6 +25,7 @@ h3 {
 
 .post-meta {
   margin-top: 0.2em;
+  padding-bottom: 1em;
   border-bottom: 2px dotted $hr-fg;
 }
 
@@ -51,4 +52,8 @@ h3 {
     line-height: 1.4;
     padding-bottom: 2px;
   }
+}
+
+.next-post {
+  text-align: right;
 }

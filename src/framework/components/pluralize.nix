@@ -1,8 +1,9 @@
-count: noun:
+noun: count:
 
 let
   plurals = {
     "post" = "posts";
+    "talk" = "talks";
   };
 
 in

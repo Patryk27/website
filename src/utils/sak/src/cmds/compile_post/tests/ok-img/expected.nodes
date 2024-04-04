@@ -1,0 +1,112 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "img",
+                span: Span {
+                    beg: 1,
+                    end: 3,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "src",
+                        span: Span {
+                            beg: 5,
+                            end: 7,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "https://foo/bar.jpg",
+                            span: Span {
+                                beg: 9,
+                                end: 29,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [],
+        },
+        span: Span {
+            beg: 0,
+            end: 32,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 33,
+            end: 33,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "img",
+                span: Span {
+                    beg: 35,
+                    end: 37,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "src",
+                        span: Span {
+                            beg: 39,
+                            end: 41,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "{{ assets }}/zar.jpg",
+                            span: Span {
+                                beg: 43,
+                                end: 64,
+                            },
+                        },
+                    ),
+                },
+                Attr {
+                    name: Spanned {
+                        inner: "class",
+                        span: Span {
+                            beg: 66,
+                            end: 70,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "image",
+                            span: Span {
+                                beg: 72,
+                                end: 78,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [],
+        },
+        span: Span {
+            beg: 34,
+            end: 81,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 82,
+            end: 82,
+        },
+    },
+)

@@ -1,0 +1,319 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "p",
+                span: Span {
+                    beg: 1,
+                    end: 1,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  before listings\n",
+                        span: Span {
+                            beg: 3,
+                            end: 21,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 25,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 26,
+            end: 27,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "listing",
+                span: Span {
+                    beg: 29,
+                    end: 35,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 37,
+                            end: 39,
+                        },
+                    },
+                ),
+                Comment(
+                    Spanned {
+                        inner: "\n    fn main() {\n        println!(\"First Listing\");\n    }\n  ",
+                        span: Span {
+                            beg: 44,
+                            end: 104,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n",
+                        span: Span {
+                            beg: 107,
+                            end: 107,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 28,
+            end: 117,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 118,
+            end: 119,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "listing-title",
+                span: Span {
+                    beg: 121,
+                    end: 133,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  some python code\n",
+                        span: Span {
+                            beg: 135,
+                            end: 154,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 120,
+            end: 170,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 171,
+            end: 172,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "listing",
+                span: Span {
+                    beg: 174,
+                    end: 180,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "lang",
+                        span: Span {
+                            beg: 182,
+                            end: 185,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "python",
+                            span: Span {
+                                beg: 187,
+                                end: 194,
+                            },
+                        },
+                    ),
+                },
+                Attr {
+                    name: Spanned {
+                        inner: "class",
+                        span: Span {
+                            beg: 196,
+                            end: 200,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "listing-invalid",
+                            span: Span {
+                                beg: 202,
+                                end: 218,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 220,
+                            end: 222,
+                        },
+                    },
+                ),
+                Comment(
+                    Spanned {
+                        inner: "\n  = def main():\n  =\n  =     print \"Second Listing\"\n  =\n  ",
+                        span: Span {
+                            beg: 227,
+                            end: 285,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n",
+                        span: Span {
+                            beg: 288,
+                            end: 288,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 173,
+            end: 298,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 299,
+            end: 300,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "listing",
+                span: Span {
+                    beg: 302,
+                    end: 308,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  ",
+                        span: Span {
+                            beg: 310,
+                            end: 312,
+                        },
+                    },
+                ),
+                Comment(
+                    Spanned {
+                        inner: "\n    fn main() {\n  =     println!(\"Third Listing\");\n    }\n  ",
+                        span: Span {
+                            beg: 317,
+                            end: 377,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "\n",
+                        span: Span {
+                            beg: 380,
+                            end: 380,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 301,
+            end: 390,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 391,
+            end: 392,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "p",
+                span: Span {
+                    beg: 394,
+                    end: 394,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  after listings\n",
+                        span: Span {
+                            beg: 396,
+                            end: 413,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 393,
+            end: 417,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 418,
+            end: 418,
+        },
+    },
+)

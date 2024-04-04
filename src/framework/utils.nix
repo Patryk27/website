@@ -1,7 +1,8 @@
 fw: {
+  sak = import ../utils/sak.nix fw.pkgs;
+
   linkFarmEx = import ./utils/link-farm-ex.nix fw;
   prettifyHtml = import ./utils/prettify-html.nix fw;
-  prettifyXml = import ./utils/prettify-xml.nix fw;
 
   dateLessThat = a: b:
     if a.y == b.y then

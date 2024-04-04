@@ -15,12 +15,14 @@ let
     };
 
 in
-fw.components.page
-{
+fw.components.page {
   title = "~/posts";
   layout = "posts";
-} ''
-  <div class="posts">
-    ${(toString (map renderPost postIds))}
-  </div>
-''
+  withHeader = true;
+
+  body = ''
+    <div class="posts">
+      ${(toString (map renderPost postIds))}
+    </div>
+  '';
+}

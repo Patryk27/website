@@ -1,0 +1,13 @@
+[31merror:[0m mismatched closing tag, expected `</note>`
+   ╭─[input:5:1]
+   │
+ 1 │ <note>
+   │ ┬  
+   │ ╰── ... when reading this element
+   │ 
+ 5 │ </div>
+   │ ───┬──  
+   │    ╰──── mismatched closing tag, expected `</note>`
+───╯
+
+compilation failed

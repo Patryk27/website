@@ -4,23 +4,21 @@
   other.
 </p>
 
-<aside class="note">
+<note>
   <p>
     I assume you know a bit about Factorio and, as for the rest of concepts,
     I'll introduce you to them as we go. If you haven't played Factorio yet, I
     highly encourage you to give it a try!
   </p>
-</aside>
+</note>
 
-<h2 id="_case_study_logistic_science_pack">
-  <a href="#_case_study_logistic_science_pack"
-    >Case study: Logistic science pack</a
-  >
-</h2>
+<header id="_case_study_logistic_science_pack">
+  Case study: Logistic science pack
+</header>
 
 <p>
   The story goes: we've started the game, built a few mining drills
-  (particularly for coal, iron, and copper), and got a basic electrical grid set
+  (particularly for coal, iron and copper) and got a basic electrical grid set
   up - <b>time for science!</b>
 </p>
 
@@ -34,9 +32,7 @@
   For our laboratories to work, we need a production line that will provide a
   constant flow of science packs; since automation science packs are turbo-easy
   to produce, let's ignore them and focus right-away on
-  <a href="https://wiki.factorio.com/Logistic_science_pack"
-    >logistic science packs</a
-  >.
+  <a href="https://wiki.factorio.com/Logistic_science_pack">logistic science packs</a>.
 </p>
 
 <p>As we can find on Factorio's Wiki:</p>
@@ -51,7 +47,7 @@
   <li>
     <p>
       Before though, to produce that <code>1 inserter</code>, we'll need
-      <code>1 electronic circuit</code>, <code>1 iron gear wheel</code>, and
+      <code>1 electronic circuit</code>, <code>1 iron gear wheel</code> and
       <code>1 iron plate</code>.
     </p>
   </li>
@@ -75,10 +71,10 @@
 </listing>
 
 <p>
-  <i
-    >Oh, thinking about all the stuff we can do with this grammar-boi gives me
-    shivers running down my spine!</i
-  >
+  <i>
+    Oh, thinking about all the stuff we can do with this grammar-boi gives me
+    shivers running down my spine!
+  </i>
 </p>
 
 <p>Translating the former ingredients, we get:</p>
@@ -115,7 +111,7 @@
 
 <p>
   Similarly, we'll need to produce <code>electronic_circuit</code>,
-  <code>iron_gear_wheel</code>, and - generally - everything that's not
+  <code>iron_gear_wheel</code> and - generally - everything that's not
   primitive (which in my case means that I'll need to produce everything up to
   <code>iron_plate</code> and <code>copper_plate</code>):
 </p>
@@ -147,14 +143,14 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Some people like to build
     <a href="https://wiki.factorio.com/Tutorial:Main_bus">main buses</a> with
     different constituents - if you have an abundance of e.g. iron gear wheels,
     feel free to skip them from the recipe.
   </p>
-</aside>
+</note>
 
 <p>This was the first step.</p>
 
@@ -167,9 +163,9 @@
 
 <p>That's when graphs come into play.</p>
 
-<h2 id="_introduction_to_graphs">
-  <a href="#_introduction_to_graphs">Introduction to graphs</a>
-</h2>
+<header id="_introduction_to_graphs">
+  Introduction to graphs
+</header>
 
 <p>
   Graphs are structures used to model <b>relationships</b> between objects -
@@ -178,7 +174,7 @@
 </p>
 
 <figure>
-  <img src="{{ assets }}/graph-1.svg"/>
+  <img src="{{ assets }}/graph-1.svg" />
 </figure>
 
 <p>
@@ -189,7 +185,7 @@
 <p>Graphs can be <b>undirected</b> (like the one above) or <b>directed</b>:</p>
 
 <figure>
-  <img src="{{ assets }}/graph-2.svg"/>
+  <img src="{{ assets }}/graph-2.svg" />
 </figure>
 
 <p>
@@ -209,10 +205,9 @@
 
 <p>
   Graphviz is a software that transforms description of a graph (written in the
-  <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)"
-    >DOT language</a
-  >) into an image; for instance, here's source code of the directed graph you
-  saw above:
+  <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT language</a>)
+  into an image; for instance, here's source code of the directed graph you saw
+  above:
 </p>
 
 <listing lang="dot">
@@ -232,24 +227,20 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     There are lots of fantastic <b>online</b> tools you can use to preview
-    graphs written in the DOT language; I frequently use
-    <a href="https://dreampuf.github.io/GraphvizOnline"
-      >https://dreampuf.github.io/GraphvizOnline</a
-    >
-    and
-    <a href="https://rsms.me/graphviz/"
-      >https://rsms.me/graphviz/</a
-    >.
+    graphs written in the DOT language - I mostly use
+    <a href="https://dreampuf.github.io/GraphvizOnline">
+      https://dreampuf.github.io/GraphvizOnline
+    </a>.
   </p>
 
   <p>
     You can just open the page, copy & paste graph's code and get a nice image
     in return.
   </p>
-</aside>
+</note>
 
 <p>
   What's peculiar about the DOT language, and what we're going to exploit in a
@@ -264,21 +255,19 @@
   previous section.
 </p>
 
-<aside class="note">
+<note>
   <p>
     The overall subject of pretty-printing graphs is called
-    <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing"
-      >force-directed graph drawing</a
-    >
+    <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing">
+      force-directed graph drawing
+    </a>
     - it's a nice rabbit hole to go down for a side programming project!
   </p>
-</aside>
+</note>
 
-<h2 id="_case_study_logistic_science_pack_cont">
-  <a href="#_case_study_logistic_science_pack_cont"
-    >Case study: Logistic science pack (cont.)</a
-  >
-</h2>
+<header id="_case_study_logistic_science_pack_cont">
+  Case study: Logistic science pack (cont.)
+</header>
 
 <p>Let's recall our recipe:</p>
 
@@ -330,7 +319,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-3.svg"/>
+      <img src="{{ assets }}/graph-3.svg" />
     </figure>
   </div>
 </div>
@@ -358,7 +347,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-4.svg"/>
+      <img src="{{ assets }}/graph-4.svg" />
     </figure>
   </div>
 </div>
@@ -413,7 +402,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-5.svg"/>
+      <img src="{{ assets }}/graph-5.svg" />
     </figure>
   </div>
 </div>
@@ -474,20 +463,20 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-6.svg"/>
+      <img src="{{ assets }}/graph-6.svg" />
     </figure>
   </div>
 </div>
 
-<aside class="note">
+<note>
   <p>
     There are many other spline algorithms you can experiment with - you can
     find them all in the
-    <a href="https://www.graphviz.org/doc/info/attrs.html#d:splines"
-      >documentation</a
-    >.
+    <a href="https://www.graphviz.org/doc/info/attrs.html#d:splines">
+      documentation
+    </a>.
   </p>
-</aside>
+</note>
 
 <p>It looks somewhat better, but still kinda sloppy.</p>
 
@@ -557,7 +546,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-7.svg"/>
+      <img src="{{ assets }}/graph-7.svg" />
     </figure>
   </div>
 </div>
@@ -636,7 +625,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-8.svg"/>
+      <img src="{{ assets }}/graph-8.svg" />
     </figure>
   </div>
 </div>
@@ -720,7 +709,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-9.svg"/>
+      <img src="{{ assets }}/graph-9.svg" />
     </figure>
   </div>
 </div>
@@ -837,7 +826,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-10.svg">
+      <img src="{{ assets }}/graph-10.svg" />
     </figure>
   </div>
 </div>
@@ -968,7 +957,7 @@
     </div>
 
     <figure class="cg-graph">
-      <img src="{{ assets }}/graph-11.svg"/>
+      <img src="{{ assets }}/graph-11.svg" />
     </figure>
   </div>
 </div>
@@ -998,11 +987,9 @@
 
 <p>Solving this issue is left as an exercise for the reader :-)</p>
 
-<h2 id="_case_study_chemical_science_pack">
-  <a href="#_case_study_chemical_science_pack"
-    >Case study: Chemical science pack</a
-  >
-</h2>
+<header id="_case_study_chemical_science_pack">
+  Case study: Chemical science pack
+</header>
 
 <p>
   This one is actually going to be way shorter - let's skip all the ceremony and
@@ -1063,9 +1050,9 @@
   </a>
 </p>
 
-<h2 id="_summary_future_work">
-  <a href="#_summary_future_work">Summary & future work</a>
-</h2>
+<header id="_summary_future_work">
+  Summary & future work
+</header>
 
 <p>As with everything, so doesn't using Graphviz solve all our problems.</p>
 

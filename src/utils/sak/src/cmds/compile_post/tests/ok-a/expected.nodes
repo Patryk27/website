@@ -1,0 +1,57 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "a",
+                span: Span {
+                    beg: 1,
+                    end: 1,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "href",
+                        span: Span {
+                            beg: 3,
+                            end: 6,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "https://google.com",
+                            span: Span {
+                                beg: 8,
+                                end: 27,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "Google",
+                        span: Span {
+                            beg: 29,
+                            end: 34,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 38,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 39,
+            end: 39,
+        },
+    },
+)
