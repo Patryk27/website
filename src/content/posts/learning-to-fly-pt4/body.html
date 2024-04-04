@@ -1,7 +1,7 @@
 <p>
   This is the last part of the <b>Learning to Fly</b> series in which we're
-  coding a simulation of evolution using <b>neural network</b> and
-  <b>genetic algorithm</b>:
+  coding a simulation of evolution using <b>neural network</b> and <b>genetic
+  algorithm</b>:
 </p>
 
 <figure>
@@ -10,9 +10,7 @@
   </a>
 
   <figcaption>
-    <div class="title">
-      <a href="https://shorelark.pwy.io">shorelark.pwy.io</a>
-    </div>
+    <a href="https://shorelark.pwy.io" />
   </figcaption>
 </figure>
 
@@ -57,17 +55,19 @@
 
 <div id="_intro">
   <div class="_intro-card">
-    <div class="_intro-card-title">Sexy Polygons</div>
+    <div class="_intro-card-title">
+      Sexy Polygons
+    </div>
 
     <div class="_intro-card-body">
-      <img
-        src="{{ assets }}/37718e09-3278-44ef-a104-28cb5486e4ff.png"
-      />
+      <img src="{{ assets }}/37718e09-3278-44ef-a104-28cb5486e4ff.png" />
     </div>
   </div>
 
   <div class="_intro-card">
-    <div class="_intro-card-title">ISO-Certified ASCII Diagrams</div>
+    <div class="_intro-card-title">
+      ISO-Certified ASCII Diagrams
+    </div>
 
     <div class="_intro-card-body">
       <pre>
@@ -77,18 +77,17 @@
 |    @&gt;....|
 |      \...|
 |        \.|
-------------</pre
-      >
+------------</pre>
     </div>
   </div>
 
   <div class="_intro-card">
-    <div class="_intro-card-title">Cool Numbers</div>
+    <div class="_intro-card-title">
+      Cool Numbers
+    </div>
 
     <div class="_intro-card-body">
-      <img
-        src="{{ assets }}/2c33e3da-bfad-4f75-8a0c-c175c4fb1694.png"
-      />
+      <img src="{{ assets }}/2c33e3da-bfad-4f75-8a0c-c175c4fb1694.png" />
     </div>
   </div>
 </div>
@@ -112,20 +111,20 @@
   <b>content warning</b>: this article contains traces of javascript
 </p>
 
-<aside class="note">
+<note>
   <p>
-    No worries if JavaScript or HTML are unfamiliar to you — I'll try to explain
-    various concepts as we go.
+    No worries if JavaScript or HTML are unfamiliar to you - I'll try to explain
+    concepts as we go.
   </p>
-</aside>
+</note>
 
-<h2 id="plan">
-  <a href="#plan">Plan</a>
-</h2>
+<header id="plan">
+  Plan
+</header>
 
 <p>
   We've got <code>struct NeuralNetwork</code> and
-  <code>struct GeneticAlgorithm</code> — but what about
+  <code>struct GeneticAlgorithm</code> - but what about
   <code>struct Eye</code> or <code>struct World</code>? After all, our birds
   have to have eyes and a place to live!
 </p>
@@ -137,81 +136,48 @@
 <p>
   So that's what we'll be doing today; we'll implement all those functions
   that'll determine <code>what a bird sees</code> or
-  <code>how a bird moves</code>. We'll also — at last! — create a user interface
+  <code>how a bird moves</code>. We'll also - at last! - create a user interface
   that'll allow us to see beyond dry numbers; it's about time we engage that
   visual cortex of ours better!
 </p>
 
 <p>
-  I'm not a great salesman, but lemme give it a shot — in a marketing gabble:
+  I'm not a great salesman, but lemme give it a shot - in a marketing gabble:
 </p>
 
 <p class="text-center">
-  <i
-    >we'll see our code in action (<span class="text-rainbow">!</span>), in
-    real-time (<span class="text-rainbow">!!</span>), in a web browser (<span
-      class="text-rainbow"
-      >!!!</span
-    >)</i
-  >
+  <i>
+    we'll see our code in action (<span class="text-rainbow">!</span>), in
+    real-time (<span class="text-rainbow">!!</span>), in a web browser
+    (<span class="text-rainbow">!!!</span>)
+  </i>
 </p>
 
 <p>If you're into diagrams, what we're aiming for is:</p>
 
 <figure class="sketch w-90">
-  <img
-    src="{{ assets }}/9af5a3d9-83f9-47eb-b191-7ee523846ecf.svg"
-  />
+  <img src="{{ assets }}/9af5a3d9-83f9-47eb-b191-7ee523846ecf.svg" />
 
   <figcaption>
-    <div class="title">
-      green tick = already implemented, blue dot = will be done today
-    </div>
+    green tick = already implemented, blue dot = will be done today
   </figcaption>
 </figure>
 
 <p>
-  As always, next to coding, we'll also investigate what's
-  <i>exactly</i> happening underneath all the layers of abstractions we're
-  given — if you're not into that, feel free to skip those yellow boxes.
+  As always, next to coding, we'll also investigate what's <i>exactly</i>
+  happening underneath all the layers of abstractions we're given - if you're
+  not into that, feel free to skip those yellow boxes.
 </p>
 
 <p>Ready? Off we go!</p>
 
-<h2 id="prerequisites">
-  <a href="#prerequisites">Prerequisites</a>
-</h2>
+<header id="prerequisites">
+  Prerequisites
+</header>
 
 <p>
-  As a reminder, we're using <b>Rust 1.53.0</b> — to avoid unpleasant
-  unpleasentaries, don't forget to either execute:
-</p>
-
-<listing lang="shell">
-  <!--
-    $ rustup default nightly-2021-03-25
-  -->
-</listing>
-
-<p>
-  ... or create a file next to <code>Cargo.toml</code> called
-  <a href="https://rust-lang.github.io/rustup/overrides.html"
-    ><code>rust-toolchain</code></a
-  >
-  that says:
-</p>
-
-<div class="listing-title">rust-toolchain</div>
-
-<listing lang="text">
-  <!--
-    nightly-2021-03-25
-  -->
-</listing>
-
-<p>
-  In addition, for a <span class="text-spaced">fearless</span> WebAssembly
-  experience, we'll need two other tools:
+  For a <span class="text-spaced">fearless</span> WebAssembly experience, we'll
+  need two extra tools:
 </p>
 
 <ul>
@@ -223,10 +189,9 @@
   </li>
   <li>
     <p>
-      <a href="https://rustwasm.github.io/wasm-pack/installer/"
-        ><code>wasm-pack</code></a
-      >
-      (set of tools that make compiling Rust into WebAssembly easier).
+      <a href="https://rustwasm.github.io/wasm-pack/installer/">
+        <code>wasm-pack</code>
+      </a> (set of tools that make compiling Rust into WebAssembly easier).
     </p>
   </li>
 </ul>
@@ -236,13 +201,15 @@
   using.
 </p>
 
-<aside class="note">
+<note>
   <p>
     If you're into <a href="https://nixos.org/">Nix</a>, installing both
     applications is as easy as creating a file called <code>shell.nix</code>:
   </p>
 
-  <div class="listing-title">shell.nix</div>
+  <listing-title>
+    shell.nix
+  </listing-title>
 
   <listing lang="nix">
     <!--
@@ -252,6 +219,7 @@
       in
         pkgs.mkShell {
           buildInputs = with pkgs; [
+            libiconv
             nodejs
             wasm-pack
           ];
@@ -260,30 +228,31 @@
   </listing>
 
   <p>... and executing <code>nix-shell</code>.</p>
-</aside>
+</note>
 
-<h2 id="hello-wasm-rust">
-  <a href="#hello-wasm-rust">Hello, WebAssembly World! (the Rust part)</a>
-</h2>
+<header id="hello-wasm-rust">
+  Hello, WebAssembly World! (the Rust part)
+</header>
 
 <p>
-  Let's begin by creating a new crate — as in the diagram, it will be
+  Let's begin by creating a new crate - as in the diagram, it will be
   responsible for interacting with our frontend application:
 </p>
 
-<aside class="note">
+<note>
   <p>
+    <ref>
+      https://en.wikipedia.org/wiki/Interoperation
+    </ref>
+
     Formally, this kind of "talking to another system" module is known as a
-    <b>bridge</b> or an
-    <a href="https://en.wikipedia.org/wiki/Interoperation"
-      ><strong>interop</strong></a
-    >.
+    <b>bridge</b> or an <a ref><b>interop</b></a>.
   </p>
-</aside>
+</note>
 
 <listing lang="shell">
   <!--
-    $ cd libs
+    $ cd shorelark/libs
     $ cargo new simulation-wasm --lib --name lib-simulation-wasm
     
     # (this crate's name doesn't have to contain `wasm` - it's just a
@@ -291,105 +260,24 @@
   -->
 </listing>
 
-<aside class="note">
-  <p>
-    By the way, I've gotta apologize as I've made a small mistake in the
-    previous two parts: our <code>cargo new</code> was missing the
-    <code>--name</code> parameter.
-  </p>
-
-  <p>
-    This parameter affects the value of <code>name</code> inside a manifest,
-    meaning that we should've had:
-  </p>
-
-  <div class="listing-title">libs/genetic-algorithm/Cargo.toml</div>
-
-  <listing lang="toml">
-    <!--
-      [package]
-    = name = "lib-genetic-algorithm"
-      
-      # instead of:
-      # name = "genetic-algorithm"
-      
-      # ...
-    -->
-  </listing>
-
-  <div class="listing-title">libs/neural-network/Cargo.toml</div>
-
-  <listing lang="toml">
-    <!--
-      [package]
-    = name = "lib-neural-network"
-      
-      # instead of:
-      # name = "neural-network"
-      
-      # ...
-    -->
-  </listing>
-
-  <p>
-    This is a minor thing that I consider a good practice — by prefixing
-    workspace-crates, you reduce the risk of your local crate name-clashing with
-    something from crates.io.
-  </p>
-
-  <p>
-    Say, we're about to create <code>libs/rand</code> — by calling it
-    <code>lib-rand</code> instead of just <code>rand</code>, we can avoid
-    confusing other programmers who might stumble upon our code in the future.
-  </p>
-
-  <p>Similar approaches include:</p>
-
-  <ul>
-    <li>
-      <p>
-        prefixing with project's name (that's what
-        <a
-          href="https://github.com/rust-lang/rust/tree/ff34b919075f35a1787659e9c448a34b06bab8de/compiler"
-          >rustc</a
-        >
-        does, for example),
-      </p>
-    </li>
-    <li>
-      <p>
-        prefixing with whatever else you want (e.g. <code>local-foo</code> or
-        <code>crate_foo</code>),
-      </p>
-    </li>
-    <li>
-      <p>not prefixing at all (also valid!).</p>
-    </li>
-  </ul>
-
-  <p>Please, fix those two manifests, and let's get going.</p>
-</aside>
-
 <p>
-  To make our crate WebAssembly-<i>aware</i>, there are
-  <a
-    href="https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/getting-started/manual-setup.html"
-    >two things</a
-  >
-  we have to add to its manifest:
+  To make our crate WebAssembly-aware, there are two things we have to add to
+  its manifest:
 </p>
 
 <ol>
   <li>
     <p>
-      We have to set
-      <a href="https://doc.rust-lang.org/reference/linkage.html"
-        ><code>crate-type</code></a
-      >
-      to <code>cdylib</code>:
+      <ref>
+        https://doc.rust-lang.org/reference/linkage.html
+      </ref>
+
+      We have to set <a ref><code>crate-type</code></a> to <code>cdylib</code>:
     </p>
 
-    <div class="listing-title">libs/simulation-wasm/Cargo.toml</div>
+    <listing-title>
+      libs/simulation-wasm/Cargo.toml
+    </listing-title>
 
     <listing lang="toml">
       <!--
@@ -401,11 +289,11 @@
       -->
     </listing>
 
-    <aside class="note">
+    <note>
       <p>
         Compiler transforms code into <i>something</i>, and
-        <code>crate-type</code> determines what that <i>something</i> — also
-        called an <b>artifact</b> — gets to be:
+        <code>crate-type</code> determines what that <i>something</i> - also
+        called an <b>artifact</b> - gets to be:
       </p>
 
       <ul>
@@ -444,57 +332,61 @@
       </ul>
 
       <p>
-        The type we have to use,
-        <a
-          href="https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md"
-          ><code>cdylib</code></a
-        >, stands for <b>C dynamic library</b>, and it tells the compiler:
+        <ref>
+          https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md
+        </ref>
+
+        The type we have to use, <a ref><code>cdylib</code></a>, stands for <b>C
+        dynamic library</b> and it tells the compiler:
       </p>
 
       <ul>
         <li>
           <p>
             that it should export only those functions which are intended to be
-            called from outside, ignoring Rust-specific <i>internal</i> stuff.
+            called from outside, ignoring Rust-specific internal stuff.
           </p>
 
           <p>
-            This prevents bloating the library with "useless" metadata, and so
+            This prevents bloating the library with "useless" metadata and so
             it's important for WebAssembly (we don't want our users to go
             bankrupt over internet bills, do we?).
           </p>
         </li>
         <li>
           <p>
-            that it should generate a <b>dynamic library</b> — that is: a piece
+            that it should generate a <b>dynamic library</b> - that is: a piece
             of code that will get invoked <i>by somebody else</i>.
           </p>
 
           <p>
-            This is required for WebAssembly, because — as you'll see in a
-            moment — our Rust code won't run standalone: it'll be at
+            This is required for WebAssembly, because - as you'll see in a
+            moment - our Rust code won't run standalone: it'll be at
             JavaScript's beck and call.
           </p>
 
           <p>
             In practice, what this means is that we won't have any
-            <code>fn main() { …​ }</code>, but rather
-            <code>pub fn do_something() { …​ }</code>.
+            <code>fn main() { ...​ }</code>, but rather
+            <code>pub fn do_something() { ...​ }</code>.
           </p>
         </li>
       </ul>
-    </aside>
+    </note>
   </li>
   <li>
     <p>
-      We have to include
-      <a href="https://github.com/rustwasm/wasm-bindgen"
-        ><code>wasm-bindgen</code></a
-      >
-      in our dependencies:
+      <ref>
+        https://github.com/rustwasm/wasm-bindgen
+      </ref>
+
+      We have to include <a ref><code>wasm-bindgen</code></a> in our
+      dependencies:
     </p>
 
-    <div class="listing-title">libs/simulation-wasm/Cargo.toml</div>
+    <listing-title>
+      libs/simulation-wasm/Cargo.toml
+    </listing-title>
 
     <listing lang="toml">
       <!--
@@ -505,33 +397,32 @@
       -->
     </listing>
 
-    <aside class="note">
+    <note>
       <p>
         <code>wasm-bindgen</code> provides types and macros that facilitate
         writing WebAssembly-aware code.
       </p>
 
       <p>
-        <a
-          href="https://www.novatec-gmbh.de/blog/look-ma-no-js-compiling-rust-to-webassembly/"
-          >It is possible</a
-        >
-        to write Rust + WebAssembly without it — just less convenient.
+        It is possible to write Rust + WebAssembly without it - just less
+        convenient.
       </p>
-    </aside>
+    </note>
   </li>
 </ol>
 
-<p>When it comes to adjustments, that's all — now it's Rust-time!</p>
+<p>When it comes to adjustments, that's all - now it's Rust-time!</p>
 
 <p>
   Since creating the simulation will take some time, and it'd be nice to see
-  <i>something</i> working as soon as possible, I say we begin by creating a
-  function that we'll be able to invoke from JavaScript right away — you know,
-  just to ensure that this <i>"WebAssembly"</i> thing isn't just a hoax:
+  something working as soon as possible, I say we begin by creating a function
+  that we'll be able to invoke from JavaScript right away - you know, just to
+  ensure that this <i>"WebAssembly"</i> thing isn't just a hoax:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -542,12 +433,14 @@
 </listing>
 
 <p>
-  If we were building a regular crate to publish on crates.io, that'd be
-  all — but for WebAssembly, there's one more thing we have to
-  add — <code>#[wasm_bindgen]</code>:
+  If we were building a regular crate to publish on crates.io, that'd be all -
+  but for WebAssembly, there's one more thing we have to add,
+  <code>#[wasm_bindgen]</code>:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -560,32 +453,33 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Simplifying a bit, the <code>#[wasm_bindgen]</code>
-    <a
-      href="https://doc.rust-lang.org/book/ch19-06-macros.html#procedural-macros-for-generating-code-from-attributes"
-      >procedural macro</a
-    >
+    <a href="https://doc.rust-lang.org/book/ch19-06-macros.html#procedural-macros-for-generating-code-from-attributes">
+      procedural macro
+    </a>
     informs the compiler that you want to <b>export</b> given function or
-    type — that is: make it visible on the JavaScript's side.
+    type - that is: make it visible on the JavaScript's side.
   </p>
 
   <p>
     All Rust symbols eventually are compiled into WebAssembly, but only those
     prepended with <code>#[wasm_bindgen]</code> can be invoked from the
-    JavaScript code <i>directly</i>.
+    JavaScript code directly.
   </p>
 
   <p>
     If you're curious, you can further use
-    <a href="https://github.com/dtolnay/cargo-expand"
-      ><code>cargo-expand</code></a
-    >
+    <a href="https://github.com/dtolnay/cargo-expand">
+      <code>cargo-expand</code>
+    </a>
     to inspect what this macro does:
   </p>
 
-  <div class="listing-title">$ cargo expand</div>
+  <listing-title>
+    $ cargo expand
+  </listing-title>
 
   <listing lang="rust">
     <!--
@@ -622,16 +516,7 @@
       //  ---
     -->
   </listing>
-
-  <p>
-    ... and if you're <i>even more</i> curious, then you'll like the
-    <a
-      href="https://rustwasm.github.io/docs/wasm-bindgcontributing/design/index.html"
-      >rustwasm book</a
-    >
-    :-)
-  </p>
-</aside>
+</note>
 
 <p>
   To build a WebAssembly crate, we'll use that <b>wasm-pack</b> tool we've just
@@ -648,20 +533,20 @@
 <p>
   The difference between plain <code>cargo</code> and <code>wasm-pack</code> is
   that the latter not only compiles the code, but also generates a lot of handy
-  JavaScript files that otherwise we'd have to write by hand — we can find them
+  JavaScript files that otherwise we'd have to write by hand - we can find them
   all inside a newly-created directory called <code>pkg</code>:
 </p>
 
 <listing lang="text">
   <!--
-    $ tree pkg
-    pkg
-    ├── lib_simulation_wasm_bg.js
-    ├── lib_simulation_wasm_bg.wasm
-    ├── lib_simulation_wasm_bg.wasm.d.ts
-    ├── lib_simulation_wasm.d.ts
-    ├── lib_simulation_wasm.js
-    └── package.json
+    $ ls -l pkg
+    total 36
+    -rw-r--r-- 1 pwy   110 Apr  2 17:20 lib_simulation_wasm.d.ts
+    -rw-r--r-- 1 pwy   184 Apr  2 17:20 lib_simulation_wasm.js
+    -rw-r--r-- 1 pwy  1477 Apr  2 17:20 lib_simulation_wasm_bg.js
+    -rw-r--r-- 1 pwy 13155 Apr  2 17:20 lib_simulation_wasm_bg.wasm
+    -rw-r--r-- 1 pwy   271 Apr  2 17:20 lib_simulation_wasm_bg.wasm.d.ts
+    -rw-r--r-- 1 pwy   356 Apr  2 17:20 package.json
   -->
 </listing>
 
@@ -671,19 +556,18 @@
   <li>
     <p>
       <code>package.json</code> is like
-      <a href="https://www.npmjs.com/">npm</a>-'s <code>Cargo.toml</code> — it
+      <a href="https://www.npmjs.com/">npm</a>'s <code>Cargo.toml</code> - it
       contains metadata about the module itself:
     </p>
 
-    <div class="listing-title">libs/simulation-wasm/pkg/package.json</div>
+    <listing-title>
+      libs/simulation-wasm/pkg/package.json
+    </listing-title>
 
     <listing lang="javascript">
       <!--
         {
           "name": "lib-simulation-wasm",
-          "collaborators": [
-            "Patryk Wychowaniec <pwychowaniec@pm.me>"
-          ],
           "version": "0.1.0",
           /* ... */
         }
@@ -692,16 +576,17 @@
   </li>
   <li>
     <p>
-      <code>lib_simulation_wasm.d.ts</code> contains
-      <a href="https://en.wikipedia.org/wiki/Forward_declaration"
-        >forward declarations</a
-      >
-      for IDEs to provide type hints:
+      <ref>
+        https://en.wikipedia.org/wiki/Forward_declaration
+      </ref>
+
+      <code>lib_simulation_wasm.d.ts</code> contains <a ref>forward
+      declarations</a> for IDEs to provide type hints:
     </p>
 
-    <div class="listing-title">
+    <listing-title>
       libs/simulation-wasm/pkg/lib_simulation_wasm.d.ts
-    </div>
+    </listing-title>
 
     <listing lang="javascript">
       <!--
@@ -714,17 +599,23 @@
   </li>
   <li>
     <p>
-      <code>lib_simulation_wasm_bg.wasm</code> is <i>the essence</i>, as it
-      contains the WebAssembly
-      <a href="https://en.wikipedia.org/wiki/Bytecode"
-        ><strong>bytecode</strong></a
-      >
-      of our crate; it's like <code>.dll</code> or <code>.so</code>, and you can
-      use <a href="https://github.com/WebAssembly/wabt">wabt</a> to inspect it
-      (mainly for fun, I guess):
+      <ref id="bc">
+        https://en.wikipedia.org/wiki/Bytecode
+      </ref>
+
+      <ref id="wabt">
+        https://github.com/WebAssembly/wabt
+      </ref>
+
+      <code>lib_simulation_wasm_bg.wasm</code> is the essence, as it contains
+      the WebAssembly <a ref="bc"><b>bytecode</b></a> of our crate; it's like
+      <code>.dll</code> or <code>.so</code>, and you can use
+      <a ref="wabt">wabt</a> to inspect it (mainly for fun, I guess):
     </p>
 
-    <div class="listing-title">$ wasm2wat pkg/lib_simulation_wasm_bg.wasm</div>
+    <listing-title>
+      $ wasm2wat pkg/lib_simulation_wasm_bg.wasm
+    </listing-title>
 
     <listing lang="lisp">
       <!--
@@ -745,9 +636,9 @@
       code that actually invokes our WebAssembly library:
     </p>
 
-    <div class="listing-title">
+    <listing-title>
       libs/simulation-wasm/pkg/lib_simulation_wasm_bg.js
-    </div>
+    </listing-title>
 
     <listing lang="javascript">
       <!--
@@ -769,10 +660,12 @@
       -->
     </listing>
 
-    <aside class="note">
-      <p>Wait — if our Rust code does next to <i>nothing</i>:</p>
+    <note>
+      <p>Wait - if our Rust code does next to nothing:</p>
 
-      <div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+      <listing-title>
+        libs/simulation-wasm/src/lib.rs
+      </listing-title>
 
       <listing lang="rust">
         <!--
@@ -782,11 +675,11 @@
         -->
       </listing>
 
-      <p>... then why does <i>that</i> piece look so complex?</p>
+      <p>... then why does that piece look so complex?</p>
 
       <p>
         Well, in short, it's because WebAssembly
-        <b>doesn't support strings</b> — and wasm-pack, being neat,
+        <b>doesn't support strings</b> - and wasm-pack, being neat,
         transparently hacks its way around it.
       </p>
 
@@ -795,56 +688,44 @@
       <ul>
         <li>
           <p>
+            <ref>
+              https://doc.rust-lang.org/nomicon/ffi.html
+            </ref>
+
             When you move a value from one function into another, when both
             functions work in different environments and/or when they are
-            written in different languages, you make it
-            <b
-              >cross the foreign function interface (<a
-                href="https://doc.rust-lang.org/nomicon/ffi.html"
-                >FFI</a
-              >) boundary</b
-            >:
+            written in different languages, you make it <b>cross the foreign
+            function interface (<a ref>FFI</a>) boundary</b>:
           </p>
 
           <figure class="sketch w-80">
-            <img
-              src="{{ assets }}/962da22e-fe0c-49b1-afb6-c333e5a18447.svg"
-            />
+            <img src="{{ assets }}/962da22e-fe0c-49b1-afb6-c333e5a18447.svg" />
           </figure>
 
           <p>
-            In this case we'd say that our
-            <code>fn whos_that_dog()</code> returns a <code>String</code> that
-            crosses the FFI boundary from Rust (where it's created) into
-            JavaScript (where it's used).
+            In this case we'd say that our <code>fn whos_that_dog()</code>
+            returns a <code>String</code> that crosses the FFI boundary from
+            Rust (where it's created) into JavaScript (where it's used).
           </p>
 
           <p>
             Crossing the FFI boundary is a big deal, because different languages
-            tend to have different <b>memory representations</b> of objects — so
+            tend to have different <b>memory representations</b> of objects - so
             even if Rust's <code>struct Foo</code> and JavaScript's
-            <code>class Foo</code> look alike on the surface, their
-            <b>memory layout</b> is different.
+            <code>class Foo</code> look alike on the surface, their <b>memory
+            layout</b> is different.
           </p>
 
           <p>
             This means that when you want to send a value from one language into
             another, you cannot just say "hey, there's a few bytes at 0x0000CAFE
-            - that's Foo" — instead, you have to <b>convert</b> that value into
+            - that's Foo" - instead, you have to <b>convert</b> that value into
             something the other party can understand:
           </p>
 
           <figure class="sketch w-80">
-            <img
-              src="{{ assets }}/d152e743-8a56-4f39-8376-ce72bca8c88c.svg"
-            />
+            <img src="{{ assets }}/d152e743-8a56-4f39-8376-ce72bca8c88c.svg" />
           </figure>
-
-          <p>
-            (so it's just like speech: while you can't <i>show</i> somebody
-            what's inside your head, you can
-            <i>describe it</i> — <i>serialize</i> — using words.)
-          </p>
         </li>
         <li>
           <p>
@@ -863,7 +744,7 @@
           </listing>
 
           <p>
-            ... can be <i>serialized</i> into, say, JSON that looks like this:
+            ... can be serialized into, say, JSON that looks like this:
           </p>
 
           <listing lang="json">
@@ -887,33 +768,31 @@
           </listing>
 
           <p>
+            <ref>
+              https://hacks.mozilla.org/2019/04/crossing-the-rust-ffi-frontier-with-protocol-buffers/
+            </ref>
+
             (serialization isn't limited to human-readable formats such as JSON,
-            YAML or XML - there's also e.g.
-            <a
-              href="https://hacks.mozilla.org/2019/04/crossing-the-rust-ffi-frontier-with-protocol-buffers/"
-              >Protocol Buffers</a
-            >.)
+            YAML or XML - there's also e.g. <a ref>Protocol Buffers</a>.)
           </p>
         </li>
       </ul>
 
-      <p>Now:</p>
-
       <p>
-        While both Rust and JavaScript support strings, WebAssembly understands
-        mostly numbers — this means that all the functions that we export via
-        <code>#[wasm_bindgen]</code> might accept and return <i>at most</i> a
-        handful of numbers (from WebAssembly's point of view).
+        Now, while both Rust and JavaScript support strings, WebAssembly
+        understands mostly numbers - this means that all the functions that we
+        export via <code>#[wasm_bindgen]</code> might accept and return <i>at
+        most</i> a handful of numbers (from WebAssembly's point of view).
       </p>
 
       <p>
         This means that in order to return a string, wasm-pack had to get
-        creative — it generated this boi we've already seen a moment ago:
+        creative - it generated this boi we've already seen a moment ago:
       </p>
 
-      <div class="listing-title">
+      <listing-title>
         (generated automatically during compilation)
-      </div>
+      </listing-title>
 
       <listing lang="rust">
         <!--
@@ -933,63 +812,64 @@
 
       <p>
         This one converts Rust's <code>String</code> into a pair of
-        numbers — following the JavaScript code:
+        numbers - following the JavaScript code:
       </p>
 
       <ul>
         <li>
           <p>
+            <ref>
+              https://en.wikipedia.org/wiki/Pointer_(computer_programming)
+            </ref>
+
             <code>r0</code> which determines location of returned string in
-            memory (it's good-old
-            <a
-              href="https://en.wikipedia.org/wiki/Pointer_(computer_programming)"
-              >pointer</a
-            >),
+            memory (it's good-old <a ref>pointer</a>),
           </p>
         </li>
         <li>
-          <p><code>r1</code> which determines length of returned string.</p>
+          <p>
+            <code>r1</code> which determines length of returned string.
+          </p>
         </li>
       </ul>
 
       <p>
         Those two numbers are then used by <code>getStringFromWasm0()</code> to
-        <b>recreate</b> ("deserialize") the string on JavaScript's side — all
+        <b>recreate</b> ("deserialize") the string on JavaScript's side - all
         without us having to lift a single finger.
       </p>
 
       <p>Pretty neat!</p>
 
       <p>
-        (to avoid diluting this article — if you're further interested in
-        WebAssembly's memory model,
-        <a href="https://radu-matei.com/blog/practical-guide-to-wasm-memory/"
-          >here’s</a
-        >
-        a nice introduction.)
+        <ref>
+          https://radu-matei.com/blog/practical-guide-to-wasm-memory/
+        </ref>
+
+        (if you're further interested in the WebAssembly memory model,
+        <a ref>here’s</a> a nice introduction.)
       </p>
-    </aside>
+    </note>
   </li>
 </ul>
 
 <p>
   Phew, that's a lot of information for one <code>fn() -&gt; String</code> that
-  we <i>still</i> haven't seen working — but that's only because I wanted to
-  give you an introduction as to
-  <i>"why wasm-pack generates so many files"</i> and
-  <i>"why no cargo build"</i>; later we won't be inspecting those artifacts
-  again.
+  we <i>still</i> haven't seen working - but that's only because I wanted to
+  give you an introduction as to <i>"why wasm-pack generates so many files"</i>
+  and <i>"why no just cargo build"</i> - later we won't be inspecting those
+  artifacts again.
 </p>
 
-<p>So, now that our crate is compiled, &lt;deep-breath/&gt;,</p>
+<p>So, now that our crate is compiled, &lt;deep-breath /&gt;,</p>
 
 <p class="text-center">
   <b>how do we run it?</b>
 </p>
 
-<h2 id="hello-wasm-js">
-  <a href="#hello-wasm-js">Hello, WebAssembly World! (the JavaScript part)</a>
-</h2>
+<header id="hello-wasm-js">
+  Hello, WebAssembly World! (the JavaScript part)
+</header>
 
 <p>Frontend time!</p>
 
@@ -1005,12 +885,13 @@
 </listing>
 
 <p>
-  Setting up a frontend requires a bit of boilerplate too — luckily, this time
-  we can use <code>npm init</code> to copy-paste the
-  <a href="https://github.com/rustwasm/create-wasm-app"
-    >WebAssembly frontend template project</a
-  >
-  for us:
+  <ref>
+    https://github.com/rustwasm/create-wasm-app
+  </ref>
+
+  Setting up a frontend requires a bit of boilerplate too - luckily, this time
+  we can use <code>npm init</code> to copy-paste the <a ref>WebAssembly frontend
+  template project</a> for us:
 </p>
 
 <listing lang="shell">
@@ -1026,17 +907,17 @@
 
 <listing lang="text">
   <!--
-    $ tree www
-    www
-    ├── bootstrap.js
-    ├── index.html
-    ├── index.js
-    ├── LICENSE-APACHE
-    ├── LICENSE-MIT
-    ├── package.json
-    ├── package-lock.json
-    ├── README.md
-    └── webpack.config.js
+    $ ls -l www
+    total 248
+    -rw-r--r-- 1 pwy  10850 Apr  2 17:24 LICENSE-APACHE
+    -rw-r--r-- 1 pwy   1052 Apr  2 17:24 LICENSE-MIT
+    -rw-r--r-- 1 pwy   2595 Apr  2 17:24 README.md
+    -rw-r--r-- 1 pwy    279 Apr  2 17:24 bootstrap.js
+    -rw-r--r-- 1 pwy    297 Apr  2 17:24 index.html
+    -rw-r--r-- 1 pwy     56 Apr  2 17:24 index.js
+    -rw-r--r-- 1 pwy 209434 Apr  2 17:24 package-lock.json
+    -rw-r--r-- 1 pwy    937 Apr  2 17:24 package.json
+    -rw-r--r-- 1 pwy    311 Apr  2 17:24 webpack.config.js
   -->
 </listing>
 
@@ -1049,7 +930,9 @@
   <code>index.html</code>:
 </p>
 
-<div class="listing-title">www/index.html</div>
+<listing-title>
+  www/index.html
+</listing-title>
 
 <listing lang="html">
   <!--
@@ -1088,11 +971,12 @@
 </ul>
 
 <p>
-  Overall, an HTML document describes a
-  <a href="https://en.wikipedia.org/wiki/Document_Object_Model"
-    >tree representation</a
-  >
-  of the web page:
+  <ref>
+    https://en.wikipedia.org/wiki/Document_Object_Model
+  </ref>
+
+  Overall, an HTML document describes a <a ref>tree representation</a> of the
+  web page:
 </p>
 
 <listing lang="text">
@@ -1143,20 +1027,20 @@
     </listing>
 
     <figure class="sketch w-30">
-      <img
-        src="{{ assets }}/ab2b7ba1-2fbb-44a7-8126-592e2c8f4a1f.png"
-      />
+      <img src="{{ assets }}/ab2b7ba1-2fbb-44a7-8126-592e2c8f4a1f.png" />
     </figure>
   </li>
 </ul>
 
 <p>
   Armed with all this knowledge, we can see that our page doesn't actually do
-  that much — the most important thing is that it loads
-  <code>bootstrap.js</code>:
+  that much - the most important thing is that it loads
+<code>bootstrap.js</code>:
 </p>
 
-<div class="listing-title">www/bootstrap.js</div>
+<listing-title>
+  www/bootstrap.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -1187,7 +1071,9 @@
   there:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -1207,7 +1093,7 @@
 <listing lang="rust">
   <!--
     extern crate hello_wasm_pack as wasm;
-    
+
     wasm::greet();
   -->
 </listing>
@@ -1215,11 +1101,13 @@
 <p>When it comes to the application's code itself, that's all.</p>
 
 <p>
-  We can also spot one more file, called <code>webpack.config.js</code> — while
+  We can also spot one more file, called <code>webpack.config.js</code> - while
   we won't have to touch it, it won't hurt to take a look either:
 </p>
 
-<div class="listing-title">www/webpack.config.js</div>
+<listing-title>
+  www/webpack.config.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -1241,12 +1129,15 @@
 </listing>
 
 <p>
-  This file contains configuration for
-  <a href="https://webpack.js.org/">webpack</a>, which is…​ kinda like Cargo,
-  but for JavaScript 😅
+  <ref>
+    https://webpack.js.org/
+  </ref>
+
+  This file contains configuration for <a ref>webpack</a>, which is​ kinda like
+  Cargo, but for JavaScript.
 </p>
 
-<aside class="note">
+<note>
   <p>
     Since this is the second time I say "like Cargo", it's time to get more
     specific:
@@ -1254,15 +1145,26 @@
 
   <ul>
     <li>
-      <p><a href="https://www.npmjs.com/">npm</a> manages dependencies,</p>
+      <p>
+        <ref>
+          https://www.npmjs.com/
+        </ref>
+
+        <a ref>npm</a> manages dependencies,
+      </p>
     </li>
     <li>
       <p>
-        <a href="https://webpack.js.org/">webpack</a> builds application (in
-        part, it's like
-        <a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html"
-          >build.rs</a
-        >).
+        <ref id="webpack">
+          https://webpack.js.org/
+        </ref>
+
+        <ref id="build">
+          https://doc.rust-lang.org/cargo/reference/build-scripts.html
+        </ref>
+
+        <a ref="webpack">webpack</a> builds application (in a way, it's like
+        <a ref="build">build.rs</a>).
       </p>
     </li>
   </ul>
@@ -1271,7 +1173,7 @@
     Cargo does all of those things on its own (how comfy!), but for JavaScript
     we need those two, separate applications.
   </p>
-</aside>
+</note>
 
 <h3>What To Do After You Know Your Enemy</h3>
 
@@ -1284,10 +1186,12 @@
   <li>
     <p>
       Currently <code>npm</code> doesn't know about
-      <code>lib-simulation-wasm</code> — let's fix it:
+      <code>lib-simulation-wasm</code> - let's fix it:
     </p>
 
-    <div class="listing-title">www/package.json</div>
+    <listing-title>
+      www/package.json
+    </listing-title>
 
     <listing lang="javascript">
       <!--
@@ -1311,7 +1215,7 @@
       -->
     </listing>
 
-    <aside class="note">
+    <note>
       <p>This command might print a few scary-looking messages:</p>
 
       <listing lang="text">
@@ -1328,15 +1232,17 @@
       </listing>
 
       <p>
-        ... but worry not — that's just <code>npm</code> being <code>npm</code>;
+        ... but worry not - that's just <code>npm</code> being <code>npm</code>;
         if it succeeds, then everything's alright.
       </p>
-    </aside>
+    </note>
   </li>
   <li>
     <p>Now it's time for <code>index.js</code>:</p>
 
-    <div class="listing-title">www/index.js</div>
+    <listing-title>
+      www/index.js
+    </listing-title>
 
     <listing lang="javascript">
       <!--
@@ -1346,21 +1252,21 @@
       -->
     </listing>
 
-    <aside class="note">
+    <note>
       <p>
-        There's no <code>function main() { }</code> — that's because JavaScript
-        doesn't need one: all the code gets to be executed top-down (<a
-          href="https://developer.mozilla.org/en-US/docs/Glossary/Hoisting"
-          >more or less</a
-        >, at least).
-      </p>
+        <ref>
+          https://developer.mozilla.org/en-US/docs/Glossary/Hoisting
+        </ref>
 
-      <p class="text-center"><i>they're savages, I know!</i> /s</p>
-    </aside>
+        There's no <code>function main() { }</code>, that's because JavaScript
+        doesn't need one - all the code gets to be executed top-down
+        (<a ref>more or less</a>).
+      </p>
+    </note>
   </li>
   <li>
     <p>
-      With everything ready, we can now launch our application — this is
+      With everything ready, we can now launch our application - this is
       basically <code>cargo run</code>:
     </p>
 
@@ -1380,20 +1286,36 @@
   </li>
 </ol>
 
+<note>
+  <p>
+    <ref>
+      https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported
+    </ref>
+
+    If the command above fails with <code>error:0308010C</code>, you might be
+    using <a ref>too new Node version</a> - in that case you should run it this
+    way:
+  </p>
+
+  <listing lang="shell">
+    <!--
+    $ NODE_OPTIONS=--openssl-legacy-provider npm run start
+    -->
+  </listing>
+</note>
+
 <p>
   When you now open this link in your browser, you'll be greeted with a peppy,
   springy & spry:
 </p>
 
 <figure class="sketch">
-  <img
-    src="{{ assets }}/42ca83b3-8949-4b70-aa72-3b1b1a8bed17.png"
-  />
+  <img src="{{ assets }}/42ca83b3-8949-4b70-aa72-3b1b1a8bed17.png" />
 </figure>
 
 <p class="text-center">yay 🎉 yay</p>
 
-<aside class="note">
+<note>
   <p>
     By the way: when <code>npm run start</code> is working, it automatically
     listens for changes.
@@ -1402,36 +1324,36 @@
   <p>
     If you'd like to modify this alert's message, simply go back to
     <code>lib.rs</code>, do whatever you want, run <code>wasm-pack build</code>,
-    and — in a few seconds — the site should automatically reload.
+    and - in a few seconds - the site should automatically reload.
   </p>
 
   <p>
     The same applies for HTML and JS, though you don't have to re-run
     <code>wasm-pack</code> then.
   </p>
-</aside>
+</note>
 
-<h2 id="hello-wasm-summary">
-  <a href="#hello-wasm-summary">Hello, WebAssembly World! (the summary part)</a>
-</h2>
+<header id="hello-wasm-summary">
+  Hello, WebAssembly World! (the summary part)
+</header>
 
-<p>So…​ what is all this?</p>
+<p>So...​ what is all this?</p>
 
 <p>
   Granted, displaying an alert message doesn't exactly qualify us for Da Nobel
   Prize (unless i'm mistaken in which case please let me know
-  <b><i>urgently</i></b> thanks) — but our point was to get something running
-  quickly, and we <i>did</i> get something running pretty quickly.
+  <b><i>urgently</i></b> thanks) - but our point was to get something running
+  quickly and we <i>did</i> get something running pretty quickly.
 </p>
 
 <p>
-  In the next section, we'll lay the foundations for our simulation — just
+  In the next section, we'll lay the foundations for our simulation - just
   enough to have something to send to JavaScript.
 </p>
 
-<h2 id="hello-simulation">
-  <a href="#hello-simulation">Hello, Simulation!</a>
-</h2>
+<header id="hello-simulation">
+  Hello, Simulation!
+</header>
 
 <p>
   As before, to keep the boundaries clean & tidy, let's start by creating a new
@@ -1446,11 +1368,13 @@
 </listing>
 
 <p>
-  This crate will contain our
-  <span class="text-rainbow">simulation engine</span>:
+  This crate will contain our <span class="text-rainbow">simulation
+  engine</span>:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1459,18 +1383,19 @@
 </listing>
 
 <p>
-  Now, to avoid conjuring a design out of
-  <span class="text-spaced">thin air</span>, let's recall our drawing from
-  before:
+  Now, to avoid conjuring a design out of <span class="text-spaced">thin
+  air</span>, let's recall our drawing from before:
 </p>
 
 <figure class="sketch">
   <img src="/posts/learning-to-fly-pt1/assets/design-4.svg" />
 </figure>
 
-<p>What do we see there? Hmm, well — certainly a <b>world</b>:</p>
+<p>What do we see there? Hmm, well - certainly a <b>world</b>:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1484,12 +1409,13 @@
 </listing>
 
 <p>
-  ... which contains some <b>animals</b> (<i>birds!</i>) and <b>foods</b> (<i
-    >rich in protein & fiber!</i
-  >):
+  ... which contains some <b>animals</b> (<i>birds!</i>) and <b>foods</b>
+  (<i>rich in protein & fiber!</i>):
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1511,7 +1437,9 @@
 
 <p>... which are located at some <b>coordinates</b>:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1529,24 +1457,24 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     <i>Fun Related Note</i>
   </p>
 
   <p>
-    Here, we're designing our models using object-oriented
-    programming — although that's a correct approach, it's <i>not</i> the only
-    one!
+    Here, we're designing our models using object-oriented programming -
+    although that's a correct approach, it's not the only one!
   </p>
 
   <p>
-    There exists a marvelous pattern called
-    <a href="https://ianjk.com/ecs-in-rust/"
-      ><strong>entity-component-system</strong></a
-    >
-    which allows to express certain model &lt;-&gt; property relations (such as
-    <code>animal &lt;-&gt; position</code>) in a bit different,
+    <ref>
+      https://ianjk.com/ecs-in-rust/
+    </ref>
+
+    There exists a cool pattern called <a ref><b>Entity Component System</b></a>
+    which allows to express certain model &lt;-&gt; property relationships (such
+    as <code>animal &lt;-&gt; position</code>) in a bit different,
     cleaner-when-there-are-lots-of-properties way.
   </p>
 
@@ -1555,11 +1483,13 @@
     if you happen to be looking for a cool design pattern to learn in the
     future.
   </p>
-</aside>
+</note>
 
 <p>Our world is two-dimensional, which sets us at:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1583,32 +1513,40 @@
   -->
 </listing>
 
-<p>Moreover, animals are of certain <b>rotati</b>…​</p>
-
-<p class="text-center">wait — did you hear that?</p>
-
-<p class="text-center">oh no</p>
-
-<p class="text-center">who's that?</p>
-
-<p class="text-center">oh no</p>
+<p>Moreover, animals are of certain <b>rotati</b>...​</p>
 
 <p class="text-center">
-  🚨 it's the
-  <a href="https://en.wikipedia.org/wiki/Not_invented_here"
-    >not-invented-here</a
-  >
-  police 🚨
+  wait - did you hear that?
+</p>
+
+<p class="text-center">
+  oh no
+</p>
+
+<p class="text-center">
+  who's that?
+</p>
+
+<p class="text-center">
+  oh no
+</p>
+
+<p class="text-center">
+  <ref>
+    https://en.wikipedia.org/wiki/Not_invented_here
+  </ref>
+
+  🚨 it's the <a ref>not-invented-here</a> police 🚨
 </p>
 
 <p>
-  So far we've been writing a lot of code by hand — you know, that genetic
+  So far we've been writing a lot of code by hand - you know, that genetic
   algorithm and neural network, to name a few.
 </p>
 
 <p>
   At least now, when it comes to a few mathematical data structures, I'd like to
-  avoid reinventing the wheel — in part because there's barely anything
+  avoid reinventing the wheel - in part because there's barely anything
   educational in writing:
 </p>
 
@@ -1666,7 +1604,7 @@
 
   <ul>
     <li>
-      <p>General-purpose linear algebra (still lacks a lot of features…)</p>
+      <p>General-purpose linear algebra (still lacks a lot of features...)</p>
     </li>
     <li>
       <p>Real-time computer graphics.</p>
@@ -1678,30 +1616,35 @@
 </blockquote>
 
 <p>
-  In other words: <i>math for the people, done right</i>; and it
-  <a href="https://www.nalgebra.org/docs/user_guide/wasm_and_embedded_targets/"
-    >plays nice with WebAssembly</a
-  >.
+  In other words: <i>math for the people, done right</i> - and it plays nice
+  with WebAssembly as well.
 </p>
 
 <p>
-  nalgebra provides a variety of different tools: from simple functions such as
-  <a href="https://docs.rs/nalgebra/0.26.2/nalgebra/fn.clamp.html">clamp</a>,
-  through somewhat complicated structures such as
-  <a
-    href="https://docs.rs/nalgebra/0.26.2/nalgebra/geometry/type.UnitDualQuaternion.html"
-    >quaternions</a
-  >, to our beloved
-  <a href="https://docs.rs/nalgebra/0.26.2/nalgebra/geometry/type.Point2.html"
-    ><code>Point2</code></a
-  >.
+  <ref id="clamp">
+    https://docs.rs/nalgebra/0.26.2/nalgebra/fn.clamp.html
+  </ref>
+
+  <ref id="udq">
+    https://docs.rs/nalgebra/0.26.2/nalgebra/geometry/type.UnitDualQuaternion.html
+  </ref>
+
+  <ref id="p2">
+    https://docs.rs/nalgebra/0.26.2/nalgebra/geometry/type.Point2.html
+  </ref>
+
+  nalgebra provides a variety of tools: from simple functions such as
+  <a ref="clamp">clamp</a>, through somewhat complicated structures such as
+  <a ref="udq">quaternions</a>, to our beloved <a ref="p2">point</a>.
 </p>
 
 <p>
   Since it's just a crate, installing it boils down to editing the manifest:
 </p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -1714,7 +1657,9 @@
 
 <p>... and then our code from a moment ago becomes:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1739,11 +1684,13 @@
 </listing>
 
 <p>
-  Where were we? Ah, right — animals are of certain <b>rotation</b> and
+  Where were we? Ah, right - animals are of certain <b>rotation</b> and
   <b>speed</b>:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1760,7 +1707,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     Overall, rotation and speed can be also represented together as a
     <b>vector</b>:
@@ -1778,16 +1725,18 @@
 
   <p>
     We'll continue with two separate fields, because it makes certain
-    computations easier later, but should you though feel adventurous…​
+    computations easier later, but should you feel adventurous...​
   </p>
-</aside>
+</note>
 
 <p>
   Now that we have a few models, it'd be nice if we could somehow construct
   them, so:
 </p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -1800,11 +1749,13 @@
 </listing>
 
 <p>
-  ... and while we're here, let's enable nalgebra's support for rand — it'll
+  ... and while we're here, let's enable nalgebra's support for rand - it'll
   come handy in a moment:
 </p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -1821,7 +1772,9 @@
   everything:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1887,11 +1840,13 @@
 </listing>
 
 <p>
-  A <b>getter</b> is a function that allows to access object's state — a few of
+  A <b>getter</b> is a function that allows to access object's state - a few of
   them will come useful:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -1978,115 +1933,41 @@
 
 <blockquote>
   <p>
-    If we want to invoke this code from JavaScript, shouldn't we have
+    If we want to invoke this from JavaScript, shouldn't we have
     <code>#[wasm_bindgen]</code> all over the place?
   </p>
 </blockquote>
 
 <p>... to which I'll reply:</p>
 
-<p>Excellent question! &lt;high-fives himself/&gt;</p>
-
-<ul>
-  <li>
-    <p>
-      First of all, wasm-bindgen doesn't support returning vectors of custom
-      types
-      <a href="https://github.com/rustwasm/wasm-bindgissues/111">yet</a>:
-    </p>
-
-    <listing lang="rust" class="listing-invalid">
-      <!--
-        #[wasm_bindgen]
-        #[derive(Debug)]
-        struct World {
-            pub animals: Vec<Animal>,
-            pub foods: Vec<Food>,
-        }
-      -->
-    </listing>
-
-    <listing lang="text">
-      <!--
-        error[E0277]: the trait bound `Box<[Animal]>: IntoWasmAbi` is not
-                      satisfied
-         -\-> libs/simulation-wasm/src/lib.rs
-          |
-          | #[wasm_bindgen]
-          | ^^^^^^^^^^^^^^^ the trait `IntoWasmAbi` is not implemented for
-          |                 `Box<[Animal]>`
-      -->
-    </listing>
-
-    <p>
-      It's not that vectors are entirely forbidden — they can be <i>used</i>,
-      just cannot be <i>exported</i>:
-    </p>
-
-    <listing lang="rust" class="listing-invalid">
-      <!--
-        #[wasm_bindgen]
-        #[derive(Debug)]
-        struct World {
-            // Ok:
-            animals: Vec<Animal>,
-        
-            // Error:
-            pub foods: Vec<Food>,
-        }
-        
-        #[wasm_bindgen]
-        impl World {
-            // Error:
-            pub fn animals(&self) -> &[Animal] {
-                todo!()
-            }
-        
-            // Error:
-            pub fn animals_cloned(&self) -> Vec<Animal> {
-                todo!()
-            }
-        }
-        
-        impl World {
-            // Ok:
-            //
-            // (Notice missing `#[wasm_bindgen]` - this is allowed, because
-            // this function won't be exported to JavaScript.)
-            pub fn foods(&self) -> &[Food] {
-                todo!()
-            }
-        }
-      -->
-    </listing>
-  </li>
-  <li>
-    <p>
-      Second of all, even if wasm-bindgen did support vectors of custom types, I
-      think that it's important to remember about
-      <a href="https://en.wikipedia.org/wiki/Separation_of_concerns"
-        >separation of concerns</a
-      > — that is: <code>lib-simulation</code> should be all about
-      <i>"how to simulate evolution"</i>, not
-      <i>"how to simulate evolution <b>and</b> integrate with WebAssembly"</i>.
-    </p>
-
-    <p>
-      In a second we'll be implementing <code>lib-simulation-wasm</code> — and
-      if we keep <code>lib-simulation</code> frontend-agnostic, it'll be easy to
-      create, say, <code>lib-simulation-bevy</code> or
-      <code>lib-simulation-cli</code> next; all sharing the same simulation code
-      underneath.
-    </p>
-  </li>
-</ul>
+<p>Excellent question! &lt;high-fives himself /&gt;</p>
 
 <p>
-  Ok, let's go back to <code>lib-simulation-wasm</code> — we have to make it
+  <ref>
+    https://en.wikipedia.org/wiki/Separation_of_concerns
+  </ref>
+
+  I think that it's important to remember about <a ref>separation of
+  concerns</a> - <code>lib-simulation</code> should be all about <i>"how to
+  simulate evolution"</i>, not <i>"how to simulate evolution <b>and</b>
+  integrate with WebAssembly"</i>.
+</p>
+
+<p>
+  In a second we'll be implementing <code>lib-simulation-wasm</code> and if we
+  keep <code>lib-simulation</code> frontend-agnostic, it'll be easy to create,
+  say, <code>lib-simulation-bevy</code> or <code>lib-simulation-cli</code> next
+  - all sharing the same simulation code underneath.
+</p>
+
+<p>
+  Ok, let's go back to <code>lib-simulation-wasm</code> - we have to make it
   aware of <code>rand</code> and <code>lib-simulation</code>:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/Cargo.toml</div>
+<listing-title>
+  libs/simulation-wasm/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -2097,7 +1978,7 @@
     wasm-bindgen = "0.2"
     
   = lib-simulation = { path = "../simulation" }
-                            # ^ path relative to _this_ Cargo.toml
+                            # ^ path relative to *this* Cargo.toml
   -->
 </listing>
 
@@ -2106,7 +1987,9 @@
   <code>lib_simulation</code>:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -2119,7 +2002,9 @@
   <a href="https://en.wikipedia.org/wiki/Proxy_pattern">proxy</a>):
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -2147,11 +2032,13 @@
 </listing>
 
 <p>
-  As for baby steps, this looks good — let's try compiling it; surely nothing
+  As for baby steps, this looks good - let's try compiling it; surely nothing
   can fail <i>just yet</i>!
 </p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -2183,16 +2070,19 @@
 </p>
 
 <p>
-  Being honest, this error took me by surprise — fortunately, the
-  <a href="https://docs.rs/getrandom/0.2.2/getrandom/#unsupported-targets"
-    >linked page</a
-  >
-  describes what's going on quite well: <code>rand</code> internally depends on
-  <code>getrandom</code>, which <i>does</i> support WebAssembly inside a web
-  browser, but only when asked explicitly:
+  <ref>
+    https://docs.rs/getrandom/0.2.2/getrandom/#unsupported-targets
+  </ref>
+
+  Being honest, this error took me by surprise - fortunately, the <a ref>linked
+  page</a> describes what's going on quite well: <code>rand</code> internally
+  depends on <code>getrandom</code>, which <i>does</i> support WebAssembly
+  inside a web browser environment, but only when asked explicitly to:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/Cargo.toml</div>
+<listing-title>
+  libs/simulation-wasm/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -2200,14 +2090,15 @@
     
     [dependencies]
     # ...
-    
   = getrandom = { version = "0.2", features = ["js"] }
   -->
 </listing>
 
 <p>Let's try rebuilding now:</p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -2237,7 +2128,9 @@
 
 <p>On the JavaScript's side, we can now do:</p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2260,11 +2153,13 @@
 </p>
 
 <p>
-  To do that, we'll need a few more models - they'll be <i>kinda</i> copy-pasted
-  from <code>lib-simulation</code>, but with WebAssembly in mind:
+  To do that, we'll need a few more models - they'll be kinda copy-pasted from
+  <code>lib-simulation</code>, but with WebAssembly in mind:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -2298,7 +2193,9 @@
 
 <p>... and two conversion methods:</p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -2308,14 +2205,12 @@
     impl Simulation {
         /* ... */
     }
+
+    /* ... */
     
   = impl From<&sim::World> for World {
   =     fn from(world: &sim::World) -> Self {
-  =         let animals = world
-  =             .animals()
-  =             .iter()
-  =             .map(Animal::from)
-  =             .collect();
+  =         let animals = world.animals().iter().map(Animal::from).collect();
   = 
   =         Self { animals }
   =     }
@@ -2334,7 +2229,9 @@
 
 <p>With all that in our editor, we can now add:</p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -2355,305 +2252,90 @@
 
 <p>... aaaand</p>
 
-<p class="text-center">oh my</p>
+<p class="text-center">
+  oh my
+</p>
 
-<p class="text-center">heart starts to</p>
+<p class="text-center">
+  heart starts to
+</p>
 
-<p class="text-center">beat faster</p>
+<p class="text-center">
+  beat faster
+</p>
 
-<p class="text-center">as i execute</p>
+<p class="text-center">
+  as i execute
+</p>
 
 <p class="text-center">
   <code>$ wasm-pack build</code>
 </p>
 
-<p class="text-center">aaaaand</p>
+<p class="text-center">
+  aaaaand
+</p>
 
-<p class="text-center"><i>oh no</i> 😢</p>
+<p class="text-center">
+  <i>oh no</i> 😢
+</p>
 
 <listing lang="text">
   <!--
-    error[E0277]: the trait bound `Box<[Animal]>: IntoWasmAbi` is not
-                  satisfied
-     -\-> libs/simulation-wasm/src/lib.rs
-      |
-    3 | #[wasm_bindgen]
-      | ^^^^^^^^^^^^^^^ the trait `IntoWasmAbi` is not implemented for
-      |                 `Box<[Animal]>`
+    error[E0277]: the trait bound `Vec<Animal>: std::marker::Copy` is not satisfied
+      -\-> libs/simulation-wasm/src/lib.rs
+       |
+       |     pub animals: Vec<Animal>,
+       |                            ^ the trait `std::marker::Copy` is not ...
+       |
   -->
 </listing>
 
 <p>
-  Ah, we <i>know</i> this message: it's because wasm-pack doesn't support
-  vectors of custom types!
+  This happens because <code>#[wasm_bindgen]</code> automatically creates
+  getters and setters for JavaScript, but it requires for those fields to be
+  <code>Copy</code> - intuitively, the macro does something similar to:
 </p>
-
-<p>Let's roll back and analyze what happened — wasm-pack gave up here:</p>
-
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
 
 <listing lang="rust">
   <!--
+    impl World {
+        pub fn animals(&self) -> Vec<Animal> {
+            self.animals
+        }
+    }
+  -->
+</listing>
+
+<p>
+  ... which also wouldn't work, not without an explicit <code>.clone()</code> -
+  and that's exactly what we need to tell <code>#[wasm_bindgen]</code>:
+</p>
+
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
+
+<listing lang="rust">
+  <!--
+    /* ... */
+
     #[wasm_bindgen]
     #[derive(Clone, Debug)]
     pub struct World {
-        pub animals: Vec<Animal>,
-        //           ^---------^
-    }
-  -->
-</listing>
-
-<p>
-  ... if we can't rely on wasm-pack here, is there some other solution we could
-  use? oh my — <b><i>yes</i></b
-  >!
-</p>
-
-<h3>Serde Be My Guide</h3>
-
-<p>Meet <a href="https://serde.rs/">Serde</a>:</p>
-
-<blockquote>
-  <p>
-    Serde is a framework for serializing and deserializing Rust data structures
-    efficiently and generically.
-  </p>
-</blockquote>
-
-<p>
-  Put another way: Serde takes a <code>struct Foo { }</code> and transforms it
-  into (or from) JSON, YAML, or any other format you'd like (and there are
-  <i>a lot</i> of them!).
-</p>
-
-<p>
-  If you hadn't had the opportunity to use Serde yet, here's a demo (unrelated
-  to our simulation):
-</p>
-
-<div class="listing-title">
-  <a
-    href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=ece8e0d69098f8c5cfa74e25941764db"
-    >open in playground</a
-  >
-</div>
-
-<listing lang="rust">
-  <!--
-    use serde::Serialize;
-    
-    #[derive(Serialize)]
-    struct User {
-        name: &'static str,
-        friends: Vec<&'static str>,
-    }
-    
-    fn main() {
-        let user = User {
-            name: "Patryk",
-            friends: vec![
-                "Chinchilla named Flora",
-                "Oak named Bartek",
-            ],
-        };
-    
-        println!(
-            "JSON:\n{}\n",
-            serde_json::to_string_pretty(&user).unwrap(),
-        );
-    
-        println!(
-            "YAML:\n{}",
-            serde_yaml::to_string(&user).unwrap(),
-        );
-    }
-  -->
-</listing>
-
-<p>
-  Installing Serde and making it compatible with <code>wasm-bindgen</code> is as
-  easy as:
-</p>
-
-<div class="listing-title">libs/simulation-wasm/Cargo.toml</div>
-
-<listing lang="toml">
-  <!--
-    # ...
-    
-    [dependencies]
-  = serde = { version = "1.0", features = ["derive"] }
-    # ------------------------------------- ^----^
-    # | Enables the `#[derive(Serialize)]` and `#[derive(Deserialize)]`
-    # | macros.
-    # |
-    # | Without this feature-switch, we'd have to write `impl Serialize` by
-    # | hand, I guess, which ain't no fun.
-    # ---
-    
-  = wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
-    # -------------------------------------------- ^-------------^
-    # | Enables `JsValue::from_serde()` that you'll see in a moment.
-    # ---
-    
-    # ...
-  -->
-</listing>
-
-<p>
-  Since we don't want for wasm-bindgen to serialize our two models anymore,
-  let's drop their <code>#[wasm_bindgen]</code>:
-</p>
-
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
-
-<listing lang="rust">
-  <!--
-    /* ... */
-    
-  = 
-    #[derive(Clone, Debug)]
-    pub struct World {
+  =     #[wasm_bindgen(getter_with_clone)]
         pub animals: Vec<Animal>,
     }
-    
-  = 
-    #[derive(Clone, Debug)]
-    pub struct Animal {
-        pub x: f32,
-        pub y: f32,
-    }
-    
+
     /* ... */
   -->
 </listing>
 
-<p>... make them serializable by Serde:</p>
+<p>Call time!</p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
-
-<listing lang="rust">
-  <!--
-  = use serde::Serialize;
-    
-    /* ... */
-    
-  = #[derive(Clone, Debug, Serialize)]
-    pub struct World {
-        pub animals: Vec<Animal>,
-    }
-    
-  = #[derive(Clone, Debug, Serialize)]
-    pub struct Animal {
-        pub x: f32,
-        pub y: f32,
-    }
-    
-    /* ... */
-  -->
-</listing>
-
-<p>... and adjust <code>Simulation::world()</code>:</p>
-
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
-
-<listing lang="rust">
-  <!--
-    /* ... */
-    
-    #[wasm_bindgen]
-    impl Simulation {
-        /* ... */
-    
-  =     pub fn world(&self) -> JsValue {
-  =         let world = World::from(self.sim.world());
-  =         JsValue::from_serde(&world).unwrap()
-  =     }
-    }
-    
-    /* ... */
-  -->
-</listing>
-
-<p>
-  <span class="text-rainbow">Question time</span>: I'll take one from the
-  audience.
-</p>
-
-<blockquote>
-  <p>
-    What happened? Can't wasm-pack do it on its own? Would you rather hug a
-    horse-sized duck or 100 duck-sized horses?
-  </p>
-</blockquote>
-
-<ol>
-  <li>
-    <p>
-      What happened is that instead of letting wasm-pack serialize our models
-      using <b>its own</b> serialization algorithm, we've <i>forced</i> them to
-      be serialized into <b>JSON</b> — via <code>JsValue</code>.
-    </p>
-
-    <p>
-      If not for Serde, wasm-pack would use a custom, binary format that's more
-      compact…​ had it only supported vectors of custom types, that is.
-    </p>
-  </li>
-  <li>
-    <p>
-      My guess is that while wasm-pack <i>could</i> opt for Serde by default,
-      it's essentially a trade-off: JSON is more versatile, but its output tends
-      to be longer than what a binary format can achieve, so it makes sense for
-      wasm-pack to use the smaller format by default.
-    </p>
-  </li>
-  <li>
-    <p>I'd definitely hug a horse-sized duck - what a sublime creature!</p>
-  </li>
-</ol>
-
-<p>
-  Let's rebuild our Rust code (remember to run this command inside
-  <code>libs/simulation-wasm</code>):
-</p>
-
-<div class="listing-title">$ wasm-pack build</div>
-
-<listing lang="text">
-  <!--
-    [INFO]: Checking for the Wasm target...
-    [INFO]: Compiling to Wasm...
-    
-    warning: field is never read: `rng`
-        ...
-    
-    warning: 1 warning emitted
-    
-        Finished release [optimized] target(s) in 0.02s
-    
-    ...
-  -->
-</listing>
-
-<p>K, nice.</p>
-
-<p>So, in essence, what we've created is a function that returns a JSON:</p>
-
-<listing lang="json">
-  <!--
-    {
-      "animals": [
-        { "x": 0.2, "y": 0.1 },
-        { "x": 0.3, "y": 0.7 }
-      ]
-    }
-  -->
-</listing>
-
-<p>... which can be then easily parsed by the web browser:</p>
-
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2661,16 +2343,12 @@
     
     const simulation = new sim.Simulation();
   = const world = simulation.world();
-    // --------------------- ^---^
-    // | Parsing already happens inside this automatically-generated
-    // | function - we don't have to do anything more in here.
-    // ---
   -->
 </listing>
 
 <p>
-  All this should work…​ in theory; but how can we be <i>sure</i> our
-  <code>world</code> contains any meaningful data? By using our own eyes!
+  All this should work...​ in theory - but how can we be sure our world contains
+  any meaningful data? By using our own eyes!
 </p>
 
 <p>
@@ -2680,44 +2358,38 @@
 </p>
 
 <p class="text-dim">
-  (<a
-    href="https://support.apple.com/guide/safari/use-the-developer-tools-in-the-develop-menu-sfri20948/mac"
-    >Safari users might require an extra hoop.</a
-  >)
+  (<a href="https://support.apple.com/guide/safari/use-the-developer-tools-in-the-develop-menu-sfri20948/mac">
+    Safari users might require an extra hoop.</a>)
 </p>
 
 <figure class="sketch w-90">
-  <img
-    src="{{ assets }}/e24b0b5a-9e3b-4e14-a13e-f0529b35a05c.png"
-  />
+  <img src="{{ assets }}/e24b0b5a-9e3b-4e14-a13e-f0529b35a05c.png" />
 </figure>
 
 <p>What can we do with this console? We can print stuff to it:</p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
     /* ... */
     
-  = console.log(world);
+  = for (const animal of world.animals) {
+  =   console.log(animal.x, animal.y);
+  = }
   -->
 </listing>
 
 <p>
-  <i
-    >(I assume <code>npm run start</code> is still working in the
-    background — if it's not, remember to re-launch it.)</i
-  >
+  <i>
+    (I assume <code>npm run start</code> is still working in the
+    background - if it's not, remember to re-launch it.)
+  </i>
 </p>
 
-<figure class="sketch w-90">
-  <img
-    src="{{ assets }}/dc4ebef7-578b-4377-9a57-61d88aaac214.png"
-  />
-</figure>
-
-<aside class="note">
+<note>
   <listing lang="javascript">
     <!--
       // Nobody can stop us now:
@@ -2727,25 +2399,28 @@
       console.log(console.log);
     -->
   </listing>
-</aside>
+</note>
 
 <p>
-  Nice; now that we know the positions of animals, it means we can draw them!
+  Nice - now that we know the positions of animals, it means we can draw them!
 </p>
 
-<h2 id="hello-graphics">
-  <a href="#hello-graphics">Hello, Graphics!</a>
-</h2>
+<header id="hello-graphics">
+  Hello, Graphics!
+</header>
 
 <p>
+  <ref>
+    https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial
+  </ref>
+
   Drawing stuff in HTML + JavaScript is relatively painless - we'll use a thing
-  called
-  <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial"
-    ><code>&lt;canvas&gt;</code></a
-  >:
+  called <a ref><code>&lt;canvas&gt;</code></a>:
 </p>
 
-<div class="listing-title">www/index.html</div>
+<listing-title>
+  www/index.html
+</listing-title>
 
 <listing lang="html">
   <!--
@@ -2765,11 +2440,13 @@
 </listing>
 
 <p>
-  Our canvas has an attribute called <code>id</code> — this attribute is used to
-  <i>name</i> tags, so that they can be easily found from inside JavaScript:
+  Our canvas has an attribute called <code>id</code> - this attribute is used to
+  identify tags, so that they can be easily found from inside JavaScript:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2791,10 +2468,12 @@
 
 <p>
   To display stuff on <code>&lt;canvas&gt;</code>, we have to request for a
-  specific <i>drawing mode</i> (think: 2D vs 3D):
+  specific drawing mode (think: 2D vs 3D):
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2806,23 +2485,26 @@
 
 <p>So far, so good!</p>
 
-<aside class="note">
+<note>
   <p>
+    <ref>
+      https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+    </ref>
+
     For reference, our <code>ctxt</code> here is of type
-    <a
-      href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D"
-      ><code>CanvasRenderingContext2D</code></a
-    >.
+    <a ref><code>CanvasRenderingContext2D</code></a>.
   </p>
-</aside>
+</note>
 
 <p>
   There are many methods and properties we can invoke on
-  <code>ctxt</code> — let's start by investigating <code>fillStyle</code> and
+  <code>ctxt</code> - let's start by investigating <code>fillStyle</code> and
   <code>fillRect()</code>:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2869,24 +2551,20 @@
 </p>
 
 <figure class="sketch w-20">
-  <img
-    src="{{ assets }}/25e0b526-015d-4db5-8c1e-5516ef684b84.png"
-  />
+  <img src="{{ assets }}/25e0b526-015d-4db5-8c1e-5516ef684b84.png" />
 </figure>
 
-<p>Ah, Mondrian would be so proud — I tell you: <i>we're going places!</i></p>
+<p>Ah, Mondrian would be so proud - I tell you: we're going places!</p>
 
-<aside class="note">
+<note>
   <p>
-    To be on the same page, <code>&lt;canvas&gt;</code>-'s coordinate system is:
+    To be on the same page, <code>&lt;canvas&gt;</code>'s coordinate system is:
   </p>
 
   <figure class="sketch w-60">
-    <img
-      src="{{ assets }}/3b2960ca-6511-4686-9acd-a384969e257a.svg"
-    />
+    <img src="{{ assets }}/3b2960ca-6511-4686-9acd-a384969e257a.svg" />
   </figure>
-</aside>
+</note>
 
 <h3>It’s My Data</h3>
 
@@ -2895,7 +2573,9 @@
   picture:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2916,39 +2596,52 @@
 <p>... and:</p>
 
 <figure class="sketch w-10">
-  <img
-    src="{{ assets }}/eb853ead-5d7e-4c0d-9e6a-ca26bb515a10.png"
-  />
+  <img src="{{ assets }}/eb853ead-5d7e-4c0d-9e6a-ca26bb515a10.png" />
 </figure>
 
 <p>
-  Well, ain't that a bummer — what happened? Let's investigate our data once
+  Well, ain't that a bummer - what happened? Let's investigate our data once
   again:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
     /* ... */
     
-  = console.log(simulation.world().animals);
+  = for (const animal of simulation.world().animals) {
+  =   console.log(animal.x, animal.y);
+  = }
   -->
 </listing>
 
-<figure class="sketch w-90">
-  <img
-    src="{{ assets }}/dc4ebef7-578b-4377-9a57-61d88aaac214.png"
-  />
-</figure>
+<listing lang="text">
+  <!--
+    0.6751065850257874 0.9448947906494141
+    0.2537931203842163 0.4474523663520813
+    0.7111597061157227 0.731094241142273
+    0.20178401470184326 0.5820554494857788
+    0.7062546610832214 0.3024316430091858
+    0.030273854732513428 0.4638679623603821
+    0.48392945528030396 0.9207395315170288
+    0.49439138174057007 0.24340438842773438
+    0.5087683200836182 0.10066533088684082
+    /* ... */
+  -->
+</listing>
 
 <p>
   Ah, positions of our animals belong to range <code>&lt;0.0, 1.0&gt;</code>,
   while <code>&lt;canvas&gt;</code> expects coordinates in the unit of a
-  <b>pixel</b> — we can fix this by <i>scaling</i> the numbers while rendering:
+  <b>pixel</b> - we can fix this by scaling the numbers while rendering:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -2974,20 +2667,18 @@
 <p>... which gets us:</p>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/2e91178c-5441-4f66-9fbf-001d76ad752d.png"
-  />
+  <img src="{{ assets }}/2e91178c-5441-4f66-9fbf-001d76ad752d.png" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     If you've got an HiDPI display, you might notice that the canvas looks
-    blurry — please do not adjust your television set, all's "correct".
+    blurry - please do not adjust your television set, all's "correct".
   </p>
 
   <p>
     It's because most, if not all, browsers render canvases without adjusting
-    for screen's pixel density, and then artificially <b>upscale</b> the image
+    for screen's pixel density and then artificially <b>upscale</b> the image
     to match the actual resolution of the screen.
   </p>
 
@@ -3073,15 +2764,13 @@
   <p>As promised, this gets us a sharp image:</p>
 
   <figure class="sketch w-40">
-    <img
-      src="{{ assets }}/4248d354-2b4c-420b-87c1-c1d249cdff84.png"
-    />
+    <img src="{{ assets }}/4248d354-2b4c-420b-87c1-c1d249cdff84.png" />
   </figure>
-</aside>
+</note>
 
 <p>
-  So…​ would you believe it, someone told me that squares are
-  <b>not fashionable</b> anymore!
+  So...​ would you believe it, someone told me that squares are <b>not
+  fashionable</b> anymore!
 </p>
 
 <p>Apparently ▼ triangles ▲ are all the rage, so let's try drawing one.</p>
@@ -3093,7 +2782,9 @@
 
 <p>To get a grip of how it works, let's start with a hard-coded example:</p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3129,9 +2820,7 @@
 <p>... aaaand, what a beauty!</p>
 
 <figure class="sketch w-30">
-  <img
-    src="{{ assets }}/bc321864-81b2-4f69-90c0-57edda4ae04f.png"
-  />
+  <img src="{{ assets }}/bc321864-81b2-4f69-90c0-57edda4ae04f.png" />
 </figure>
 
 <p>
@@ -3139,7 +2828,9 @@
   make it a function:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3162,7 +2853,9 @@
 
 <p>... or, a bit more idiomatic:</p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3171,22 +2864,23 @@
     // ---
     // | The type of our `ctxt`.
     // v------------------ v
-  = CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size) {
-  =     this.beginPath();
-  =     this.moveTo(x, y);
-  =     this.lineTo(x + size, y + size);
-  =     this.lineTo(x - size, y + size);
-  =     this.lineTo(x, y);
-  = 
-  =     this.fillStyle = 'rgb(0, 0, 0)';
-  =     this.fill();
-  = };
+  = CanvasRenderingContext2D.prototype.drawTriangle =
+  =     function (x, y, size) {
+  =         this.beginPath();
+  =         this.moveTo(x, y);
+  =         this.lineTo(x + size, y + size);
+  =         this.lineTo(x - size, y + size);
+  =         this.lineTo(x, y);
+  =
+  =         this.fillStyle = 'rgb(0, 0, 0)';
+  =         this.fill();
+  =     };
   = 
   = ctxt.drawTriangle(50, 0, 50);
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     JavaScripts allows for methods to be created willy-nilly at runtime - a
     similar code in Rust would require creating a trait:
@@ -3206,11 +2900,13 @@
       }
     -->
   </listing>
-</aside>
+</note>
 
 <p>Equipped with <code>.drawTriangle()</code>, we can now do:</p>
 
-<div class="listing-title">www/index.html</div>
+<listing-title>
+  www/index.html
+</listing-title>
 
 <listing lang="html">
   <!--
@@ -3220,7 +2916,9 @@
   -->
 </listing>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3237,22 +2935,26 @@
 </listing>
 
 <figure class="sketch w-30">
-  <img
-    src="{{ assets }}/37718e09-3278-44ef-a104-28cb5486e4ff.png"
-  />
+  <img src="{{ assets }}/37718e09-3278-44ef-a104-28cb5486e4ff.png" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     If those triangles look too small for you, feel free to adjust the canvas'
     size and the <code>0.01</code> parameter.
   </p>
-</aside>
+</note>
 
 <p>Nice 😎</p>
 
-<p>
-  ... and you know what would be <i>even nicer</i>? If they were <b>rotated</b>!
+<p style="display: block">
+  <span style="display: inline-block">
+    ... and you know what would be even nicer? If they were
+  </span>
+
+  <span style="display: inline-block; font-weight: bold; transform: rotate(-35deg)">
+    rotated!
+  </span>
 </p>
 
 <h3>Vertices Go Brr</h3>
@@ -3262,7 +2964,9 @@
   <code>lib-simulation</code>:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -3279,21 +2983,22 @@
 
 <p>... so all we've gotta do is to pass it into JavaScript:</p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
-    
-    #[derive(Clone, Debug, Serialize)]
+
+    #[wasm_bindgen]
+    #[derive(Clone, Debug)]
     pub struct Animal {
         pub x: f32,
         pub y: f32,
   =     pub rotation: f32,
     }
-    
-    /* ... */
-    
+
     impl From<&sim::Animal> for Animal {
         fn from(animal: &sim::Animal) -> Self {
             Self {
@@ -3303,12 +3008,16 @@
             }
         }
     }
+
+    /* ... */
   -->
 </listing>
 
 <p>... now <code>wasm-pack build</code>:</p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -3325,91 +3034,83 @@
   another parameter:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
     /* ... */
     
-  = CanvasRenderingContext2D.prototype.drawTriangle =
+    CanvasRenderingContext2D.prototype.drawTriangle =
   =     function (x, y, size, rotation) {
             /* ... */
-  =     };
+        };
     
     /* ... */
   -->
 </listing>
 
-<p>Now, intuitively, what we're looking for is:</p>
+<p>Intuitively, what we're looking for is:</p>
 
 <figure class="sketch w-80">
-  <img
-    src="{{ assets }}/d50a7a76-abc0-415c-b43c-dff76f18b242.svg"
-  />
+  <img src="{{ assets }}/d50a7a76-abc0-415c-b43c-dff76f18b242.svg" />
 </figure>
 
-<p>... generalized for <i>any</i> angle.</p>
+<p>... but generalized for any angle.</p>
 
 <h3>Vertices Go Brrr (using math)</h3>
 
 <p>
-  Let's bring back our triangle — this time, together with its
+  Let's bring back our triangle - this time, together with its
   <b>circumscribed circle</b>:
 </p>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/0b4f3862-3b22-4499-a4b1-3d29099c5e76.svg"
-  />
+  <img src="{{ assets }}/0b4f3862-3b22-4499-a4b1-3d29099c5e76.svg" />
 </figure>
 
 <p>
-  Under this circumstances, I'd casually describe rotating as
-  <i>moving each vertex alongside the circle "with" certain angle</i>:
+  Under this circumstances, I'd casually describe rotating as moving each vertex
+  alongside the circle "with" certain angle:
 </p>
 
 <figure class="sketch w-50">
-  <img
-    src="{{ assets }}/52ce2085-216f-4ff9-85b7-7dd0c5f44d26.svg"
-  />
+  <img src="{{ assets }}/52ce2085-216f-4ff9-85b7-7dd0c5f44d26.svg" />
 </figure>
 
 <p>
-  How do we know <i>where to</i> move those points? Well, whenever there's a
-  circle involved, there's probably a fair share of trigonometry happening
-  underneath — it's certainly true this time!
+  How do we know where to move those points? Well, whenever there's a circle
+  involved, there's probably a fair share of trigonometry happening underneath
+  - it's certainly true this time!
 </p>
 
 <p>
-  You might've heard of <code>cos()</code> and <code>sin()</code> — while they
+  You might've heard of <code>cos()</code> and <code>sin()</code> - while they
   aren't that impressive plotted separately:
 </p>
 
 <figure class="sketch w-90">
-  <img
-    src="{{ assets }}/0ee9c7b5-80a5-4c5e-92e0-f72104f4aeca.svg"
-  />
+  <img src="{{ assets }}/0ee9c7b5-80a5-4c5e-92e0-f72104f4aeca.svg" />
 </figure>
 
 <p>
-  ... when we juxtapose <i>both</i> of them on a circle, we might just spot that
-  what <code>cos(angle)</code> returns in practice is the
-  <code>y</code> coordinate of a point "rotated" with given angle — and,
-  similarly, <code>sin(angle)</code> gives the <code>x</code> coordinate:
+  ... when we juxtapose both of them on a circle, we might just spot that what
+  <code>cos(angle)</code> returns in practice is the <code>y</code> coordinate
+  of a point "rotated" with given angle - and, similarly,
+  <code>sin(angle)</code> gives the <code>x</code> coordinate:
 </p>
 
 <figure class="sketch w-50">
-  <img
-    src="{{ assets }}/dd44883a-ab9b-4ed7-be1e-b97d4b50e128.svg"
-  />
+  <img src="{{ assets }}/dd44883a-ab9b-4ed7-be1e-b97d4b50e128.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     I'm using quotes around <i>rotated</i>, because technically it makes little
-    to no sense to talk about rotation of a <i>point</i> — but hopefully the
+    to no sense to talk about rotation of a point - but hopefully the
     mathematicians among you will forgive me for I have semantically-sinned in a
-    <i>good faith</i>.
+    good faith.
   </p>
 
   <p>
@@ -3417,9 +3118,9 @@
     <code>x = -sin(angle)</code>, because Nalgebra understands rotations
     counterclockwise.
   </p>
-</aside>
+</note>
 
-<p>Speaking in code-terms — if what we have currently is:</p>
+<p>Speaking in code-terms - if what we have currently is:</p>
 
 <listing lang="javascript">
   <!--
@@ -3456,7 +3157,7 @@
 </listing>
 
 <p>
-  ... where <code>rotation</code> is measured in <b>radians</b> — that is,
+  ... where <code>rotation</code> is measured in <b>radians</b> - that is,
   <code>&lt;0°, 360°&gt;</code> shrank to <code>&lt;0, 2 * PI&gt;</code>:
 </p>
 
@@ -3481,12 +3182,10 @@
   </li>
 </ul>
 
-<p>Okie — one vertex done:</p>
+<p>Okie - one vertex done:</p>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/e0fa1f63-964b-49ba-9e32-4eab5d249a13.svg"
-  />
+  <img src="{{ assets }}/e0fa1f63-964b-49ba-9e32-4eab5d249a13.svg" />
 </figure>
 
 <p>... two more to go!</p>
@@ -3533,9 +3232,7 @@
 </listing>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/bce2d60a-cd7e-4666-84f3-76ef6dbb043a.svg"
-  />
+  <img src="{{ assets }}/bce2d60a-cd7e-4666-84f3-76ef6dbb043a.svg" />
 </figure>
 
 <p>Similarly, for the third vertex:</p>
@@ -3573,12 +3270,10 @@
 </listing>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/66781628-c317-4a0c-98ce-b5317abf4c4c.svg"
-  />
+  <img src="{{ assets }}/66781628-c317-4a0c-98ce-b5317abf4c4c.svg" />
 </figure>
 
-<aside class="note">
+<note>
   <p>
     For what it's worth, instead of <code>+ 4.0 / 3.0</code>, we could've also
     used <code>- 2.0 / 3.0</code> (meaning "60° counterclockwise from the top
@@ -3596,12 +3291,11 @@
 
   <p>
     ... as both
-    <a
-      href="https://www.wolframalpha.com/input/?i=sin%28x+-+2%2F3+*+pi%29+%3D+sin%28x+%2B+4%2F3+*+pi%29"
-      >are identical</a
-    >.
+    <a href="https://www.wolframalpha.com/input/?i=sin%28x+-+2%2F3+*+pi%29+%3D+sin%28x+%2B+4%2F3+*+pi%29">
+      are identical
+    </a>.
   </p>
-</aside>
+</note>
 
 <p>
   As you might see in the drawing, now we're missing only the very last edge
@@ -3609,9 +3303,7 @@
 </p>
 
 <figure class="sketch w-40">
-  <img
-    src="{{ assets }}/13650115-7ac4-47d2-a1d5-bcf1c3c7b370.svg"
-  />
+  <img src="{{ assets }}/13650115-7ac4-47d2-a1d5-bcf1c3c7b370.svg" />
 </figure>
 
 <p>... so:</p>
@@ -3634,7 +3326,9 @@
 
 <p>In all its glory, our code is:</p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3674,17 +3368,17 @@
 <p>Does it work? Apparently:</p>
 
 <figure class="sketch w-20">
-  <img
-    src="{{ assets }}/7c0a009c-202c-4666-ac69-e6c03cf75bae.png"
-  />
+  <img src="{{ assets }}/7c0a009c-202c-4666-ac69-e6c03cf75bae.png" />
 </figure>
 
 <p>
-  ... but it's kinda hard to spot that it's rotated — what if we
-  <i>extruded</i> one of the vertices?
+  ... but it's kinda hard to spot that it's rotated - what if we extruded one of
+  the vertices?
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3716,9 +3410,7 @@
 <p>There, better:</p>
 
 <figure class="sketch w-30">
-  <img
-    src="{{ assets }}/e53c3146-b334-4b4d-8492-09b6c37b4293.png"
-  />
+  <img src="{{ assets }}/e53c3146-b334-4b4d-8492-09b6c37b4293.png" />
 </figure>
 
 <h3>Animals Go Brrr</h3>
@@ -3728,7 +3420,9 @@
   before:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3748,29 +3442,29 @@
 <p>... which gives us:</p>
 
 <figure class="sketch w-60">
-  <img
-    src="{{ assets }}/e5597f34-11e5-48cc-b76c-329f0ee543d6.png"
-  />
+  <img src="{{ assets }}/e5597f34-11e5-48cc-b76c-329f0ee543d6.png" />
 </figure>
 
-<p>Neat; high five, <span class="text-rainbow">pal</span> — we've earned it!</p>
+<p>Neat; high five, <span class="text-rainbow">pal</span> - we've earned it!</p>
 
-<h2 id="stepping-stones">
-  <a href="#stepping-stones">step()-ping stones</a>
-</h2>
+<header id="stepping-stones">
+  step()-ping stones
+</header>
 
 <p>
-  Stationary triangles are cool — <i>obviously!</i> — but
-  <b>moving</b> triangles are even better.
+  Stationary triangles are cool - obviously! -- but <b>moving</b> triangles are
+  cooler.
 </p>
 
 <p>
-  Our birds don't have brains, but they do have rotation & speed — this means we
+  Our birds don't have brains, but they do have rotation & speed - this means we
   can simulate physics on them, even if they won't be able to interact with
-  their environment <i>yet</i>:
+  their environment yet:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -3794,7 +3488,9 @@
 
 <p>One <code>cargo check</code> after:</p>
 
-<div class="listing-title">$ cargo check</div>
+<listing-title>
+  $ cargo check
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -3811,21 +3507,23 @@
 </listing>
 
 <p>
-  Hmm, nalgebra doesn't provide <code>Rotation2 * f32</code> — maybe we can use
+  Hmm, nalgebra doesn't provide <code>Rotation2 * f32</code> - maybe we can use
   a vector instead?
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    /* ... */
   = animal.position += animal.rotation * na::Vector2::new(0.0, animal.speed);
-    /* ... */
   -->
 </listing>
 
-<div class="listing-title">$ cargo check</div>
+<listing-title>
+  $ cargo check
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -3835,26 +3533,24 @@
 
 <p>Bingo!</p>
 
-<aside class="note">
+<note>
   <blockquote>
-    <p>Wait, wait — why <code>::new(0.0, animal.speed)</code>?</p>
+    <p>Wait, wait - why <code>::new(0.0, animal.speed)</code>?</p>
   </blockquote>
 
   <p>
-    nalgebra assumes no specific <i>point of reference</i> — instruction
+    nalgebra assumes no specific point of reference - instruction
     <code>please move at 45°</code> doesn't contain enough information to
-    actually compute where the birdie should get moved:
-    <i>it's 45° according to which axis</i>?
+    actually compute where the birdie should get moved: it's 45° according to
+    which axis?
   </p>
 
   <figure class="sketch w-80">
-    <img
-      src="{{ assets }}/2b162f23-e9ab-4c46-8f61-0ce617366de0.svg"
-    />
+    <img src="{{ assets }}/2b162f23-e9ab-4c46-8f61-0ce617366de0.svg" />
   </figure>
 
   <p>
-    So that's the issue our <code>::new(0.0, animal.speed)</code> solves — it
+    So that's the issue our <code>::new(0.0, animal.speed)</code> solves - it
     says that we're interested in rotating relative to the <code>Y</code> axis,
     that is: a bird with rotation of 0° will fly <b>upwards</b>.
   </p>
@@ -3865,14 +3561,16 @@
     done e.g. <code>::new(-animal.speed, 0.0)</code> and adjust our
     <code>drawTriangle()</code> to account for that.
   </p>
-</aside>
+</note>
 
 <p>
   With <code>step()</code> inside <code>lib-simulation</code>, we can now expose
   it via <code>lib-simulation-wasm</code>:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -3893,7 +3591,9 @@
 
 <p>... and compile:</p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -3904,7 +3604,7 @@
 </listing>
 
 <p>
-  As for invoking <code>.step()</code> from JavaScript — while in some languages
+  As for invoking <code>.step()</code> from JavaScript - while in some languages
   we might've used a loop:
 </p>
 
@@ -3938,21 +3638,25 @@
 
 <p>
   The more time it takes for the code to complete, the longer the tab is
-  blocked — it's essentially <i>single-threaded</i>. So if we wrote
-  <code>while (true) { …​ }</code>, the browser would just hang the tab forever,
+  blocked - it's essentially single-threaded. So if we wrote
+  <code>while (true) { ...​ }</code>, the browser would just hang the tab forever,
   patiently waiting for the code to finish working.
 </p>
 
 <p>
+  <ref>
+    https://developer.mozilla.org/pl/docs/Web/API/Window/requestAnimationFrame
+  </ref>
+
   Instead of blocking, we can use a function called
-  <a
-    href="https://developer.mozilla.org/pl/docs/Web/API/Window/requestAnimationFrame"
-    ><code>requestAnimationFrame()</code></a
-  > — it <b>schedules</b> a function to be executed just before the next frame
-  is drawn, and finishes immediately:
+  <a ref><code>requestAnimationFrame()</code></a> - it <b>schedules</b> a
+  function to be executed just before the next frame is drawn and it itself
+  finishes immediately:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -3986,19 +3690,18 @@
 <p>And voilà:</p>
 
 <figure>
-  <video
-    src="{{ assets }}/4828f46c-2f2a-44a9-9d64-56ef61aa692e.mp4"
-    controls=""
-  >
+  <video src="{{ assets }}/4828f46c-2f2a-44a9-9d64-56ef61aa692e.mp4" controls="">
     Your browser does not support the video tag.
   </video>
 </figure>
 
-<p>... or rather voil-<i>whaaat</i> — why do they disappear after a while?</p>
+<p>... or rather voil-<i>whaaat</i> - why do they disappear after a while?</p>
 
 <p>Let's go back to <code>lib-simulation</code> and investigate:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4009,8 +3712,7 @@
     
         pub fn step(&mut self) {
             for animal in &mut self.world.animals {
-                animal.position +=
-                    animal.rotation * na::Vector2::new(animal.speed, 0.0);
+                animal.position += animal.rotation * na::Vector2::new(animal.speed, 0.0);
             }
         }
     }
@@ -4020,14 +3722,16 @@
 </listing>
 
 <p>
-  So we add rotation to position and…​ ah, right! Our map is bounded by
-  <code>&lt;0.0, 1.0&gt;</code> — anything beyond those coordinates can exist,
-  but it'd be rendered <i>outside</i> the canvas; as we've just seen.
+  So we add rotation to position and...​ ah, right! Our map is bounded by
+  <code>&lt;0.0, 1.0&gt;</code> - anything beyond those coordinates can exist,
+  but it'd be rendered outside the canvas; as we've just seen.
 </p>
 
 <p>Let's fix it:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4038,8 +3742,7 @@
     
         pub fn step(&mut self) {
             for animal in &mut self.world.animals {
-                animal.position +=
-                    animal.rotation * na::Vector2::new(0.0, animal.speed);
+                animal.position += animal.rotation * na::Vector2::new(0.0, animal.speed);
     
   =             animal.position.x = na::wrap(animal.position.x, 0.0, 1.0);
   =             animal.position.y = na::wrap(animal.position.y, 0.0, 1.0);
@@ -4052,10 +3755,8 @@
 </listing>
 
 <p>
-  <a href="https://docs.rs/nalgebra/0.26.2/nalgebra/fn.wrap.html"
-    ><code>wrap()</code></a
-  >
-  does pretty much what it says — the first argument is the number being
+  <a href="https://docs.rs/nalgebra/0.26.2/nalgebra/fn.wrap.html"><code>wrap()</code></a>
+  does pretty much what it says - the first argument is the number being
   checked, while the second and third arguments determine minimum and maximum
   allowed values:
 </p>
@@ -4063,42 +3764,37 @@
 <ul>
   <li>
     <p>
-      <code>na::wrap(0.5, 0.0, 1.0) == 0.5</code> (numbers between
-      <code>[min,max]</code> are left untouched),
+      <code>na::wrap(0.5, 0.0, 1.0) == 0.5</code>
+      (numbers between <code>[min,max]</code> are left untouched),
     </p>
   </li>
   <li>
     <p>
-      <code>na::wrap(-0.5, 0.0, 1.0) == 1.0</code> (<code
-        >if number &lt; min { return max; }</code
-      >),
+      <code>na::wrap(-0.5, 0.0, 1.0) == 1.0</code>
+      (<code>if number &lt; min { return max; }</code>),
     </p>
   </li>
   <li>
     <p>
-      <code>na::wrap(1.5, 0.0, 1.0) == 0.0</code> (<code
-        >if number &gt; max { return min; }</code
-      >).
+      <code>na::wrap(1.5, 0.0, 1.0) == 0.0</code>
+      (<code>if number &gt; max { return min; }</code>).
     </p>
   </li>
 </ul>
 
-<p>With this fix, let's <code>$ wasm-pack build</code> — and:</p>
+<p>With this fix, let's <code>$ wasm-pack build</code> - and:</p>
 
 <figure>
-  <video
-    src="{{ assets }}/0653f996-eb04-4c17-a1ff-06733b46f30c.mp4"
-    controls=""
-  >
+  <video src="{{ assets }}/0653f996-eb04-4c17-a1ff-06733b46f30c.mp4" controls="">
     Your browser does not support the video tag.
   </video>
 </figure>
 
 <p>Woohoo!</p>
 
-<h2 id="ur-somebody-else">
-  <a href="#ur-somebody-else">You’re Somebody Else (when you’re hungry)</a>
-</h2>
+<header id="ur-somebody-else">
+  You’re Somebody Else (when you’re hungry)
+</header>
 
 <p>
   All said, birds constitute for only half of our ecosystem - we've also got
@@ -4112,42 +3808,42 @@
   distills to just a few changes:
 </p>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
-    
-    #[derive(Clone, Debug, Serialize)]
+
+    #[wasm_bindgen]
+    #[derive(Clone, Debug)]
     pub struct World {
+        #[wasm_bindgen(getter_with_clone)]
         pub animals: Vec<Animal>,
+
+  =     #[wasm_bindgen(getter_with_clone)]
   =     pub foods: Vec<Food>,
     }
-    
-  = #[derive(Clone, Debug, Serialize)]
-  = pub struct Food {
-  =     pub x: f32,
-  =     pub y: f32,
-  = }
-    
-    /* ... */
-    
+
     impl From<&sim::World> for World {
         fn from(world: &sim::World) -> Self {
-            /* ... */
-    
-  =         let foods = world
-  =             .foods()
-  =             .iter()
-  =             .map(Food::from)
-  =             .collect();
-    
+            let animals = world.animals().iter().map(Animal::from).collect();
+  =         let foods = world.foods().iter().map(Food::from).collect();
+  =
   =         Self { animals, foods }
         }
     }
     
     /* ... */
-    
+
+  = #[wasm_bindgen]
+  = #[derive(Clone, Debug)]
+  = pub struct Food {
+  =     pub x: f32,
+  =     pub y: f32,
+  = }
+  =
   = impl From<&sim::Food> for Food {
   =     fn from(food: &sim::Food) -> Self {
   =         Self {
@@ -4159,11 +3855,18 @@
   -->
 </listing>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
     /* ... */
+
+    CanvasRenderingContext2D.prototype.drawTriangle =
+        function (x, y, size, rotation) {
+            /* ... */
+        };
     
   = CanvasRenderingContext2D.prototype.drawCircle =
   =     function(x, y, radius) {
@@ -4212,7 +3915,9 @@
 
 <p>Believe me or not, it's enough!</p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -4223,10 +3928,7 @@
 </listing>
 
 <figure>
-  <video
-    src="{{ assets }}/87172540-2d9b-4f8d-a4ff-1e0a456bfffe.mp4"
-    controls=""
-  >
+  <video src="{{ assets }}/87172540-2d9b-4f8d-a4ff-1e0a456bfffe.mp4" controls="">
     Your browser does not support the video tag.
   </video>
 </figure>
@@ -4234,11 +3936,13 @@
 <h3>Pimpin'-up</h3>
 
 <p>
-  Our math checks out, but our simulation's appearance is…​ daunting — let's try
+  Our math checks out, but our simulation's appearance is...​ daunting - let's try
   pimpin' it up:
 </p>
 
-<div class="listing-title">www/index.html</div>
+<listing-title>
+  www/index.html
+</listing-title>
 
 <listing lang="html">
   <!--
@@ -4262,7 +3966,9 @@
   -->
 </listing>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -4291,10 +3997,7 @@
 <p>There, better:</p>
 
 <figure>
-  <video
-    controls=""
-    src="{{ assets }}/cac427f6-316d-4d90-80bd-609d1511e885.mp4"
-  >
+  <video controls="" src="{{ assets }}/cac427f6-316d-4d90-80bd-609d1511e885.mp4">
     Your browser does not support the video tag.
   </video>
 </figure>
@@ -4302,13 +4005,15 @@
 <h3>Simulating food</h3>
 
 <p>
-  At the moment, when our birdies collide with food, nothing happens — time to
+  At the moment, when our birdies collide with food, nothing happens - time to
   improve it!
 </p>
 
 <p>First, let's refactor <code>step()</code> a bit:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4323,8 +4028,7 @@
     
   =     fn process_movements(&mut self) {
   =         for animal in &mut self.world.animals {
-  =             animal.position +=
-  =                 animal.rotation * na::Vector2::new(0.0, animal.speed);
+  =             animal.position += animal.rotation * na::Vector2::new(0.0, animal.speed);
   = 
   =             animal.position.x = na::wrap(animal.position.x, 0.0, 1.0);
   =             animal.position.y = na::wrap(animal.position.y, 0.0, 1.0);
@@ -4338,7 +4042,9 @@
 
 <p>Now:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4385,24 +4091,22 @@
 
 <p>
   The process of checking whether two polygons collide is called
-  <a href="https://en.wikipedia.org/wiki/Hit-testing">hit-testing</a> — so since
-  our birds are triangles and our foods are circles, the thing we
-  <i>should</i> be duckduckgoing for is
-  <code>triangle circle hit test algorithm</code> (or
-  <code>triangle circle collision</code> etc.).
+  <a href="https://en.wikipedia.org/wiki/Hit-testing">hit-testing</a> - so since
+  our birds are triangles and our foods are circles, the thing we <i>should</i>
+  be duckduckgoing for is "triangle circle hit test algorithm" (or "triangle
+  circle collision" etc.).
 </p>
 
 <p>
-  But — funny thing — this kind of hit-testing is
+  But - funny thing - this kind of hit-testing is
   <a href="http://www.phatcode.net/articles.php?id=459">unbearably complex</a>,
-  so whaddya say we try something simpler; hang tight:
+  so whaddya say we try something simpler, hang tight:
 </p>
 
 <p class="text-center">What if we assumed our birds are <b>circles</b>?</p>
 
 <p>
-  You know, we can keep <i>drawing</i> them as triangles — it's only about the
-  physics engine.
+  You know, we can keep drawing them as triangles - it's only about the physics.
 </p>
 
 <p>Agreed? <i>(just kidding, I know you can't reply here.)</i></p>
@@ -4413,34 +4117,28 @@
 </p>
 
 <figure class="sketch w-80">
-  <img
-    src="{{ assets }}/eaeec88c-f532-4976-8e1d-0b3b7660c136.svg"
-  />
+  <img src="{{ assets }}/eaeec88c-f532-4976-8e1d-0b3b7660c136.svg" />
 
   <figcaption>
-    <div class="title">
-      distance(A, B) &gt; radius(A) + radius(B) ⇒ no collision
-    </div>
+    distance(A, B) &gt; radius(A) + radius(B) ⇒ no collision
   </figcaption>
 </figure>
 
-<br>
+<br />
 
 <figure class="sketch w-80">
-  <img
-    src="{{ assets }}/b5eac4ea-8667-4590-91bb-0c77412d8cb1.svg"
-  />
+  <img src="{{ assets }}/b5eac4ea-8667-4590-91bb-0c77412d8cb1.svg" />
 
   <figcaption>
-    <div class="title">
-      distance(A, B) &lt;= radius(A) + radius(B) ⇒ collision
-    </div>
+    distance(A, B) &lt;= radius(A) + radius(B) ⇒ collision
   </figcaption>
 </figure>
 
 <p>In practice, this reduces to a single <code>if</code>:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4454,10 +4152,7 @@
   = fn process_collisions(&mut self, rng: &mut dyn RngCore) {
   =     for animal in &mut self.world.animals {
   =         for food in &mut self.world.foods {
-  =             let distance = na::distance(
-  =                 &animal.position,
-  =                 &food.position,
-  =             );
+  =             let distance = na::distance(&animal.position, &food.position);
   = 
   =             if distance <= 0.01 {
   =                 food.position = rng.gen();
@@ -4470,7 +4165,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4496,7 +4193,7 @@
 </p>
 
 <p>
-  <code>0.01</code> determines the radius of our food — I've chosen
+  <code>0.01</code> determines the radius of our food - I've chosen
   <code>0.01</code> because it seems to play nice with the sizes we're using for
   drawing.
 </p>
@@ -4504,20 +4201,17 @@
 <p>Overall, does it work? Oh my!</p>
 
 <figure>
-  <video
-    src="{{ assets }}/64cb25d6-7c9f-43a8-b7ea-e022410a962a.mp4"
-    controls=""
-  >
+  <video src="{{ assets }}/64cb25d6-7c9f-43a8-b7ea-e022410a962a.mp4" controls="">
     Your browser does not support the video tag.
   </video>
 </figure>
 
-<h2 id="birdie-and-the-brain">
-  <a href="#birdie-and-the-brain">Birdie and the Brain</a>
-</h2>
+<header id="birdie-and-the-brain">
+  Birdie and the Brain
+</header>
 
 <p>
-  Our birds can fly, but they can't interact with their environment yet — in
+  Our birds can fly, but they can't interact with their environment yet - in
   this chapter we'll implement <b>eyes</b>, allowing for our birds to see the
   food, and <b>brains</b>, allowing for our birds to decide where they want to
   fly.
@@ -4532,16 +4226,17 @@
 
 <p>A good rule of thumb is to keep a struct per file, so:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-  = pub use self::{animal::*, food::*, world::*};
-  = 
   = mod animal;
   = mod food;
   = mod world;
-    
+  =
+  = pub use self::{animal::*, food::*, world::*};
     use nalgebra as na;
     use rand::{Rng, RngCore};
     
@@ -4555,7 +4250,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4572,7 +4269,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/food.rs</div>
+<listing-title>
+  libs/simulation/src/food.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4589,7 +4288,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/world.rs</div>
+<listing-title>
+  libs/simulation/src/world.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4608,7 +4309,9 @@
 
 <p>... and now:</p>
 
-<div class="listing-title">$ cargo check</div>
+<listing-title>
+  $ cargo check
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -4629,11 +4332,13 @@
 </listing>
 
 <p>
-  Oh no; we've only shuffled some code around — what happened? Let's see the
+  Oh no, we've only shuffled some code around - what happened? Let's see the
   offending place:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4658,12 +4363,14 @@
 </listing>
 
 <p>
+  <ref>
+    https://doc.rust-lang.org/reference/visibility-and-privacy.html
+  </ref>
+
   Previously, when all four structs were in the same file, Rust's
-  <a href="https://doc.rust-lang.org/reference/visibility-and-privacy.html"
-    >visibility rules</a
-  >
-  allowed for all of them to access each other's private fields. Now that our
-  structs are in separate files, they can't access non-pub fields anymore.
+  <a ref>visibility rules</a> allowed for all of them to access each other's
+  private fields. Now that our structs are in separate files, they can't access
+  non-pub fields anymore.
 </p>
 
 <p>There are two ways we could solve this issue:</p>
@@ -4700,7 +4407,7 @@
   </li>
   <li>
     <p>
-      We could change <code>World</code>-'s fields to be
+      We could change <code>World</code>'s fields to be
       <b>crate-public</b> instead of private:
     </p>
 
@@ -4718,10 +4425,10 @@
 
 <p>
   All fields (or functions, as seen in the first case) prepended with
-  <code>pub(crate)</code> are visible to the entire code inside given crate — so
+  <code>pub(crate)</code> are visible to the entire code inside given crate - so
   <code>pub(crate) animals</code> means that all the code inside
   <code>lib-simulation</code> will be able to access <code>world.animals</code>,
-  and it'll remain private for other crates.
+  but it'll remain private for other crates.
 </p>
 
 <p>As for the difference between both snippets, it's pretty minor:</p>
@@ -4744,32 +4451,12 @@
 </ol>
 
 <p>
-  For simplicity, we'll go with the second approach — with an additional
-  <i>touch</i>:
+  For simplicity, we'll go with the second approach:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
-
-<listing lang="rust">
-  <!--
-  = #![feature(crate_visibility_modifier)]
-    // ^ Allows to write `crate field: ...` instead of a bit longer
-    // | `pub(crate) field: ...`.
-    // |
-    // | I like it, because it makes the code easier to follow.
-    // ---
-    
-    /* ... */
-  -->
-</listing>
-
-<aside class="note note-from-the-future">
-  Note from the future: this feature has been since removed from the language;
-  if you follow this article with a newer compiler, use <code>pub(crate)</code>
-  in place of <code>crate</code>.
-</aside>
-
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4777,16 +4464,18 @@
     
     #[derive(Debug)]
     pub struct Animal {
-  =     crate position: na::Point2<f32>,
-  =     crate rotation: na::Rotation2<f32>,
-  =     crate speed: f32,
+  =     pub(crate) position: na::Point2<f32>,
+  =     pub(crate) rotation: na::Rotation2<f32>,
+  =     pub(crate) speed: f32,
     }
     
     /* ... */
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/food.rs</div>
+<listing-title>
+  libs/simulation/src/food.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4794,14 +4483,16 @@
     
     #[derive(Debug)]
     pub struct Food {
-  =     crate position: na::Point2<f32>,
+  =     pub(crate) position: na::Point2<f32>,
     }
     
     /* ... */
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/world.rs</div>
+<listing-title>
+  libs/simulation/src/world.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4809,15 +4500,17 @@
     
     #[derive(Debug)]
     pub struct World {
-  =     crate animals: Vec<Animal>,
-  =     crate foods: Vec<Food>,
+  =     pub(crate) animals: Vec<Animal>,
+  =     pub(crate) foods: Vec<Food>,
     }
     
     /* ... */
   -->
 </listing>
 
-<div class="listing-title">$ cargo check</div>
+<listing-title>
+  $ cargo check
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -4827,7 +4520,7 @@
   -->
 </listing>
 
-<p>Nice 😎 — now we're ready to implement eyes!</p>
+<p>Nice 😎 - now we're ready to implement eyes!</p>
 
 <h3>Eye Of The Birdie</h3>
 
@@ -4836,25 +4529,29 @@
 <p>
   Well, a biologist might tell you that eye is an organ that provides vision; a
   philosopher's take might be that eye is a window to one's soul; and me? I
-  think that an eye…​
+  think that an eye...​
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-  = pub use self::{animal::*, eye::*, food::*, world::*};
-    
     mod animal;
   = mod eye;
     mod food;
     mod world;
+
+  = pub use self::{animal::*, eye::*, food::*, world::*};
   -->
 </listing>
 
 <p>... is a struct!</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4866,11 +4563,12 @@
 </listing>
 
 <p>
-  Not just <i>any</i> struct, though — it's gotta have one function in
-  particular:
+  Not just any struct, though - it's gotta have one function in particular:
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -4885,24 +4583,23 @@
 </listing>
 
 <p>
-  The result of this function is a vector of numbers, where each number — each
-  <i>eye cell</i> — tells us <i>how close</i> the nearest food matching that eye
-  cell is:
+  The result of this function is a vector of numbers, where each number - each
+  eye cell - tells us how close the nearest food matching that eye cell is:
 </p>
 
 <figure class="sketch w-80">
-  <img
-    src="{{ assets }}/0adc49b4-c1cb-4012-9d63-25bbaed96de7.svg"
-  />
+  <img src="{{ assets }}/0adc49b4-c1cb-4012-9d63-25bbaed96de7.svg" />
 
   <figcaption>
-    <div class="title">Example of an eye with three eye cells</div>
+    Example of an eye with three eye cells
   </figcaption>
 </figure>
 
 <p>Such an eye is defined by a few parameters:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5002,14 +4699,14 @@
     /// than ~20 photoreceptors yielding progressively worse results.
   = const CELLS: usize = 9;
     
-  = #[derive(Debug)]
+    #[derive(Debug)]
   = pub struct Eye {
   =     fov_range: f32,
   =     fov_angle: f32,
   =     cells: usize,
   = }
-  = 
-  = impl Eye {
+
+    impl Eye {
   =     // FOV_RANGE, FOV_ANGLE & CELLS are the values we'll use during
   =     // simulation - but being able to create an arbitrary eye will
   =     // come handy during the testing:
@@ -5033,7 +4730,7 @@
   =     ) -> Vec<f32> {
   =         todo!()
   =     }
-  = }
+    }
   = 
   = impl Default for Eye {
   =     fn default() -> Self {
@@ -5045,7 +4742,9 @@
 
 <p>The basic outline of our algorithm is:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5079,7 +4778,9 @@
       <code>FOV_RANGE</code>:
     </p>
 
-    <div class="listing-title">libs/simulation/src/eye.rs</div>
+    <listing-title>
+      libs/simulation/src/eye.rs
+    </listing-title>
 
     <listing lang="rust">
       <!--
@@ -5099,7 +4800,7 @@
             // You could say a vector is an arrow:
             //
             //   --\-> this is a vector of magnitude=3 (if we count each
-            //        dash as a single "unit of space"), and direction=0°
+            //        dash as a single "unit of space") and direction=0°
             //        (at least relative to the X axis)
             //
             //    |   this is a vector of magnitude=1 and direction=90°
@@ -5142,13 +4843,15 @@
   <li>
     <p>
       The angle between us and the food must be no greater than
-      <code>FOV_ANGLE</code> — and since our birdie's vision is symmetrical
+      <code>FOV_ANGLE</code> - and since our birdie's vision is symmetrical
       (they see the same amount "on the left" and "on the right", just like
       humans do), this means that our angle must be
       <code>&lt;-FOV_ANGLE/2, +FOV_ANGLE/2&gt;</code>:
     </p>
 
-    <div class="listing-title">libs/simulation/src/eye.rs</div>
+    <listing-title>
+      libs/simulation/src/eye.rs
+    </listing-title>
 
     <listing lang="rust">
       <!--
@@ -5162,7 +4865,7 @@
             //    ^
             //    |  = 0° = 0
             //
-            //   ---> = 90° = -PI / 2
+            //   -\-> = 90° = -PI / 2
             //
             //    |  = 180° = -PI
             //    v
@@ -5210,9 +4913,7 @@
         
             // If current angle is outside our birdie's field of view, jump
             // to the next food
-      =     if angle < -self.fov_angle / 2.0 ||
-      =        angle > self.fov_angle / 2.0
-      =     {
+      =     if angle < -self.fov_angle / 2.0 || angle > self.fov_angle / 2.0 {
       =         continue;
       =     }
         }
@@ -5224,7 +4925,7 @@
 </ol>
 
 <p>
-  Ok, we've rejected all the foods outside our birdie's field of view — for the
+  Ok, we've rejected all the foods outside our birdie's field of view - for the
   eye to work, we need one more thing:
 </p>
 
@@ -5236,19 +4937,19 @@
 
 <p>
   Determining which concrete cell sees the food is a bit tricky, but it distills
-  to looking at the angle between the food and our eye — e.g. for an eye with
+  to looking at the angle between the food and our eye - e.g. for an eye with
   three cells and fov of 120°:
 </p>
 
 <figure class="sketch">
-  <img
-    src="{{ assets }}/17d07e2f-952f-4c16-a71a-aace25683c5e.svg"
-  />
+  <img src="{{ assets }}/17d07e2f-952f-4c16-a71a-aace25683c5e.svg" />
 </figure>
 
 <p>In the poetic language of code:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5312,7 +5013,9 @@
 
 <p>Now that we know the cell index, our final touch in here is:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5334,7 +5037,7 @@
         // As always, feel free to experiment! -- overall this isn't the
         // only way of implementing eyes.
   =     let energy = (self.fov_range - dist) / self.fov_range;
-    
+  =
   =     cells[cell] += energy;
     }
     
@@ -5343,7 +5046,7 @@
 </listing>
 
 <p>
-  That's a lot of math! — how do we know it works? Of course, by testing it 😊
+  That's a lot of math! - how do we know it works? Of course, by testing it 😊
 </p>
 
 <h3>Nothing But Tests</h3>
@@ -5363,7 +5066,7 @@
     <p>number of cells (one <code>usize</code>),</p>
   </li>
   <li>
-    <p>position (two <code>f32</code>-s),</p>
+    <p>position (two <code>f32</code>s),</p>
   </li>
   <li>
     <p>rotation (one <code>f32</code>).</p>
@@ -5371,8 +5074,8 @@
 </ul>
 
 <p>
-  Even ignoring the number of cells — which we can hard-code without losing
-  much — this gets us <b>5</b> different tunables that affect each other, plus
+  Even ignoring the number of cells - which we can hard-code without losing
+  much - this gets us <b>5</b> different tunables that affect each other, plus
   we've also got to specify locations of our foods; moon on a stick, checking
   all of the combinations, I tell ya'!
 </p>
@@ -5385,13 +5088,13 @@
 </p>
 
 <p class="text-center">
-  is <code>vec![0.0, 0.1, 0.7]</code> <i>really</i> the response we want for
+  is <code>vec![0.0, 0.1, 0.7]</code> really the response we want for
   <code>x=0.2, y=0.5</code>? who knows!
 </p>
 
 <p>
   So, as for the first obstacle, my idea is to use a thing called
-  <b>parameterized tests</b> — with a pinch of salt, parameterized tests are
+  <b>parameterized tests</b> - with a pinch of salt, parameterized tests are
   when you create a testing function:
 </p>
 
@@ -5421,31 +5124,35 @@
 
 <p>
   This testing methodology allows to cover the input space more thoroughly than
-  you'd do with copy-pasted <code>mod { …​ }</code>, simply because adding more
-  edge cases is just <i>so easy</i>.
+  you'd do with copy-pasted <code>mod { ...​ }</code>, simply because adding more
+  edge cases is just so easy.
 </p>
 
 <p>
-  Rust doesn't support parameterized tests natively — at least not in the manner
-  that I've shown above — but there exist a few crates providing this
+  Rust doesn't support parameterized tests natively - at least not in the manner
+  that I've shown above - but there exist a few crates providing this
   functionality; we're going to use
   <a href="https://crates.io/crates/test-case">test-case</a>:
 </p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
     # ...
     
   = [dev-dependencies]
-  = test-case = "1.1"
+  = test-case = "3.3.1"
   -->
 </listing>
 
 <p>... which has a pretty straightforward syntax:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5454,17 +5161,13 @@
   = #[cfg(test)]
   = mod tests {
   =     use super::*;
+  =     use test_case::test_case;
   = 
-  =     mod different_fov_ranges {
-  =         use super::*;
-  =         use test_case::test_case;
-  = 
-  =         #[test_case(1.0)]
-  =         #[test_case(0.5)]
-  =         #[test_case(0.1)]
-  =         fn test(fov_range: f32) {
-  =             todo!()
-  =         }
+  =     #[test_case(1.0)]
+  =     #[test_case(0.5)]
+  =     #[test_case(0.1)]
+  =     fn fov_ranges(fov_range: f32) {
+  =         todo!()
   =     }
   = }
   -->
@@ -5472,9 +5175,9 @@
 
 <p>
   This solves the first obstacle, at least for all the practical purposes; while
-  we still won't be able to cover <i>all</i> the cases (remember how many
-  numbers <code>f32</code> can encode?), the more test-cases we include, the
-  more confident we can be that our code works as intended.
+  we still won't be able to cover all the cases (remember how many numbers
+  <code>f32</code> can encode?), the more test-cases we include, the more
+  confident we can be that our code works as intended.
 </p>
 
 <p>
@@ -5485,14 +5188,15 @@
 <p>
   Stay with me: even if <code>process_vision()</code> returns something like
   <code>vec![0.0, 0.5, 0.0]</code>, it doesn't mean we're forced to compare
-  <i>that</i> in our tests! If instead of a vector, what we compared was, hmm,
-  <code>" * "</code>, it'd be <i>waay</i> easier to ensure our eye works
-  correctly!
+  that in our tests! If instead of a vector, what we compared was, hmm,
+  <code>" * "</code>, it'd be waay easier to ensure our eye works correctly.
 </p>
 
 <p>So, baby steps:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5501,48 +5205,46 @@
     #[cfg(test)]
     mod tests {
         use super::*;
+        use test_case::test_case;
     
-  =     fn test(
-  =         foods: Vec<Food>,
-  =         fov_range: f32,
-  =         fov_angle: f32,
-  =         x: f32,
-  =         y: f32,
-  =         rot: f32,
-  =         expected_vision: &str,
-  =     ) {
-  =         todo!()
-  =     }
-    
-        mod different_fov_ranges {
-            use super::*;
-            use test_case::test_case;
-    
-            #[test_case(1.0)]
-            #[test_case(0.5)]
-            #[test_case(0.1)]
-            fn test(fov_range: f32) {
-  =             super::test(
-  =                 todo!(),
-  =                 fov_range,
-  =                 todo!(),
-  =                 todo!(),
-  =                 todo!(),
-  =                 todo!(),
-  =                 todo!(),
-  =              );
-            }
+        fn test(
+            foods: Vec<Food>,
+            fov_range: f32,
+            fov_angle: f32,
+            x: f32,
+            y: f32,
+            rot: f32,
+            expected_vision: &str,
+        ) {
+            todo!()
+        }
+
+        #[test_case(1.0)]
+        #[test_case(0.5)]
+        #[test_case(0.1)]
+        fn fov_ranges(fov_range: f32) {
+            super::test(
+                todo!(),
+                fov_range,
+                todo!(),
+                todo!(),
+                todo!(),
+                todo!(),
+                todo!(),
+             );
         }
     }
   -->
 </listing>
 
 <p>
-  Hmmm, <b>no</b> — that's <i>waaay</i> too many parameters for a single
-  function; how about a struct?
+  Hmmm, <b>no</b> - that's waaay too many parameters for a single function; how
+  about a struct?
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5551,6 +5253,7 @@
     #[cfg(test)]
     mod tests {
         use super::*;
+        use test_case::test_case;
     
   =     struct TestCase {
   =         foods: Vec<Food>,
@@ -5567,25 +5270,20 @@
   =             todo!()
   =         }
   =     }
-    
-        mod different_fov_ranges {
-            use super::*;
-            use test_case::test_case;
-    
-            #[test_case(1.0)]
-            #[test_case(0.5)]
-            #[test_case(0.1)]
-            fn test(fov_range: f32) {
-  =             TestCase {
-  =                 foods: todo!(),
-  =                 fov_angle: todo!(),
-  =                 x: todo!(),
-  =                 y: todo!(),
-  =                 rot: todo!(),
-  =                 expected_vision: todo!(),
-  =                 fov_range,
-  =             }.run()
-            }
+
+        #[test_case(1.0)]
+        #[test_case(0.5)]
+        #[test_case(0.1)]
+        fn fov_ranges(fov_range: f32) {
+  =         TestCase {
+  =             foods: todo!(),
+  =             fov_angle: todo!(),
+  =             x: todo!(),
+  =             y: todo!(),
+  =             rot: todo!(),
+  =             expected_vision: todo!(),
+  =             fov_range,
+  =         }.run()
         }
     }
   -->
@@ -5595,33 +5293,30 @@
 
 <p>
   Our test's result, <code>expected_vision</code>, depends on
-  <code>fov_range</code>, so it's formally a parameter, too:
+  <code>fov_range</code>, so it's a parameter, too:
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
     
-    mod different_fov_ranges {
-        use super::*;
-        use test_case::test_case;
-    
-  =     #[test_case(1.0, "not sure yet")]
-  =     #[test_case(0.5, "not sure yet")]
-  =     #[test_case(0.1, "not sure yet")]
-  =     fn test(fov_range: f32, expected_vision: &'static str) {
-            TestCase {
-                foods: todo!(),
-                fov_angle: todo!(),
-                x: todo!(),
-                y: todo!(),
-                rot: todo!(),
-                fov_range,
-  =             expected_vision,
-            }.run()
-        }
+  = #[test_case(1.0, "not sure yet")]
+  = #[test_case(0.5, "not sure yet")]
+  = #[test_case(0.1, "not sure yet")]
+  = fn fov_ranges(fov_range: f32, expected_vision: &'static str) {
+        TestCase {
+            foods: todo!(),
+            fov_angle: todo!(),
+            x: todo!(),
+            y: todo!(),
+            rot: todo!(),
+            fov_range,
+  =         expected_vision,
+        }.run()
     }
     
     /* ... */
@@ -5629,7 +5324,7 @@
 </listing>
 
 <p>
-  About that <code>TestCase</code> — from a birds-eye view, what we're looking
+  About that <code>TestCase</code> - from a birds-eye view, what we're looking
   for is:
 </p>
 
@@ -5657,7 +5352,9 @@
   can start implementing it:
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5675,26 +5372,20 @@
     ///
     /// As for the "why this number in particular":
     ///
-    /// I've checked a few numbers by hand, and generally found 13 to yield
+    /// I've checked a few numbers by hand and generally found 13 to yield
     /// pretty good results. As always, nothing special about 13 in
     /// particular, your (eye) mileage may vary.
   = const TEST_EYE_CELLS: usize = 13;
     
     impl TestCase {
         fn run(self) {
-  =         let eye = Eye::new(
-  =             self.fov_range,
-  =             self.fov_angle,
-  =             TEST_EYE_CELLS,
-  =         );
-  = 
+  =         let eye = Eye::new(self.fov_range, self.fov_angle,TEST_EYE_CELLS);
+  =
   =         let actual_vision = eye.process_vision(
   =             na::Point2::new(self.x, self.y),
   =             na::Rotation2::new(self.rot),
   =             &self.foods,
   =         );
-    
-            /* ... */
         }
     }
     
@@ -5703,12 +5394,14 @@
 </listing>
 
 <p>
-  Currently our <code>actual_vision</code> is <code>Vec&lt;f32&gt;</code> — we
+  Currently our <code>actual_vision</code> is <code>Vec&lt;f32&gt;</code> - we
   can convert it into a string via a chip of <code>.into_iter()</code>,
   <code>.map()</code> and <code>.join()</code> magic:
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -5756,8 +5449,7 @@
             // separator - e.g. `vec!["a", "b", "c"].join("|")` would
             // return `a|b|c`.
   =         let actual_vision = actual_vision.join("");
-    
-            // The finish line!
+  =
   =         assert_eq!(actual_vision, self.expected_vision);
         }
     }
@@ -5766,95 +5458,90 @@
   -->
 </listing>
 
-<p>Just like that, our <b>testing framework</b> is complete! 🥳</p>
+<p>Just like that, our testing framework is complete! 🥳</p>
+<p>Now, as for the tests - allow me to present you pure beauty:</p>
 
-<p>Now, as for the tests — allow me to present you <i>pure beauty</i>:</p>
-
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
     
-    // A helper-function that allows to create food easily
   = fn food(x: f32, y: f32) -> Food {
   =     Food {
   =         position: na::Point2::new(x, y),
   =     }
   = }
-    
-    mod different_fov_ranges {
-        use super::*;
-        use test_case::test_case;
-    
-        /// During tests in this module, we're using a world that looks
-        /// like this:
-        ///
-        /// -------------
-        /// |           |
-        /// |           |
-        /// |     @     |
-        /// |     v     | `v` here indicates where the birdie is looking at
-        /// |           |
-        /// |     %     |
-        /// -------------
-        ///
-        /// Each test gradually reduces our birdie's field of view and
-        /// checks what the birdie sees:
-        ///
-        /// -------------
-        /// |           |
-        /// |           |
-        /// |     @     |
-        /// |    /v\    |
-        /// |  /.....\  | `.` here indicates the part of view the birdie sees
-        /// |/....%....\|
-        /// -------------
-        ///
-        /// -------------
-        /// |           |
-        /// |           |
-        /// |     @     |
-        /// |    /v\    |
-        /// |  /.....\  |
-        /// |     %     |
-        /// -------------
-        ///
-        /// -------------
-        /// |           |
-        /// |           |
-        /// |     @     |
-        /// |    /.\    |
-        /// |           |
-        /// |     %     |
-        /// -------------
-        ///
-        /// Over time, what we see is the food gradually disappearing
-        /// into the emptiness:
-        ///
-        /// (well, technically the food and bird remain stationary - it's
-        /// only the birdie's own field of view that gets reduced.)
-  =     #[test_case(1.0, "      +      ")] // Food is inside the FOV
-  =     #[test_case(0.9, "      +      ")] // ditto
-  =     #[test_case(0.8, "      +      ")] // ditto
-  =     #[test_case(0.7, "      .      ")] // Food slowly disappears
-  =     #[test_case(0.6, "      .      ")] // ditto
-  =     #[test_case(0.5, "             ")] // Food disappeared!
-  =     #[test_case(0.4, "             ")]
-  =     #[test_case(0.3, "             ")]
-  =     #[test_case(0.2, "             ")]
-  =     #[test_case(0.1, "             ")]
-        fn test(fov_range: f32, expected_vision: &'static str) {
-            TestCase {
-  =             foods: vec![food(0.5, 1.0)],
-  =             fov_angle: FRAC_PI_2,
-  =             x: 0.5,
-  =             y: 0.5,
-  =             rot: 0.0,
-                fov_range,
-                expected_vision,
-            }.run()
-        }
+
+    /// During tests in this module, we're using a world that looks
+    /// like this:
+    ///
+    /// -------------
+    /// |           |
+    /// |           |
+    /// |     @     |
+    /// |     v     | `v` here indicates where the birdie is looking at
+    /// |           |
+    /// |     %     |
+    /// -------------
+    ///
+    /// Each test gradually reduces our birdie's field of view and
+    /// checks what the birdie sees:
+    ///
+    /// -------------
+    /// |           |
+    /// |           |
+    /// |     @     |
+    /// |    /v\    |
+    /// |  /.....\  | `.` here indicates the part of view the birdie sees
+    /// |/....%....\|
+    /// -------------
+    ///
+    /// -------------
+    /// |           |
+    /// |           |
+    /// |     @     |
+    /// |    /v\    |
+    /// |  /.....\  |
+    /// |     %     |
+    /// -------------
+    ///
+    /// -------------
+    /// |           |
+    /// |           |
+    /// |     @     |
+    /// |    /.\    |
+    /// |           |
+    /// |     %     |
+    /// -------------
+    ///
+    /// Over time, what we see is the food gradually disappearing
+    /// into the emptiness:
+    ///
+    /// (well, technically the food and bird remain stationary - it's
+    /// only the birdie's own field of view that gets reduced.)
+  = #[test_case(1.0, "      +      ")] // Food is inside the FOV
+  = #[test_case(0.9, "      +      ")] // ditto
+  = #[test_case(0.8, "      +      ")] // ditto
+  = #[test_case(0.7, "      .      ")] // Food slowly disappears
+  = #[test_case(0.6, "      .      ")] // ditto
+  = #[test_case(0.5, "             ")] // Food disappeared!
+  = #[test_case(0.4, "             ")]
+  = #[test_case(0.3, "             ")]
+  = #[test_case(0.2, "             ")]
+  = #[test_case(0.1, "             ")]
+    fn fov_ranges(fov_range: f32, expected_vision: &'static str) {
+        TestCase {
+  =         foods: vec![food(0.5, 1.0)],
+  =         fov_angle: FRAC_PI_2,
+  =         x: 0.5,
+  =         y: 0.5,
+  =         rot: 0.0,
+            fov_range,
+            expected_vision,
+        }.run()
     }
     
     /* ... */
@@ -5863,35 +5550,37 @@
 
 <p>Breath in, breath out:</p>
 
-<div class="listing-title">$ cargo test --workspace</div>
+<listing-title>
+  $ cargo test -p lib-simulation
+</listing-title>
 
 <listing lang="text">
   <!--
     running 10 tests
-    test eye::tests::different_fov_ranges::test::_0_4_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_2_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_5_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_1_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_3_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_8_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_9_ ... ok
-    test eye::tests::different_fov_ranges::test::_1_0_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_7_ ... ok
-    test eye::tests::different_fov_ranges::test::_0_6_ ... ok
+    test eye::tests::fov_ranges::_0_4_ ... ok
+    test eye::tests::fov_ranges::_0_2_ ... ok
+    test eye::tests::fov_ranges::_0_5_ ... ok
+    test eye::tests::fov_ranges::_0_1_ ... ok
+    test eye::tests::fov_ranges::_0_3_ ... ok
+    test eye::tests::fov_ranges::_0_8_ ... ok
+    test eye::tests::fov_ranges::_0_9_ ... ok
+    test eye::tests::fov_ranges::_1_0_ ... ok
+    test eye::tests::fov_ranges::_0_7_ ... ok
+    test eye::tests::fov_ranges::_0_6_ ... ok
     
     test result: ok. 10 passed; 0 failed
   -->
 </listing>
 
 <p>
-  Ha, ha! — it works! And it's readable! (and, with luck, even maintainable!)
+  Ha, ha! - it works! And it's readable! (and, with luck, even maintainable!)
 </p>
 
-<aside class="note">
+<note>
   <p>
-    The code you see has the correct values for
-    <code>expected_vision</code> already filled — but in reality I didn't know
-    them up-front; behind the scenes, what I've done was:
+    The code you see has the correct values for <code>expected_vision</code>
+    already filled, but in reality I didn't know them up-front - behind the
+    scenes, what I've done was:
   </p>
 
   <listing lang="rust">
@@ -5902,11 +5591,11 @@
   </listing>
 
   <p>
-    ... and then I've run <code>$ cargo test</code>, and copy-pasted the actual
+    ... and then I've run <code>$ cargo test</code> and copy-pasted the actual
     result from the error message, analyzing whether it made sense or not (e.g.
     getting <code>#</code> for <code>fov_range</code> of <code>0.1</code> could
-    indicate a bug, as a birdie with such a small
-    <code>fov_range</code> shouldn't be able to see that food).
+    indicate a bug, as a birdie with such a small <code>fov_range</code>
+    shouldn't be able to see that food).
   </p>
 
   <p>
@@ -5916,87 +5605,84 @@
     all of the tests pass; just keep in mind than in reality you'd have to start
     with e.g. empty assertion and see what comes out of it.
   </p>
-</aside>
+</note>
 
-<p>That's one parameter — four more to go! What about rotation?</p>
+<p>That's one parameter - four more to go! What about rotation?</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
-    
-  = mod different_rotations {
-  =     use super::*;
-  =     use test_case::test_case;
-    
-        /// World:
-        ///
-        /// -------------
-        /// |           |
-        /// |           |
-        /// |%    @     |
-        /// |     v     |
-        /// |           |
-        /// -------------
-        ///
-        /// Test cases:
-        ///
-        /// -------------
-        /// |...........|
-        /// |...........|
-        /// |%....@.....|
-        /// |.....v.....|
-        /// |...........|
-        /// -------------
-        ///
-        /// -------------
-        /// |...........|
-        /// |...........|
-        /// |%...<@.....|
-        /// |...........|
-        /// |...........|
-        /// -------------
-        ///
-        /// -------------
-        /// |...........|
-        /// |.....^.....|
-        /// |%....@.....|
-        /// |...........|
-        /// |...........|
-        /// -------------
-        ///
-        /// -------------
-        /// |...........|
-        /// |...........|
-        /// |%....@>....|
-        /// |...........|
-        /// |...........|
-        /// -------------
-        ///
-        /// ... and so on, until we do a full circle, 360° rotation:
-  =     #[test_case(0.00 * PI, "         +   ")] // Food is to our right
-  =     #[test_case(0.25 * PI, "        +    ")]
-  =     #[test_case(0.50 * PI, "      +      ")] // Food is in front of us
-  =     #[test_case(0.75 * PI, "    +        ")]
-  =     #[test_case(1.00 * PI, "   +         ")] // Food is to our left
-  =     #[test_case(1.25 * PI, " +           ")]
-  =     #[test_case(1.50 * PI, "            +")] // Food is behind us
-  =     #[test_case(1.75 * PI, "           + ")] // (we continue to see it
-  =     #[test_case(2.00 * PI, "         +   ")] // due to 360° fov_angle.)
-  =     #[test_case(2.25 * PI, "        +    ")]
-  =     #[test_case(2.50 * PI, "      +      ")]
-  =     fn test(rot: f32, expected_vision: &'static str) {
-  =         TestCase {
-  =             foods: vec![food(0.0, 0.5)],
-  =             fov_range: 1.0,
-  =             fov_angle: 2.0 * PI,
-  =             x: 0.5,
-  =             y: 0.5,
-  =             rot,
-  =             expected_vision,
-  =         }.run()
-  =     }
+
+    /// World:
+    ///
+    /// -------------
+    /// |           |
+    /// |           |
+    /// |%    @     |
+    /// |     v     |
+    /// |           |
+    /// -------------
+    ///
+    /// Test cases:
+    ///
+    /// -------------
+    /// |...........|
+    /// |...........|
+    /// |%....@.....|
+    /// |.....v.....|
+    /// |...........|
+    /// -------------
+    ///
+    /// -------------
+    /// |...........|
+    /// |...........|
+    /// |%...<@.....|
+    /// |...........|
+    /// |...........|
+    /// -------------
+    ///
+    /// -------------
+    /// |...........|
+    /// |.....^.....|
+    /// |%....@.....|
+    /// |...........|
+    /// |...........|
+    /// -------------
+    ///
+    /// -------------
+    /// |...........|
+    /// |...........|
+    /// |%....@>....|
+    /// |...........|
+    /// |...........|
+    /// -------------
+    ///
+    /// ... and so on, until we do a full circle, 360° rotation:
+  = #[test_case(0.00 * PI, "         +   ")] // Food is to our right
+  = #[test_case(0.25 * PI, "        +    ")]
+  = #[test_case(0.50 * PI, "      +      ")] // Food is in front of us
+  = #[test_case(0.75 * PI, "    +        ")]
+  = #[test_case(1.00 * PI, "   +         ")] // Food is to our left
+  = #[test_case(1.25 * PI, " +           ")]
+  = #[test_case(1.50 * PI, "            +")] // Food is behind us
+  = #[test_case(1.75 * PI, "           + ")] // (we continue to see it
+  = #[test_case(2.00 * PI, "         +   ")] // due to 360° fov_angle.)
+  = #[test_case(2.25 * PI, "        +    ")]
+  = #[test_case(2.50 * PI, "      +      ")]
+  = fn rotations(rot: f32, expected_vision: &'static str) {
+  =     TestCase {
+  =         foods: vec![food(0.0, 0.5)],
+  =         fov_range: 1.0,
+  =         fov_angle: 2.0 * PI,
+  =         x: 0.5,
+  =         y: 0.5,
+  =         rot,
+  =         expected_vision,
+  =     }.run()
   = }
     
     /* ... */
@@ -6005,212 +5691,208 @@
 
 <p>Testing positions is even more fun:</p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
+
+    /// World:
+    ///
+    /// ------------
+    /// |          |
+    /// |         %|
+    /// |          |
+    /// |         %|
+    /// |          |
+    /// ------------
+    ///
+    /// Test cases for the X axis:
+    ///
+    /// ------------
+    /// |          |
+    /// |        /%|
+    /// |       @>.|
+    /// |        \%|
+    /// |          |
+    /// ------------
+    ///
+    /// ------------
+    /// |        /.|
+    /// |      /..%|
+    /// |     @>...|
+    /// |      \..%|
+    /// |        \.|
+    /// ------------
+    ///
+    /// ... and so on, going further left
+    ///     (or, from the bird's point of view - going _back_)
+    ///
+    /// Test cases for the Y axis:
+    ///
+    /// ------------
+    /// |     @>...|
+    /// |       \.%|
+    /// |        \.|
+    /// |         %|
+    /// |          |
+    /// ------------
+    ///
+    /// ------------
+    /// |      /...|
+    /// |     @>..%|
+    /// |      \...|
+    /// |        \%|
+    /// |          |
+    /// ------------
+    ///
+    /// ... and so on, going further down
+    ///     (or, from the bird's point of view - going _right_)
     
-  = mod different_positions {
-  =     use super::*;
-  =     use test_case::test_case;
-    
-        /// World:
-        ///
-        /// ------------
-        /// |          |
-        /// |         %|
-        /// |          |
-        /// |         %|
-        /// |          |
-        /// ------------
-        ///
-        /// Test cases for the X axis:
-        ///
-        /// ------------
-        /// |          |
-        /// |        /%|
-        /// |       @>.|
-        /// |        \%|
-        /// |          |
-        /// ------------
-        ///
-        /// ------------
-        /// |        /.|
-        /// |      /..%|
-        /// |     @>...|
-        /// |      \..%|
-        /// |        \.|
-        /// ------------
-        ///
-        /// ... and so on, going further left
-        ///     (or, from the bird's point of view - going _back_)
-        ///
-        /// Test cases for the Y axis:
-        ///
-        /// ------------
-        /// |     @>...|
-        /// |       \.%|
-        /// |        \.|
-        /// |         %|
-        /// |          |
-        /// ------------
-        ///
-        /// ------------
-        /// |      /...|
-        /// |     @>..%|
-        /// |      \...|
-        /// |        \%|
-        /// |          |
-        /// ------------
-        ///
-        /// ... and so on, going further down
-        ///     (or, from the bird's point of view - going _right_)
-    
-  =     // Checking the X axis:
-  =     // (you can see the bird is "flying away" from the foods)
-  =     #[test_case(0.9, 0.5, "#           #")]
-  =     #[test_case(0.8, 0.5, "  #       #  ")]
-  =     #[test_case(0.7, 0.5, "   +     +   ")]
-  =     #[test_case(0.6, 0.5, "    +   +    ")]
-  =     #[test_case(0.5, 0.5, "    +   +    ")]
-  =     #[test_case(0.4, 0.5, "     + +     ")]
-  =     #[test_case(0.3, 0.5, "     . .     ")]
-  =     #[test_case(0.2, 0.5, "     . .     ")]
-  =     #[test_case(0.1, 0.5, "     . .     ")]
-  =     #[test_case(0.0, 0.5, "             ")]
-  =     //
-  =     // Checking the Y axis:
-  =     // (you can see the bird is "flying alongside" the foods)
-  =     #[test_case(0.5, 0.0, "            +")]
-  =     #[test_case(0.5, 0.1, "          + .")]
-  =     #[test_case(0.5, 0.2, "         +  +")]
-  =     #[test_case(0.5, 0.3, "        + +  ")]
-  =     #[test_case(0.5, 0.4, "      +  +   ")]
-  =     #[test_case(0.5, 0.6, "   +  +      ")]
-  =     #[test_case(0.5, 0.7, "  + +        ")]
-  =     #[test_case(0.5, 0.8, "+  +         ")]
-  =     #[test_case(0.5, 0.9, ". +          ")]
-  =     #[test_case(0.5, 1.0, "+            ")]
-  =     fn test(x: f32, y: f32, expected_vision: &'static str) {
-  =         TestCase {
-  =             foods: vec![food(1.0, 0.4), food(1.0, 0.6)],
-  =             fov_range: 1.0,
-  =             fov_angle: FRAC_PI_2,
-  =             rot: 3.0 * FRAC_PI_2,
-  =             x,
-  =             y,
-  =             expected_vision,
-  =         }.run()
-  =     }
+  = // Checking the X axis:
+  = // (you can see the bird is "flying away" from the foods)
+  = #[test_case(0.9, 0.5, "#           #")]
+  = #[test_case(0.8, 0.5, "  #       #  ")]
+  = #[test_case(0.7, 0.5, "   +     +   ")]
+  = #[test_case(0.6, 0.5, "    +   +    ")]
+  = #[test_case(0.5, 0.5, "    +   +    ")]
+  = #[test_case(0.4, 0.5, "     + +     ")]
+  = #[test_case(0.3, 0.5, "     . .     ")]
+  = #[test_case(0.2, 0.5, "     . .     ")]
+  = #[test_case(0.1, 0.5, "     . .     ")]
+  = #[test_case(0.0, 0.5, "             ")]
+  = //
+  = // Checking the Y axis:
+  = // (you can see the bird is "flying alongside" the foods)
+  = #[test_case(0.5, 0.0, "            +")]
+  = #[test_case(0.5, 0.1, "          + .")]
+  = #[test_case(0.5, 0.2, "         +  +")]
+  = #[test_case(0.5, 0.3, "        + +  ")]
+  = #[test_case(0.5, 0.4, "      +  +   ")]
+  = #[test_case(0.5, 0.6, "   +  +      ")]
+  = #[test_case(0.5, 0.7, "  + +        ")]
+  = #[test_case(0.5, 0.8, "+  +         ")]
+  = #[test_case(0.5, 0.9, ". +          ")]
+  = #[test_case(0.5, 1.0, "+            ")]
+  = fn positions(x: f32, y: f32, expected_vision: &'static str) {
+  =     TestCase {
+  =         foods: vec![food(1.0, 0.4), food(1.0, 0.6)],
+  =         fov_range: 1.0,
+  =         fov_angle: FRAC_PI_2,
+  =         rot: 3.0 * FRAC_PI_2,
+  =         x,
+  =         y,
+  =         expected_vision,
+  =     }.run()
   = }
-    
+
     /* ... */
   -->
 </listing>
 
 <p>
-  We've got only one more parameter left to cover: field of view's <i>angle</i>.
+  We've got only one more parameter left to cover: field of view's angle.
 </p>
 
 <p>
-  We'll use the same framework, but <i>imagining</i> what happens in here is
-  tiny bit more complicated (or at least it took me a minute to ensure the
-  behavior is correct):
+  We'll use the same framework, but imagining what happens in here is tiny bit
+  more complicated (or at least it took me a minute to ensure the behavior is
+  correct):
 </p>
 
-<div class="listing-title">libs/simulation/src/eye.rs</div>
+<listing-title>
+  libs/simulation/src/eye.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
     
-  = mod different_fov_angles {
-  =     use super::*;
-  =     use test_case::test_case;
-    
-        /// World:
-        ///
-        /// ------------
-        /// |%        %|
-        /// |          |
-        /// |%        %|
-        /// |    @>    |
-        /// |%        %|
-        /// |          |
-        /// |%        %|
-        /// ------------
-        ///
-        /// Test cases:
-        ///
-        /// ------------
-        /// |%        %|
-        /// |         /|
-        /// |%      /.%|
-        /// |    @>....|
-        /// |%      \.%|
-        /// |         \|
-        /// |%        %|
-        /// ------------
-        ///
-        /// ------------
-        /// |%      /.%|
-        /// |      /...|
-        /// |%    /...%|
-        /// |    @>....|
-        /// |%    \...%|
-        /// |      \...|
-        /// |%      \.%|
-        /// ------------
-        ///
-        /// ------------
-        /// |%........%|
-        /// |\.........|
-        /// |% \......%|
-        /// |    @>....|
-        /// |% /......%|
-        /// |/.........|
-        /// |%........%|
-        /// ------------
-        ///
-        /// ... and so on, until we reach the full, 360° FOV
-  =     #[test_case(0.25 * PI, " +         + ")] // FOV is narrow = 2 foods
-  =     #[test_case(0.50 * PI, ".  +     +  .")]
-  =     #[test_case(0.75 * PI, "  . +   + .  ")] // FOV gets progressively
-  =     #[test_case(1.00 * PI, "   . + + .   ")] // wider and wider...
-  =     #[test_case(1.25 * PI, "   . + + .   ")]
-  =     #[test_case(1.50 * PI, ".   .+ +.   .")]
-  =     #[test_case(1.75 * PI, ".   .+ +.   .")]
-  =     #[test_case(2.00 * PI, "+.  .+ +.  .+")] // FOV is the widest = 8 foods
-  =     fn test(fov_angle: f32, expected_vision: &'static str) {
-  =         TestCase {
-  =             foods: vec![
-  =                 food(0.0, 0.0),
-  =                 food(0.0, 0.33),
-  =                 food(0.0, 0.66),
-  =                 food(0.0, 1.0),
-  =                 food(1.0, 0.0),
-  =                 food(1.0, 0.33),
-  =                 food(1.0, 0.66),
-  =                 food(1.0, 1.0),
-  =             ],
-  =             fov_range: 1.0,
-  =             x: 0.5,
-  =             y: 0.5,
-  =             rot: 3.0 * FRAC_PI_2,
-  =             fov_angle,
-  =             expected_vision,
-  =         }.run()
-  =     }
+    /// World:
+    ///
+    /// ------------
+    /// |%        %|
+    /// |          |
+    /// |%        %|
+    /// |    @>    |
+    /// |%        %|
+    /// |          |
+    /// |%        %|
+    /// ------------
+    ///
+    /// Test cases:
+    ///
+    /// ------------
+    /// |%        %|
+    /// |         /|
+    /// |%      /.%|
+    /// |    @>....|
+    /// |%      \.%|
+    /// |         \|
+    /// |%        %|
+    /// ------------
+    ///
+    /// ------------
+    /// |%      /.%|
+    /// |      /...|
+    /// |%    /...%|
+    /// |    @>....|
+    /// |%    \...%|
+    /// |      \...|
+    /// |%      \.%|
+    /// ------------
+    ///
+    /// ------------
+    /// |%........%|
+    /// |\.........|
+    /// |% \......%|
+    /// |    @>....|
+    /// |% /......%|
+    /// |/.........|
+    /// |%........%|
+    /// ------------
+    ///
+    /// ... and so on, until we reach the full, 360° FOV
+  = #[test_case(0.25 * PI, " +         + ")] // FOV is narrow = 2 foods
+  = #[test_case(0.50 * PI, ".  +     +  .")]
+  = #[test_case(0.75 * PI, "  . +   + .  ")] // FOV gets progressively
+  = #[test_case(1.00 * PI, "   . + + .   ")] // wider and wider...
+  = #[test_case(1.25 * PI, "   . + + .   ")]
+  = #[test_case(1.50 * PI, ".   .+ +.   .")]
+  = #[test_case(1.75 * PI, ".   .+ +.   .")]
+  = #[test_case(2.00 * PI, "+.  .+ +.  .+")] // FOV is the widest = 8 foods
+  = fn fov_angles(fov_angle: f32, expected_vision: &'static str) {
+  =     TestCase {
+  =         foods: vec![
+  =             food(0.0, 0.0),
+  =             food(0.0, 0.33),
+  =             food(0.0, 0.66),
+  =             food(0.0, 1.0),
+  =             food(1.0, 0.0),
+  =             food(1.0, 0.33),
+  =             food(1.0, 0.66),
+  =             food(1.0, 1.0),
+  =         ],
+  =         fov_range: 1.0,
+  =         x: 0.5,
+  =         y: 0.5,
+  =         rot: 3.0 * FRAC_PI_2,
+  =         fov_angle,
+  =         expected_vision,
+  =     }.run()
   = }
-    
+
     /* ... */
   -->
 </listing>
 
 <p>Nice:</p>
 
-<div class="listing-title">cargo test --workspace</div>
+<listing-title>
+  cargo test -p lib-simulation
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -6219,11 +5901,13 @@
 </listing>
 
 <p>
-  So — we've got <i>eyez</i>, but what about <i>brainz</i>? Fortunately, we've
-  already implemented it!
+  So - we've got eyez, but what about brainz? Fortunately, we've already
+  implemented it!
 </p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -6238,7 +5922,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simuation/src/lib.rs</div>
+<listing-title>
+  libs/simuation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6252,7 +5938,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6261,12 +5949,14 @@
     #[derive(Debug)]
     pub struct Animal {
         /* ... */
-  =     crate eye: Eye,
-  =     crate brain: nn::Network,
+  =     pub(crate) eye: Eye,
+  =     pub(crate) brain: nn::Network,
     }
     
     impl Animal {
         pub fn random(rng: &mut dyn RngCore) -> Self {
+            /* ... */
+
   =         let eye = Eye::default();
   = 
   =         let brain = nn::Network::random(
@@ -6293,7 +5983,7 @@
                     //
                     // The rule of thumb is to start with a single hidden
                     // layer that has somewhat more neurons that the input
-                    // layer, and see how well the network performs.
+                    // layer and see how well the network performs.
   =                 nn::LayerTopology {
   =                     neurons: 2 * eye.cells(),
   =                 },
@@ -6318,7 +6008,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6387,15 +6079,8 @@
                 // ---
                 // | Limits number to given range.
                 // -------------------- v---v
-  =             let speed = response[0].clamp(
-  =                 -SPEED_ACCEL,
-  =                 SPEED_ACCEL,
-  =             );
-  = 
-  =             let rotation = response[1].clamp(
-  =                 -ROTATION_ACCEL,
-  =                 ROTATION_ACCEL,
-  =             );
+  =             let speed = response[0].clamp(-SPEED_ACCEL, SPEED_ACCEL);
+  =             let rotation = response[1].clamp(-ROTATION_ACCEL, ROTATION_ACCEL);
     
                 // Our speed & rotation here are *relative* - that is: when
                 // they are equal to zero, what the brain says is "keep
@@ -6409,17 +6094,13 @@
                 //   neural network, which would make the evolution process
                 //   waaay longer, if even possible.
     
-  =             animal.speed =
-  =                 (animal.speed + speed).clamp(SPEED_MIN, SPEED_MAX);
-  = 
-  =             animal.rotation = na::Rotation2::new(
-  =                 animal.rotation.angle() + rotation,
-  =             );
+  =             animal.speed = (animal.speed + speed).clamp(SPEED_MIN, SPEED_MAX);
+  =             animal.rotation = na::Rotation2::new(animal.rotation.angle() + rotation);
     
                 // (btw, there is no need for ROTATION_MIN or ROTATION_MAX,
                 // because rotation automatically wraps from 2*PI back to 0 -
                 // we've already witnessed that when we were testing eyes,
-                // inside `mod different_rotations { ... }`.)
+                // inside `fn rotations { ... }`.)
   =         }
   =     }
     
@@ -6430,7 +6111,9 @@
 
 <p>Does it work? Let's find out!</p>
 
-<div class="listing-title">$ wasm-pack build</div>
+<listing-title>
+  $ wasm-pack build
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -6443,10 +6126,7 @@
 <p>Oh my, oh my, oh my!</p>
 
 <figure>
-  <video
-    controls=""
-    src="{{ assets }}/d8d74b38-d9be-48a2-94b4-f1f917a1a63d.mp4"
-  >
+  <video controls="" src="{{ assets }}/d8d74b38-d9be-48a2-94b4-f1f917a1a63d.mp4">
     Your browser does not support the video tag.
   </video>
 </figure>
@@ -6460,7 +6140,7 @@
   </p>
 
   <p class="attribution">
-      — David Attenborough about our simulation (hypothesized)
+    - David Attenborough about our simulation (hypothesized)
   </p>
 </blockquote>
 
@@ -6471,38 +6151,40 @@
 </p>
 
 <p>
-  Some of our birds fly in circles, some exhibit more complex behaviors — and,
+  Some of our birds fly in circles, some exhibit more complex behaviors - and,
   if you're lucky (try refreshing the page a few times!), what you'll see is a
-  bird actually steering into the food, as if it <i>understood</i>.
+  bird actually steering into the food, as if it understood.
 </p>
 
 <p>
   Currently this is pure luck though; our next, and the last, milestone will be
-  about <i>teaching</i> — we'll augment our simulation with the final piece of
+  about <i>teaching</i> - we'll augment our simulation with the final piece of
   puzzle: the genetic algorithm.
 </p>
 
-<h2 id="huggin-n-evolvin">
-  <a href="#huggin-n-evolvin">Huggin' & Evolvin'</a>
-</h2>
+<header id="huggin-n-evolvin">
+  Huggin' & Evolvin'
+</header>
 
 <p>
-  Even though our birds can fly, their brains are entirely random at the
-  moment — in this chapter we'll see how we can integrate our simulation with a
-  genetic algorithm, so that our birdies can learn & evolve.
+  Even though our birds can fly, their brains remain entirely random - in this
+  chapter we'll see how we can integrate our simulation with the genetic
+  algorithm, so that our birdies can learn & evolve.
 </p>
 
 <p>
-  Broadly speaking, we want to <b>maximize</b> the amount of food eaten per
-  bird — that'll be our fitness function; and the way we'll achieve that is that
-  we'll run the simulation for <i>some</i> time (called <b>generation</b>), note
-  down how many foods have been eaten by each bird, and then, uhm,
-  <i>reproduce</i> the best birdies.
+  Broadly speaking, we want to <b>maximize</b> the amount of food eaten -
+  that'll be our fitness function; and the way we'll achieve that is that we'll
+  run the simulation for some time (called a <b>generation</b>), note down how
+  many foods have been eaten by each bird and then, uhm, <i>reproduce</i> the
+  best birdies.
 </p>
 
 <p>Let's get to it!</p>
 
-<div class="listing-title">libs/simulation/Cargo.toml</div>
+<listing-title>
+  libs/simulation/Cargo.toml
+</listing-title>
 
 <listing lang="toml">
   <!--
@@ -6518,7 +6200,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6530,7 +6214,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6558,8 +6244,8 @@
   =         let world = World::random(rng);
   = 
   =         let ga = ga::GeneticAlgorithm::new(
-  =             ga::RouletteWheelSelection::default(),
-  =             ga::UniformCrossover::default(),
+  =             ga::RouletteWheelSelection,
+  =             ga::UniformCrossover,
   =             ga::GaussianMutation::new(0.01, 0.3),
   =             // ---------------------- ^--^ -^-^
   =             // | Chosen with a bit of experimentation.
@@ -6598,10 +6284,7 @@
   =         let current_population = todo!();
   = 
   =         // Step 2: Evolve birdies
-  =         let evolved_population = self.ga.evolve(
-  =             rng,
-  =             &current_population,
-  =         );
+  =         let evolved_population = self.ga.evolve(rng, &current_population);
   = 
   =         // Step 3: Bring birdies back from the genetic algorithm
   =         self.world.animals = todo!();
@@ -6623,27 +6306,37 @@
   for the "evolvable" type to implement a trait called <code>Individual</code>:
 </p>
 
-<div class="listing-title">libs/genetic-algorithm/src/lib.rs</div>
+<listing-title>
+  libs/genetic-algorithm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
-    pub fn evolve<I>(
-        &self,
-        rng: &mut dyn RngCore,
-        population: &[I],
-    ) -> (Vec<I>, Statistics)
+    impl<S> GeneticAlgorithm<S>
     where
-        I: Individual
+        S: SelectionMethod,
+    {
+        /* ... */
+
+        pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> Vec<I>
+        where
+            I: Individual,
+        {
+            /* ... */
+        }
+    }
   -->
 </listing>
 
 <p>
-  ... so a naïve approach could be to simply implement
-  <code>Individual</code> for <code>Animal</code> — after all, birdies
-  <i>are</i> the thing we want to evolve:
+  ... so a naïve approach could be to simply implement <code>Individual</code>
+  for <code>Animal</code> - after all, birdies <i>are</i> the thing we want to
+  evolve:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust" class="listing-invalid">
   <!--
@@ -6666,19 +6359,18 @@
 </listing>
 
 <p>
-  But as soon as we try to actually implement those functions, we quickly get
-  backed into a corner — for instance: how can we implement
-  <code>fn chromosome()</code> that returns a reference to
-  <code>ga::Chromosome</code> if our <code>Animal</code> doesn't contain a field
-  called <code>chromosome</code>?
+  But as soon as we try to actually implement those, we get backed into a corner
+  - for instance: how can we implement <code>fn chromosome()</code> that returns
+  a reference to <code>ga::Chromosome</code> if our <code>Animal</code> doesn't
+  contain a field called <code>chromosome</code>?
 </p>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust" class="listing-invalid">
   <!--
-    /* ... */
-    
     impl ga::Individual for Animal {
         /* ... */
     
@@ -6692,14 +6384,16 @@
 </listing>
 
 <p>
-  Granted, you <i>could</i> say that since we control code inside
-  <code>lib-genetic-algorithm</code>, we can just change
-  <code>fn chromosome()</code> to work on owned <code>Chromosome</code>-s
-  instead — and you'd be right! But this doesn't actually solve the underlying
-  design issue, merely pushes it somewhere else:
+  Granted, you could say that since we control the code inside
+  <code>lib-genetic-algorithm</code>, we could just change
+  <code>fn chromosome()</code> to work on owned <code>Chromosome</code>s
+  instead - and you'd be right, partially! This doesn't actually solve the
+  underlying design issue, merely pushes it somewhere else:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust" class="listing-invalid">
   <!--
@@ -6721,13 +6415,15 @@
 
 <p>
   So, for the sake of argument, let's assume that our
-  <code>ga::Individual</code> <i>is</i> designed correctly — how can we
-  integrate <code>Animal</code> with it, then?
+  <code>ga::Individual</code> is designed correctly - how can we integrate
+  <code>Animal</code> with it, then?
 </p>
 
-<p>Most easily — by creating a dedicated struct:</p>
+<p>Most easily - by creating a dedicated struct:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6744,7 +6440,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6770,7 +6468,9 @@
 
 <p>As we see, this structure has to contain at least those two fields:</p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6802,7 +6502,9 @@
 
 <p>Let's go back to <code>fn evolve()</code> and see how it fits there:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6843,10 +6545,12 @@
 <p>Seems like this might just work!</p>
 
 <p>
-  To implement those <code>.map()</code>-s, we'll need two conversion methods:
+  To implement those <code>.map()</code>s, we'll need two conversion methods:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6868,7 +6572,9 @@
 
 <p>... which allow us to:</p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6904,7 +6610,9 @@
 
 <p>Let's bring into the picture the important bits:</p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6932,7 +6640,7 @@
 
 <p>
   What are we supposed to do inside <code>::from_animal()</code>? Well, looks
-  like <i>two</i> things:
+  like two things:
 </p>
 
 <ol>
@@ -6940,16 +6648,18 @@
     <p>determine animal's <b>fitness score</b>,</p>
   </li>
   <li>
-    <p>determine animal's <b>chromosome</b> (aka <i>genotype</i>).</p>
+    <p>determine animal's <b>chromosome</b> (aka genotype).</p>
   </li>
 </ol>
 
 <p>
-  Finding out fitness score is pretty easy — since we already handle collisions,
-  all we've gotta do is to <i>count</i> them:
+  Finding out fitness score is pretty easy - since we already handle collisions,
+  all we've gotta do is to count them:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -6960,7 +6670,7 @@
         /* ... */
     
         /// Number of foods eaten by this animal
-  =     crate satiation: usize,
+  =     pub(crate) satiation: usize,
     }
     
     impl Animal {
@@ -6980,7 +6690,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7009,7 +6721,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7030,15 +6744,17 @@
   -->
 </listing>
 
-<p>Ah, I love when all the pieces just fit together — don't ya'?</p>
+<p>Ah, I love when all the pieces just fit together.</p>
 
 <p>
   When it comes to the second field, <code>chromosome</code>, there'll be a bit
-  more work there. As a reminder, what we mean by <i>chromosome</i> here is
-  <i>weights of the neural network</i>; so ideally we'd write:
+  more work there. As a reminder, what we mean by chromosome here is weights of
+  the neural network - so ideally we'd write:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust" class="listing-invalid">
   <!--
@@ -7060,16 +6776,18 @@
 </listing>
 
 <p>
-  ... but our <code>lib-neural-network</code>-'s <code>Network</code> doesn't
-  have such method…​ yet!
+  ... but our <code>lib-neural-network</code>'s <code>Network</code> doesn't
+  have such method...​ yet!
 </p>
 
 <p>
   To implement <code>.weights()</code>, let's go back to
-  <code>lib-neural-network</code> — what we're looking for is:
+  <code>lib-neural-network</code> - what we're looking for is:
 </p>
 
-<div class="listing-title">libs/neural-network/src/lib.rs</div>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7087,9 +6805,11 @@
   -->
 </listing>
 
-<p>'cause we're <i>good programmers</i>, let's start with a test:</p>
+<p>For fun, let's start with a test:</p>
 
-<div class="listing-title">libs/neural-network/src/lib.rs</div>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7099,77 +6819,140 @@
     mod tests {
         /* ... */
     
-  =     mod weights {
-  =         use super::*;
-  = 
-  =         #[test]
-  =         fn test() {
-  =             let network = Network::new(vec![
-  =                 Layer::new(vec![Neuron::new(0.1, vec![0.2, 0.3, 0.4])]),
-  =                 Layer::new(vec![Neuron::new(0.5, vec![0.6, 0.7, 0.8])]),
-  =             ]);
-  = 
-  =             let actual = network.weights();
-  =             let expected = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
-  = 
-  =             approx::assert_relative_eq!(
-  =                 actual.as_slice(),
-  =                 expected.as_slice(),
-  =             );
-  =         }
-  =     }
+  =    #[test]
+  =    fn weights() {
+  =        let network = Network {
+  =            layers: vec![
+  =                Layer {
+  =                    neurons: vec![Neuron {
+  =                        bias: 0.1,
+  =                        weights: vec![0.2, 0.3, 0.4],
+  =                    }],
+  =                },
+  =                Layer {
+  =                    neurons: vec![Neuron {
+  =                        bias: 0.5,
+  =                        weights: vec![0.6, 0.7, 0.8],
+  =                    }],
+  =                },
+  =            ],
+  =        };
+  =
+  =        let actual = network.weights();
+  =        let expected = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+  =
+  =        assert_relative_eq!(actual.as_slice(), expected.as_slice());
+  =    }
     }
   -->
 </listing>
 
 <p>
-  As for the implementation, I'll show you two of them — one uses explicit
-  <code>for</code> loops, while the other works on combinators; barring some
-  preallocation stuff, both are equivalent:
+  As for the implementation, I'll show you three - one uses <code>for</code>
+  loops, while the other two work on combinators:
 </p>
 
 <ol>
   <li>
-    <p>Explicit loops:</p>
+    <p>Loops:</p>
 
-    <div class="listing-title">libs/neural-network/src/lib.rs</div>
+    <listing-title>
+      libs/neural-network/src/lib.rs
+    </listing-title>
 
     <listing lang="rust">
       <!--
-        pub fn weights(&self) -> Vec<f32> {
-      =     let mut weights = Vec::new();
-      = 
-      =     for layer in &self.layers {
-      =         for neuron in &layer.neurons {
-      =             weights.push(neuron.bias);
-      = 
-      =             for weight in &neuron.weights {
-      =                 weights.push(*weight);
+        impl Network {
+            /* ... */
+
+      =     pub fn weights(&self) -> Vec<f32> {
+      =         let mut weights = Vec::new();
+      =
+      =         for layer in &self.layers {
+      =             for neuron in &layer.neurons {
+      =                 weights.push(neuron.bias);
+      =
+      =                 for weight in &neuron.weights {
+      =                     weights.push(*weight);
+      =                 }
       =             }
       =         }
+      =
+      =         weights
       =     }
-      = 
-      =     weights
         }
       -->
     </listing>
   </li>
+
   <li>
     <p>Combinators:</p>
 
-    <div class="listing-title">libs/neural-network/src/lib.rs</div>
+    <listing-title>
+      libs/neural-network/src/lib.rs
+    </listing-title>
 
     <listing lang="rust">
       <!--
-        pub fn weights(&self) -> Vec<f32> {
-      =     use std::iter::once;
-      = 
-      =     self.layers
-      =         .iter()
-      =         .flat_map(|layer| layer.neurons.iter())
-      =         .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
-      =         .copied()
-      =         .collect()
+      = use std::iter::once;
+
+        /* ... */
+
+        impl Network {
+            /* ... */
+
+      =     pub fn weights(&self) -> Vec<f32> {
+      =         self.layers
+      =             .iter()
+      =             .flat_map(|layer| layer.neurons.iter())
+      =             .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
+      =             .copied()
+      =             .collect()
+      =     }
+        }
+      -->
+    </listing>
+  </li>
+
+  <li>
+    <p>Combinators + iterator:</p>
+
+    <listing-title>
+      libs/neural-network/src/lib.rs
+    </listing-title>
+
+    <listing lang="rust">
+      <!--
+      = use std::iter::once;
+
+        /* ... */
+
+        impl Network {
+            /* ... */
+
+      =     pub fn weights(&self) -> impl Iterator<Item = f32> + '_ {
+      =         self.layers
+      =             .iter()
+      =             .flat_map(|layer| layer.neurons.iter())
+      =             .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
+      =             .copied()
+      =     }
+        }
+
+        /* ... */
+
+        #[cfg(test)]
+        mod tests {
+            /* ... */
+
+            #[test]
+            fn weights() {
+                /* ... */
+
+      =         let actual: Vec<_> = network.weights().collect();
+
+                /* ... */
+            }
         }
       -->
     </listing>
@@ -7177,30 +6960,14 @@
 </ol>
 
 <p>
-  I consider the combinator approach more idiomatic as it allows to avoid
-  allocating <i>any</i> vector:
-</p>
-
-<listing lang="rust">
-  <!--
-    pub fn weights(&self) -> impl Iterator<Item = f32> + '_ {
-        self.layers
-            .iter()
-            .flat_map(|layer| layer.neurons.iter())
-            .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
-            .copied()
-    }
-  -->
-</listing>
-
-<p>
-  ... but, when push comes to shove, maintenability is usually more important
-  than performance, so choose whichever version you prefer.
+  I consider the last approach better, because it allows you to avoid allocating
+  the vector, but when push comes to shove, maintenability is usually more
+  important than performance, so choose whichever version you prefer yourself.
 </p>
 
 <p>
-  Also, while we're here, let's implement an inverse method we'll need
-  later — <code>::from_weights()</code>:
+  Also, while we're here, let's implement the inverse -
+  <code>::from_weights()</code>:
 </p>
 
 <listing lang="rust">
@@ -7242,28 +7009,20 @@
     mod tests {
         /* ... */
     
-  =     mod from_weights {
-  =         use super::*;
-  = 
-  =         #[test]
-  =         fn test() {
-  =             let layers = &[
-  =                 LayerTopology { neurons: 3 },
-  =                 LayerTopology { neurons: 2 },
-  =             ];
-  = 
-  =             let weights = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
-  = 
-  =             let network = Network::from_weights(layers, weights.clone());
-  =             let actual: Vec<_> = network.weights().collect();
-  = 
-  =             approx::assert_relative_eq!(
-  =                 actual.as_slice(),
-  =                 weights.as_slice(),
-  =             );
-  =         }
+  =     #[test]
+  =     fn from_weights() {
+  =         let layers = &[
+  =             LayerTopology { neurons: 3 },
+  =             LayerTopology { neurons: 2 },
+  =         ];
+  =
+  =         let weights = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+  =         let network = Network::from_weights(layers, weights.clone());
+  =         let actual: Vec<_> = network.weights().collect();
+  =
+  =         assert_relative_eq!(actual.as_slice(), weights.as_slice());
   =     }
-    
+
         /* ... */
     }
   -->
@@ -7271,7 +7030,9 @@
 
 <p>... and then an example implementation could be:</p>
 
-<div class="listing-title">libs/neural-network/src/lib.rs</div>
+<listing-title>
+  libs/neural-network/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7312,7 +7073,7 @@
     impl Layer {
         /* ... */
     
-  =     pub fn from_weights(
+  =     fn from_weights(
   =         input_size: usize,
   =         output_size: usize,
   =         weights: &mut dyn Iterator<Item = f32>,
@@ -7330,7 +7091,7 @@
     impl Neuron {
         /* ... */
     
-  =     pub fn from_weights(
+  =     fn from_weights(
   =         input_size: usize,
   =         weights: &mut dyn Iterator<Item = f32>,
   =     ) -> Self {
@@ -7350,20 +7111,22 @@
 
 <p>
   Recreating network from weights is quite complex, so don't worry if this code
-  takes a moment to sink-in — took a while to write, too!
+  takes a moment to sink-in - took a while to write, too!
 </p>
 
 <h3>Refactoring</h3>
 
 <p>
   Our <code>Network</code> has now everything we need to make it compatible with
-  genetic algorithm — but before we do that, let's take a moment to refactor one
+  genetic algorithm - but before we do that, let's take a moment to refactor one
   thing.
 </p>
 
 <p>Inside our <code>Animal</code>, what we have now is:</p>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7372,7 +7135,7 @@
     #[derive(Debug)]
     pub struct Animal {
         /* ... */
-        crate brain: nn::Network,
+        pub(crate) brain: nn::Network,
         /* ... */
     }
     
@@ -7381,11 +7144,13 @@
 </listing>
 
 <p>
-  ... and what I have on mind is to refactor
-  <code>brain: nn::Network</code> into a distinct, em, body part:
+  ... and what I have on mind is to refactor <code>brain: nn::Network</code>
+  into a distinct, em, body part:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7400,7 +7165,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/brain.rs</div>
+<listing-title>
+  libs/simulation/src/brain.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7408,7 +7175,7 @@
   = 
   = #[derive(Debug)]
   = pub struct Brain {
-  =     crate nn: nn::Network,
+  =     pub(crate) nn: nn::Network,
   = }
   = 
   = impl Brain {
@@ -7418,7 +7185,7 @@
   =         }
   =     }
   = 
-  =     crate fn as_chromosome(&self) -> ga::Chromosome {
+  =     pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
   =         self.nn.weights().collect()
   =     }
   = 
@@ -7437,7 +7204,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7446,7 +7215,7 @@
     #[derive(Debug)]
     pub struct Animal {
         /* ... */
-  =     crate brain: Brain,
+  =     pub(crate) brain: Brain,
         /* ... */
     }
     
@@ -7458,7 +7227,7 @@
   =         Self::new(eye, brain, rng)
   =     }
     
-  =     crate fn as_chromosome(&self) -> ga::Chromosome {
+  =     pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
   =         // We evolve only our birds' brains, but technically there's no
   =         // reason not to simulate e.g. physical properties such as size.
   =         //
@@ -7485,7 +7254,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7505,7 +7276,9 @@
   All this allows us to complete <code>AnimalIndividual::from_animal()</code>:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7532,13 +7305,15 @@
 
 <p>
   With our latest changes we can transform <code>Animal</code> into
-  <code>AnimalIndividual</code> and send it into the genetic algorithm — now
+  <code>AnimalIndividual</code> and send it into the genetic algorithm - now
   it's time to implement the reverse operation: given a brand-new
   <code>AnimalIndividual</code> fresh from the genetic algorithm, we have to
   convert it into <code>Animal</code>:
 </p>
 
-<div class="listing-title">libs/simulation/src/animal_individual.rs</div>
+<listing-title>
+  libs/simulation/src/animal_individual.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7556,7 +7331,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/animal.rs</div>
+<listing-title>
+  libs/simulation/src/animal.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7571,7 +7348,7 @@
         /// chromosomes encode only the brains - and while we restore the
         /// bird, we have to also randomize its position, direction, etc.
         /// (so it's stuff that wouldn't make sense to keep in the genome.)
-  =     crate fn from_chromosome(
+  =     pub(crate) fn from_chromosome(
   =         chromosome: ga::Chromosome,
   =         rng: &mut dyn RngCore,
   =     ) -> Self {
@@ -7581,7 +7358,7 @@
   =         Self::new(eye, brain, rng)
   =     }
     
-        crate fn as_chromosome(&self) -> ga::Chromosome {
+        pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
             self.brain.as_chromosome()
         }
     
@@ -7592,7 +7369,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation/src/brain.rs</div>
+<listing-title>
+  libs/simulation/src/brain.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7601,7 +7380,7 @@
     impl Brain {
         /* ... */
     
-  =     crate fn from_chromosome(
+  =     pub(crate) fn from_chromosome(
   =         chromosome: ga::Chromosome,
   =         eye: &Eye,
   =     ) -> Self {
@@ -7613,7 +7392,7 @@
   =         }
   =     }
     
-        crate fn as_chromosome(&self) -> ga::Chromosome {
+        pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
             self.nn.weights().collect()
         }
     
@@ -7622,91 +7401,85 @@
   -->
 </listing>
 
-<p>Looks like…​ we're done! Are we done??</p>
+<p>Looks like...​ we're done! Are we done??</p>
 
-<h2 id="ready-set">
-  <a href="#ready-set">Ready, Set…​</a>
-</h2>
+<header id="ready-set">
+  Ready, Set...​
+</header>
 
 <p>
-  We're <i>kinda-sorta</i> done — while you could just launch
-  <code>wasm-pack build</code>, take your binoculars and start to watch wildlife
-  freely flying and electively evolving on your screen now, there are two things
-  we can do to make this experience more rewarding:
+  We're kinda-sorta done - while you could just launch
+  <code>wasm-pack build</code>, take your binoculars and start to watch the
+  wildlife mingle, there are two things we can do to make this experience less
+  frustrating:
 </p>
 
 <ol>
   <li>
     <p>
-      First of all: since evolution happens once every 2500 steps, and we
-      perform 60 steps per second (there's one step per one frame, and the
-      browser tries to keep steady 60 FPS), then in real-time we're talking
-      about <b>one evolution per ~40 seconds</b>.
+      First of all: since evolution happens once every 2500 steps and we perform
+      60 steps per second (there's one step per one frame, and the browser tries
+      to keep steady 60 FPS¹), then in real-time we're talking about <b>one
+      evolution per ~40 seconds</b>.
     </p>
 
     <p>
+      ¹ or 120 FPS, or 144 FPS etc., depending on your display
+    </p>
+
+    <p>
+      <ref>
+        https://xkcd.com/1205/
+      </ref>
+
       If we wanted to witness birdies getting smarter and smarter, we'd have to
       wait around 10 generations (speaking from experience), so roughly 6.5
-      minutes. <b>6.5 minutes</b> of bluntly staring into the screen — <a
-        href="https://xkcd.com/1205/"
-        >what a waste of time</a
-      >!
+      minutes. <b>6.5 minutes</b> of bluntly staring into the screen -
+      <a ref>what a waste of time</a>!
     </p>
 
-    <p>
-      <i
-        >(though i'm very into this kind of stuff — there's no
-        screentime-shaming on this blog, my pal)</i
-      >
-    </p>
-
-    <p>But if we had some kind of a "fast-forward" button…​</p>
+    <p>But if we had some kind of a "fast-forward" button...​</p>
   </li>
   <li>
     <p>
-      Second of all: even <i>if</i> evolution works (with big emphasis on
-      <i>if</i>, 'cause - you know - we're skeptics!), at the moment we'd have
-      no way of knowing.
+      Second of all: even if evolution works (with big emphasis on <i>if</i>,
+      'cause - you know - we're skeptics!), at the moment we'd have no way of
+      knowing.
     </p>
 
     <p>
-      I mean, do our current birds <b>really</b> fly better than those from five
+      I mean, do our current birds <b>really</b> fly better than those from ten
       minutes ago?
     </p>
 
     <p>
       Luckily to us, because we're <span class="text-rainbow">digital</span>,
       finding evidence for evolution gets pretty easy: we'll just enhance
-      <code>lib-genetic-algorithm</code> so that it returns statistics — such as
-      an average fitness score — and we'll use <code>console.log()</code> to see
-      if those statistics grow!
+      <code>lib-genetic-algorithm</code> so that it returns statistics - such as
+      the average fitness score - and we'll use <code>console.log()</code> to
+      see if those statistics grow.
     </p>
   </li>
 </ol>
 
-<p>&lt;slowly-breaths-out/&gt;</p>
+<p>&lt;slowly-breaths-out /&gt;</p>
 
 <p>
-  Our journey heads towards its end — the code that we'll write in a moment will
-  be the culminating point of all the hard work we've done over the past months.
-  I'd like to thank you for taking the time to go through all of this, and I
-  hope this project was at least partially as interesting to you as it was to
-  me.
-</p>
-
-<p>
-  So, my friend — are you ready to knock on wood and begin our final
-  birdie-adventure?
+  Our journey heads towards its end - the code that we'll write in a moment will
+  be the culminating point of all the hard work we've done. So, my friend - are
+  you ready to knock on wood and begin our final birdie-adventure?
 </p>
 
 <h3>Fast-Forward & Statistics</h3>
 
 <p>
-  Inside our JavaScript code we invoke <code>.step()</code> <i>only</i> during
-  <code>redraw()</code> — that's what makes our simulation "stuck" to 60 FPS:
+  Inside our JavaScript code we invoke <code>.step()</code> only during
+  <code>redraw()</code> - that's what makes our simulation "stuck" to 60 FPS:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -7729,7 +7502,9 @@
   <code>.step()</code> many times at once:
 </p>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -7753,8 +7528,8 @@
 
 <p>
   ... or, a bit better, we could provide a dedicated method that "fast-forwards"
-  an entire generation; this way we could keep the simulation running at 1x
-  speed, and only bind this "fast-forwarding" to a button; make it fast-forward
+  an entire generation - this way we could keep the simulation running at 1x
+  speed and only bind this "fast-forwarding" to a button; make it fast-forward
   on-demand.
 </p>
 
@@ -7763,7 +7538,9 @@
   let's go with <code>fn train()</code>:
 </p>
 
-<div class="listing-title">libs/simulation/src/lib.rs</div>
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7799,7 +7576,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7818,7 +7597,9 @@
   -->
 </listing>
 
-<div class="listing-title">www/index.html</div>
+<listing-title>
+  www/index.html
+</listing-title>
 
 <listing lang="html">
   <!--
@@ -7841,7 +7622,9 @@
   -->
 </listing>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -7860,62 +7643,54 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <blockquote>
     <p>
-      But wait — doesn't this code require some kind of <code>RwLock</code> or
+      But wait - doesn't this code require some kind of <code>RwLock</code> or
       <code>Mutex</code>?
     </p>
 
     <p>
       I mean, what happens when user clicks
       <code>train please, thank u</code> during the time <code>.step()</code> is
-      working — won't this cause our Rust code to be invoked twice
-      <i>at the same time</i>, destroying the entire universe and everything we
-      love?
+      working - won't this cause our Rust code to be invoked twice at the same
+      time, destroying the entire universe and everything we love?
     </p>
   </blockquote>
 
   <p>
-    Fear not: as I mentioned before, JavaScript is single threaded — when
-    browser executes our <code>.step()</code> (or rather <code>redraw()</code>),
-    it "hangs" the tab.
+    Fear not: JavaScript is single threaded - when browser executes our
+    <code>.step()</code> (or rather <code>redraw()</code>), it "hangs" the tab.
   </p>
 
   <p>
-    <a
-      href="https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311"
-      >Simplifying a bit</a
-    >, you could say that at a time only one line of JavaScript code is
-    running — it's not possible to execute both <code>.step()</code> and
-    <code>.train()</code> at once (which would also violate the
-    <code>&mut self</code> requirement on the Rust's side); if user clicks
-    <code>train</code> when <code>.step()</code> is working, the browser will
-    schedule the click event to be executed in the next frame.
+    <ref>
+      https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
+    </ref>
+
+    <a ref>Simplifying a bit</a>, you could say that only one line of JavaScript
+    code is running at a time - it's not possible to execute both
+    <code>.step()</code> and <code>.train()</code> at once (which would also
+    violate the <code>&mut self</code> requirement on the Rust's side); if user
+    clicks <code>train</code> when <code>.step()</code> is working, the browser
+    will schedule the click event to be executed in the next frame.
   </p>
-</aside>
+</note>
 
 <p>
   Ok, now that we can speed-up the evolution, let's get our hands dirty with
-  statistics — the simplest thing we have at hand are fitness scores, so
+  statistics - the simplest thing we have at hand are fitness scores, so
   <code>lib-genetic-algorithm</code> seems like a nice place to implement them:
 </p>
 
-<div class="listing-title">libs/genetic-algorithm/src/lib.rs</div>
+<listing-title>
+  libs/genetic-algorithm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
     /* ... */
-    
-  = #[derive(Clone, Debug)]
-  = pub struct Statistics {
-  =     min_fitness: f32,
-  =     max_fitness: f32,
-  =     avg_fitness: f32,
-  = }
-    
-    /* ... */
-    
+
     impl<S> GeneticAlgorithm<S>
     where
         S: SelectionMethod,
@@ -7928,11 +7703,11 @@
         {
             assert!(!population.is_empty());
     
-            let new_population = (0..population.len())
+  =         let new_population = (0..population.len())
                 .map(|_| {
                     /* ... */
                 })
-                .collect();
+  =             .collect();
     
   =         let stats = Statistics::new(population);
   = 
@@ -7941,7 +7716,14 @@
     }
     
     /* ... */
-    
+
+  = #[derive(Clone, Debug)]
+  = pub struct Statistics {
+  =     pub min_fitness: f32,
+  =     pub max_fitness: f32,
+  =     pub avg_fitness: f32,
+  = }
+  =
   = impl Statistics {
   =     fn new<I>(population: &[I]) -> Self
   =     where
@@ -7967,21 +7749,13 @@
   =             avg_fitness: sum_fitness / (population.len() as f32),
   =         }
   =     }
-  = 
-  =     pub fn min_fitness(&self) -> f32 {
-  =         self.min_fitness
-  =     }
-  = 
-  =     pub fn max_fitness(&self) -> f32 {
-  =         self.max_fitness
-  =     }
-  = 
-  =     pub fn avg_fitness(&self) -> f32 {
-  =         self.avg_fitness
-  =     }
   = }
   -->
 </listing>
+
+<listing-title>
+  libs/simulation/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -7990,10 +7764,7 @@
     impl Simulation {
         /* ... */
     
-  =     pub fn step(
-  =         &mut self,
-  =         rng: &mut dyn RngCore,
-  =     ) -> Option<ga::Statistics> {
+  =     pub fn step(&mut self, rng: &mut dyn RngCore) -> Option<ga::Statistics> {
             /* ... */
     
             if self.age > GENERATION_LENGTH {
@@ -8016,7 +7787,8 @@
   =     fn evolve(&mut self, rng: &mut dyn RngCore) -> ga::Statistics {
             /* ... */
     
-  =         let (evolved_population, stats) = self.ga.evolve(
+  =         let (evolved_population, stats) = self.ga.evolve(rng, &current_population);
+
             /* ... */
     
   =         stats
@@ -8025,7 +7797,9 @@
   -->
 </listing>
 
-<div class="listing-title">libs/simulation-wasm/src/lib.rs</div>
+<listing-title>
+  libs/simulation-wasm/src/lib.rs
+</listing-title>
 
 <listing lang="rust">
   <!--
@@ -8048,16 +7822,18 @@
   = 
   =         format!(
   =             "min={:.2}, max={:.2}, avg={:.2}",
-  =             stats.min_fitness(),
-  =             stats.max_fitness(),
-  =             stats.avg_fitness()
+  =             stats.min_fitness,
+  =             stats.max_fitness,
+  =             stats.avg_fitness,
   =         )
   =     }
     }
   -->
 </listing>
 
-<div class="listing-title">www/index.js</div>
+<listing-title>
+  www/index.js
+</listing-title>
 
 <listing lang="javascript">
   <!--
@@ -8072,13 +7848,14 @@
 </listing>
 
 <p>
-  This time, when building, don't forget about the
-  <code>--release</code> switch — it enables optimizations which are
-  <i>crucial</i> to get <code>.train()</code> working at a reasonable
-  performance:
+  This time, when building, don't forget about the <code>--release</code> switch
+  - it enables optimizations which are crucial to get <code>.train()</code>
+  working at reasonable performance:
 </p>
 
-<div class="listing-title">$ wasm-pack build --release</div>
+<listing-title>
+  $ wasm-pack build --release
+</listing-title>
 
 <listing lang="text">
   <!--
@@ -8088,20 +7865,17 @@
   -->
 </listing>
 
-<h2 id="ready-set-go">
-  <a href="#ready-set-go">Ready, Set, Go!</a>
-</h2>
+<header id="ready-set-go">
+  Ready, Set, Go!
+</header>
 
 <p>
-  Finally, ultimately, eventually, <i>at long</i> — the outcome of our diligent,
+  Finally, ultimately, eventually, <i>at last</i> - the outcome of our diligent,
   assiduous coding; u ready?
 </p>
 
 <figure>
-  <video
-    src="{{ assets }}/3c9592ed-e1ef-4fc5-8b72-607fc9692a25.mp4"
-    controls=""
-  >
+  <video src="{{ assets }}/3c9592ed-e1ef-4fc5-8b72-607fc9692a25.mp4" controls="">
     Your browser does not support the video tag.
   </video>
 </figure>
@@ -8132,10 +7906,10 @@
 
 <p>Nice!</p>
 
-<aside class="note">
+<note>
   <p>
     The concrete statistics you get are most likely different than mine, but the
-    general trend — min, max and average going up — should be visible in most of
+    general trend - min, max and average going up - should be visible in most of
     the simulations.
   </p>
 
@@ -8147,52 +7921,46 @@
 
   <p>
     Also, please remember that we're putting a lot of faith in random
-    numbers! — if your birds seem to be getting stuck in local optimum too soon,
+    numbers! - if your birds seem to be getting stuck in local optimum too soon,
     try refreshing the simulation.
   </p>
-</aside>
+</note>
 
-<h2 id="closing-thoughts">
-  <a href="#closing-thoughts">Closing Thoughts</a>
-</h2>
+<header id="closing-thoughts">
+  Closing Thoughts
+</header>
 
 <p>Started from the bottom, haven't we?</p>
 
 <p>
-  Started from rough sketches, got through our very first
-  <code>struct Network</code>, designed genetic algorithm, implemented tests for
-  <i>eyes</i> (how awesome is that!), to end up with a bunch of self-governing
-  birdies that certainly don't seem to look like <i>this much</i> code on the
-  surface :-)
+  From rough sketches, through our very first <code>struct Network</code>, we've
+  designed a genetic algorithm, implemented tests for <i>eyes</i> (how awesome
+  is that!) and ended up with a bunch of self-governing birdies that certainly
+  don't look like <i>this much</i> code on the surface!
 </p>
 
 <p>
-  Since I've already done the sentimental part in the previous section, in here
-  let me just re-thank you for your time — I hope this series showed you a fair
-  share of Rust idioms, testing techniques, and delivered on its promise of
-  using WebAssembly in an interesting way.
+  I'd like to thank you for your time - I hope this series showed you a fair
+  share of Rust idioms, testing techniques and delivered on its promise of using
+  WebAssembly in an interesting way.
 </p>
 
 <p>And, champ, that's for you:</p>
 
 <figure class="sketch w-70">
-  <img
-    src="{{ assets }}/e5313753-9b47-4c39-a198-df190f2db9c4.svg"
-  />
+  <img src="{{ assets }}/e5313753-9b47-4c39-a198-df190f2db9c4.svg" />
 
   <figcaption>
-    <div class="title">
-      A <a href="https://en.wikipedia.org/wiki/Horned_lark">shorelark</a> (or at
-      least my attempt at drawing one)
-    </div>
+    A <a href="https://en.wikipedia.org/wiki/Horned_lark">shorelark</a> (or at
+    least my attempt at drawing one)
   </figcaption>
 </figure>
 
 <h3>What now?</h3>
 
 <p>
-  If you want to fiddle a bit on your own, there's still a few things to do
-  here, simulation-wise!
+  If you want to fiddle a bit on your own, there's still a few <i>very</i>
+  interesting left things to do here!
 </p>
 
 <p>You remember all those constants such as <code>FOV_RANGE</code>?</p>
@@ -8200,7 +7968,7 @@
 <p>
   If instead of keeping them hard-coded, you made them configurable via some
   <code>struct Config</code>, you could then create an application that'd
-  traverse different combinations of those parameters, trying to find the most
+  check different combinations of those parameters, trying to find the most
   optimal ones:
 </p>
 
@@ -8220,8 +7988,7 @@
         }
     }
     
-    // TODO using `stats`, find out which combinations yielded the best
-    //      results
+    // TODO using `stats`, find out which combinations yielded the best results
   -->
 </listing>
 
@@ -8231,9 +7998,5 @@
 
 <p>
   As a reminder: the entire source code, a bit refactored, is available
-  <a href="https://github.com/patryk27/shorelark">at my GitHub</a>; if you just
-  skimmed this article and/or don't feel like copy-pasting all the snippets, you
-  can simply clone that repository and start from there.
+  <a href="https://github.com/patryk27/shorelark">at my GitHub</a>.
 </p>
-
-<p>Until next time!</p>

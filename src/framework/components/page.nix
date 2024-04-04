@@ -1,4 +1,9 @@
-fw: { title, layout, head ? "" }: body:
+fw: { title
+    , layout
+    , head ? ""
+    , withHeader ? false
+    , body
+    }:
 
 let
   title' =
@@ -30,7 +35,7 @@ let
     '';
 
 in
-fw.utils.prettifyHtml "page-${title}" ''
+fw.utils.prettifyHtml ''
   <!DOCTYPE html>
   <html>
   <head>
@@ -50,11 +55,28 @@ fw.utils.prettifyHtml "page-${title}" ''
       ${nav}
 
       <main id="${layout}">
+        ${
+          if withHeader then
+            "<h1 id=\"header\">${title}</h1>"
+          else
+            ""
+        }
+
         ${body}
       </main>
 
       <footer>
-        <a href="#">⬆ scroll to top</a>
+        <div class="footer-item">
+          <a href="#">
+            scroll to top
+          </a>
+        </div>
+
+        <div class="footer-item footer-item-rev">
+          <a href="https://github.com/Patryk27/website/">
+            ${builtins.substring 0 7 fw.rev}
+          </a>
+        </div>
       </footer>
     </div>
   </body>

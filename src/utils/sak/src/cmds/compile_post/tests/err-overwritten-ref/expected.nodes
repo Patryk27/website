@@ -1,0 +1,105 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "ref",
+                span: Span {
+                    beg: 1,
+                    end: 3,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            beg: 5,
+                            end: 6,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "a",
+                            span: Span {
+                                beg: 8,
+                                end: 10,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n    http://a.com\n",
+                        span: Span {
+                            beg: 12,
+                            end: 29,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 35,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            beg: 36,
+            end: 37,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "ref",
+                span: Span {
+                    beg: 39,
+                    end: 41,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            beg: 43,
+                            end: 44,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "a",
+                            span: Span {
+                                beg: 46,
+                                end: 48,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n    http://b.com\n",
+                        span: Span {
+                            beg: 50,
+                            end: 67,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 38,
+            end: 73,
+        },
+    },
+)

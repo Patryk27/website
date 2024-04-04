@@ -3,11 +3,15 @@ fw: { postId, titleTag ? "h2" }:
 let
   post = fw.content.posts.${postId};
 
-  renderTag = tag: ''
-    <a class="post-meta-tag" href="/tags/${tag}">
-      #${tag}
-    </a>
-  '';
+  tags = toString (
+    map
+      (tag: ''
+        <a class="post-meta-tag" href="/tags/${tag}">
+          #${tag}
+        </a>
+      '')
+      post.tags
+  );
 
 in
 ''
@@ -23,9 +27,16 @@ in
         ${fw.components.date "%M %d, %y" post.publishedAt}
       </time>
 
-      <div class="post-meta-tags">
-        ${toString (map renderTag post.tags)}
-      </div>
+      ${
+        if post ? tags then
+          ''
+            <div class="post-meta-tags">
+              ${tags}
+            </div>
+          ''
+        else
+          ""
+      }
     </div>
 
     <div class="post-summary">

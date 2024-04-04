@@ -16,7 +16,7 @@
   -->
 </listing>
 
-<aside class="note">
+<note>
   <p>
     This article introduces reader to the concept of Rust's
     <i>auto traits</i> and later builds on that knowledge to demonstrate a kind
@@ -34,20 +34,20 @@
     If you don't feel like reading English today, feel free to jump straight
     into <a href="#_the_code">The Code</a> :-)
   </p>
-</aside>
+</note>
 
-<h2 id="_where_t_send">
-  <a href="#_where_t_send">where T: Send</a>
-</h2>
+<header id="_where_t_send">
+  <code>where T: Send</code>
+</header>
 
 <p>
   One would be completely sane to ask
-  <code>why <i>shouldn't</i> that code compile??</code>, and so in order to
+  <code>why <i>shouldn't</i> that code compile??</code> - and so in order to
   understand why our initial question makes sense, let our journey begin with a
   quick look-up on the definition of
-  <a href="https://doc.rust-lang.org/stable/std/thread/fn.spawn.html"
-    ><code>std::thread::spawn</code></a
-  >:
+  <a href="https://doc.rust-lang.org/stable/std/thread/fn.spawn.html">
+    <code>std::thread::spawn</code>
+  </a>:
 </p>
 
 <listing lang="rust">
@@ -69,9 +69,9 @@
 </p>
 
 <p>
-  <a href="https://doc.rust-lang.org/stable/std/marker/trait.Send.html"
-    ><code>Send</code></a
-  >
+  <a href="https://doc.rust-lang.org/stable/std/marker/trait.Send.html">
+    <code>Send</code>
+  </a>
   is a trait used to determine which types can travel across so-called
   <b>thread boundary</b> - in other words: values of types that implement the
   <code>Send</code> trait can be created on thread A and then safely
@@ -83,9 +83,9 @@
   <code>Vec&lt;u8&gt;</code>) are perfectly safe to be moved willy-nilly from
   one thread to another, but there exist a few that require extra care - for
   instance
-  <a href="https://doc.rust-lang.org/stable/std/rc/index.html"
-    ><code>Rc</code></a
-  >.
+  <a href="https://doc.rust-lang.org/stable/std/rc/index.html">
+    <code>Rc</code>
+  </a>.
 </p>
 
 <p>
@@ -93,7 +93,7 @@
   invoke <code>Rc::clone()</code>, it doesn't actually clone the value contained
   inside it - instead, it keeps track of how many <code>Rc</code>-s are alive
   (with <code>Rc::clone()</code> increasing that counter and
-  <code>Rc::drop()</code> decreasing), and it's only when that internal counter
+  <code>Rc::drop()</code> decreasing) and it's only when that internal counter
   gets down to zero (i.e. when the last <code>Rc</code> gets out of the scope)
   that the contained value gets dropped.
 </p>
@@ -155,9 +155,9 @@
   atomic counters.
 </p>
 
-<h2 id="_oibits">
-  <a href="#_oibits">OIBITs</a>
-</h2>
+<header id="_oibits">
+  OIBITs
+</header>
 
 <p>
   So far we've talked about the <i>role</i> <code>Send</code> plays in Rust's
@@ -168,10 +168,9 @@
 
 <p>
   You don't have to take my word for it -
-  <a
-    href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=b01be31088c6de40013cb125ee002a16"
-    >check out this code</a
-  >:
+  <a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=b01be31088c6de40013cb125ee002a16">
+    check out this code
+  </a>:
 </p>
 
 <listing lang="rust">
@@ -216,10 +215,9 @@
 </p>
 
 <p>
-  <a
-    href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md"
-    >As it turns out</a
-  >, some of our Rust's traits are <b>opt-out</b> instead of <i>opt-in</i> -
+  <a href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md">
+    As it turns out
+  </a>, some of our Rust's traits are <b>opt-out</b> instead of <i>opt-in</i> -
   that is: some traits are implemented automatically for all types
   <i>unless</i> you (or, in some cases, compiler) opt-out of them via
   <code>impl !Trait for Type</code> (yeah, that's an exclamation mark).
@@ -228,17 +226,16 @@
 <p>
   Such traits are called OIBITs, standing for
   <code>opt-in built-in traits</code> -
-  <a
-    href="https://internals.rust-lang.org/t/pre-rfc-renaming-oibits-and-changing-their-declaration-syntax/3086"
-    >eventually</a
-  >
+  <a href="https://internals.rust-lang.org/t/pre-rfc-renaming-oibits-and-changing-their-declaration-syntax/3086">
+    eventually
+  </a>
   though that name was found to be confusing and the whole feature was renamed
   into <code>auto traits</code>, so we'll go with the latter from now on.
 </p>
 
-<h2 id="_auto_traits">
-  <a href="#_auto_traits">Auto traits</a>
-</h2>
+<header id="_auto_traits">
+  Auto traits
+</header>
 
 <p>
   Regular traits are opt-in, meaning that they don't apply unless you explicitly
@@ -383,27 +380,24 @@
 </listing>
 
 <p class="text-attached">
-  <i
-    >(as always, you can find more information
-    <a
-      href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md"
-      >in the RFC</a
-    >.)</i
-  >
+  <i>
+    (as always, you can find more information
+    <a href="https://github.com/rust-lang/rfcs/blob/master/text/0019-opt-in-builtin-traits.md">
+      in the RFC
+    </a>.)
+  </i>
 </p>
 
-<h2 id="_specialization">
-  <a href="#_specialization">Specialization</a>
-</h2>
+<header id="_specialization">
+  Specialization
+</header>
 
 <p>
   Let's stash all that boring-auto-trait-knowledge somewhere else for now and
   imagine we're in a Silicon Valley, starting a brand-new start-up -
   <i>surely</i> the first thing we've gotta do is to invent a brand-new file
-  format: we're too cool for XML and JSON is already the story of the past (<a
-    href="http://fileformats.archiveteam.org/wiki/No_Code"
-    >No Code, anyone?</a
-  >).
+  format: we're too cool for XML and JSON is already the story of the past
+  (<a href="http://fileformats.archiveteam.org/wiki/No_Code">No Code, anyone?</a>).
 </p>
 
 <p>
@@ -579,10 +573,9 @@
 
 <p>
   Nightly Rust offers a dedicated solution to this problem: a feature called
-  <a
-    href="https://github.com/rust-lang/rfcs/blob/master/text/1210-impl-specialization.md"
-    >specialization</a
-  >.
+  <a href="https://github.com/rust-lang/rfcs/blob/master/text/1210-impl-specialization.md">
+    specialization
+  </a>.
 </p>
 
 <p>
@@ -615,11 +608,9 @@
   auto traits.
 </p>
 
-<h2 id="_specialization_with_auto_traits">
-  <a href="#_specialization_with_auto_traits"
-    >Specialization with auto traits</a
-  >
-</h2>
+<header id="_specialization_with_auto_traits">
+  Specialization with auto traits
+</header>
 
 <p>Since the issue with our current implementation:</p>
 
@@ -694,9 +685,9 @@
   -->
 </listing>
 
-<h2 id="_the_code">
-  <a href="#_the_code">The Code</a>
-</h2>
+<header id="_the_code">
+  The Code
+</header>
 
 <p>
   The entire solution leans on two nightly features: <code>auto_traits</code> &
@@ -705,12 +696,11 @@
   code to write:
 </p>
 
-<div class="listing-title">
-  <a
-    href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=c9cbd4c7cc6810e2ed4e773437751181"
-    >open in playground</a
-  >
-</div>
+<listing-title>
+  <a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=c9cbd4c7cc6810e2ed4e773437751181">
+    open in playground
+  </a>
+</listing-title>
 
 <listing lang="rust">
   <!--

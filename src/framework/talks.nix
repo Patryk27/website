@@ -15,8 +15,6 @@ let
     }];
   };
 
-  static = ../content/talks/static;
-
 in
 fw.pkgs.linkFarm "talks" (
   [ index ]

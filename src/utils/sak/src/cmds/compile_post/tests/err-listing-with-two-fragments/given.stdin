@@ -1,0 +1,13 @@
+<listing>
+  <!--
+    fn main() {
+        println!("hello");
+    }
+  -->
+
+  <!--
+    fn main() {
+        println!("world");
+    }
+  -->
+</listing>

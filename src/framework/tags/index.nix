@@ -3,28 +3,45 @@ fw:
 let
   renderTag = tag:
     let
-      postCount =
+      count = type:
         builtins.length
-          (fw.content.findPostsByTag tag);
+          (builtins.filter
+            (obj: obj.type == type)
+            (fw.content.findObjectsByTag tag));
+
+      posts = count "post";
+      talks = count "talk";
+
+      posts' = fw.components.pluralize "post" posts;
+      talks' = fw.components.pluralize "talk" talks;
 
     in
     ''
       <li class="tag">
         <a href="/tags/${tag}">${tag}</a>
 
-        <span class="post-count">
-          (${fw.components.pluralize postCount "post"})
+        <span class="counter">
+          (${
+            if posts == 0 then
+              "${talks'}"
+            else if talks == 0 then
+              "${posts'}"
+            else
+              "${posts'}, ${talks'}"
+          })
         </span>
       </li>
     '';
 
 in
-fw.components.page
-{
+fw.components.page {
   title = "~/tags";
   layout = "tags";
-} ''
-  <ul class="tags">
-    ${toString (map renderTag fw.content.tags)}
-  </ul>
-''
+  withHeader = true;
+
+  body = ''
+    <ul class="tags">
+      ${toString (map renderTag fw.content.tags)}
+    </ul>
+  '';
+}

@@ -10,28 +10,19 @@ let
       (builtins.attrNames fw.content.talks);
 
   renderTalk = talkId:
-    ''
-      <li>
-        ${
-          fw.components.talkItem {
-            inherit talkId;
-          }
-        }
-      </li>
-    '';
+    fw.components.talkItem {
+      inherit talkId;
+    };
 
 in
-fw.components.page
-{
+fw.components.page {
   title = "~/talks";
   layout = "talks";
-} ''
-  <p>
-    Source codes & related materials for talks are available
-    <a href="https://github.com/Patryk27/talks">at my GitHub repository</a>.
-  </p>
+  withHeader = true;
 
-  <ul class="talks">
-    ${toString (map renderTalk talkIds)}
-  </ul>
-''
+  body = ''
+    <div class="talks">
+      ${toString (map renderTalk talkIds)}
+    </div>
+  '';
+}

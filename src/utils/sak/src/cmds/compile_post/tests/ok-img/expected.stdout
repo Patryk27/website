@@ -1,0 +1,2 @@
+<img src="https://foo/bar.jpg" />
+<img src="{{ assets }}/zar.jpg" class="image" />

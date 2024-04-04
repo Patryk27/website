@@ -2,7 +2,7 @@ fw: name: explicitPaths: implicitPaths':
 
 let
   implicitPaths =
-    builtins.map
+    map
       (path: {
         inherit path;
         name = builtins.baseNameOf path;

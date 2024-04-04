@@ -6,9 +6,9 @@
       </p>
 
       <p>
-        My name's Patryk - I'm a software developer who finds joy in throwing
-        algorithms at problems and observing what happens; here you can read about
-        my adventures.
+        My name's Patryk, I'm a software developer who finds joy in throwing
+        algorithms at problems and observing what happens - here you can read
+        about my adventures.
       </p>
     </section>
   '';

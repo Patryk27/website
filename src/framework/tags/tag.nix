@@ -1,29 +1,25 @@
 fw: tag:
 
 let
-  postIds =
-    builtins.sort
-      (a: b:
-        fw.utils.dateLessThat
-          fw.content.posts.${b}.publishedAt
-          fw.content.posts.${a}.publishedAt)
-      (fw.content.findPostsByTag tag);
+  objectIds = fw.content.findObjectsByTag tag;
 
-  renderPost = postId: fw.components.postItem {
-    inherit postId;
-  };
+  renderObject = obj:
+    if obj.type == "post" then
+      fw.components.postItem { postId = obj.id; }
+    else if obj.type == "talk" then
+      fw.components.talkItem { talkId = obj.id; }
+    else
+      throw "unknown object type: ${obj.type}";
 
 in
-fw.components.page
-{
+fw.components.page {
   title = "~/tags/${tag}";
   layout = "tag";
-} ''
-  <h1>
-    Posts tagged #${tag}:
-  </h1>
+  withHeader = true;
 
-  <div class="posts">
-    ${(toString (map renderPost postIds))}
-  </div>
-''
+  body = ''
+    <div class="posts talks">
+      ${(toString (map renderObject objectIds))}
+    </div>
+  '';
+}

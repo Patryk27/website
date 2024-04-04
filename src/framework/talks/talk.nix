@@ -1,13 +1,10 @@
 fw: talkId:
 
-fw.components.page
-{
-  title = "~/talks/${talkId}";
+fw.components.page {
+  title = fw.content.talks.${talkId}.title;
   layout = "talk";
-} ''
-  ${
-    fw.components.talkItem {
-      inherit talkId;
-    }
-  }
-''
+
+  body = fw.components.talkItem {
+    inherit talkId;
+  };
+}

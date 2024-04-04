@@ -1,7 +1,6 @@
 fw: postId:
 
 let
-  renderPost = import ./post/render-post.nix fw;
   post = fw.content.posts.${postId};
 
   postHeader =
@@ -25,7 +24,7 @@ let
           </time>
 
           <div class="post-meta-tags">
-            ${toString (map tag post.tags)}
+            ${toString (map tag (post.tags or []))}
           </div>
         </div>
       </div>
@@ -66,6 +65,23 @@ let
     else
       "";
 
+  nextPost =
+    if post ? next then
+      let
+        nextPostId = post.next;
+        nextPost = fw.content.posts.${nextPostId};
+
+      in
+      ''
+        <div class="next-post">
+          <a href="/posts/${nextPostId}">
+            next post: <b>${nextPost.subtitle}</b>
+          </a>
+        </div>
+      ''
+    else
+      "";
+
   postIndex = [{
     name = "index.html";
 
@@ -75,7 +91,7 @@ let
           "{{ assets }}" = "/posts/${postId}/assets";
         };
 
-        postBody = renderPost {
+        postBody = fw.utils.sak.compilePost {
           id = postId;
 
           body =
@@ -86,30 +102,31 @@ let
         };
 
       in
-      fw.components.page
-        {
-          title = post.title;
-          layout = "post";
+      fw.components.page {
+        title = post.title;
+        layout = "post";
 
-          head = ''
-            <meta name="title" content="${post.title}">
+        head = ''
+          <meta name="title" content="${post.title}">
 
-            <meta property="og:image" content="https://pwy.io/favicon.png">
-            <meta property="og:site_name" content="pwy.io">
-            <meta property="og:title" content="${post.title}">
-            <meta property="og:type" content="article">
-            <meta property="og:url" content="https://pwy.io/posts/${postId}">
+          <meta property="og:image" content="https://pwy.io/favicon.png">
+          <meta property="og:site_name" content="pwy.io">
+          <meta property="og:title" content="${post.title}">
+          <meta property="og:type" content="article">
+          <meta property="og:url" content="https://pwy.io/posts/${postId}">
 
-            <meta property="twitter:card" content="${post.title}">
-            <meta property="twitter:image" content="https://pwy.io/favicon.png">
-            <meta property="twitter:title" content="${post.title}">
-          '';
-        }
-        ''
+          <meta property="twitter:card" content="${post.title}">
+          <meta property="twitter:image" content="https://pwy.io/favicon.png">
+          <meta property="twitter:title" content="${post.title}">
+        '';
+
+        body = ''
           ${postHeader}
           ${postSeries}
           ${postBody}
+          ${nextPost}
         '';
+      };
   }];
 
   postAssets =

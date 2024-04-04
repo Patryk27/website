@@ -14,6 +14,18 @@ a {
     code {
       background: transparent;
     }
+
+    img {
+      outline: 1px solid $link-underline;
+    }
+  }
+
+  code {
+    padding: 0.06em;
+  }
+
+  img {
+    border: 1px solid $link-underline;
   }
 }
 
@@ -23,12 +35,11 @@ b {
 }
 
 blockquote {
-  margin: $para-indent 0;
-  padding: (1em - $para-indent / 1.5) 1em;
+  margin: 1em 0;
+  padding: 0 0.75em;
   background: lighten($body-bg, 3%);
   border: 2px solid lighten($body-bg, 10%);
   border-left: 10px solid lighten($body-bg, 10%);
-  border-radius: $border-radius;
 
   p {
     margin: ($para-indent / 1.5) 0;
@@ -44,16 +55,13 @@ code {
   padding: 0.12em 0.24em;
   background: $code-bg;
   color: $code-fg;
+  font-size: 0.8em;
   font-family: $code-font, monospace;
-  white-space: normal !important;
-
-  // In case of e.g. `<i><code>...</code></i>`, let's force `code` to have the
-  // normal font style, since it looks pretty ugly otherwise
-  font-style: normal;
+  white-space: nowrap;
 }
 
 figure {
-  margin: 0;
+  margin: 1em 0;
   padding: 0;
   text-align: center;
 
@@ -108,11 +116,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 1.6em;
+  font-size: 1.4em;
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.3em;
 }
 
 h3 {
@@ -145,20 +153,16 @@ ol, ul {
 }
 
 p {
-  margin: $para-indent 0;
-  line-height: 1.4;
-
-  + ol, + ul {
-    margin-top: (-$para-indent / 2);
-  }
+  margin: 1em 0;
+  line-height: 1.25;
 }
 
 pre {
   margin: 0;
   padding: ($para-indent / 2);
-  border-radius: $border-radius;
   background: $pre-bg;
   overflow: auto;
+  font-size: 0.9em;
   font-family: $code-font, monospace;
   line-height: 1.2;
 
@@ -236,24 +240,8 @@ table {
 .note {
   margin: $para-indent 0;
   padding: $para-indent / 2;
-  border-radius: $border-radius;
   color: #000000;
   background: #ffc800;
-
-  &.note-from-the-future {
-    position: relative;
-    background: #ff8427;
-
-    &::after {
-      content: '!';
-      position: absolute;
-      top: -27px;
-      left: -22px;
-      color: #dc3545;
-      font-size: 2em;
-      transform: rotate(-17.25deg);
-    }
-  }
 
   > *:first-child {
     margin-top: 0;
@@ -275,10 +263,6 @@ table {
 
   > p {
     margin: ($para-indent / 1.5) 0;
-
-    + ol, + ul {
-      margin-top: (-$para-indent / 4);
-    }
   }
 
   blockquote {
@@ -289,8 +273,7 @@ table {
 
 .listing {
   position: relative;
-  margin: $para-indent 0;
-  border-radius: $border-radius;
+  margin: 1em 0;
 
   &.listing-invalid {
     position: relative;
@@ -324,8 +307,6 @@ table {
   margin-bottom: 0 !important;
   padding: ($para-indent / 2);
   background: darken($pre-bg, 4%);
-  border-top-left-radius: $border-radius;
-  border-top-right-radius: $border-radius;
   color: hsl(25, 90%, 60%);
   font-family: $code-font, monospace;
   font-size: 0.8em;
@@ -335,7 +316,7 @@ table {
   }
 
   p {
-    line-height: 1.0;
+    line-height: 1;
   }
 
   & + .listing {
@@ -349,7 +330,9 @@ table {
 }
 
 .text-attached {
-  margin-top: (-$para-indent / 2);
+  margin-top: -0.5em !important;
+  color: rgba($body-fg, 0.5);
+  font-style: italic;
   text-align: center;
 }
 

@@ -1,14 +1,10 @@
-fw: name: html:
+fw: html:
 
-fw.pkgs.runCommandLocal "prettify-${name}"
+fw.pkgs.runCommandLocal "prettify"
 {
   inherit html;
   passAsFile = [ "html" ];
 } ''
-  echo "== Input =="
-  cat $htmlPath
-  echo "==========="
-
   cat $htmlPath \
     | ${fw.pkgs.nodePackages.prettier}/bin/prettier \
       --no-config \

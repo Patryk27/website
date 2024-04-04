@@ -1,4 +1,8 @@
 main {
+  #header {
+    margin-bottom: 1em;
+  }
+
   &#index {
     @import 'pages/index';
   }
@@ -7,15 +11,7 @@ main {
     @import 'pages/post';
   }
 
-  &#tag {
-    @import 'pages/tag';
-  }
-
   &#tags {
     @import 'pages/tags';
-  }
-
-  &#talks {
-    @import 'pages/talks';
   }
 }
