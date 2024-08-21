@@ -1,0 +1,300 @@
+<p>
+  One of applications at my work has always been RAM-bound - it's a pricing
+  engine that basically loads tons of hotels, builds some in-memory indices and
+  then allows you to issue queries like <i>find me the cheapest hotel in berlin,
+  pronto</i>.
+</p>
+
+<p>
+  A pricing engine's main purpose is to price <s>engines</s> hotels, but in
+  order to do that effectively, there's a lot of "meta work" involved, like:
+</p>
+
+<ul>
+  <li>
+    Where do we load the data from, how do we do it?
+  </li>
+  <li>
+    Do we load the entire dataset or just some parts of it?
+  </li>
+  <li>
+    Should we precalculate prices in order to speed-up the most popular queries?
+  </li>
+</ul>
+
+<p>
+  Such an engine poses an interesting technical challenge, even greater so when
+  one day it starts OOMing on production, even though the entire dataset should
+  fit in the memory multiple times...
+</p>
+
+<header id="hello-world">
+  Hello, World!
+</header>
+
+<p>
+  Simplifying <s>a bit</s> a lot, what we're dealing with is:
+</p>
+
+<listing-title>
+  <a href="https://github.com/Patryk27/mimalloc-cigarette">
+    github:Patryk27/mimalloc-cigarette
+  </a>
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  struct State {
+      hotels: Vec<Hotel>,
+  }
+
+  struct Hotel {
+      prices: Vec<f32>,
+  }
+
+  // ---
+
+  impl State {
+      fn new() -> Self {
+          Self {
+              hotels: load_hotels().collect(),
+          }
+      }
+
+      fn refresh(&mut self) {
+          for (id, hotel) in load_hotels().enumerate() {
+              self.hotels[id] = hotel;
+          }
+      }
+  }
+
+  fn load_hotels() -> impl Iterator<Item = Hotel> {
+      (0..1_000).map(|_| Hotel {
+          prices: (0..1_000_000).map(|n| n as f32).collect(),
+      })
+  }
+
+  // ---
+
+  fn main() {
+      let state = Arc::new(RwLock::new(State::new()));
+
+      // Spawn a separate thread responsible for checking which hotels have
+      // changed and need to be refreshed etc.
+      thread::spawn({
+          let state = Arc::clone(&state);
+
+          move || loop {
+              thread::sleep(Duration::from_secs(5));
+              state.write().unwrap().refresh();
+          }
+      });
+
+      // Now in reality we start a Rocket server here, but for practical
+      // purposes stalling the main thread will be sufficient.
+      loop {
+          thread::sleep(Duration::from_secs(1));
+      }
+  }
+  -->
+</listing>
+
+<p>
+  Of course IRL there's <kbd>ArcSwap</kbd> instead of <kbd>RwLock</kbd>, every
+  hotel contains much more information (like taxes, discounts or supplements)
+  etc., but we've got a reasonably good approximation here.
+</p>
+
+<p>
+  Now, what if I told you that this code has <i>totally</i> different memory
+  characteristics depending on which allocator you use?
+</p>
+
+<header id="practical-reasons">
+  Practical Reasons
+</header>
+
+<p>
+  Memory allocator is the piece of software invoked whenever your program needs
+  to get hands on extra memory, like when you're calling <kbd>Box::new()</kbd>.
+  And memory allocation is quite a complex topic, with different solutions
+  offering different trade-offs.
+</p>
+
+<p>
+  Say, when implementing a firmware you might pick an allocator that works
+  slower, because its implementation is just simpler and doesn't occupy much
+  space in the final binary.
+</p>
+
+<p class="text-dim">
+  (some would argue that embeddeed programs shouldn't allocate, yadda yadda, but
+  you get the idea -- replace <i>firmware</i> with <i>wasm</i> and you end up
+  with the same problem.)
+</p>
+
+<p>
+  <ref>
+    https://github.com/microsoft/mimalloc
+  </ref>
+
+  <a ref>mimalloc</a> is an allocator that fights tooth and nail for
+  performance - and while most applications don't have to worry about allocation
+  performance, in our case internal benchmarks have proven it gives us extra 10%
+  for free; when your response times have to be within milliseconds, this
+  matters.
+</p>
+
+<p>
+  But there's a catch.
+</p>
+
+<header id="desenchantee">
+  Désenchantée
+</header>
+
+<p>
+  That program from before, on my x86_64 Linux machine it allocates around 4 GB
+  of memory and it remains on this level through the refreshing.
+</p>
+
+<p>
+  This makes sense, right? We're using lazy iterators, replacing stuff in place
+  one-by-one, there's no reason we'd need more RAM.
+</p>
+
+<p>
+  But if you use mimalloc:
+</p>
+
+<listing lang="rust">
+  <!--
+  use mimalloc::MiMalloc;
+
+  #[global_allocator]
+  static GLOBAL: MiMalloc = MiMalloc;
+  -->
+</listing>
+
+<p>
+  ... the program will first allocate 4 GB and then allocate <i>extra</i> 4 GB
+  during the refreshing, oh noes!
+</p>
+
+<p>
+  Getting to this point already took three days of my life - believe me or not,
+  when faced with 200k lines of Arc-ridden Rust code that <i>seems</i> to
+  generate a memory leak, one's first thought is not "let's try with different
+  allocator", but rather "probably something's holding onto an Arc for too
+  long".
+</p>
+
+<p>
+  And so I've valgrind-ed. I've perf-ed. I've analyzed assembly. I've headbanged
+  and I've cried.
+</p>
+
+<p>
+  No more.
+</p>
+
+<p>
+  From now on I'm always assuming it's someone else's fault - it's the
+  allocator, it's the compiler, it's that crate Mike pulled last night. WHY DO
+  YOU HATE ME MIKE, WHY ARE YOU PULLING RANDOM CRATES TO MY PURE
+  <span class="text-dim">~~~tv noise~~~</span>
+</p>
+
+<header id="remede">
+  Remède
+</header>
+
+<p>
+  Allocators have different characteristics for a reason - they do some things
+  differently between each other. What do you think mimalloc does that could
+  account for this behavior?
+</p>
+
+<p>
+  Let me give you two hints, two pieces of code that solve the problem, but feel
+  cursed:
+</p>
+
+<listing lang="rust">
+  <!--
+  // Approach 1:
+  fn main() {
+      let state = thread::spawn(|| {
+          Arc::new(RwLock::new(State::new()))
+      }).join().unwrap();
+
+      /* ... */
+  }
+
+  // Approach 2:
+  fn main() {
+      /* ... */
+
+      loop {
+          Box::new(1234);
+      }
+  }
+  -->
+</listing>
+
+<p>
+  Any ideas? Last chance to win a plushie polar bear!
+</p>
+
+<p>
+  Alright then, the issue is that mimalloc assumes that <b>every thread
+  allocates every now and then</b>.
+</p>
+
+<p>
+  Every now and then during <kbd>malloc()</kbd> mimalloc performs some internal
+  bookkeeping, so when a thread goes to sleep (say, because it delegates
+  handling HTTP requests into a separate thread pool...), this bookkeeping
+  doesn't happen (for that particular thread).
+</p>
+
+<p>
+  The most nasty edge case that can happen here, and the one that we've stumbled
+  upon, is when your thread allocates a lot of data, then launches other threads
+  to work on that data, and then goes to sleep. As other threads work on memory
+  and override stuff, Rust destructors <i>are</i> launched properly, but the
+  underlying memory blocks simply get marked as "to be released".
+</p>
+
+<p>
+  Under normal conditions, these blocks get processed a moment later, during a
+  call to <kbd>malloc()</kbd> on the thread that created them - but if that
+  thread is asleep, those blocks never become available again (unless the thread
+  dies, of course).
+</p>
+
+<p>
+  To be sure, the problem is not that the memory is not returned to the kernel -
+  that's alright. It's that unless this bookkeeping happens, mimalloc can't even
+  use the memory <i>for itself</i> - all this free estate just lays there,
+  dormant:
+</p>
+
+<ul>
+  <li>
+    <a href="https://github.com/microsoft/mimalloc/issues/537" />
+  </li>
+  <li>
+    <a href="https://github.com/microsoft/mimalloc/issues/214" />
+  </li>
+</ul>
+
+<p>
+  Anyway, the solution we went with was to keep all refreshing on the same
+  thread - when program starts, we spawn a dedicated refreshing-thread and use
+  channels to let it know to do its thing.
+</p>
+
+<p>
+  So yeah, that was fun; and health-wise probably more like seven cigarettes.
+</p>
