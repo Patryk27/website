@@ -1,7 +1,6 @@
-use crate::Env;
 use anyhow::{anyhow, Context, Result};
 use chrono::{DateTime, NaiveDate, TimeZone, Utc};
-use clap::Parser;
+use common::Env;
 use rss::extension::atom::{self, AtomExtensionBuilder, Link};
 use rss::validation::Validate;
 use rss::{Channel, ChannelBuilder, GuidBuilder, Item, ItemBuilder};
@@ -10,33 +9,32 @@ use std::io::Write;
 use std::process::{Command, Stdio};
 use voca_rs::strip::strip_tags;
 
-#[derive(Debug, Parser)]
-pub struct CompileFeed;
+fn main() -> Result<()> {
+    Env::with(main_ex)
+}
 
-impl CompileFeed {
-    pub fn run(self, env: &mut Env) -> Result<()> {
-        let mut website = String::new();
+fn main_ex(env: &mut Env) -> Result<()> {
+    let mut website = String::new();
 
-        env.stdin
-            .read_to_string(&mut website)
-            .context("couldn't read from stdin")?;
+    env.stdin
+        .read_to_string(&mut website)
+        .context("couldn't read from stdin")?;
 
-        let feed = Website::from_json(&website)?.into_feed();
+    let feed = Website::from_json(&website)?.into_feed();
 
-        feed.validate().context("RSS validation failed")?;
+    feed.validate().context("RSS validation failed")?;
 
-        let feed = feed.to_string();
+    let feed = feed.to_string();
 
-        // HACK validator.w3.org says it's best to have this kind of link, but
-        //      apparently the `rss` crate always generates it as `<link href`
-        //      instead of `<atom:link href`
-        let feed = feed.replace("<link href", "<atom:link href");
-        let feed = format_xml(&feed).context("couldn't format feed")?;
+    // HACK validator.w3.org says it's best to have this kind of link, but
+    //      apparently the `rss` crate always generates it as `<link href`
+    //      instead of `<atom:link href`
+    let feed = feed.replace("<link href", "<atom:link href");
+    let feed = format_xml(&feed).context("couldn't format feed")?;
 
-        env.stdout.write_all(feed.as_bytes())?;
+    env.stdout.write_all(feed.as_bytes())?;
 
-        Ok(())
-    }
+    Ok(())
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -194,21 +192,16 @@ fn format_xml(xml: &str) -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::tests::Asserter;
+    use common::Asserter;
     use std::fs;
     use std::path::Path;
     use test_case::test_case;
 
     #[test_case("ok-smoke")]
     fn smoke(case: &str) {
-        let dir = Path::new("src")
-            .join("cmds")
-            .join("compile_feed")
-            .join("tests")
-            .join(case);
-
+        let dir = Path::new("src").join("tests").join(case);
         let stdin = fs::read_to_string(dir.join("given.stdin")).unwrap();
-        let (result, stdout, _) = Env::mock(stdin, |env| CompileFeed.run(env));
+        let (result, stdout, _) = Env::mock(stdin, main_ex);
 
         result.unwrap();
 

@@ -91,7 +91,7 @@ let
           "{{ assets }}" = "/posts/${postId}/assets";
         };
 
-        postBody = fw.utils.sak.compilePost {
+        postBody = fw.utils.renderPost {
           id = postId;
 
           body =

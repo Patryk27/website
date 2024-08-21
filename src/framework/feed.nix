@@ -37,7 +37,7 @@ let
 
 in
 fw.pkgs.writeText "feed.xml" (
-  fw.utils.sak.compileFeed {
+  fw.utils.renderFeed {
     website = {
       objects = map mkObject fw.content.objects;
     };
