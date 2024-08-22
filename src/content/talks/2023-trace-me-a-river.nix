@@ -9,7 +9,7 @@
     { label = "code"; link = "https://github.com/Patryk27/sdf-playground"; }
   ];
 
-  summary = ''
+  description = ''
     <p>
       <i>(older version of my <code>Trace Me a River</code> talk)</i>
     </p>

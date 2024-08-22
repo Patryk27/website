@@ -10,7 +10,7 @@
     { label = "codes"; link = "https://github.com/Patryk27/talks/tree/main/2022-microdosing-rust/codes"; }
   ];
 
-  summary = ''
+  description = ''
     <p>
       AVRs are charming microcontrollers which can survive more than 300 days
       on a single AA battery, lying on anything - from cold ice to sizzling

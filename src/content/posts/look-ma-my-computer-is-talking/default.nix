@@ -1,8 +1,23 @@
 {
   title = "Look Ma: My computer is talking! - Markov chains and N-grams";
-  tags = [ "ai" "markov-chains" "n-grams" "rust" "shorts" ];
-  publishedAt = { y = 2023; m = 3; d = 23; };
+  body = builtins.readFile ./body.html;
 
-  body = ./body.html;
-  summary = ./summary.html;
+  description = ''
+    ChatGPT is all the hype now, but the math behind it is pretty complex - can
+    we create something simpler, possibly under 200 lines of code?
+  '';
+
+  tags = [
+    "ai"
+    "markov-chains"
+    "n-grams"
+    "rust"
+    "shorts"
+  ];
+
+  publishedAt = {
+    y = 2023;
+    m = 3;
+    d = 23;
+  };
 }

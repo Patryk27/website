@@ -34,14 +34,14 @@ let
     let
       relatedPostIds =
         builtins.filter
-          (postId: fw.content.posts.${postId}.series or "" == post.series)
+          (postId: fw.content.posts.${postId}.series.id or "" == post.series.id)
           (builtins.attrNames fw.content.posts);
 
       relatedPost = postId:
         ''
           <li>
             <a href="/posts/${postId}">
-              ${fw.content.posts.${postId}.subtitle}
+              ${fw.content.posts.${postId}.series.part}
             </a>
           </li>
         '';
@@ -50,7 +50,7 @@ let
     ''
       <div class="post-series">
         <p>
-          This post is part of the <b>${post.series}</b> series:
+          This post is part of the <b>${post.series.id}</b> series:
         </p>
 
         <ol>
@@ -66,16 +66,16 @@ let
       "";
 
   nextPost =
-    if post ? next then
+    if post ? series && post.series ? next then
       let
-        nextPostId = post.next;
+        nextPostId = post.series.next;
         nextPost = fw.content.posts.${nextPostId};
 
       in
       ''
         <div class="next-post">
           <a href="/posts/${nextPostId}">
-            next post: <b>${nextPost.subtitle}</b>
+            next post: <b>${nextPost.series.part}</b>
           </a>
         </div>
       ''
@@ -98,8 +98,14 @@ let
             builtins.replaceStrings
               (builtins.attrNames vars)
               (builtins.attrValues vars)
-              (builtins.readFile post.body);
+              post.body;
         };
+
+        sanitize = s:
+          builtins.replaceStrings
+            [ "\n" ]
+            [ " " ]
+            (fw.pkgs.lib.strings.trim s);
 
       in
       fw.components.page {
@@ -112,12 +118,14 @@ let
           <meta property="og:image" content="https://pwy.io/favicon.png">
           <meta property="og:site_name" content="pwy.io">
           <meta property="og:title" content="${post.title}">
+          <meta property="og:description" content="${sanitize post.description}">
           <meta property="og:type" content="article">
           <meta property="og:url" content="https://pwy.io/posts/${postId}">
 
           <meta property="twitter:card" content="${post.title}">
           <meta property="twitter:image" content="https://pwy.io/favicon.png">
           <meta property="twitter:title" content="${post.title}">
+          <meta property="twitter:description" content="${sanitize post.description}">
         '';
 
         body = ''

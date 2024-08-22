@@ -71,6 +71,10 @@
       }
     }
   }
+
+  .cg-graph {
+    margin-top: 0;
+  }
 }
 
 .posts .post, .talks .talk {
@@ -82,7 +86,7 @@
   }
 }
 
-.post-summary, .talk-summary {
+.post-description, .talk-description {
   p {
     margin: 0.8em 0;
     line-height: 1.2;

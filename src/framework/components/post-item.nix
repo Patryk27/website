@@ -39,8 +39,10 @@ in
       }
     </div>
 
-    <div class="post-summary">
-      ${builtins.readFile post.summary}
+    <div class="post-description">
+      <p>
+        ${post.description}
+      </p>
     </div>
   </article>
 ''

@@ -10,7 +10,7 @@
     { label = "slides"; link = "https://files.pwy.io/2024-trace-me-a-river.pdf"; }
   ];
 
-  summary = ''
+  description = ''
     <p>
       GPUs are known for their abilities of generating pretty images pretty
       fast - in this talk we'll see what makes GPUs different from CPUs and

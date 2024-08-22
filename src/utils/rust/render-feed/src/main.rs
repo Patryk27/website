@@ -7,7 +7,6 @@ use rss::{Channel, ChannelBuilder, GuidBuilder, Item, ItemBuilder};
 use serde::Deserialize;
 use std::io::Write;
 use std::process::{Command, Stdio};
-use voca_rs::strip::strip_tags;
 
 fn main() -> Result<()> {
     Env::with(main_ex)
@@ -82,7 +81,7 @@ enum Object {
     Post {
         id: String,
         title: String,
-        summary: String,
+        description: String,
         date: Date,
     },
 
@@ -100,7 +99,7 @@ impl Object {
             Object::Post {
                 id,
                 title,
-                summary,
+                description,
                 date,
             } => {
                 let link = format!("https://pwy.io/posts/{}", id);
@@ -111,7 +110,7 @@ impl Object {
                 ItemBuilder::default()
                     .title(title)
                     .link(link)
-                    .description(strip_tags(&summary).trim().to_owned())
+                    .description(description.trim().to_owned())
                     .guid(guid)
                     .pub_date(date.into_chrono().to_rfc2822())
                     .build()

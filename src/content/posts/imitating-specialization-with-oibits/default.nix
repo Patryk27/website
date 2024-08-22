@@ -1,8 +1,20 @@
 {
   title = "Imitating specialization with OIBITs";
-  tags = [ "rust" "tricks" ];
-  publishedAt = { y = 2020; m = 10; d = 25; };
+  body = builtins.readFile ./body.html;
 
-  body = ./body.html;
-  summary = ./summary.html;
+  description = ''
+    Why does the code below compile?
+  '';
+
+  tags = [
+    "rust"
+    "tricks"
+  ];
+
+  publishedAt = {
+    y = 2020;
+    m = 10;
+    d = 25;
+  };
+
 }

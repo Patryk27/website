@@ -5,7 +5,7 @@
   where = "Rust Wrocław";
   link = "https://www.youtube.com/watch?v=7_oh3QfgVbo&t=5064s";
 
-  summary = ''
+  description = ''
     <p>
       Since I spent most of my days looking at a text editor, I've had the
       chance of going through lots of programs, plugins, IDEs and ideas - some

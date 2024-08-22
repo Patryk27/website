@@ -10,7 +10,7 @@
     { label = "code (2)"; link = "https://github.com/Patryk27/rast-jit-vm"; }
   ];
 
-  summary = ''
+  description = ''
     <p>
       Have you ever wanted to create your own programming language?
     </p>

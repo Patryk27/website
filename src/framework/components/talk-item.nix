@@ -65,10 +65,10 @@ in
     </div>
 
     ${
-      if talk ? summary then
+      if talk ? description then
         ''
-          <div class="talk-summary">
-            ${talk.summary}
+          <div class="talk-description">
+            ${talk.description}
           </div>
         ''
       else

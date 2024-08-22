@@ -4,7 +4,7 @@
       "type": "post",
       "id": "hello-world",
       "title": "Hello, World!",
-      "summary": "  This is my <i>first post</i> ~~ \"fancy!\"  ",
+      "description": "  This is my first post ~~ \"fancy!\"  ",
       "date": {
         "y": 2018,
         "m": 3,

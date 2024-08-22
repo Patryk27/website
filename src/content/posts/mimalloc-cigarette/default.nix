@@ -1,8 +1,23 @@
 {
   title = "Mimalloc Cigarette: Losing one week of my life catching a memory leak";
-  tags = [ "memory" "mimalloc" "rust" "shorts" ];
-  publishedAt = { y = 2024; m = 8; d = 21; };
+  body = builtins.readFile ./body.html;
 
-  body = ./body.html;
-  summary = ./summary.html;
+  description = ''
+    Memory allocators are great, I love allocating memory! But they can be a
+    great source of pain as well - this is a story of how I lost one week
+    catching a memory leak in a core Rust application at work.
+  '';
+
+  tags = [
+    "memory"
+    "mimalloc"
+    "rust"
+    "shorts"
+  ];
+
+  publishedAt = {
+    y = 2024;
+    m = 8;
+    d = 21;
+  };
 }

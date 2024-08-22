@@ -3,13 +3,13 @@ fw:
 let
   mkObject = { id, type, ... }:
     if type == "post" then
-      (mkObjectPost id)
+      (mkPostObject id)
     else if type == "talk" then
-      (mkObjectTalk id)
+      (mkTalkObject id)
     else
       throw "unknown object type: ${type}";
 
-  mkObjectPost = id:
+  mkPostObject = id:
     let
       post = fw.content.posts.${id};
 
@@ -18,11 +18,11 @@ let
       type = "post";
       id = id;
       title = post.title;
-      summary = builtins.readFile post.summary;
+      description = post.description;
       date = post.publishedAt;
     };
 
-  mkObjectTalk = id:
+  mkTalkObject = id:
     let
       talk = fw.content.talks.${id};
 

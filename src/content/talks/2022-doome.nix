@@ -10,7 +10,7 @@
     { label = "code"; link = "https://github.com/patryk27/doome"; }
   ];
 
-  summary = ''
+  description = ''
     <p>
       Together with a friend we've created a game for GitHub's Game Off 2022
       which utilizes software ray-tracing - in this talk we're going through

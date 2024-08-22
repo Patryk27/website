@@ -5,7 +5,7 @@
   where = "Rust Wrocław";
   link = "https://www.youtube.com/watch?v=FRki8MIMgis&t=4720s";
 
-  summary = ''
+  description = ''
     <p>
       Even though Rust strives for simplicity, it's got a couple of surprising
       corners and edge cases.
