@@ -122,7 +122,7 @@ let
           <meta property="og:type" content="article">
           <meta property="og:url" content="https://pwy.io/posts/${postId}">
 
-          <meta property="twitter:card" content="${post.title}">
+          <meta property="twitter:card" content="summary">
           <meta property="twitter:image" content="https://pwy.io/favicon.png">
           <meta property="twitter:title" content="${post.title}">
           <meta property="twitter:description" content="${sanitize post.description}">
