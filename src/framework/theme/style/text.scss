@@ -89,7 +89,7 @@ figure {
     }
   }
 
-  >a {
+  > a {
     border: 0 !important;
     background: transparent !important;
   }
@@ -106,7 +106,12 @@ figure {
   }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
   font-family: $header-font, sans-serif;
@@ -126,7 +131,9 @@ h2 {
 h3 {
   font-size: 1.2em;
 
-  & + p, & + ul, & + ol {
+  & + p,
+  & + ul,
+  & + ol {
     margin-top: ($para-indent / 2);
   }
 }
@@ -148,7 +155,8 @@ li {
   }
 }
 
-ol, ul {
+ol,
+ul {
   margin: 0;
 }
 
@@ -171,7 +179,7 @@ pre {
     border-left: 5px solid #dc3545;
 
     &::before {
-      content: 'xxx';
+      content: "xxx";
       position: absolute;
       top: 20px;
       right: 20px;
@@ -185,7 +193,8 @@ pre {
 table {
   border-spacing: 0;
 
-  td, th {
+  td,
+  th {
     padding: 0.5em;
     text-align: left;
 
@@ -251,7 +260,9 @@ table {
     margin-bottom: 0;
   }
 
-  a, b, strong {
+  a,
+  b,
+  strong {
     color: #000000;
   }
 
@@ -280,7 +291,7 @@ table {
     border-left: 5px solid #dc3545;
 
     &::before {
-      content: 'xxx';
+      content: "xxx";
       position: absolute;
       top: 20px;
       right: 20px;
@@ -295,7 +306,7 @@ table {
     background: hsla(90, 80%, 40%, 0.2);
 
     &::before {
-      content: '=';
+      content: "=";
       position: absolute;
       left: -6px;
       color: hsla(90, 80%, 40%, 0.5);
@@ -344,6 +355,14 @@ table {
   text-align: right;
 }
 
+.text-italic {
+  font-style: italic;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
 .text-dim {
   opacity: 0.5;
 }
@@ -353,7 +372,7 @@ table {
 }
 
 .text-rainbow {
-  animation: text-rainbow .5s linear 0s infinite;
+  animation: text-rainbow 0.5s linear 0s infinite;
 }
 
 @keyframes text-rainbow {
@@ -379,12 +398,12 @@ table {
   letter-spacing: 3px;
 
   &::before {
-    content: '~~';
+    content: "~~";
     opacity: 0.4;
   }
 
   &::after {
-    content: '~~';
+    content: "~~";
     opacity: 0.4;
   }
 }

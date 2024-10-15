@@ -100,9 +100,9 @@
 </listing>
 
 <p>
-  Of course IRL there's <kbd>ArcSwap</kbd> instead of <kbd>RwLock</kbd>, every
-  hotel contains much more information (like taxes, discounts or supplements)
-  etc., but we've got a reasonably good approximation here.
+  Of course IRL there's <code>ArcSwap</code> instead of <code>RwLock</code>,
+  every hotel contains much more information (like taxes, discounts or
+  supplements) etc., but we've got a reasonably good approximation here.
 </p>
 
 <p>
@@ -116,7 +116,7 @@
 
 <p>
   Memory allocator is the piece of software invoked whenever your program needs
-  to get hands on extra memory, like when you're calling <kbd>Box::new()</kbd>.
+  to get hands on extra memory, like when you're calling <code>Box::new()</code>.
   And memory allocation is quite a complex topic, with different solutions
   offering different trade-offs.
 </p>
@@ -252,7 +252,7 @@
 </p>
 
 <p>
-  Every now and then during <kbd>malloc()</kbd> mimalloc performs some internal
+  Every now and then during <code>malloc()</code> mimalloc performs some internal
   bookkeeping, so when a thread goes to sleep (say, because it delegates
   handling HTTP requests into a separate thread pool...), this bookkeeping
   doesn't happen (for that particular thread).
@@ -268,7 +268,7 @@
 
 <p>
   Under normal conditions, these blocks get processed a moment later, during a
-  call to <kbd>malloc()</kbd> on the thread that created them - but if that
+  call to <code>malloc()</code> on the thread that created them - but if that
   thread is asleep, those blocks never become available again (unless the thread
   dies, of course).
 </p>

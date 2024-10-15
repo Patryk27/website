@@ -12,7 +12,6 @@
     "markov-chains"
     "n-grams"
     "rust"
-    "shorts"
   ];
 
   publishedAt = {

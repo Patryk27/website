@@ -11,8 +11,8 @@
   tags = [
     "memory"
     "mimalloc"
+    "prices"
     "rust"
-    "shorts"
   ];
 
   publishedAt = {

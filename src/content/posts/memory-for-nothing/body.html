@@ -1,0 +1,401 @@
+<p>
+  Every now and then one has to index something - in my case it was prices. Lots
+  of them. At my previous job we've had this custom engine that basically loaded
+  tons of data points:
+</p>
+
+<listing>
+  <!--
+  |  city  |          dates         |  room  | occupancy | price          |
+  |--------|------------------------|--------|-----------|----------------|
+  | warsaw | 2018-01-01..2018-01-14 | double | 1 adult   | 100.00 per day |
+  | warsaw | 2018-01-15..2018-01-31 | double | 1 adult   | 125.00 per day |
+
+  | warsaw | 2018-01-01..2018-01-14 | double | 2 adults  | 175.00 per day |
+  | warsaw | 2018-01-15..2018-01-14 | double | 2 adults  | 200.00 per day |
+
+  | berlin | 2018-01-01..2018-01-14 | double | 1 adult   | 160.00 per day |
+  | berlin | 2018-01-15..2018-01-31 | double | 1 adult   | 185.00 per day |
+
+  | berlin | 2018-01-01..2018-01-14 | double | 2 adults  | 235.00 per day |
+  | berlin | 2018-01-15..2018-01-14 | double | 2 adults  | 260.00 per day |
+  -->
+</listing>
+
+<p>... and then it allowed you to issue queries, like:</p>
+
+<listing>
+  <!--
+  find me the cheapest stay in berlin for 2 adults, from 2018-01-03 to 2018-01-04, plzz
+  -->
+</listing>
+
+<p>
+  Calculating prices was plenty difficult on its own, since you had to take into
+  account supplements, discounts, taxes, cancellation policies etc., lots of
+  things that don't really reduce the problem to a simple hashmap lookup. But
+  the actually interesting thing happened <i>earlier</i>.
+</p>
+
+<p>After all, before we're able to calculate prices, we have to find them.</p>
+
+<p class="text-center text-italic">
+  ♪ memory for nothing and bits for free... ♪
+</p>
+
+<header id="indexing">Indexing</header>
+
+<p>
+  Let's ground ourselves with a specific example - we're given all of those:
+</p>
+
+<listing lang="rust">
+  <!--
+  use std::collections::HashMap;
+  use std::ops::RangeInclusive;
+
+  type City = String;
+  type CityRef<'a> = &'a str;
+  type RoomRef<'a> = &'a str;
+
+  #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+  struct Date {
+      day: u32, // e.g. days since 1970-01-01
+  }
+
+  #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+  struct Occupancy {
+      adults: u8,
+  }
+
+  #[derive(Clone, Debug, PartialEq)]
+  struct Price<'a> {
+      city: CityRef<'a>,
+      dates: RangeInclusive<Date>,
+      room: RoomRef<'a>,
+      occ: Occupancy,
+      price: f32, // ofc. one wouldn't actually use float for money
+  }
+
+  #[derive(Clone, Debug, PartialEq)]
+  struct Query<'a> {
+      city: CityRef<'a>,
+      dates: RangeInclusive<Date>,
+      occ: Occupancy,
+  }
+  -->
+</listing>
+
+<p>... and our problem is to efficiently implement this function:</p>
+
+<listing lang="rust">
+  <!--
+  fn query(prices: &[Price], query: &Query) -> Option<f32>
+  -->
+</listing>
+
+<p>Naively, we're looking for:</p>
+
+<listing lang="rust">
+  <!--
+  fn query(prices: &[Price], query: &Query) -> Option<f32> {
+      prices
+          .iter()
+          .filter(|price| {
+              price.city == query.city
+                  && price.dates.start() <= query.dates.start()
+                  && price.dates.end() >= query.dates.end()
+                  && price.occ == query.occ
+          })
+          .map(|price| price.price)
+          .next()
+  }
+  -->
+</listing>
+
+<p>... but, of course, that won't fly when we're given millions of prices.</p>
+
+<p class="text-dim">
+  (also, ideally we'd find the cheapest price, but for the sake of example let's
+  say that finding <i>any</i> price will do)
+</p>
+
+<p>
+  Faced with this problem, one might take a deep S3 sleep first, then wake up,
+  drink a cup of coffee laced with kava kava and finally spit:
+</p>
+
+<listing lang="rust">
+  <!--
+  /* ... */
+
+  struct Index {
+      indexed_prices: HashMap<City, HashMap<Occupancy, Vec<usize>>>,
+  }
+
+  impl Index {
+      fn new(prices: &[Price]) -> Self {
+          let mut indexed_prices: HashMap<_, HashMap<_, Vec<_>>> = HashMap::new();
+
+          for (price_idx, price) in prices.iter().enumerate() {
+              indexed_prices
+                  .entry(price.city.to_owned())
+                  .or_default()
+                  .entry(price.occ)
+                  .or_default()
+                  .push(price_idx);
+
+              // N.B. calling `.city.to_owned()` here is inefficient, because it
+              // will allocate a new string even if the hashmap already contains
+              // the entry; this can be avoided with `.raw_entry_mut()`, but
+              // let's not go crazy
+          }
+
+          Self { indexed_prices }
+      }
+
+      /// Returns indices of prices matching given city and occupancy.
+      fn find(
+          &self,
+          city: &str,
+          occ: Occupancy,
+      ) -> impl Iterator<Item = usize> + '_ {
+          self.indexed_prices
+              .get(city)
+              .into_iter()
+              .filter_map(move |occs| occs.get(&occ))
+              .flatten()
+              .copied()
+      }
+  }
+
+  fn query(prices: &[Price], index: &Index, query: &Query) -> Option<f32> {
+      index
+          .find(query.city, query.occ)
+          .map(|price_idx| &prices[price_idx])
+          .filter(|price| {
+              // yay, simpler check!
+
+              price.dates.start() <= query.dates.start()
+                  && price.dates.end() >= query.dates.end()
+          })
+          .map(|price| price.price)
+          .next()
+  }
+  -->
+</listing>
+
+<p>... and that's a perfectly valid approach! Although...</p>
+
+<note>
+  <p>
+    Note that I'm proposing <code>Vec&lt;usize&gt;</code> instead of
+    <code>Vec&lt;&Price&gt;</code> - why is that?
+  </p>
+
+  <p>
+    If we were to implement the rest of the application, we'd probably end up
+    with something like:
+  </p>
+
+  <listing lang="rust">
+    <!--
+    struct Engine {
+        prices: Vec<Price>,
+        index: Index,
+    }
+    -->
+  </listing>
+
+  <p>Now, if our <code>Index</code> was based around borrows:</p>
+
+  <listing lang="rust">
+    <!--
+    struct Index<'a> {
+        indexed_prices: HashMap<City, HashMap<Occupancy, Vec<&'a Price>>>,
+    }
+    -->
+  </listing>
+
+  <p>... then we'd have to implement a self-referential <code>Engine</code>:</p>
+
+  <listing lang="rust">
+    <!--
+    struct Engine {
+        prices: Vec<Price>,
+        index: Index<'whoopsie>,
+    }
+    -->
+  </listing>
+
+  <p>
+    ... and self-referential types are not really supported in Rust - the
+    language is actively hostile to you if you try to use them, and so I'm
+    proposing we go with <code>Vec&lt;usize&gt;</code> from day zero.
+  </p>
+
+  <p>Also, it'll just come handy later, pinky promise, just trust me.</p>
+</note>
+
+<header id="unwasting">Unwasting</header>
+
+<p>
+  Alright, look at them <code>Vec&lt;usize&gt;</code>. Look. At. Them. Squeeze
+  your eyes. Unsqueeze them. Do a squat. Do you see what I see?
+</p>
+
+<p class="text-bold">Those vectors are mostly filled with zeros!</p>
+
+<p>
+  On a 64-bit machine, one <code>usize</code> weighs 8 bytes and allows to
+  encode numbers from 0 up to 2^64-1.
+</p>
+
+<p>
+  18446744073709551615 - man that's <i>a lot</i> of prices! A lot. It's so many,
+  in fact, that we would run out of memory (let alone time) before we're able to
+  index half of them. One tenth. One percent. We're given all this space that we
+  cannot reasonably use.
+</p>
+
+<p>
+  This is something that I noticed back then as well, pretty much accidentally
+  by just looking around the code looking for links to memes.
+</p>
+
+<p>
+  <i>"But, surely it's not mu..."</i>, you might say before I gag you.
+  Gigabytes. Praires full of zeros -- and, in this economy!
+</p>
+
+<p>
+  To fix this, I've come up with a vector specialized for handling lists of
+  indices - it starts as <code>Vec&lt;u8&gt;</code> and upgrades itself to a
+  larger variant (<code>Vec&lt;u16&gt;</code> or <code>Vec&lt;u32&gt;</code>)
+  when you push a number large enough.
+</p>
+
+<p>It goes sorta like:</p>
+
+<listing lang="rust">
+  <!--
+  use std::{iter, mem};
+
+  struct IndexVec {
+      repr: IndexVecRepr,
+  }
+
+  enum IndexVecRepr {
+      U8(Vec<u8>),
+      U16(Vec<u16>),
+      U32(Vec<u32>),
+  }
+
+  impl IndexVec {
+      pub fn push(&mut self, val: usize) {
+          if let Ok(val) = u8::try_from(val) {
+              self.push_u8(val);
+              return;
+          }
+
+          if let Ok(val) = u16::try_from(val) {
+              self.push_u16(val);
+              return;
+          }
+
+          if let Ok(val) = u32::try_from(val) {
+              self.push_u32(val);
+              return;
+          }
+
+          panic!("index too high: {val}");
+      }
+
+      fn push_u8(&mut self, val: u8) {
+          match &mut self.repr {
+              IndexVecRepr::U8(vals) => {
+                  // Ok, `Vec<u8>` can hold `u8`
+                  vals.push(val);
+              }
+
+              IndexVecRepr::U16(vals) => {
+                  // Ok, `Vec<u16>` can hold `u8`
+                  vals.push(val as u16);
+              }
+
+              IndexVecRepr::U32(vals) => {
+                  // Ok, `Vec<u32>` can hold `u8`
+                  vals.push(val as u32);
+              }
+          }
+      }
+
+      fn push_u16(&mut self, val: u16) {
+          match &mut self.repr {
+              IndexVecRepr::U8(vals) => {
+                  // Err, `Vec<u8>` can't hold `u16` - bump it to a larger type
+                  self.repr = IndexVecRepr::U16(
+                      mem::take(vals)
+                          .into_iter()
+                          .map(|val| val as u16)
+                          .chain(iter::once(val))
+                          .collect(),
+                  );
+              }
+
+              IndexVecRepr::U16(vals) => {
+                  // Ok, `Vec<u16>` can hold `u16`
+                  vals.push(val);
+              }
+
+              IndexVecRepr::U32(vals) => {
+                  // Ok, `Vec<u16>` can hold `u16`
+                  vals.push(val as u32);
+              }
+          }
+      }
+
+      fn push_u32(&mut self, val: u32) {
+          match &mut self.repr {
+              IndexVecRepr::U8(_) => {
+                  // upgrade to `Vec<u32>`, similarly as in `push_u16()`
+              }
+
+              IndexVecRepr::U16(_) => {
+                  // upgrade to `Vec<u32>`, similarly as in `push_u16()`
+              }
+
+              IndexVecRepr::U32(vals) => {
+                  vals.push(val);
+              }
+          }
+      }
+
+      pub fn iter(&self) -> impl Iterator<Item = usize> {
+          /* ...  */
+      }
+  }
+  -->
+</listing>
+
+<header id="summary">Summary</header>
+
+<p>
+  Should you (continue to) use <code>Vec&lt;usize&gt;</code>? Most likely yes!
+</p>
+
+<p>
+  This <code>IndexVec</code> has a couple of performance/memory trade-offs -
+  especially around building it - that don't warrant using it as a generic
+  replacement for <code>Vec&lt;usize&gt;</code>. But it does come handy
+  sometimes. But there's nothing wrong with usizes. But they can be too much.
+  You know, life. Choices. Stuff.
+</p>
+
+<p>
+  It would be nice to probably publish this vector as a crate - I haven't found
+  anything like this on crates.io yet; rustc has a similarly named struct, but
+  it does something else.
+</p>
+
+<p>Anyway, ♪ memory for nothing and bits for free... ♪</p>
