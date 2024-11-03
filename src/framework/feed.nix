@@ -1,7 +1,8 @@
 fw:
 
 let
-  mkObject = { id, type, ... }:
+  mkObject =
+    { id, type, ... }:
     if type == "post" then
       (mkPostObject id)
     else if type == "talk" then
@@ -9,7 +10,8 @@ let
     else
       throw "unknown object type: ${type}";
 
-  mkPostObject = id:
+  mkPostObject =
+    id:
     let
       post = fw.content.posts.${id};
 
@@ -22,7 +24,8 @@ let
       date = post.publishedAt;
     };
 
-  mkTalkObject = id:
+  mkTalkObject =
+    id:
     let
       talk = fw.content.talks.${id};
 

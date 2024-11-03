@@ -9,14 +9,13 @@ let
   talk = talkId: {
     name = talkId;
 
-    path = fw.pkgs.linkFarm "talk-${talkId}" [{
-      name = "index.html";
-      path = import ./talks/talk.nix fw talkId;
-    }];
+    path = fw.pkgs.linkFarm "talk-${talkId}" [
+      {
+        name = "index.html";
+        path = import ./talks/talk.nix fw talkId;
+      }
+    ];
   };
 
 in
-fw.pkgs.linkFarm "talks" (
-  [ index ]
-  ++ (map talk (builtins.attrNames fw.content.talks))
-)
+fw.pkgs.linkFarm "talks" ([ index ] ++ (map talk (builtins.attrNames fw.content.talks)))

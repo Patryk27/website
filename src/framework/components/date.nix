@@ -1,10 +1,14 @@
-fw: format: { y, m, d }:
+fw: format:
+{
+  y,
+  m,
+  d,
+}:
 
 let
   inherit (fw.pkgs) lib;
 
-  toStringPadded = n: width:
-    lib.strings.fixedWidthString width "0" (toString n);
+  toStringPadded = n: width: lib.strings.fixedWidthString width "0" (toString n);
 
   vars = {
     "%y" = toString y;
@@ -28,12 +32,8 @@ let
       "October"
       "November"
       "December"
-    ]
-      (m - 1);
+    ] (m - 1);
   };
 
 in
-builtins.replaceStrings
-  (builtins.attrNames vars)
-  (builtins.attrValues vars)
-  format
+builtins.replaceStrings (builtins.attrNames vars) (builtins.attrValues vars) format

@@ -24,7 +24,7 @@ let
           </time>
 
           <div class="post-meta-tags">
-            ${toString (map tag (post.tags or []))}
+            ${toString (map tag (post.tags or [ ]))}
           </div>
         </div>
       </div>
@@ -32,19 +32,17 @@ let
 
   postSeries' =
     let
-      relatedPostIds =
-        builtins.filter
-          (postId: fw.content.posts.${postId}.series.id or "" == post.series.id)
-          (builtins.attrNames fw.content.posts);
+      relatedPostIds = builtins.filter (
+        postId: fw.content.posts.${postId}.series.id or "" == post.series.id
+      ) (builtins.attrNames fw.content.posts);
 
-      relatedPost = postId:
-        ''
-          <li>
-            <a href="/posts/${postId}">
-              ${fw.content.posts.${postId}.series.part}
-            </a>
-          </li>
-        '';
+      relatedPost = postId: ''
+        <li>
+          <a href="/posts/${postId}">
+            ${fw.content.posts.${postId}.series.part}
+          </a>
+        </li>
+      '';
 
     in
     ''
@@ -59,11 +57,7 @@ let
       </div>
     '';
 
-  postSeries =
-    if post ? series then
-      postSeries'
-    else
-      "";
+  postSeries = if post ? series then postSeries' else "";
 
   nextPost =
     if post ? series && post.series ? next then
@@ -82,70 +76,63 @@ let
     else
       "";
 
-  postIndex = [{
-    name = "index.html";
+  postIndex = [
+    {
+      name = "index.html";
 
-    path =
-      let
-        vars = {
-          "{{ assets }}" = "/posts/${postId}/assets";
+      path =
+        let
+          vars = {
+            "{{ assets }}" = "/posts/${postId}/assets";
+          };
+
+          postBody = fw.utils.renderPost {
+            id = postId;
+            body = builtins.replaceStrings (builtins.attrNames vars) (builtins.attrValues vars) post.body;
+          };
+
+          sanitize = s: builtins.replaceStrings [ "\n" ] [ " " ] (fw.pkgs.lib.strings.trim s);
+
+        in
+        fw.components.page {
+          title = post.title;
+          layout = "post";
+
+          head = ''
+            <meta name="title" content="${post.title}">
+
+            <meta property="og:image" content="https://pwy.io/favicon.png">
+            <meta property="og:site_name" content="pwy.io">
+            <meta property="og:title" content="${post.title}">
+            <meta property="og:description" content="${sanitize post.description}">
+            <meta property="og:type" content="article">
+            <meta property="og:url" content="https://pwy.io/posts/${postId}">
+
+            <meta property="twitter:card" content="summary">
+            <meta property="twitter:title" content="${post.title}">
+            <meta property="twitter:description" content="${sanitize post.description}">
+          '';
+
+          body = ''
+            ${postHeader}
+            ${postSeries}
+            ${postBody}
+            ${nextPost}
+          '';
         };
-
-        postBody = fw.utils.renderPost {
-          id = postId;
-
-          body =
-            builtins.replaceStrings
-              (builtins.attrNames vars)
-              (builtins.attrValues vars)
-              post.body;
-        };
-
-        sanitize = s:
-          builtins.replaceStrings
-            [ "\n" ]
-            [ " " ]
-            (fw.pkgs.lib.strings.trim s);
-
-      in
-      fw.components.page {
-        title = post.title;
-        layout = "post";
-
-        head = ''
-          <meta name="title" content="${post.title}">
-
-          <meta property="og:image" content="https://pwy.io/favicon.png">
-          <meta property="og:site_name" content="pwy.io">
-          <meta property="og:title" content="${post.title}">
-          <meta property="og:description" content="${sanitize post.description}">
-          <meta property="og:type" content="article">
-          <meta property="og:url" content="https://pwy.io/posts/${postId}">
-
-          <meta property="twitter:card" content="summary">
-          <meta property="twitter:title" content="${post.title}">
-          <meta property="twitter:description" content="${sanitize post.description}">
-        '';
-
-        body = ''
-          ${postHeader}
-          ${postSeries}
-          ${postBody}
-          ${nextPost}
-        '';
-      };
-  }];
+    }
+  ];
 
   postAssets =
     if post ? assets then
-      [{
-        name = "assets";
-        path = post.assets;
-      }]
+      [
+        {
+          name = "assets";
+          path = post.assets;
+        }
+      ]
     else
       [ ];
 
 in
-fw.pkgs.linkFarm "post-${postId}" (
-  postIndex ++ postAssets
-)
+fw.pkgs.linkFarm "post-${postId}" (postIndex ++ postAssets)

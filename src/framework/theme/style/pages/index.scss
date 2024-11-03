@@ -14,11 +14,13 @@ section {
     }
 
     li {
-      .post, .talk {
+      .post,
+      .talk {
         margin-bottom: 0;
       }
 
-      .post-title, .talk-title {
+      .post-title,
+      .talk-title {
         font-size: 1.25em;
       }
 

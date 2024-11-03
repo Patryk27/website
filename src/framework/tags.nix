@@ -9,14 +9,13 @@ let
   tag = tag: {
     name = tag;
 
-    path = fw.pkgs.linkFarm "tag-${tag}" [{
-      name = "index.html";
-      path = import ./tags/tag.nix fw tag;
-    }];
+    path = fw.pkgs.linkFarm "tag-${tag}" [
+      {
+        name = "index.html";
+        path = import ./tags/tag.nix fw tag;
+      }
+    ];
   };
 
 in
-fw.pkgs.linkFarm "tags" (
-  [ index ]
-  ++ (map tag fw.content.tags)
-)
+fw.pkgs.linkFarm "tags" ([ index ] ++ (map tag fw.content.tags))

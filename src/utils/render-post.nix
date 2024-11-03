@@ -3,9 +3,9 @@ pkgs:
 let
   inherit (pkgs) lib;
 
-  crane =
-    (pkgs.crane.mkLib pkgs).overrideToolchain
-      (pkgs.rust-bin.fromRustupToolchainFile ./rust/rust-toolchain);
+  crane = (pkgs.crane.mkLib pkgs).overrideToolchain (
+    pkgs.rust-bin.fromRustupToolchainFile ./rust/rust-toolchain
+  );
 
   app = crane.buildPackage {
     pname = "render-post";
@@ -32,14 +32,15 @@ in
 { id, body }:
 builtins.readFile (
   pkgs.runCommandLocal "render-post--${id}"
-  {
-    inherit body;
-    passAsFile = [ "body" ];
+    {
+      inherit body;
+      passAsFile = [ "body" ];
 
-    buildInputs = with pkgs; [
-      python3Packages.pygments
-    ];
-  } ''
-    cat "$bodyPath" | ${app}/bin/render-post > $out
-  ''
+      buildInputs = with pkgs; [
+        python3Packages.pygments
+      ];
+    }
+    ''
+      cat "$bodyPath" | ${app}/bin/render-post > $out
+    ''
 )

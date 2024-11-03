@@ -1,16 +1,18 @@
-fw: { postId, titleTag ? "h2" }:
+fw:
+{
+  postId,
+  titleTag ? "h2",
+}:
 
 let
   post = fw.content.posts.${postId};
 
   tags = toString (
-    map
-      (tag: ''
-        <a class="post-meta-tag" href="/tags/${tag}">
-          #${tag}
-        </a>
-      '')
-      post.tags
+    map (tag: ''
+      <a class="post-meta-tag" href="/tags/${tag}">
+        #${tag}
+      </a>
+    '') post.tags
   );
 
 in

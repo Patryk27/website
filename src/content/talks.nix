@@ -3,13 +3,11 @@ pkgs:
 let
   inherit (pkgs) lib;
 
-  talkIds =
-    map
-      (lib.removeSuffix ".nix")
-      (builtins.attrNames
-        (lib.filterAttrs
-          (entry: entryType: entryType == "regular")
-          (builtins.readDir ./talks)));
+  talkIds = map (lib.removeSuffix ".nix") (
+    builtins.attrNames (
+      lib.filterAttrs (entry: entryType: entryType == "regular") (builtins.readDir ./talks)
+    )
+  );
 
   mkTalk = talkId: {
     name = talkId;

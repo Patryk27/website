@@ -1,29 +1,41 @@
-fw: { title
-    , layout
-    , head ? ""
-    , withHeader ? false
-    , body
-    }:
+fw:
+{
+  title,
+  layout,
+  head ? "",
+  withHeader ? false,
+  body,
+}:
 
 let
-  title' =
-    if layout == "index" then
-      title
-    else
-      "${title} | pwy.io";
+  title' = if layout == "index" then title else "${title} | pwy.io";
 
   nav =
     let
       items = [
-        { path = "/"; title = "~/"; }
-        { path = "/posts"; title = "posts"; }
-        { path = "/talks"; title = "talks"; }
-        { path = "/tags"; title = "tags"; }
-        { path = "/contact"; title = "contact"; }
+        {
+          path = "/";
+          title = "~/";
+        }
+        {
+          path = "/posts";
+          title = "posts";
+        }
+        {
+          path = "/talks";
+          title = "talks";
+        }
+        {
+          path = "/tags";
+          title = "tags";
+        }
+        {
+          path = "/contact";
+          title = "contact";
+        }
       ];
 
-      renderItem = { path, title }:
-        ''<li><a href="${path}">${title}</a></li>'';
+      renderItem = { path, title }: ''<li><a href="${path}">${title}</a></li>'';
 
     in
     ''
@@ -55,12 +67,7 @@ fw.utils.prettifyHtml ''
       ${nav}
 
       <main id="${layout}">
-        ${
-          if withHeader then
-            "<h1 id=\"header\">${title}</h1>"
-          else
-            ""
-        }
+        ${if withHeader then "<h1 id=\"header\">${title}</h1>" else ""}
 
         ${body}
       </main>

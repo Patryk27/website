@@ -3,7 +3,8 @@ fw:
 let
   objects =
     let
-      render = { id, type, ... }:
+      render =
+        { id, type, ... }:
         if type == "post" then
           (renderPost id)
         else if type == "talk" then
@@ -11,15 +12,19 @@ let
         else
           throw "unknown object type: ${type}";
 
-      renderPost = postId: fw.components.postItem {
-        inherit postId;
-        titleTag = "h4";
-      };
+      renderPost =
+        postId:
+        fw.components.postItem {
+          inherit postId;
+          titleTag = "h4";
+        };
 
-      renderTalk = talkId: fw.components.talkItem {
-        inherit talkId;
-        titleTag = "h4";
-      };
+      renderTalk =
+        talkId:
+        fw.components.talkItem {
+          inherit talkId;
+          titleTag = "h4";
+        };
 
     in
     map

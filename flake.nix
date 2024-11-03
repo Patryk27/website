@@ -34,8 +34,17 @@
     };
   };
 
-  outputs = { self, crane, nixpkgs, nixpkgs-iosevka, rust-overlay, utils }:
-    utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      crane,
+      nixpkgs,
+      nixpkgs-iosevka,
+      rust-overlay,
+      utils,
+    }:
+    utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs' = import nixpkgs {
           inherit system;
@@ -107,5 +116,6 @@
               ${pkgs.python3}/bin/python ${app}
             '';
           };
-      });
+      }
+    );
 }

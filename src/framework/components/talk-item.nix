@@ -1,34 +1,29 @@
-fw: { talkId, titleTag ? "h2" }:
+fw:
+{
+  talkId,
+  titleTag ? "h2",
+}:
 
 let
   talk = fw.content.talks.${talkId};
 
   resources = builtins.concatStringsSep ", " (
-    map
-      ({ label, link }: ''<a href="${link}">${label}</a>'')
-      talk.resources
+    map ({ label, link }: ''<a href="${link}">${label}</a>'') talk.resources
   );
 
   tags = toString (
-    map
-      (tag: ''
-        <a class="talk-meta-tag" href="/tags/${tag}">
-          #${tag}
-        </a>
-      '')
-      talk.tags
+    map (tag: ''
+      <a class="talk-meta-tag" href="/tags/${tag}">
+        #${tag}
+      </a>
+    '') talk.tags
   );
 
 in
 ''
   <article class="talk">
     <${titleTag} class="talk-title">
-      ${
-        if talk ? link then
-          ''<a href="${talk.link}">${talk.title}</a>''
-        else
-          ''${talk.title}''
-      }
+      ${if talk ? link then ''<a href="${talk.link}">${talk.title}</a>'' else ''${talk.title}''}
       <span class="talk-title-camera">🎥</span>
     </${titleTag}>
 
@@ -73,6 +68,6 @@ in
         ''
       else
         ""
-     }
+    }
   </article>
 ''

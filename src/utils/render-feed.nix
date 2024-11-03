@@ -3,9 +3,9 @@ pkgs:
 let
   inherit (pkgs) lib;
 
-  crane =
-    (pkgs.crane.mkLib pkgs).overrideToolchain
-      (pkgs.rust-bin.fromRustupToolchainFile ./rust/rust-toolchain);
+  crane = (pkgs.crane.mkLib pkgs).overrideToolchain (
+    pkgs.rust-bin.fromRustupToolchainFile ./rust/rust-toolchain
+  );
 
   app = crane.buildPackage {
     pname = "render-feed";
@@ -32,14 +32,15 @@ in
 { website }:
 builtins.readFile (
   pkgs.runCommandLocal "render-feed"
-  {
-    website = builtins.toJSON website;
-    passAsFile = [ "website" ];
+    {
+      website = builtins.toJSON website;
+      passAsFile = [ "website" ];
 
-    buildInputs = with pkgs; [
-      libxml2
-    ];
-  } ''
-    cat $websitePath | ${app}/bin/render-feed > $out
-  ''
+      buildInputs = with pkgs; [
+        libxml2
+      ];
+    }
+    ''
+      cat $websitePath | ${app}/bin/render-feed > $out
+    ''
 )

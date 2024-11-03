@@ -4,14 +4,14 @@ main {
   }
 
   &#index {
-    @import 'pages/index';
+    @import "pages/index";
   }
 
   &#post {
-    @import 'pages/post';
+    @import "pages/post";
   }
 
   &#tags {
-    @import 'pages/tags';
+    @import "pages/tags";
   }
 }

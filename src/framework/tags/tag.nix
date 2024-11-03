@@ -3,7 +3,8 @@ fw: tag:
 let
   objectIds = fw.content.findObjectsByTag tag;
 
-  renderObject = obj:
+  renderObject =
+    obj:
     if obj.type == "post" then
       fw.components.postItem { postId = obj.id; }
     else if obj.type == "talk" then

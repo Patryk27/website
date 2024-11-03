@@ -1,13 +1,11 @@
 fw:
 
 let
-  renderTag = tag:
+  renderTag =
+    tag:
     let
-      count = type:
-        builtins.length
-          (builtins.filter
-            (obj: obj.type == type)
-            (fw.content.findObjectsByTag tag));
+      count =
+        type: builtins.length (builtins.filter (obj: obj.type == type) (fw.content.findObjectsByTag tag));
 
       posts = count "post";
       talks = count "talk";

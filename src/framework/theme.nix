@@ -48,7 +48,16 @@ let
 
 in
 pkgs.linkFarm "theme" [
-  { name = "style.${rev}.css"; path = style; }
-  { name = "pygments.${rev}.css"; path = pygments; }
-  { name = "fonts"; path = fonts; }
+  {
+    name = "style.${rev}.css";
+    path = style;
+  }
+  {
+    name = "pygments.${rev}.css";
+    path = pygments;
+  }
+  {
+    name = "fonts";
+    path = fonts;
+  }
 ]

@@ -69,7 +69,7 @@ nav {
       &:not(:first-child) {
         a {
           &::before {
-            content: '~/';
+            content: "~/";
             position: relative;
             left: -1px;
           }
@@ -79,7 +79,7 @@ nav {
 
     &:not(:last-child) {
       &::after {
-        content: '.';
+        content: ".";
         position: relative;
         top: -0.25em;
         left: 0.25em;

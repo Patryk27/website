@@ -12,7 +12,4 @@ let
   };
 
 in
-fw.pkgs.linkFarm "posts" (
-  [ index ]
-  ++ (map post (builtins.attrNames fw.content.posts))
-)
+fw.pkgs.linkFarm "posts" ([ index ] ++ (map post (builtins.attrNames fw.content.posts)))

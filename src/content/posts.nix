@@ -3,11 +3,9 @@ pkgs:
 let
   inherit (pkgs) lib;
 
-  postIds =
-    builtins.attrNames
-      (lib.filterAttrs
-        (entry: entryType: entryType == "directory")
-        (builtins.readDir ./posts));
+  postIds = builtins.attrNames (
+    lib.filterAttrs (entry: entryType: entryType == "directory") (builtins.readDir ./posts)
+  );
 
   mkPost = postId: {
     name = postId;
