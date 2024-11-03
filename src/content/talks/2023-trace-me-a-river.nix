@@ -3,7 +3,7 @@
 
   description = ''
     <p>
-      <i>(older version of my <code>Trace Me a River</code> talk)</i>
+      Older version of my <code>Trace Me a River</code> talk.
     </p>
   '';
 

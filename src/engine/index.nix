@@ -16,20 +16,16 @@ let
         postId:
         fw.components.postItem {
           inherit postId;
-          titleTag = "h4";
         };
 
       renderTalk =
         talkId:
         fw.components.talkItem {
           inherit talkId;
-          titleTag = "h4";
         };
 
     in
-    map
-      (object: "<li>${render object}</li>")
-      fw.content.objects;
+    map render fw.content.objects;
 
 in
 fw.components.page {
@@ -43,13 +39,7 @@ fw.components.page {
     <hr>
 
     <section class="posts talks">
-      <h3>
-        <a href="/posts">Posts</a> & <a href="/talks">Talks</a>
-      </h3>
-
-      <ul>
-        ${toString objects}
-      </ul>
+      ${toString objects}
     </section>
   '';
 }

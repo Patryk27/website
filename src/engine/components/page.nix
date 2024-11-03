@@ -3,11 +3,12 @@ fw:
   title,
   layout,
   head ? "",
-  withHeader ? false,
   body,
 }:
 
 let
+  inherit (fw.pkgs) lib;
+
   title' = if layout == "index" then title else "${title} | pwy.io";
 
   nav =
@@ -19,23 +20,34 @@ let
         }
         {
           path = "/posts";
-          title = "posts";
+          title = "~/posts";
         }
         {
           path = "/talks";
-          title = "talks";
+          title = "~/talks";
         }
         {
           path = "/tags";
-          title = "tags";
+          title = "~/tags";
         }
         {
           path = "/contact";
-          title = "contact";
+          title = "~/contact";
         }
       ];
 
-      renderItem = { path, title }: ''<li><a href="${path}">${title}</a></li>'';
+      renderItem =
+        item:
+        let
+          class =
+            if item.path == "/" then
+              # Never show the home button as active, looks ugly
+              ""
+            else
+              (if lib.strings.hasInfix item.title title then "active" else "");
+
+        in
+        ''<li class="${class}"><a href="${item.path}">${item.title}</a></li>'';
 
     in
     ''
@@ -67,21 +79,25 @@ fw.utils.prettifyHtml ''
       ${nav}
 
       <main id="${layout}">
-        ${if withHeader then "<h1 id=\"header\">${title}</h1>" else ""}
-
         ${body}
       </main>
 
       <footer>
-        <div class="footer-item">
-          <a href="#">
-            scroll to top
+        <div class="footer-item footer-item-btn">
+          <a href="https://github.com/Patryk27/website/">
+            <img src="/button.png" />
           </a>
         </div>
 
         <div class="footer-item footer-item-rev">
           <a href="https://github.com/Patryk27/website/">
             ${builtins.substring 0 7 fw.rev}
+          </a>
+        </div>
+
+        <div class="footer-item footer-item-scroll">
+          <a href="#">
+            scroll to top
           </a>
         </div>
       </footer>

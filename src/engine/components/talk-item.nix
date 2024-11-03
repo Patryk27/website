@@ -1,8 +1,5 @@
 fw:
-{
-  talkId,
-  titleTag ? "h2",
-}:
+{ talkId }:
 
 let
   talk = fw.content.talks.${talkId};
@@ -22,15 +19,14 @@ let
 in
 ''
   <article class="talk">
-    <${titleTag} class="talk-title">
+    <h3 class="talk-title">
       ${if talk ? link then ''<a href="${talk.link}">${talk.title}</a>'' else ''${talk.title}''}
-      <span class="talk-title-camera">🎥</span>
-    </${titleTag}>
+    </h3>
 
     <div class="talk-meta">
-      <time class="talk-meta-time">
-        ${fw.components.date "%M %d, %y" talk.when}
-      </time>
+      <div class="talk-meta-time">
+        ${fw.components.date "%M %d, %y" talk.when} @ ${talk.where}
+      </div>
 
       ${
         if talk ? tags then
@@ -42,10 +38,6 @@ in
         else
           ""
       }
-
-      <div class="talk-meta-place">
-        ${talk.where}
-      </div>
 
       ${
         if talk ? resources then

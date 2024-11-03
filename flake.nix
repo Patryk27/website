@@ -66,7 +66,7 @@
 
       in
       rec {
-        defaultPackage = import ./src/framework.nix {
+        defaultPackage = import ./src/engine.nix {
           inherit pkgs;
 
           rev = self.rev or "dirty";

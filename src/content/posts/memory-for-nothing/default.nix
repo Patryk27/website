@@ -4,7 +4,7 @@
 
   description = ''
     Every now and then one has to index something - and what's better than a
-    good old <code>Vec&lt;usize&gt;</code>?
+    <code>Vec&lt;usize&gt;</code>?
   '';
 
   tags = [

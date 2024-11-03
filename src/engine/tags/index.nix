@@ -35,7 +35,6 @@ in
 fw.components.page {
   title = "~/tags";
   layout = "tags";
-  withHeader = true;
 
   body = ''
     <ul class="tags">

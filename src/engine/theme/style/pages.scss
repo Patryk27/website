@@ -3,10 +3,6 @@ main {
     margin-bottom: 1em;
   }
 
-  &#index {
-    @import "pages/index";
-  }
-
   &#post {
     @import "pages/post";
   }

@@ -19,9 +19,9 @@ let
         </h1>
 
         <div class="post-meta">
-          <time class="post-meta-time">
+          <div class="post-meta-time">
             ${fw.components.date "%M %d, %y" post.publishedAt}
-          </time>
+          </div>
 
           <div class="post-meta-tags">
             ${toString (map tag (post.tags or [ ]))}

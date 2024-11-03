@@ -1,0 +1,35 @@
+$body-bg: darken(#283149, 5%);
+$body-fg: #f0f0f0;
+$body-fg-natural: #ffffff;
+$body-fg-secondary: #808080;
+$body-font: "PT Sans";
+$body-width: 900px;
+
+$hr-fg: lighten($body-bg, 30%);
+
+$header-font: "DM Serif Display";
+$para-indent: 1.4em;
+$link-underline: #c86b85;
+
+$code-font: "Iosevka Custom";
+$code-bg: lighten($body-bg, 20%);
+$code-fg: #ffffff;
+$pre-bg: darken($body-bg, 5%);
+
+// -----
+
+@import url("https://fonts.googleapis.com/css2?" + "family=PT+Sans:ital,wght@0,400;0,700;1,400&" + "family=DM+Serif+Display&" + "display=swap");
+
+@font-face {
+  font-family: "Iosevka Custom";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/iosevka.woff2") format("woff2");
+}
+
+// -----
+
+@import "style/layout";
+@import "style/components";
+@import "style/text";
+@import "style/pages";

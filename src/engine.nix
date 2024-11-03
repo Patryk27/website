@@ -48,17 +48,17 @@ let
       findObjectsByTag = tag: builtins.filter (obj: builtins.elem tag obj.tags) fw.content.objects;
     };
 
-    components = import ./framework/components.nix fw;
-    utils = import ./framework/utils.nix fw;
+    components = import ./engine/components.nix fw;
+    utils = import ./engine/utils.nix fw;
   };
 
-  contact = import ./framework/contact.nix fw;
-  feed = import ./framework/feed.nix fw;
-  index = import ./framework/index.nix fw;
-  posts = import ./framework/posts.nix fw;
-  tags = import ./framework/tags.nix fw;
-  talks = import ./framework/talks.nix fw;
-  theme = import ./framework/theme.nix fw;
+  contact = import ./engine/contact.nix fw;
+  feed = import ./engine/feed.nix fw;
+  index = import ./engine/index.nix fw;
+  posts = import ./engine/posts.nix fw;
+  tags = import ./engine/tags.nix fw;
+  talks = import ./engine/talks.nix fw;
+  theme = import ./engine/theme.nix fw;
 
 in
 pkgs.symlinkJoin {

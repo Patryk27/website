@@ -306,7 +306,7 @@ table {
     background: hsla(90, 80%, 40%, 0.2);
 
     &::before {
-      content: "=";
+      content: "~";
       position: absolute;
       left: -6px;
       color: hsla(90, 80%, 40%, 0.5);

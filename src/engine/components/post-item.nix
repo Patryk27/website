@@ -1,8 +1,5 @@
 fw:
-{
-  postId,
-  titleTag ? "h2",
-}:
+{ postId }:
 
 let
   post = fw.content.posts.${postId};
@@ -18,16 +15,16 @@ let
 in
 ''
   <article class="post">
-    <${titleTag} class="post-title">
+    <h3 class="post-title">
       <a href="/posts/${postId}">
         ${post.title}
       </a>
-    </${titleTag}>
+    </h3>
 
     <div class="post-meta">
-      <time class="post-meta-time">
+      <div class="post-meta-time">
         ${fw.components.date "%M %d, %y" post.publishedAt}
-      </time>
+      </div>
 
       ${
         if post ? tags then

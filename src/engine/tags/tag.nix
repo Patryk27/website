@@ -16,10 +16,13 @@ in
 fw.components.page {
   title = "~/tags/${tag}";
   layout = "tag";
-  withHeader = true;
 
   body = ''
     <div class="posts talks">
+      <h1 id="header">
+        ~/tags/${tag}
+      </h1>
+
       ${(toString (map renderObject objectIds))}
     </div>
   '';

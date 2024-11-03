@@ -17,11 +17,6 @@ h2 {
 h3 {
   margin-top: ($para-indent / 2);
   border-bottom: 1px solid $hr-fg;
-
-  & + .paragraph,
-  & + .ulist {
-    margin-top: ($para-indent / 2);
-  }
 }
 
 .post-meta {

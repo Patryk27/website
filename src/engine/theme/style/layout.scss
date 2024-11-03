@@ -15,25 +15,37 @@ body {
 footer {
   @extend hr;
 
+  display: flex;
   margin-bottom: 0.5em !important;
   padding-top: 0.5em;
   text-align: right;
 
-  @media only screen and (min-width: 992px) {
-    text-align: center;
-  }
-
   .footer-item {
-    display: block;
-    margin-top: 1em;
+    flex-grow: 1;
+    margin-top: 0;
+
+    &.footer-item-btn {
+      text-align: left;
+
+      a,
+      img {
+        background: none !important;
+        border: none !important;
+        outline: none !important;
+      }
+    }
 
     &.footer-item-rev {
-      text-align: right;
+      text-align: center;
       opacity: 0.3;
 
       @media only screen and (min-width: 992px) {
         margin-top: 0;
       }
+    }
+
+    &.footer-item-scroll {
+      text-align: right;
     }
   }
 }
@@ -65,16 +77,6 @@ nav {
 
     @media only screen and (min-width: 992px) {
       font-size: 22px;
-
-      &:not(:first-child) {
-        a {
-          &::before {
-            content: "~/";
-            position: relative;
-            left: -1px;
-          }
-        }
-      }
     }
 
     &:not(:last-child) {
@@ -98,6 +100,12 @@ nav {
         margin: 0 0.2em;
         padding: 0.5em 1em;
         font-size: 1em;
+      }
+    }
+
+    &.active {
+      a {
+        border-bottom-color: #85c86b;
       }
     }
   }

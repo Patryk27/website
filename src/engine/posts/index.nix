@@ -15,7 +15,6 @@ in
 fw.components.page {
   title = "~/posts";
   layout = "posts";
-  withHeader = true;
 
   body = ''
     <div class="posts">

@@ -1,20 +1,18 @@
+@charset "UTF-8";
+
 .contact {
   h3 {
     margin-bottom: 0;
     font-size: 1.25em;
 
     & + ul {
-      margin-top: 0.33em;
+      margin-top: 0.15em;
     }
   }
 
   .subsection {
     &:not(:last-child) {
       margin-bottom: 1.2em;
-    }
-
-    h3 {
-      margin-bottom: 0.1em;
     }
   }
 }
@@ -77,12 +75,18 @@
   }
 }
 
-.posts .post, .talks .talk {
+.posts .post,
+.talks .talk {
+  padding: 0.75em 1em;
+  background: rgba(0, 0, 0, 0.2);
   margin-bottom: 1.5em;
 
-  &:not(:last-child) {
-    padding-bottom: 1.5em;
-    border-bottom: 2px dotted $hr-fg;
+  .post-description {
+    margin-top: 1em;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -101,7 +105,7 @@
 .post-meta,
 .talk-meta {
   color: $body-fg-secondary;
-  margin-top: 0.2em;
+  margin-top: 0.3em;
 
   a {
     color: $body-fg-secondary;
@@ -125,7 +129,6 @@
 
 .post-meta-tags,
 .talk-meta-tags,
-.talk-meta-place,
 .talk-meta-resources {
   @media only screen and (min-width: 992px) {
     display: inline-block;
@@ -146,8 +149,17 @@
   }
 }
 
-.talk-title-camera {
-  position: relative;
-  top: 2px;
-  padding-left: 0.2em;
+.talks {
+  .talk {
+    position: relative;
+
+    &::before {
+      content: "🎥";
+      position: absolute;
+      top: -0.5em;
+      left: -0.5em;
+      font-size: 1.5em;
+      transform: rotate(-45deg);
+    }
+  }
 }
