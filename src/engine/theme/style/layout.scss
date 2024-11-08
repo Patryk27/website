@@ -33,6 +33,10 @@ footer {
         border: none !important;
         outline: none !important;
       }
+
+      img {
+        image-rendering: pixelated;
+      }
     }
 
     &.footer-item-rev {

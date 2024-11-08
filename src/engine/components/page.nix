@@ -84,13 +84,13 @@ fw.utils.prettifyHtml ''
 
       <footer>
         <div class="footer-item footer-item-btn">
-          <a href="https://github.com/Patryk27/website/">
+          <a href="https://pwy.io">
             <img src="/button.png" />
           </a>
         </div>
 
         <div class="footer-item footer-item-rev">
-          <a href="https://github.com/Patryk27/website/">
+          <a href="https://github.com/Patryk27/website">
             ${builtins.substring 0 7 fw.rev}
           </a>
         </div>
