@@ -21,16 +21,23 @@
 
         <ul>
           <li>
-            <code>pwychowaniec [@at@] pm.me</code> (if you use GPG, <a href="/pwy.asc">here's my signature</a>)
+            <code>pwychowaniec [@at@] pm.me</code>
+            (if you use GPG, <a href="/pwy.asc">here's my signature</a>)
           </li>
           <li>
-            <a href="https://github.com/patryk27">github.com/patryk27</a>
+            <a href="https://github.com/patryk27">
+              github.com/patryk27
+            </a>
           </li>
           <li>
-            <a href="https://twitter.com/piterolex">twitter.com/piterolex</a>
+            <a href="https://bsky.app/profile/piterolex.bsky.social">
+              @piterolex.bsky.social
+            </a>
           </li>
           <li>
-            <a href="https://buymeacoffee.com/pwychowaniec">buymeacoffee.com/pwychowaniec</a>
+            <a href="https://buymeacoffee.com/pwychowaniec">
+              buymeacoffee.com/pwychowaniec
+            </a>
           </li>
         </ul>
       </div>
