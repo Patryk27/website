@@ -83,22 +83,36 @@ fw.utils.prettifyHtml ''
       </main>
 
       <footer>
-        <div class="footer-item footer-item-btn">
-          <a href="https://pwy.io">
-            <img src="/button.png" />
-          </a>
+        <div class="footer-row">
+          <div class="footer-col footer-col-btn">
+            <a href="https://pwy.io">
+              <img src="/button.png" />
+            </a>
+          </div>
+
+          <div class="footer-col footer-col-rev">
+            <a href="https://github.com/Patryk27/website">
+              ${builtins.substring 0 7 fw.rev}
+            </a>
+          </div>
+
+          <div class="footer-col footer-col-scroll">
+            <a href="#">
+              scroll to top
+            </a>
+          </div>
         </div>
 
-        <div class="footer-item footer-item-rev">
-          <a href="https://github.com/Patryk27/website">
-            ${builtins.substring 0 7 fw.rev}
-          </a>
-        </div>
+        <div class="footer-row">
+          <div class="footer-col footer-col-license">
+            <a href="https://creativecommons.org/licenses/by-sa/4.0">
+              CC BY-SA 4.0
 
-        <div class="footer-item footer-item-scroll">
-          <a href="#">
-            scroll to top
-          </a>
+              <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" />
+              <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" />
+              <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" />
+            </a>
+          </div>
         </div>
       </footer>
     </div>
