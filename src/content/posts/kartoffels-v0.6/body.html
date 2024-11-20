@@ -1,0 +1,256 @@
+<p>
+  kartoffels is a game where you're given a potato and your job is to implement
+  a firmware for it:
+</p>
+
+<figure>
+  <a href="https://kartoffels.pwy.io">
+    <img src="{{ assets }}/intro.png" />
+  </a>
+
+  <figcaption>
+    <a href="https://kartoffels.pwy.io" /> | <code>ssh kartoffels.pwy.io</code>
+  </figcaption>
+</figure>
+
+<p>Today I'm releasing v0.6, which spans 120 commits and brings:</p>
+
+<header id="new-challenges">New challenges</header>
+
+<p>
+  kartoffels strives to be both a multiplayer and a singleplayer game - to
+  achieve that, the game provides challenges where you're tasked with
+  implementing a robot that solves a specific problem, kinda like Advent of Code
+  or Project Euler.
+</p>
+
+<p>
+  This version brings two new challenges, <code>diamond-heist</code> and
+  <code>personal-roomba</code>:
+</p>
+
+<figure>
+  <img src="{{ assets }}/new-challenges-01.png" />
+</figure>
+
+<p>
+  I think <code>personal-roomba</code> is my favorite challenge so far - you're
+  thrown into a randomly generated maze (with cycles!) and your job is to
+  implement a robot that scans the territory and collects all four flags located
+  at the maze's corners:
+</p>
+
+<figure>
+  <video src="{{ assets }}/new-challenges-02.webm" controls="" />
+</figure>
+
+<p>
+  <ref>https://en.wikipedia.org/wiki/Dijkstra's_algorithm</ref>
+
+  It's a perfect opportunity to play with <a ref>Dijkstra</a>, CPU and memory
+  optimizations, and what have you.
+</p>
+
+<header id="simplified-radar-functions">Simplified radar functions</header>
+
+<p>
+  Radar allows for a robot to scan its surrounding area, making it a critical
+  component to get right for robot to work. In the previous version the
+  <code>radar_scan_*</code> functions returned a 2d array containing the entire
+  scan:
+</p>
+
+<listing lang="rust">
+  <!--
+    pub fn radar_scan_3x3() -> [[char; 3]; 3];
+  -->
+</listing>
+
+<p>This design proved a bit awkward to use due to its untypical indexing:</p>
+
+<listing lang="rust">
+  <!--
+    let scan = radar_scan_3x3();
+
+    // e.g.:
+    // scan = [
+    //     ['.', '.', '.'],
+    //     ['.', '@', '.'],
+    //     ['.', '.', '.'],
+    // ]
+    //
+    // ... which gives us:
+    //
+    // scan[1][1] -> center of the scan (i.e. the robot iself)
+    // scan[0][1] -> tile in front of the robot
+    // scan[2][1] -> tile behind the robot
+    // scan[1][0] -> tile to the left of the robot
+    // scan[1][2] -> tile to the right of the robot
+  -->
+</listing>
+
+<p>
+  ... and so the <code>radar_scan_*</code> functions were redesigned to return a
+  struct with a convenient accessor:
+</p>
+
+<listing lang="rust">
+  <!--
+    let scan = radar_scan_3x3();
+
+    // scan.at(0, 0)  -> center of the scan (i.e. the robot iself)
+    // scan.at(0, -1) -> tile in front of the robot
+    // scan.at(0, 1)  -> tile behind the robot
+    // scan.at(-1, 0) -> tile to the left of the robot
+    // scan.at(1, 0)  -> tile to the right of the robot
+  -->
+</listing>
+
+<p>
+  Seizing the day, the radar got extra data - you can now use it to check which
+  specific robot is at given location:
+</p>
+
+<listing lang="rust">
+  <!--
+    if let Some(bot_id) = scan.bot_at(0, -1) {
+        if !friends.contains(&bot_id) {
+            arm_stab();
+        }
+    }
+  -->
+</listing>
+
+<header id="arm-pick-and-arm-drop">
+  <code>arm_pick()</code> and <code>arm_drop()</code>
+</header>
+
+<p>Robots can now pick objects from the ground and drop them.</p>
+
+<figure>
+  <img src="{{ assets }}/arm-pick-and-arm-drop.png" />
+  <figcaption>A diamond, held captive by four guards.</figcaption>
+</figure>
+
+<p>
+  Currently this comes handy only for the two new challenges, since objects are
+  not spawned in the multiplayer mode (and robots can't create objects out of
+  thin air themselves).
+</p>
+
+<p>
+  I'm thinking of using this feature to introduce a new game mode,
+  <b>capture the flag</b>.
+</p>
+
+<header id="em-dashes">Em Dashes</header>
+
+<p>
+  A friend said it's illegal to use <code>-</code> when I really mean
+  <code>—</code> - I've read a bit about it, got anxious, drank coffee, got more
+  anxious, and went through all of the texts to <code>s/-/—</code> where
+  applicable:
+</p>
+
+<figure>
+  <img src="{{ assets }}/em-dashes.png" />
+  <figcaption>An em dash, held captive by letters and spaces.</figcaption>
+</figure>
+
+<p>
+  I'm still a bit on the fence on this, mostly because writing <code>—</code> is
+  kinda annoying, but I see the merit.
+</p>
+
+<header id="inspect-bot-command"><code>inspect-bot</code> command</header>
+
+<p>You can now inspect the history of each bot:</p>
+
+<figure>
+  <img src="{{ assets }}/inspect-bot-command.png" />
+</figure>
+
+<p>
+  Currently the times are always displayed in UTC+0 and you can't search through
+  the history, but it still comes handy e.g. to see why your bot is dead (it
+  might've gotten killed, the firmware might've crashed etc.).
+</p>
+
+<header id="smooth-camera-movements">Smooth camera movements</header>
+
+<p>
+  Camera now interpolates between current and target position, making for a
+  smoother experience:
+</p>
+
+<figure>
+  <video src="{{ assets }}/smooth-camera-movements.webm" controls="" />
+</figure>
+
+<header id="compression">Compression</header>
+
+<p>As it turns out, a text interface can generate <i>a lot</i> of data!</p>
+
+<p>
+  This issue stems mostly from ANSI escape codes, used by kartoffels (and so
+  indirectly via Ratatui) to render colorful text, change background colors etc.
+</p>
+
+<p>
+  For instance, if you'd like for the terminal to print something using an
+  arbitrary RGB color of, say, <code>rgb(123, 250, 33)</code>, you'd have to
+  send <code>\x1b[38;2;123;250;33m</code> - that's 18 bytes just to change the
+  color!
+</p>
+
+<p class="text-dim">
+  (<code>\x1b</code> is a single byte with hex code <code>0x1b</code> - it's a
+  special "character" that informs the terminal that the following bytes encode
+  an instruction such as <code>pls change foreground color</code>)
+</p>
+
+<p>
+  For instance, when the camera is moving, a 125x60 x 30 FPS session generates
+  about 0.8 MB/s of traffic. It's nothing for an application running locally,
+  but sending 0.8 MB/s over the internet for each session would quickly add up
+  on my Hetzner VPS.
+</p>
+
+<p>
+  To remedy the issue, the backend - both for SSH and WebSockets connections -
+  now compresses the frames using the <code>flate2</code> crate before sending
+  them out. The CPU impact is minimal, while the network traffic is greatly
+  reduced.
+</p>
+
+<header id="plans">Plans</header>
+
+<p>
+  <ref>https://github.com/Patryk27/kartoffels/issues/36</ref>
+
+  For the next release, I'm planning to continue implementing more challenges -
+  I've also got <a ref>!36</a> on my list, gotta give more love to the
+  multiplayer mode.
+</p>
+
+<p>
+  <ref>https://github.com/Patryk27/kartoffels/issues</ref>
+
+  If you have any ideas yourself, <a ref>I'd love to hear them!</a>
+</p>
+
+<p>
+  <ref id="1">https://github.com/NixOS/patchelf/pull/544</ref>
+  <ref id="2">https://github.com/Patryk27/strolle/issues/38</ref>
+  <ref id="3">https://github.com/rust-lang/compiler-team/issues/800</ref>
+
+  The v0.7 release will most likely happen some time next year, since
+  <a ref="1">I've gotta</a> focus <a ref="2">on a couple</a> of
+  <a ref="3">other things</a> that have piled up that are important to me as
+  well.
+</p>
+
+<p>
+  Anyway, <a href="https://kartoffels.pwy.io">come and play!</a> (or
+  <code>ssh kartoffels.pwy.io</code>)
+</p>
