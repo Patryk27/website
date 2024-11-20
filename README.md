@@ -14,7 +14,7 @@ $ nix build
 
 ```shell
 $ nix run
-# (and then open http://localhost:1313 in your browser)
+# (and then open http://localhost:3080 in your browser)
 ```
 
 ## License
