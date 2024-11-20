@@ -9,9 +9,9 @@
   '';
 
   tags = [
-    "devlog"
     "game"
     "kartoffels"
+    "release"
     "rust"
   ];
 
