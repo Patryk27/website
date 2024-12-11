@@ -20,7 +20,7 @@
     d = 26;
   };
 
-  where = "NixCon 2024";
+  where = "NixCon";
   link = "https://youtu.be/_7wqXN-7ebw?t=6695";
 
   resources = [
