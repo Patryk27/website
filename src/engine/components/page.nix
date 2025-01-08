@@ -66,8 +66,8 @@ fw.utils.prettifyHtml ''
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/theme/pygments.${fw.rev}.css" media="all">
-    <link rel="stylesheet" href="/theme/style.${fw.rev}.css" media="all">
+    <link rel="stylesheet" href="/theme/style.${fw.theme.rev}.css" media="all">
+    <link rel="stylesheet" href="/theme/pygments.${fw.theme.rev}.css" media="all">
     <link rel="icon" type="image/png" href="/favicon.png"/>
     <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     ${head}
@@ -90,20 +90,6 @@ fw.utils.prettifyHtml ''
             </a>
           </div>
 
-          <div class="footer-col footer-col-rev">
-            <a href="https://github.com/Patryk27/website">
-              ${builtins.substring 0 7 fw.rev}
-            </a>
-          </div>
-
-          <div class="footer-col footer-col-scroll">
-            <a href="#">
-              scroll to top
-            </a>
-          </div>
-        </div>
-
-        <div class="footer-row">
           <div class="footer-col footer-col-license">
             <a href="https://creativecommons.org/licenses/by-sa/4.0">
               CC BY-SA 4.0
@@ -111,6 +97,12 @@ fw.utils.prettifyHtml ''
               <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" />
               <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" />
               <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" />
+            </a>
+          </div>
+
+          <div class="footer-col footer-col-scroll">
+            <a href="#">
+              scroll to top
             </a>
           </div>
         </div>

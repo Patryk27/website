@@ -8,7 +8,7 @@ let
   inherit (fw.pkgs) lib;
 
   fw = {
-    inherit rev pkgs;
+    inherit pkgs theme;
 
     content = content // {
       tags = builtins.sort builtins.lessThan (
@@ -39,7 +39,6 @@ let
       objects =
         let
           posts = map (fw.content.object "post") (builtins.attrNames fw.content.posts);
-
           talks = map (fw.content.object "talk") (builtins.attrNames fw.content.talks);
 
         in
@@ -74,7 +73,10 @@ pkgs.symlinkJoin {
         name = "index.html";
         path = index;
       }
-
+      {
+        name = "rev";
+        path = pkgs.writeText "rev" rev;
+      }
       {
         name = "contact";
         path = contact;
@@ -93,7 +95,7 @@ pkgs.symlinkJoin {
       }
       {
         name = "theme";
-        path = theme;
+        path = theme.drv;
       }
     ])
   ] ++ [ content.static ];

@@ -1,7 +1,7 @@
 fw:
 
 let
-  inherit (fw) rev pkgs;
+  inherit (fw) pkgs;
 
   style = pkgs.runCommand "style" { } ''
     ${pkgs.sass}/bin/scss \
@@ -46,18 +46,24 @@ let
     }
   ];
 
+  rev = builtins.hashString "sha1" "${style},${pygments},${fonts}";
+
 in
-pkgs.linkFarm "theme" [
-  {
-    name = "style.${rev}.css";
-    path = style;
-  }
-  {
-    name = "pygments.${rev}.css";
-    path = pygments;
-  }
-  {
-    name = "fonts";
-    path = fonts;
-  }
-]
+{
+  inherit rev;
+
+  drv = pkgs.linkFarm "theme" [
+    {
+      name = "style.${rev}.css";
+      path = style;
+    }
+    {
+      name = "pygments.${rev}.css";
+      path = pygments;
+    }
+    {
+      name = "fonts";
+      path = fonts;
+    }
+  ];
+}
