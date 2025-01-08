@@ -1,17 +1,6 @@
 {
   title = "Let's implement a virtual machine! -- from AST to JIT in one hour";
 
-  description = ''
-    <p>
-      Have you ever wanted to create your own programming language?
-    </p>
-    <p>
-      In this live-coding session I'll show you what is an abstract syntax
-      tree and how, based on it, you can create a relatively fast, unsafe-free
-      virtual machine that executes your own code.
-    </p>
-  '';
-
   tags = [
     "rust"
   ];

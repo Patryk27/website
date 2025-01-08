@@ -104,13 +104,11 @@ let
             <meta property="og:image" content="https://pwy.io/favicon.png">
             <meta property="og:site_name" content="pwy.io">
             <meta property="og:title" content="${post.title}">
-            <meta property="og:description" content="${sanitize post.description}">
             <meta property="og:type" content="article">
             <meta property="og:url" content="https://pwy.io/posts/${postId}">
 
             <meta property="twitter:card" content="summary">
             <meta property="twitter:title" content="${post.title}">
-            <meta property="twitter:description" content="${sanitize post.description}">
           '';
 
           body = ''

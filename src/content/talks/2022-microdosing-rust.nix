@@ -1,19 +1,6 @@
 {
   title = "Microdosing Rust: Why & How to Get Started with AVR?";
 
-  description = ''
-    <p>
-      AVRs are charming microcontrollers which can survive more than 300 days
-      on a single AA battery, lying on anything - from cold ice to sizzling
-      stones.
-    </p>
-    <p>
-      They can communicate with both high-level machines such as computers
-      and low-level peripherals like humidity meters, which makes them neat,
-      satisfying MCUs to play with -- and they can be programmed in Rust!
-    </p>
-  '';
-
   tags = [
     "avr"
     "microcontrollers"

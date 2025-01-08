@@ -3,12 +3,6 @@
   body = builtins.readFile ./body.html;
   assets = ./assets;
 
-  description = ''
-    Graphviz is a software that renders graphs, Factorio is a game in which you
-    build and maintain factories; let’s explore how both can complement each
-    other.
-  '';
-
   tags = [
     "dot"
     "factorio"

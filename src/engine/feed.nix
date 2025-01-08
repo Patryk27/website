@@ -20,7 +20,6 @@ let
       type = "post";
       id = id;
       title = post.title;
-      description = post.description;
       date = post.publishedAt;
     };
 
@@ -34,7 +33,6 @@ let
       type = "talk";
       id = id;
       title = talk.title;
-      subtitle = talk.subtitle or null;
       date = talk.when;
     };
 

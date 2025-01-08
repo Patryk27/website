@@ -3,26 +3,23 @@
   <channel>
     <title>pwy.io</title>
     <link>https://pwy.io</link>
-    <description>pwy.io - throwing algorithms at problems and observing what happens!</description>
+    <description>pwy.io - throwing algorithms at problems and observing what happens</description>
     <atom:link href="https://pwy.io/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Hello, World!</title>
       <link>https://pwy.io/posts/hello-world</link>
-      <description><![CDATA[This is my first post ~~ "fancy!"]]></description>
       <guid>https://pwy.io/posts/hello-world</guid>
       <pubDate>Wed, 14 Mar 2018 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>What's Up, part 1</title>
       <link>https://pwy.io/talks/whats-up-pt1</link>
-      <description><![CDATA[What's Up, part 1]]></description>
       <guid>https://pwy.io/talks/whats-up-pt1</guid>
       <pubDate>Thu, 15 Mar 2018 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>What's Up, part 2</title>
       <link>https://pwy.io/talks/whats-up-pt2</link>
-      <description><![CDATA[What's Up, part 2: I'm talking talk]]></description>
       <guid>https://pwy.io/talks/whats-up-pt2</guid>
       <pubDate>Fri, 16 Mar 2018 00:00:00 +0000</pubDate>
     </item>

@@ -61,7 +61,7 @@ impl Website {
             .namespace(("atom".into(), atom::NAMESPACE.into()))
             .title("pwy.io")
             .link("https://pwy.io")
-            .description("pwy.io - throwing algorithms at problems and observing what happens!")
+            .description("pwy.io - throwing algorithms at problems and observing what happens")
             .atom_ext(atom)
             .build();
 
@@ -81,14 +81,12 @@ enum Object {
     Post {
         id: String,
         title: String,
-        description: String,
         date: Date,
     },
 
     Talk {
         id: String,
         title: String,
-        subtitle: Option<String>,
         date: Date,
     },
 }
@@ -96,12 +94,7 @@ enum Object {
 impl Object {
     fn into_feed(self) -> Item {
         match self {
-            Object::Post {
-                id,
-                title,
-                description,
-                date,
-            } => {
+            Object::Post { id, title, date } => {
                 let link = format!("https://pwy.io/posts/{}", id);
 
                 let guid =
@@ -110,33 +103,20 @@ impl Object {
                 ItemBuilder::default()
                     .title(title)
                     .link(link)
-                    .description(description.trim().to_owned())
                     .guid(guid)
                     .pub_date(date.into_chrono().to_rfc2822())
                     .build()
             }
 
-            Object::Talk {
-                id,
-                title,
-                subtitle,
-                date,
-            } => {
+            Object::Talk { id, title, date } => {
                 let link = format!("https://pwy.io/talks/{}", id);
 
                 let guid =
                     GuidBuilder::default().value(&link).permalink(true).build();
 
-                let description = if let Some(subtitle) = subtitle {
-                    format!("{}: {}", title, subtitle)
-                } else {
-                    title.clone()
-                };
-
                 ItemBuilder::default()
                     .title(title)
                     .link(link)
-                    .description(description)
                     .guid(guid)
                     .pub_date(date.into_chrono().to_rfc2822())
                     .build()

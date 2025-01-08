@@ -1,14 +1,6 @@
 {
   title = "Trace Me a River (v2): Computing stuff on GPU using Rust";
 
-  description = ''
-    <p>
-      GPUs are known for their abilities of generating pretty images pretty
-      fast - in this talk we'll see what makes GPUs different from CPUs and
-      we'll see how you can code them in Rust.
-    </p>
-  '';
-
   tags = [
     "gpu"
     "rust"

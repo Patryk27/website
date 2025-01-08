@@ -1,12 +1,6 @@
 {
   title = "Trace Me a River: Computing stuff on GPU using Rust";
 
-  description = ''
-    <p>
-      Older version of my <code>Trace Me a River</code> talk.
-    </p>
-  '';
-
   tags = [
     "gpu"
     "rust"

@@ -37,11 +37,5 @@ in
           ""
       }
     </div>
-
-    <div class="post-description">
-      <p>
-        ${post.description}
-      </p>
-    </div>
   </article>
 ''

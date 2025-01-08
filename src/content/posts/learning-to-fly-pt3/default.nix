@@ -3,11 +3,6 @@
   body = builtins.readFile ./body.html;
   assets = ./assets;
 
-  description = ''
-    This is the third part of the Learning to Fly series in which we're coding a
-    simulation of evolution using neural network and genetic algorithm.
-  '';
-
   tags = [
     "ai"
     "genetic-algorithm"

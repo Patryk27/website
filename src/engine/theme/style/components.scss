@@ -81,24 +81,8 @@
   background: rgba(0, 0, 0, 0.2);
   margin-bottom: 1.5em;
 
-  .post-description {
-    margin-top: 1em;
-  }
-
   &:hover {
     background: rgba(0, 0, 0, 0.1);
-  }
-}
-
-.post-description,
-.talk-description {
-  p {
-    margin: 0.8em 0;
-    line-height: 1.2;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 }
 

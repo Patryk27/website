@@ -1,20 +1,6 @@
 {
   title = "(r)IDE on a (t)IDE with my IDE: Why Emacs + Rust?";
 
-  description = ''
-    <p>
-      Since I spent most of my days looking at a text editor, I've had the
-      chance of going through lots of programs, plugins, IDEs and ideas - some
-      better, some worse.
-    </p>
-    <p>
-      In this talk I'm going to show you what I've learned and how a typical
-      day in my editor looks like. I'll also show you lots of tricks that make
-      working with code, Git and filesystem easier, less error-prone and
-      more comfortable.
-    </p>
-  '';
-
   tags = [
     "emacs"
     "meta"

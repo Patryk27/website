@@ -1,19 +1,6 @@
 {
   title = "wait, why (??): Surprising corners of Rust - part 1";
 
-  description = ''
-    <p>
-      Even though Rust strives for simplicity, it's got a couple of surprising
-      corners and edge cases.
-    </p>
-    <p>
-      In this talk I'm going to show you the difference between
-      <code>.filter_map()</code> and <code>.flat_map()</code>, what's the deal
-      with <code>const FOO: AtomicUsize</code> and many others things that
-      I've stumbled upon.
-    </p>
-  '';
-
   tags = [
     "rust"
   ];

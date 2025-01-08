@@ -1,19 +1,6 @@
 {
   title = "wait, why (??): Surprising corners of Rust - part 2";
 
-  description = ''
-    <p>
-      Even though Rust strives for simplicity, it's got a couple of surprising
-      corners and edge cases.
-    </p>
-    <p>
-      In this talk I'm going to show you what makes <code>impl Drop</code>
-      super-special, what's the difference between using <code>Self</code>
-      and the type's name, what's the deal with <code>#[derive]</code> and
-      trait bounds, and many others things that I've stumbled upon.
-    </p>
-  '';
-
   tags = [
     "rust"
   ];

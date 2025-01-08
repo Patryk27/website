@@ -50,16 +50,5 @@ in
           ""
       }
     </div>
-
-    ${
-      if talk ? description then
-        ''
-          <div class="talk-description">
-            ${talk.description}
-          </div>
-        ''
-      else
-        ""
-    }
   </article>
 ''
