@@ -11,7 +11,7 @@
   some python code
 </div>
 
-<div class="listing listing-invalid"><pre><span></span><span class="hll"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="listing listing-invalid"><pre><span></span><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 </span><span class="hll">
 </span><span class="hll">    <span class="nb">print</span> <span class="s2">&quot;Second Listing&quot;</span>
 </span></pre></div>

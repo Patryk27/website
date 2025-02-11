@@ -2,21 +2,10 @@
   inputs = {
     crane = {
       url = "github:ipetkov/crane";
-
-      inputs = {
-        nixpkgs = {
-          follows = "nixpkgs";
-        };
-      };
     };
 
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-unstable";
-    };
-
-    # TODO https://github.com/NixOS/nixpkgs/issues/261820
-    nixpkgs-iosevka = {
-      url = "github:nixos/nixpkgs/nixos-22.11";
     };
 
     rust-overlay = {
@@ -39,7 +28,6 @@
       self,
       crane,
       nixpkgs,
-      nixpkgs-iosevka,
       rust-overlay,
       utils,
     }:
@@ -54,14 +42,8 @@
           ];
         };
 
-        pkgs-iosevka = import nixpkgs-iosevka {
-          inherit system;
-        };
-
         pkgs = pkgs' // {
           inherit crane;
-
-          iosevka = pkgs-iosevka.iosevka;
         };
 
       in

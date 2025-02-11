@@ -22,7 +22,7 @@ impl Element {
     }
 
     pub fn remove_attr_opt(&mut self, key: &str) -> Option<Attr> {
-        self.attrs.extract_if(|attr| *attr.name == key).next()
+        self.attrs.extract_if(.., |attr| *attr.name == key).next()
     }
 
     pub fn remove_attr(&mut self, key: &str) -> MessageResult<Attr> {

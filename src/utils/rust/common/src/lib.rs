@@ -9,7 +9,7 @@ pub struct Env<'a> {
     pub stderr: &'a mut dyn Write,
 }
 
-impl<'a> Env<'a> {
+impl Env<'_> {
     pub fn with<T>(run: impl FnOnce(&mut Env) -> T) -> T {
         let mut stdin = io::stdin().lock();
         let mut stdout = io::stdout().lock();

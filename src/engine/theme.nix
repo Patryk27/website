@@ -26,20 +26,23 @@ let
       path =
         let
           iosevka = pkgs.iosevka.override {
-            set = "custom";
+            set = "Custom";
 
             privateBuildPlan = {
               family = "Iosevka Custom";
               spacing = "term";
               serifs = "sans";
-              no-cv-ss = true;
-              no-ligation = true;
+              noCvSs = true;
+              noLigation = true;
+              weights = [ "default.Light" ];
+              widths = [ "default.Normal" ];
+              slopes = [ "default.Upright" ];
             };
           };
 
         in
         pkgs.runCommand "iosevka" { } ''
-          cp ${iosevka}/share/fonts/truetype/iosevka-custom-light.ttf /tmp/font.ttf
+          cp ${iosevka}/share/fonts/truetype/IosevkaCustom-000.ttf /tmp/font.ttf
           ${pkgs.woff2}/bin/woff2_compress /tmp/font.ttf
           mv /tmp/font.ttf $out
         '';
