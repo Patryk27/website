@@ -1,16 +1,17 @@
-use super::{Element, Message, MessageResult, Printer, Span};
+use super::Printer;
+use crate::{Elem, Error, Result, Span};
 use itertools::Itertools;
 use std::fmt::Write as _;
 use std::io::Write;
 use std::process::{Command, Stdio};
 
 impl Printer<'_> {
-    pub(super) fn process_listing(&mut self, el: Element) -> MessageResult<()> {
+    pub(super) fn add_listing(&mut self, el: Elem) -> Result<()> {
         let listing = el.comment()?;
         let mut span = listing.span();
 
         let listing = listing.strip_prefix('\n').ok_or_else(|| {
-            Message::new("expected comment to start with a newline", span)
+            Error::new("expected comment to start with a newline", span)
         })?;
 
         span = Span::char(span.beg + 1);
@@ -33,7 +34,7 @@ impl Printer<'_> {
             };
 
             if !line_indent.bytes().all(|c| c == b' ' || c == b'=') {
-                return Err(Message::new(
+                return Err(Error::new(
                     format!("invalid indentation: `{}`", line_indent),
                     span,
                 ));
@@ -67,10 +68,10 @@ impl Printer<'_> {
 }
 
 fn render_listing(
-    el: &Element,
+    el: &Elem,
     body: &str,
     highlights: &[usize],
-) -> MessageResult<String> {
+) -> Result<String> {
     let mut lang = None;
     let mut class = None;
 
@@ -80,10 +81,7 @@ fn render_listing(
             "class" => class = Some(attr.value()?.as_str()),
 
             _ => {
-                return Err(Message::new(
-                    "unknown attribute",
-                    attr.name.span(),
-                ));
+                return Err(Error::new("unknown attribute", attr.name.span()));
             }
         }
     }
@@ -116,7 +114,7 @@ fn render_listing(
         .stdout(Stdio::piped())
         .spawn()
         .map_err(|err| {
-            Message::new(
+            Error::new(
                 format!(
                     "couldn't process listing: couldn't spawn pygmentize: {:?}",
                     err
@@ -137,7 +135,7 @@ fn render_listing(
     if output.status.success() {
         Ok(String::from_utf8(output.stdout).unwrap())
     } else {
-        Err(Message::new(
+        Err(Error::new(
             "couldn't proess listing: pygmentize returned a non-zero exit code",
             el.name.span(),
         ))

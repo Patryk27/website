@@ -1,6 +1,6 @@
-Element(
+Elem(
     Spanned {
-        inner: Element {
+        inner: Elem {
             name: Spanned {
                 inner: "p",
                 span: Span {
@@ -36,9 +36,9 @@ Text(
         },
     },
 )
-Element(
+Elem(
     Spanned {
-        inner: Element {
+        inner: Elem {
             name: Spanned {
                 inner: "table",
                 span: Span {
@@ -57,9 +57,9 @@ Element(
                         },
                     },
                 ),
-                Element(
+                Elem(
                     Spanned {
-                        inner: Element {
+                        inner: Elem {
                             name: Spanned {
                                 inner: "thead",
                                 span: Span {
@@ -78,9 +78,9 @@ Element(
                                         },
                                     },
                                 ),
-                                Element(
+                                Elem(
                                     Spanned {
-                                        inner: Element {
+                                        inner: Elem {
                                             name: Spanned {
                                                 inner: "tr",
                                                 span: Span {
@@ -99,9 +99,9 @@ Element(
                                                         },
                                                     },
                                                 ),
-                                                Element(
+                                                Elem(
                                                     Spanned {
-                                                        inner: Element {
+                                                        inner: Elem {
                                                             name: Spanned {
                                                                 inner: "td",
                                                                 span: Span {
@@ -171,9 +171,9 @@ Element(
                         },
                     },
                 ),
-                Element(
+                Elem(
                     Spanned {
-                        inner: Element {
+                        inner: Elem {
                             name: Spanned {
                                 inner: "tbody",
                                 span: Span {
@@ -192,9 +192,9 @@ Element(
                                         },
                                     },
                                 ),
-                                Element(
+                                Elem(
                                     Spanned {
-                                        inner: Element {
+                                        inner: Elem {
                                             name: Spanned {
                                                 inner: "tr",
                                                 span: Span {
@@ -213,9 +213,9 @@ Element(
                                                         },
                                                     },
                                                 ),
-                                                Element(
+                                                Elem(
                                                     Spanned {
-                                                        inner: Element {
+                                                        inner: Elem {
                                                             name: Spanned {
                                                                 inner: "td",
                                                                 span: Span {
@@ -320,9 +320,9 @@ Text(
         },
     },
 )
-Element(
+Elem(
     Spanned {
-        inner: Element {
+        inner: Elem {
             name: Spanned {
                 inner: "p",
                 span: Span {
@@ -341,9 +341,9 @@ Element(
                         },
                     },
                 ),
-                Element(
+                Elem(
                     Spanned {
-                        inner: Element {
+                        inner: Elem {
                             name: Spanned {
                                 inner: "b",
                                 span: Span {

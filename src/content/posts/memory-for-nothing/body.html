@@ -22,7 +22,9 @@
   -->
 </listing>
 
-<p>... and then it allowed you to issue queries, like:</p>
+<p>
+  ... and then it allowed you to issue queries, like:
+</p>
 
 <listing>
   <!--
@@ -37,13 +39,17 @@
   the actually interesting thing happened <i>earlier</i>.
 </p>
 
-<p>After all, before we're able to calculate prices, we have to find them.</p>
+<p>
+  After all, before we're able to calculate prices, we have to find them.
+</p>
 
 <p class="text-center text-italic">
   ♪ memory for nothing and bits for free... ♪
 </p>
 
-<header id="indexing">Indexing</header>
+<h2 id="indexing">
+  Indexing
+</h2>
 
 <p>
   Let's ground ourselves with a specific example - we're given all of those:
@@ -86,7 +92,9 @@
   -->
 </listing>
 
-<p>... and our problem is to efficiently implement this function:</p>
+<p>
+  ... and our problem is to efficiently implement this function:
+</p>
 
 <listing lang="rust">
   <!--
@@ -94,7 +102,9 @@
   -->
 </listing>
 
-<p>Naively, we're looking for:</p>
+<p>
+  Naively, we're looking for:
+</p>
 
 <listing lang="rust">
   <!--
@@ -113,7 +123,9 @@
   -->
 </listing>
 
-<p>... but, of course, that won't fly when we're given millions of prices.</p>
+<p>
+  ... but, of course, that won't fly when we're given millions of prices.
+</p>
 
 <p class="text-dim">
   (also, ideally we'd find the cheapest price, but for the sake of example let's
@@ -185,7 +197,9 @@
   -->
 </listing>
 
-<p>... and that's a perfectly valid approach! Although...</p>
+<p>
+  ... and that's a perfectly valid approach! Although...
+</p>
 
 <note>
   <p>
@@ -207,7 +221,9 @@
     -->
   </listing>
 
-  <p>Now, if our <code>Index</code> was based around borrows:</p>
+  <p>
+    Now, if our <code>Index</code> was based around borrows:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -217,7 +233,9 @@
     -->
   </listing>
 
-  <p>... then we'd have to implement a self-referential <code>Engine</code>:</p>
+  <p>
+    ... then we'd have to implement a self-referential <code>Engine</code>:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -234,17 +252,23 @@
     proposing we go with <code>Vec&lt;usize&gt;</code> from day zero.
   </p>
 
-  <p>Also, it'll just come handy later, pinky promise, just trust me.</p>
+  <p>
+    Also, it'll just come handy later, pinky promise, just trust me.
+  </p>
 </note>
 
-<header id="unwasting">Unwasting</header>
+<h2 id="unwasting">
+  Unwasting
+</h2>
 
 <p>
   Alright, look at them <code>Vec&lt;usize&gt;</code>. Look. At. Them. Squeeze
   your eyes. Unsqueeze them. Do a squat. Do you see what I see?
 </p>
 
-<p class="text-bold">Those vectors are mostly filled with zeros!</p>
+<p class="text-bold">
+  Those vectors are mostly filled with zeros!
+</p>
 
 <p>
   On a 64-bit machine, one <code>usize</code> weighs 8 bytes and allows to
@@ -275,7 +299,9 @@
   when you push a number large enough.
 </p>
 
-<p>It goes sorta like:</p>
+<p>
+  It goes sorta like:
+</p>
 
 <listing lang="rust">
   <!--
@@ -378,7 +404,9 @@
   -->
 </listing>
 
-<header id="summary">Summary</header>
+<h2 id="summary">
+  Summary
+</h2>
 
 <p>
   Should you (continue to) use <code>Vec&lt;usize&gt;</code>? Most likely yes!
@@ -398,4 +426,6 @@
   it does something else.
 </p>
 
-<p>Anyway, ♪ memory for nothing and bits for free... ♪</p>
+<p>
+  Anyway, ♪ memory for nothing and bits for free... ♪
+</p>

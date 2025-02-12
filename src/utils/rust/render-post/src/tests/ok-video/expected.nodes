@@ -2,27 +2,27 @@ Elem(
     Spanned {
         inner: Elem {
             name: Spanned {
-                inner: "a",
+                inner: "video",
                 span: Span {
                     beg: 1,
-                    end: 1,
+                    end: 5,
                 },
             },
             attrs: [
                 Attr {
                     name: Spanned {
-                        inner: "href",
+                        inner: "src",
                         span: Span {
-                            beg: 3,
-                            end: 6,
+                            beg: 7,
+                            end: 9,
                         },
                     },
                     value: Some(
                         Spanned {
-                            inner: "https://google.com",
+                            inner: "https://foo/bar.jpg",
                             span: Span {
-                                beg: 8,
-                                end: 27,
+                                beg: 11,
+                                end: 31,
                             },
                         },
                     ),
@@ -32,7 +32,7 @@ Elem(
         },
         span: Span {
             beg: 0,
-            end: 30,
+            end: 34,
         },
     },
 )
@@ -40,8 +40,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 31,
-            end: 31,
+            beg: 35,
+            end: 35,
         },
     },
 )

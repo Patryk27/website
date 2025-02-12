@@ -1,8 +1,6 @@
 pkgs:
 
 let
-  inherit (pkgs) lib;
-
   crane = (pkgs.crane.mkLib pkgs).overrideToolchain (
     pkgs.rust-bin.fromRustupToolchainFile ./rust/rust-toolchain
   );
@@ -10,18 +8,9 @@ let
   app = crane.buildPackage {
     pname = "render-post";
     version = "0.1.0";
+
+    src = ./rust;
     cargoExtraArgs = "-p render-post";
-
-    src = lib.fileset.toSource {
-      root = ./rust;
-
-      fileset = lib.fileset.unions [
-        ./rust/Cargo.toml
-        ./rust/Cargo.lock
-        ./rust/common
-        ./rust/render-post
-      ];
-    };
 
     buildInputs = with pkgs; [
       python3Packages.pygments

@@ -1,4 +1,6 @@
-<p>Why does the code below compile?</p>
+<p>
+  Why does the code below compile?
+</p>
 
 <listing lang="rust">
   <!--
@@ -36,9 +38,9 @@
   </p>
 </note>
 
-<header id="_where_t_send">
+<h2 id="_where_t_send">
   <code>where T: Send</code>
-</header>
+</h2>
 
 <p>
   One would be completely sane to ask
@@ -155,9 +157,9 @@
   atomic counters.
 </p>
 
-<header id="_oibits">
+<h2 id="_oibits">
   OIBITs
-</header>
+</h2>
 
 <p>
   So far we've talked about the <i>role</i> <code>Send</code> plays in Rust's
@@ -233,9 +235,9 @@
   into <code>auto traits</code>, so we'll go with the latter from now on.
 </p>
 
-<header id="_auto_traits">
+<h2 id="_auto_traits">
   Auto traits
-</header>
+</h2>
 
 <p>
   Regular traits are opt-in, meaning that they don't apply unless you explicitly
@@ -263,7 +265,9 @@
   -->
 </listing>
 
-<p>Auto traits, on the other hand, are <b>opt-out</b>:</p>
+<p>
+  Auto traits, on the other hand, are <b>opt-out</b>:
+</p>
 
 <listing lang="rust">
   <!--
@@ -289,7 +293,9 @@
   -->
 </listing>
 
-<p>Since auto traits cannot contain methods or associated items:</p>
+<p>
+  Since auto traits cannot contain methods or associated items:
+</p>
 
 <listing lang="rust">
   <!--
@@ -300,7 +306,9 @@
   -->
 </listing>
 
-<p>... they function as so-called <b>marker traits</b>.</p>
+<p>
+  ... they function as so-called <b>marker traits</b>.
+</p>
 
 <p>
   While regular traits provide <i>behavior</i> (e.g. methods), marker traits
@@ -327,7 +335,9 @@
   -->
 </listing>
 
-<p>... additionally, in <code>std/alloc/rc.rs</code> we can find that:</p>
+<p>
+  ... additionally, in <code>std/alloc/rc.rs</code> we can find that:
+</p>
 
 <listing lang="rust">
   <!--
@@ -335,7 +345,9 @@
   -->
 </listing>
 
-<p>See, no magic!</p>
+<p>
+  See, no magic!
+</p>
 
 <p>
   To finish this section on auto traits, let's just walk through the most
@@ -388,9 +400,9 @@
   </i>
 </p>
 
-<header id="_specialization">
+<h2 id="_specialization">
   Specialization
-</header>
+</h2>
 
 <p>
   Let's stash all that boring-auto-trait-knowledge somewhere else for now and
@@ -457,7 +469,9 @@
   -->
 </listing>
 
-<p>They were saying something about <code>strings attached</code> too, so:</p>
+<p>
+  They were saying something about <code>strings attached</code> too, so:
+</p>
 
 <listing lang="rust">
   <!--
@@ -561,7 +575,9 @@
   -->
 </listing>
 
-<p>... and wait, what's that error message?</p>
+<p>
+  ... and wait, what's that error message?
+</p>
 
 <p>
   The compiler says we've got conflicting implementations:
@@ -608,11 +624,13 @@
   auto traits.
 </p>
 
-<header id="_specialization_with_auto_traits">
+<h2 id="_specialization_with_auto_traits">
   Specialization with auto traits
-</header>
+</h2>
 
-<p>Since the issue with our current implementation:</p>
+<p>
+  Since the issue with our current implementation:
+</p>
 
 <listing lang="rust">
   <!--
@@ -649,7 +667,9 @@
   -->
 </listing>
 
-<p>... and un-implement it for <code>bool</code>:</p>
+<p>
+  ... and un-implement it for <code>bool</code>:
+</p>
 
 <listing lang="rust">
   <!--
@@ -685,9 +705,9 @@
   -->
 </listing>
 
-<header id="_the_code">
+<h2 id="_the_code">
   The Code
-</header>
+</h2>
 
 <p>
   The entire solution leans on two nightly features: <code>auto_traits</code> &

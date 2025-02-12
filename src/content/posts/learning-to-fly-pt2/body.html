@@ -25,9 +25,9 @@
   Strap your straps, seatbelt your seatbelts and get ready for some coding!
 </p>
 
-<header id="setup">
+<h2 id="setup">
   Setup
-</header>
+</h2>
 
 <p>
   Oh, the joys of starting a new project!
@@ -143,11 +143,13 @@
   </p>
 </note>
 
-<header id="coding-propagate">
+<h2 id="coding-propagate">
   Coding: <code>propagate()</code>
-</header>
+</h2>
 
-<p>It's time to get down to business.</p>
+<p>
+  It's time to get down to business.
+</p>
 
 <p>
   We'll start <b>top-down</b>, with a structure modelling the entire network -
@@ -166,13 +168,17 @@
   -->
 </listing>
 
-<p>A neural network's most crucial operation is propagating numbers:</p>
+<p>
+  A neural network's most crucial operation is propagating numbers:
+</p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/coding-propagate-1.svg" />
 </figure>
 
-<p>... so:</p>
+<p>
+  ... so:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -192,7 +198,9 @@
 </listing>
 
 <note>
-  <p>While some languages allow to leave "work-in-progress" functions empty:</p>
+  <p>
+    While some languages allow to leave "work-in-progress" functions empty:
+  </p>
 
   <listing lang="cpp">
     <!--
@@ -202,7 +210,9 @@
     -->
   </listing>
 
-  <p>... an equivalent code in Rust does not compile:</p>
+  <p>
+    ... an equivalent code in Rust does not compile:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -225,7 +235,9 @@
     -->
   </listing>
 
-  <p>That's because almost everything in Rust is an expression:</p>
+  <p>
+    That's because almost everything in Rust is an expression:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -245,7 +257,9 @@
     -->
   </listing>
 
-  <p>... and so the way Rust sees that function is actually:</p>
+  <p>
+    ... and so the way Rust sees that function is actually:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -290,7 +304,9 @@
   <img src="{{ assets }}/coding-propagate-2.svg" />
 </figure>
 
-<p>... so:</p>
+<p>
+  ... so:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -308,13 +324,17 @@
   -->
 </listing>
 
-<p>Layers are built from neurons:</p>
+<p>
+  Layers are built from neurons:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/coding-propagate-3.svg" />
 </figure>
 
-<p>... giving us:</p>
+<p>
+  ... giving us:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -329,7 +349,9 @@
   -->
 </listing>
 
-<p>Eventually, neurons contain biases and <b>output</b> weights:</p>
+<p>
+  Eventually, neurons contain biases and <b>output</b> weights:
+</p>
 
 <figure class="sketch w-50">
   <img src="{{ assets }}/coding-propagate-4.svg" />
@@ -349,7 +371,9 @@
   -->
 </listing>
 
-<p>Let's see our initial design in its entriety:</p>
+<p>
+  Let's see our initial design in its entriety:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -381,7 +405,9 @@
   -->
 </listing>
 
-<p>Nice.</p>
+<p>
+  Nice.
+</p>
 
 <note>
   <p>
@@ -474,7 +500,9 @@
   </figcaption>
 </figure>
 
-<p>First of all, this is called a <b>rebinding</b> (or <i>shadowing</i>):</p>
+<p>
+  First of all, this is called a <b>rebinding</b> (or <i>shadowing</i>):
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -580,7 +608,9 @@
     -->
   </listing>
 
-  <p>... and bindings, contrary to types, are <b>local</b> to the function:</p>
+  <p>
+    ... and bindings, contrary to types, are <b>local</b> to the function:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -627,7 +657,9 @@
   -->
 </listing>
 
-<p>... and Rust's standard library provides a dedicated function for it:</p>
+<p>
+  ... and Rust's standard library provides a dedicated function for it:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -682,7 +714,9 @@
   -->
 </listing>
 
-<p>As before, we can backtrack to implement <code>Layer::propagate()</code>:</p>
+<p>
+  As before, we can backtrack to implement <code>Layer::propagate()</code>:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -710,7 +744,9 @@
   -->
 </listing>
 
-<p>If we try to compile it, we get our first borrow-checker failure:</p>
+<p>
+  If we try to compile it, we get our first borrow-checker failure:
+</p>
 
 <listing lang="text">
   <!--
@@ -769,7 +805,9 @@
   -->
 </listing>
 
-<p>To reiterate, the code we have at the moment is:</p>
+<p>
+  To reiterate, the code we have at the moment is:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -858,13 +896,19 @@
 
 <ol>
   <li>
-    <p>When <code>inputs.len() &lt; self.weights.len()</code>,</p>
+    <p>
+      When <code>inputs.len() &lt; self.weights.len()</code>,
+    </p>
   </li>
   <li>
-    <p>When <code>inputs.len() == self.weights.len()</code>,</p>
+    <p>
+      When <code>inputs.len() == self.weights.len()</code>,
+    </p>
   </li>
   <li>
-    <p>When <code>inputs.len() &gt; self.weights.len()</code>.</p>
+    <p>
+      When <code>inputs.len() &gt; self.weights.len()</code>.
+    </p>
   </li>
 </ol>
 
@@ -874,7 +918,9 @@
   passed less or more inputs, we'd get either an invalid result or a crash.
 </p>
 
-<p>There are at least two ways we could go around improving it:</p>
+<p>
+  There are at least two ways we could go around improving it:
+</p>
 
 <ol>
   <li>
@@ -978,7 +1024,9 @@
   </li>
 </ol>
 
-<p>So:</p>
+<p>
+  So:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -996,7 +1044,9 @@
   -->
 </listing>
 
-<p>As for the idioms - this one:</p>
+<p>
+  As for the idioms - this one:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1018,7 +1068,9 @@
   -->
 </listing>
 
-<p>... is <code>f32::max()</code> in disguise:</p>
+<p>
+  ... is <code>f32::max()</code> in disguise:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1036,7 +1088,9 @@
   -->
 </listing>
 
-<p>While this one:</p>
+<p>
+  While this one:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1060,7 +1114,9 @@
   -->
 </listing>
 
-<p>... can be simplified first with <code>.zip()</code>:</p>
+<p>
+  ... can be simplified first with <code>.zip()</code>:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1118,7 +1174,9 @@
   </p>
 </note>
 
-<p>... and then using <code>.map()</code> + <code>.sum()</code>:</p>
+<p>
+  ... and then using <code>.map()</code> + <code>.sum()</code>:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1154,7 +1212,9 @@
   </p>
 </note>
 
-<p>Voilà:</p>
+<p>
+  Voilà:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1183,9 +1243,9 @@
   cat? Can we use it to predict future Dogecoin prices?
 </p>
 
-<header id="coding-new">
+<h2 id="coding-new">
   Coding: <code>new()</code>
-</header>
+</h2>
 
 <p>
   Up to this point we were focused so much on the algorithm that we gave little
@@ -1265,7 +1325,9 @@
   -->
 </listing>
 
-<p>... or, in a bit more elegant way:</p>
+<p>
+  ... or, in a bit more elegant way:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1295,7 +1357,9 @@
   -->
 </listing>
 
-<p>Now, if you look real close at a neural network's layer:</p>
+<p>
+  Now, if you look real close at a neural network's layer:
+</p>
 
 <figure class="sketch w-30">
   <img src="{{ assets }}/coding-new-1.svg" />
@@ -1311,13 +1375,17 @@
   What we've done is, as I like to call it, <b>exploiting domain knowledge</b>.
 </p>
 
-<p>Inside a FFNN, all layers are connected consecutively, front-to-back:</p>
+<p>
+  Inside a FFNN, all layers are connected consecutively, front-to-back:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/coding-new-2.svg" />
 </figure>
 
-<p>... because layer A's output is layer B's input, if we went with:</p>
+<p>
+  ... because layer A's output is layer B's input, if we went with:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1341,7 +1409,9 @@
   outputs allows us to simplify the code before it's been even written.
 </p>
 
-<p>As for the implementation, a crude approach would be:</p>
+<p>
+  As for the implementation, a crude approach would be:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1392,7 +1462,9 @@
   -->
 </listing>
 
-<p>There, better.</p>
+<p>
+  There, better.
+</p>
 
 <p>
   As for the <code>for</code> loop - iterating by <b>adjacent</b> items is
@@ -1441,7 +1513,9 @@
     -->
   </listing>
 
-  <p>... but, regrettably, computer says no:</p>
+  <p>
+    ... but, regrettably, computer says no:
+  </p>
 
   <listing lang="text">
     <!--
@@ -1492,7 +1566,9 @@
   </p>
 </note>
 
-<p>In this case, switching to iterators is a no-brainer for me:</p>
+<p>
+  In this case, switching to iterators is a no-brainer for me:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1548,7 +1624,9 @@
   -->
 </listing>
 
-<p>... and:</p>
+<p>
+  ... and:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1591,7 +1669,9 @@
   -->
 </listing>
 
-<p>... or:</p>
+<p>
+  ... or:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1621,7 +1701,9 @@
     which accepts an argument it doesn't care about.
   </p>
 
-  <p>We might've written as well:</p>
+  <p>
+    We might've written as well:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -1676,7 +1758,9 @@
   </listing>
 </note>
 
-<p>Finally, the last piece of our chain - <code>Neuron::random()</code>:</p>
+<p>
+  Finally, the last piece of our chain - <code>Neuron::random()</code>:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1709,12 +1793,12 @@
   it's crates.io time!
 </p>
 
-<p>Which crate should we choose? Well, let's see:</p>
+<p>
+  Which crate should we choose? Well, let's see:
+</p>
 
 <figure>
-  <video src="{{ assets }}/rand.webm" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/rand.webm" />
 </figure>
 
 <p>
@@ -1746,7 +1830,9 @@
   -->
 </listing>
 
-<p>... and then:</p>
+<p>
+  ... and then:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -1785,7 +1871,9 @@
   </p>
 </note>
 
-<p>Neat.</p>
+<p>
+  Neat.
+</p>
 
 <p>
   Certainly, <code>rng.gen_range(-1.0..=1.0)</code> predicts Dogecoin prices
@@ -1793,9 +1881,9 @@
   network works as intended?
 </p>
 
-<header id="testing">
+<h2 id="testing">
   Testing
-</header>
+</h2>
 
 <p>
   A <a href="https://en.wikipedia.org/wiki/Pure_function">pure function</a> is a
@@ -1811,7 +1899,9 @@
   -->
 </listing>
 
-<p>... while this one is not:</p>
+<p>
+  ... while this one is not:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1827,7 +1917,9 @@
   the file happens to contain at the moment.)
 </p>
 
-<p>Pure functions are nice, because they can be tested in isolation:</p>
+<p>
+  Pure functions are nice, because they can be tested in isolation:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1897,7 +1989,9 @@
   -->
 </listing>
 
-<p>We might try:</p>
+<p>
+  We might try:
+</p>
 
 <listing lang="rust">
   <!--
@@ -2011,7 +2105,9 @@
     -->
   </listing>
 
-  <p>... you did:</p>
+  <p>
+    ... you did:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -2022,7 +2118,9 @@
     -->
   </listing>
 
-  <p>... then you'd be able to test the output quite easily:</p>
+  <p>
+    ... then you'd be able to test the output quite easily:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -2086,7 +2184,9 @@
   -->
 </listing>
 
-<p>... which allows us to do:</p>
+<p>
+  ... which allows us to do:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -2136,7 +2236,9 @@
   -->
 </listing>
 
-<p>First <code>cargo test</code> gives us:</p>
+<p>
+  First <code>cargo test</code> gives us:
+</p>
 
 <listing lang="text">
   <!--
@@ -2146,7 +2248,9 @@
   -->
 </listing>
 
-<p>... so:</p>
+<p>
+  ... so:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -2165,7 +2269,9 @@
   -->
 </listing>
 
-<p>Another <code>cargo test</code>:</p>
+<p>
+  Another <code>cargo test</code>:
+</p>
 
 <listing lang="text">
   <!--
@@ -2175,7 +2281,9 @@
   -->
 </listing>
 
-<p>... and we end up with:</p>
+<p>
+  ... and we end up with:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -2228,7 +2336,9 @@
   -->
 </listing>
 
-<p>... same with, say, <code>0.45</code>:</p>
+<p>
+  ... same with, say, <code>0.45</code>:
+</p>
 
 <listing lang="rust">
   <!--
@@ -2355,7 +2465,9 @@
   -->
 </listing>
 
-<p>... and then adjust the tests:</p>
+<p>
+  ... and then adjust the tests:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -2475,7 +2587,9 @@
     -->
   </listing>
 
-  <p>... then it'd make sense to create two separate tests:</p>
+  <p>
+    ... then it'd make sense to create two separate tests:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -2556,11 +2670,13 @@
   exercise for the reader :-)
 </p>
 
-<header id="closing-thoughts">
+<h2 id="closing-thoughts">
   Closing thoughts
-</header>
+</h2>
 
-<h3>What've we created, exactly?</h3>
+<h3>
+  What have we created, exactly?
+</h3>
 
 <p>
   It might seem that what we've implemented has nothing to do with learning or
@@ -2569,13 +2685,19 @@
 
 <ul>
   <li>
-    <p>what about the eyes?</p>
+    <p>
+      what about the eyes?
+    </p>
   </li>
   <li>
-    <p>where's the code responsible for movement?</p>
+    <p>
+      where's the code responsible for movement?
+    </p>
   </li>
   <li>
-    <p>how did you create that greenish, Fallout-style terminal?</p>
+    <p>
+      how did you create that greenish, Fallout-style terminal?
+    </p>
   </li>
 </ul>
 
@@ -2593,7 +2715,9 @@
   In the meantime, feel free to checkout <a ref>the source code</a>.
 </p>
 
-<h3>Why is our design inflated?</h3>
+<h3>
+  Is our design inflated?
+</h3>
 
 <p>
   When you search for <code>python neural network from scratch</code>, you'll
@@ -2616,7 +2740,9 @@
   crates</a>, but it's not the destination that matters, it's the journey.
 </p>
 
-<h3>What’s next?</h3>
+<h3>
+  What’s next?
+</h3>
 
 <p>
   At the moment we've got a bare-bones FFNN at hand - in the next article we'll

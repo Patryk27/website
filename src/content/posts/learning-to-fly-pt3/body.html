@@ -27,11 +27,13 @@
   expect them (just catch the food, birdies!).
 </p>
 
-<p>But how can we <b>train</b> a bunch of floating-point numbers?</p>
+<p>
+  But how can we <b>train</b> a bunch of floating-point numbers?
+</p>
 
-<header id="plan">
+<h2 id="plan">
   Plan
-</header>
+</h2>
 
 <p>
   <ref id="selection">
@@ -69,9 +71,9 @@
   implemented all this on my own!
 </p>
 
-<header id="intro">
+<h2 id="intro">
   Introduction
-</header>
+</h2>
 
 <p>
   First, let's recap how a genetic algorithm works and what's the point of this
@@ -186,11 +188,13 @@
   </li>
 </ul>
 
-<header id="coding-outline">
+<h2 id="coding-outline">
   Coding: Outline
-</header>
+</h2>
 
-<p>We'll start by creating a second crate inside our workspace:</p>
+<p>
+  We'll start by creating a second crate inside our workspace:
+</p>
 
 <listing lang="shell">
   <!--
@@ -234,7 +238,9 @@
   -->
 </listing>
 
-<p>What are we evolving? A population, of course!</p>
+<p>
+  What are we evolving? A population, of course!
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -296,7 +302,9 @@
     (<a href="https://doc.rust-lang.org/reference/items/functions.html" />)
   </p>
 
-  <p>If you wanted to read this signature aloud, you'd say:</p>
+  <p>
+    If you wanted to read this signature aloud, you'd say:
+  </p>
 
   <blockquote>
     <p>
@@ -332,7 +340,9 @@
   </p>
 </note>
 
-<p>Learning from past mistakes, let's not forget about <b>preconditions</b>:</p>
+<p>
+  Learning from past mistakes, let's not forget about <b>preconditions</b>:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -350,7 +360,9 @@
   -->
 </listing>
 
-<p>As for the algorithm itself - the outline is:</p>
+<p>
+  As for the algorithm itself - the outline is:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -375,9 +387,9 @@
   -->
 </listing>
 
-<header id="coding-selection">
+<h2 id="coding-selection">
   Coding: Selection
-</header>
+</h2>
 
 <p>
   At this point, inside the loop, we have to pick two individuals - they will
@@ -395,7 +407,9 @@
 
 <ul>
   <li>
-    <p>each individual should have a <b>non-zero</b> chance of being picked,</p>
+    <p>
+      each individual should have a <b>non-zero</b> chance of being picked,
+    </p>
   </li>
   <li>
     <p>
@@ -413,7 +427,9 @@
 
 <ol>
   <li>
-    <p>Fitness function as a <i>parameter</i> of an individual:</p>
+    <p>
+      Fitness function as a <i>parameter</i> of an individual:
+    </p>
 
     <listing-title>
       libs/genetic-algorithm/src/lib.rs
@@ -435,7 +451,9 @@
   </li>
 
   <li>
-    <p>Fitness score as a <i>property</i> of an individual:</p>
+    <p>
+      Fitness score as a <i>property</i> of an individual:
+    </p>
 
     <listing-title>
       libs/genetic-algorithm/src/lib.rs
@@ -460,7 +478,9 @@
   </li>
 </ol>
 
-<p>First approach:</p>
+<p>
+  First approach:
+</p>
 
 <ul>
   <li>
@@ -477,7 +497,9 @@
   </li>
 </ul>
 
-<p>Second approach:</p>
+<p>
+  Second approach:
+</p>
 
 <ul>
   <li>
@@ -527,10 +549,14 @@
   <tbody>
     <tr>
       <td>
-        <p>A</p>
+        <p>
+          A
+        </p>
       </td>
       <td>
-        <p>3</p>
+        <p>
+          3
+        </p>
       </td>
       <td>
         <p>
@@ -540,10 +566,14 @@
     </tr>
     <tr>
       <td>
-        <p>B</p>
+        <p>
+          B
+        </p>
       </td>
       <td>
-        <p>2</p>
+        <p>
+          2
+        </p>
       </td>
       <td>
         <p>
@@ -553,10 +583,14 @@
     </tr>
     <tr>
       <td>
-        <p>C</p>
+        <p>
+          C
+        </p>
       </td>
       <td>
-        <p>1</p>
+        <p>
+          1
+        </p>
       </td>
       <td>
         <p>
@@ -613,10 +647,14 @@
     of copy-pasted, green clones.
   </p>
 
-  <p>You might think:</p>
+  <p>
+    You might think:
+  </p>
 
   <blockquote>
-    <p>but isn't finding the best solution, like, the whole point?</p>
+    <p>
+      but isn't finding the best solution, like, the whole point?
+    </p>
   </blockquote>
 
   <p>
@@ -627,7 +665,9 @@
     <i>in the long run</i>.
   </p>
 
-  <p>To put it another way:</p>
+  <p>
+    To put it another way:
+  </p>
 
   <blockquote>
     <p>
@@ -662,7 +702,9 @@
   -->
 </listing>
 
-<p>A selection method has to have access to the entire population:</p>
+<p>
+  A selection method has to have access to the entire population:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -678,7 +720,9 @@
   -->
 </listing>
 
-<p>... and, for clarity, let's annotate the lifetime:</p>
+<p>
+  ... and, for clarity, let's annotate the lifetime:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -746,7 +790,9 @@
   -->
 </listing>
 
-<p>Ain't that a beautiful signature?</p>
+<p>
+  Ain't that a beautiful signature?
+</p>
 
 <note>
   <p>
@@ -769,7 +815,9 @@
     -->
   </listing>
 
-  <p>First, let's catch up on the vernacular:</p>
+  <p>
+    First, let's catch up on the vernacular:
+  </p>
 
   <ol>
     <li>
@@ -986,7 +1034,9 @@
   </p>
 </note>
 
-<p>As for the implementation:</p>
+<p>
+  As for the implementation:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -1007,7 +1057,9 @@
   -->
 </listing>
 
-<p>... we <i>could</i> do it by hand:</p>
+<p>
+  ... we <i>could</i> do it by hand:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1147,7 +1199,9 @@
   -->
 </listing>
 
-<p>At this point we've got two problems:</p>
+<p>
+  At this point we've got two problems:
+</p>
 
 <ol>
   <li>
@@ -1229,7 +1283,9 @@
   -->
 </listing>
 
-<p>... which we can then use as:</p>
+<p>
+  ... which we can then use as:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -1258,7 +1314,9 @@
   -->
 </listing>
 
-<p>What about the assertion, though? A test such as this one:</p>
+<p>
+  What about the assertion, though? A test such as this one:
+</p>
 
 <listing lang="rust">
   <!--
@@ -1458,7 +1516,9 @@
     </i>
   </p>
 
-  <p>If you feel like exploring this topic more:</p>
+  <p>
+    If you feel like exploring this topic more:
+  </p>
 
   <ul>
     <li>
@@ -1564,7 +1624,9 @@
 
 <ol>
   <li>
-    <p>Using a parameter:</p>
+    <p>
+      Using a parameter:
+    </p>
 
     <listing lang="rust">
       <!--
@@ -1586,7 +1648,9 @@
   </li>
 
   <li>
-    <p>Using a constructor:</p>
+    <p>
+      Using a constructor:
+    </p>
 
     <listing-title>
       libs/genetic-algorithm/src/lib.rs
@@ -1630,7 +1694,9 @@
   it'll be more convenient for the users to provide it through the constructor.
 </p>
 
-<p>Now we're almost ready to invoke the selection method:</p>
+<p>
+  Now we're almost ready to invoke the selection method:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -1665,7 +1731,9 @@
   -->
 </listing>
 
-<p>... the only thing we're missing is the PRNG:</p>
+<p>
+  ... the only thing we're missing is the PRNG:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -1703,7 +1771,9 @@
 
   <ol>
     <li>
-      <p>By accepting an <b>owned</b> PRNG via the constructor:</p>
+      <p>
+        By accepting an <b>owned</b> PRNG via the constructor:
+      </p>
 
       <listing lang="rust">
         <!--
@@ -1723,7 +1793,9 @@
       </listing>
     </li>
     <li>
-      <p>By accepting a <b>borrowed</b> PRNG via the constructor:</p>
+      <p>
+        By accepting a <b>borrowed</b> PRNG via the constructor:
+      </p>
 
       <listing lang="rust">
         <!--
@@ -1819,7 +1891,9 @@
     -->
   </listing>
 
-  <p>... but it also prevents otherwise valid use cases such as this one:</p>
+  <p>
+    ... but it also prevents otherwise valid use cases such as this one:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -1858,9 +1932,9 @@
   </ul>
 </note>
 
-<header id="coding-crossover">
+<h2 id="coding-crossover">
   Coding: Crossover
-</header>
+</h2>
 
 <p>
   Now that we have chosen two parent-individuals, it's time for the
@@ -1906,7 +1980,9 @@
   <img src="{{ assets }}/coding-crossover-3.svg" />
 </figure>
 
-<p>... sometimes it's more convenient to have a string:</p>
+<p>
+  ... sometimes it's more convenient to have a string:
+</p>
 
 <figure class="sketch w-50">
   <img src="{{ assets }}/coding-crossover-4.svg" />
@@ -2228,7 +2304,9 @@
   </p>
 </note>
 
-<p>As I said a few minutes ago:</p>
+<p>
+  As I said a few minutes ago:
+</p>
 
 <blockquote>
   <p>
@@ -2237,7 +2315,9 @@
   </p>
 </blockquote>
 
-<p>... which brings us to:</p>
+<p>
+  ... which brings us to:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2309,7 +2389,9 @@
   <img src="{{ assets }}/coding-crossover-6.svg" />
 </figure>
 
-<p>Same as before, let's start with a trait:</p>
+<p>
+  Same as before, let's start with a trait:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2328,7 +2410,9 @@
   -->
 </listing>
 
-<p>... and a rudimentary implementation:</p>
+<p>
+  ... and a rudimentary implementation:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2370,7 +2454,9 @@
   rightfully so!
 </p>
 
-<p>First, let's add an assertion:</p>
+<p>
+  First, let's add an assertion:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2417,7 +2503,9 @@
   -->
 </listing>
 
-<p>How neat!</p>
+<p>
+  How neat!
+</p>
 
 <p>
   Notice how by implementing <code>.iter()</code> and <code>FromIterator</code>
@@ -2495,7 +2583,9 @@
   -->
 </listing>
 
-<p>... and then compare how much <code>child</code> differs from each of them:</p>
+<p>
+  ... and then compare how much <code>child</code> differs from each of them:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2526,7 +2616,9 @@
   -->
 </listing>
 
-<p><code>cargo test</code> says:</p>
+<p>
+  <code>cargo test</code> says:
+</p>
 
 <listing lang="text">
   <!--
@@ -2536,7 +2628,9 @@
   -->
 </listing>
 
-<p>... so let's adjust the test:</p>
+<p>
+  ... so let's adjust the test:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2548,7 +2642,9 @@
   -->
 </listing>
 
-<p>Another <code>cargo test</code> will fail on the second assertion:</p>
+<p>
+  Another <code>cargo test</code> will fail on the second assertion:
+</p>
 
 <listing lang="text">
   <!--
@@ -2558,7 +2654,9 @@
   -->
 </listing>
 
-<p>... so:</p>
+<p>
+  ... so:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2570,7 +2668,9 @@
   -->
 </listing>
 
-<p>To recall, what we've got is:</p>
+<p>
+  To recall, what we've got is:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2699,7 +2799,9 @@
   </p>
 </note>
 
-<p>... and then we can call it:</p>
+<p>
+  ... and then we can call it:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -2733,9 +2835,9 @@
   -->
 </listing>
 
-<header id="coding-mutation">
+<h2 id="coding-mutation">
   Coding: Mutation
-</header>
+</h2>
 
 <p>
   Now that we have a semi-new chromosome at hand, it's time to introduce some
@@ -2931,7 +3033,9 @@
   -->
 </listing>
 
-<p>... and with it, the rest is as easy as:</p>
+<p>
+  ... and with it, the rest is as easy as:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/Cargo.toml
@@ -3043,7 +3147,9 @@
   -->
 </listing>
 
-<p>... and then:</p>
+<p>
+  ... and then:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -3077,12 +3183,12 @@
   -->
 </listing>
 
-<header id="coding-creating-individuals">
+<h2 id="coding-creating-individuals">
   Coding: Creating individuals
-</header>
+</h2>
 
 <p>
-  Out <code>child</code> is of type <code>Chromosome</code>, while the vector we
+  Our <code>child</code> is of type <code>Chromosome</code>, while the vector we
   return is <code>Vec&lt;I&gt;</code> - so the last thing we're missing is the
   ability of converting a genotype back into an individual:
 </p>
@@ -3154,9 +3260,9 @@
   -->
 </listing>
 
-<header id="the-test">
+<h2 id="the-test">
   The Test
-</header>
+</h2>
 
 <p>
   Having <code>.evolve()</code> ready, the time has come for perhaps the most
@@ -3365,7 +3471,9 @@ enterprisey</a> for me)
   -->
 </listing>
 
-<p>... and now:</p>
+<p>
+  ... and now:
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -3455,7 +3563,9 @@ enterprisey</a> for me)
   -->
 </listing>
 
-<p>Yes...​ ha ha ha...​ <b><u>yes</u></b>... we've got...​ numbers?</p>
+<p>
+  Yes...​ ha ha ha...​ <b><u>yes</u></b>... we've got...​ numbers?
+</p>
 
 <p>
   What's certain is that we've got <i>some</i> output - but how do we know those
@@ -3463,7 +3573,9 @@ enterprisey</a> for me)
   started with?
 </p>
 
-<p>Well, we can compare their fitness scores!</p>
+<p>
+  Well, we can compare their fitness scores!
+</p>
 
 <listing-title>
   libs/genetic-algorithm/src/lib.rs
@@ -3540,11 +3652,13 @@ enterprisey</a> for me)
   -->
 </listing>
 
-<p>... and see how they affect the output population.</p>
+<p>
+  ... and see how they affect the output population.
+</p>
 
-<header id="closing-thoughts">
+<h2 id="closing-thoughts">
   Closing thoughts
-</header>
+</h2>
 
 <p>
   So far, learning <i>whoa so much</i> on the way, we've implemented two

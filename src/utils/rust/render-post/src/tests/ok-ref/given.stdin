@@ -9,8 +9,14 @@
 <a ref="a">a.com</a>
 <a ref="b">b.com</a>
 
-<ref>http://c.com</ref>
+<ref>
+  http://c.com
+</ref>
+
 <a ref>c.com</a>
 
-<ref>http://d.com</ref>
+<ref>
+  http://d.com
+</ref>
+
 <a ref>d.com</a>

@@ -1,0 +1,95 @@
+Elem(
+    Spanned {
+        inner: Elem {
+            name: Spanned {
+                inner: "h2",
+                span: Span {
+                    beg: 1,
+                    end: 2,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            beg: 4,
+                            end: 5,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "hello-world",
+                            span: Span {
+                                beg: 7,
+                                end: 19,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Hello, ",
+                        span: Span {
+                            beg: 21,
+                            end: 30,
+                        },
+                    },
+                ),
+                Elem(
+                    Spanned {
+                        inner: Elem {
+                            name: Spanned {
+                                inner: "i",
+                                span: Span {
+                                    beg: 32,
+                                    end: 32,
+                                },
+                            },
+                            attrs: [],
+                            children: [
+                                Text(
+                                    Spanned {
+                                        inner: "World",
+                                        span: Span {
+                                            beg: 34,
+                                            end: 38,
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        span: Span {
+                            beg: 31,
+                            end: 42,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "!\n",
+                        span: Span {
+                            beg: 43,
+                            end: 44,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            beg: 0,
+            end: 49,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            beg: 50,
+            end: 50,
+        },
+    },
+)

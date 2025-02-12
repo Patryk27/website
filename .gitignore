@@ -1,2 +1,3 @@
-result
-target
+/result
+/src/utils/rust/target
+/src/utils/rust/**/*.new

@@ -14,7 +14,9 @@
   </figcaption>
 </figure>
 
-<p>In today's, final episode:</p>
+<p>
+  In today's, final episode:
+</p>
 
 <style>
   ._intro-card {
@@ -118,9 +120,9 @@
   </p>
 </note>
 
-<header id="plan">
+<h2 id="plan">
   Plan
-</header>
+</h2>
 
 <p>
   We've got <code>struct NeuralNetwork</code> and
@@ -153,7 +155,9 @@
   </i>
 </p>
 
-<p>If you're into diagrams, what we're aiming for is:</p>
+<p>
+  If you're into diagrams, what we're aiming for is:
+</p>
 
 <figure class="sketch w-90">
   <img src="{{ assets }}/9af5a3d9-83f9-47eb-b191-7ee523846ecf.svg" />
@@ -169,11 +173,13 @@
   not into that, feel free to skip those yellow boxes.
 </p>
 
-<p>Ready? Off we go!</p>
+<p>
+  Ready? Off we go!
+</p>
 
-<header id="prerequisites">
+<h2 id="prerequisites">
   Prerequisites
-</header>
+</h2>
 
 <p>
   For a <span class="text-spaced">fearless</span> WebAssembly experience, we'll
@@ -227,12 +233,14 @@
     -->
   </listing>
 
-  <p>... and executing <code>nix-shell</code>.</p>
+  <p>
+    ... and executing <code>nix-shell</code>.
+  </p>
 </note>
 
-<header id="hello-wasm-rust">
+<h2 id="hello-wasm-rust">
   Hello, WebAssembly World! (the Rust part)
-</header>
+</h2>
 
 <p>
   Let's begin by creating a new crate - as in the diagram, it will be
@@ -314,7 +322,9 @@
         </li>
       </ul>
 
-      <p>Where:</p>
+      <p>
+        Where:
+      </p>
 
       <ul>
         <li>
@@ -411,7 +421,9 @@
   </li>
 </ol>
 
-<p>When it comes to adjustments, that's all - now it's Rust-time!</p>
+<p>
+  When it comes to adjustments, that's all - now it's Rust-time!
+</p>
 
 <p>
   Since creating the simulation will take some time, and it'd be nice to see
@@ -550,7 +562,9 @@
   -->
 </listing>
 
-<p>To ground ourselves, let's take a brief look at what we've got:</p>
+<p>
+  To ground ourselves, let's take a brief look at what we've got:
+</p>
 
 <ul>
   <li>
@@ -661,7 +675,9 @@
     </listing>
 
     <note>
-      <p>Wait - if our Rust code does next to nothing:</p>
+      <p>
+        Wait - if our Rust code does next to nothing:
+      </p>
 
       <listing-title>
         libs/simulation-wasm/src/lib.rs
@@ -675,7 +691,9 @@
         -->
       </listing>
 
-      <p>... then why does that piece look so complex?</p>
+      <p>
+        ... then why does that piece look so complex?
+      </p>
 
       <p>
         Well, in short, it's because WebAssembly
@@ -683,7 +701,9 @@
         transparently hacks its way around it.
       </p>
 
-      <p>But first, the terminology:</p>
+      <p>
+        But first, the terminology:
+      </p>
 
       <ul>
         <li>
@@ -733,7 +753,9 @@
             <b>serialize</b> it.
           </p>
 
-          <p>For instance, a type such as this one:</p>
+          <p>
+            For instance, a type such as this one:
+          </p>
 
           <listing lang="rust">
             <!--
@@ -839,7 +861,9 @@
         without us having to lift a single finger.
       </p>
 
-      <p>Pretty neat!</p>
+      <p>
+        Pretty neat!
+      </p>
 
       <p>
         <ref>
@@ -861,17 +885,21 @@
   artifacts again.
 </p>
 
-<p>So, now that our crate is compiled, &lt;deep-breath /&gt;,</p>
+<p>
+  So, now that our crate is compiled, &lt;deep-breath /&gt;,
+</p>
 
 <p class="text-center">
   <b>how do we run it?</b>
 </p>
 
-<header id="hello-wasm-js">
+<h2 id="hello-wasm-js">
   Hello, WebAssembly World! (the JavaScript part)
-</header>
+</h2>
 
-<p>Frontend time!</p>
+<p>
+  Frontend time!
+</p>
 
 <p>
   To start our frontend application, let's go back to the project's root
@@ -921,9 +949,13 @@
   -->
 </listing>
 
-<p>... let's briefly go through them.</p>
+<p>
+  ... let's briefly go through them.
+</p>
 
-<h3>Knowing your enemy</h3>
+<h3>
+  Knowing your enemy
+</h3>
 
 <p>
   <i>Le point d'entrée</i>, similar to Rust's <code>main.rs</code>, here is
@@ -950,11 +982,15 @@
   -->
 </listing>
 
-<p>A quick primer on HTML:</p>
+<p>
+  A quick primer on HTML:
+</p>
 
 <ul>
   <li>
-    <p><code>&lt;something&gt;</code> is called a <b>tag</b>,</p>
+    <p>
+      <code>&lt;something&gt;</code> is called a <b>tag</b>,
+    </p>
   </li>
   <li>
     <p>
@@ -963,10 +999,14 @@
     </p>
   </li>
   <li>
-    <p>a tag might contain <b>attributes</b>: <code>key="value"</code>,</p>
+    <p>
+      a tag might contain <b>attributes</b>: <code>key="value"</code>,
+    </p>
   </li>
   <li>
-    <p>a tag might contain <b>children</b> (i.e. more tags inside of it).</p>
+    <p>
+      a tag might contain <b>children</b> (i.e. more tags inside of it).
+    </p>
   </li>
 </ul>
 
@@ -990,13 +1030,19 @@
   -->
 </listing>
 
-<p>... which browser analyzes, trying to make something nice out of it.</p>
+<p>
+  ... which browser analyzes, trying to make something nice out of it.
+</p>
 
-<p>Each tag has a certain meaning:</p>
+<p>
+  Each tag has a certain meaning:
+</p>
 
 <ul>
   <li>
-    <p><code>html</code> wraps the entire document,</p>
+    <p>
+      <code>html</code> wraps the entire document,
+    </p>
   </li>
   <li>
     <p>
@@ -1005,10 +1051,14 @@
     </p>
   </li>
   <li>
-    <p><code>body</code> contains document's contents,</p>
+    <p>
+      <code>body</code> contains document's contents,
+    </p>
   </li>
   <li>
-    <p><code>script</code> loads and executes a JavaScript file,</p>
+    <p>
+      <code>script</code> loads and executes a JavaScript file,
+    </p>
   </li>
   <li>
     <p>
@@ -1016,7 +1066,9 @@
     </p>
   </li>
   <li>
-    <p><code>b</code> (ditto) prints text in bold:</p>
+    <p>
+      <code>b</code> (ditto) prints text in bold:
+    </p>
 
     <listing lang="html">
       <!--
@@ -1035,7 +1087,7 @@
 <p>
   Armed with all this knowledge, we can see that our page doesn't actually do
   that much - the most important thing is that it loads
-<code>bootstrap.js</code>:
+  <code>bootstrap.js</code>:
 </p>
 
 <listing-title>
@@ -1098,7 +1150,9 @@
   -->
 </listing>
 
-<p>When it comes to the application's code itself, that's all.</p>
+<p>
+  When it comes to the application's code itself, that's all.
+</p>
 
 <p>
   We can also spot one more file, called <code>webpack.config.js</code> - while
@@ -1175,7 +1229,9 @@
   </p>
 </note>
 
-<h3>What To Do After You Know Your Enemy</h3>
+<h3>
+  What To Do After You Know Your Enemy
+</h3>
 
 <p>
   Having exchanged pleasantries with the filesystem, let's get back to the
@@ -1206,7 +1262,9 @@
     </listing>
   </li>
   <li>
-    <p>After that, we have to let <code>npm</code> know about that change:</p>
+    <p>
+      After that, we have to let <code>npm</code> know about that change:
+    </p>
 
     <listing lang="shell">
       <!--
@@ -1216,7 +1274,9 @@
     </listing>
 
     <note>
-      <p>This command might print a few scary-looking messages:</p>
+      <p>
+        This command might print a few scary-looking messages:
+      </p>
 
       <listing lang="text">
         <!--
@@ -1238,7 +1298,9 @@
     </note>
   </li>
   <li>
-    <p>Now it's time for <code>index.js</code>:</p>
+    <p>
+      Now it's time for <code>index.js</code>:
+    </p>
 
     <listing-title>
       www/index.js
@@ -1313,7 +1375,9 @@
   <img src="{{ assets }}/42ca83b3-8949-4b70-aa72-3b1b1a8bed17.png" />
 </figure>
 
-<p class="text-center">yay 🎉 yay</p>
+<p class="text-center">
+  yay 🎉 yay
+</p>
 
 <note>
   <p>
@@ -1333,11 +1397,13 @@
   </p>
 </note>
 
-<header id="hello-wasm-summary">
+<h2 id="hello-wasm-summary">
   Hello, WebAssembly World! (the summary part)
-</header>
+</h2>
 
-<p>So...​ what is all this?</p>
+<p>
+  So...​ what is all this?
+</p>
 
 <p>
   Granted, displaying an alert message doesn't exactly qualify us for Da Nobel
@@ -1351,9 +1417,9 @@
   enough to have something to send to JavaScript.
 </p>
 
-<header id="hello-simulation">
+<h2 id="hello-simulation">
   Hello, Simulation!
-</header>
+</h2>
 
 <p>
   As before, to keep the boundaries clean & tidy, let's start by creating a new
@@ -1391,7 +1457,9 @@
   <img src="/posts/learning-to-fly-pt1/assets/design-4.svg" />
 </figure>
 
-<p>What do we see there? Hmm, well - certainly a <b>world</b>:</p>
+<p>
+  What do we see there? Hmm, well - certainly a <b>world</b>:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -1435,7 +1503,9 @@
   -->
 </listing>
 
-<p>... which are located at some <b>coordinates</b>:</p>
+<p>
+  ... which are located at some <b>coordinates</b>:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -1485,7 +1555,9 @@
   </p>
 </note>
 
-<p>Our world is two-dimensional, which sets us at:</p>
+<p>
+  Our world is two-dimensional, which sets us at:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -1513,7 +1585,9 @@
   -->
 </listing>
 
-<p>Moreover, animals are of certain <b>rotati</b>...​</p>
+<p>
+  Moreover, animals are of certain <b>rotati</b>...​
+</p>
 
 <p class="text-center">
   wait - did you hear that?
@@ -1600,17 +1674,25 @@
 </p>
 
 <blockquote>
-  <p>nalgebra is a linear algebra library written for Rust targeting:</p>
+  <p>
+    nalgebra is a linear algebra library written for Rust targeting:
+  </p>
 
   <ul>
     <li>
-      <p>General-purpose linear algebra (still lacks a lot of features...)</p>
+      <p>
+        General-purpose linear algebra (still lacks a lot of features...)
+      </p>
     </li>
     <li>
-      <p>Real-time computer graphics.</p>
+      <p>
+        Real-time computer graphics.
+      </p>
     </li>
     <li>
-      <p>Real-time computer physics.</p>
+      <p>
+        Real-time computer physics.
+      </p>
     </li>
   </ul>
 </blockquote>
@@ -1655,7 +1737,9 @@
   -->
 </listing>
 
-<p>... and then our code from a moment ago becomes:</p>
+<p>
+  ... and then our code from a moment ago becomes:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -1906,30 +1990,44 @@
   -->
 </listing>
 
-<p>Nice?</p>
+<p>
+  Nice?
+</p>
 
 <ul>
   <li>
-    <p>world? ✅ exists</p>
+    <p>
+      world? ✅ exists
+    </p>
   </li>
   <li>
-    <p>animals? ✅ exist</p>
+    <p>
+      animals? ✅ exist
+    </p>
   </li>
   <li>
-    <p>foods? ✅ exist</p>
+    <p>
+      foods? ✅ exist
+    </p>
   </li>
 </ul>
 
-<p>Nice.</p>
+<p>
+  Nice.
+</p>
 
 <p>
   There's a lot of code still missing, but at this point we've got enough to get
   ✨ something ✨ displayed on the screen via JavaScript.
 </p>
 
-<h3>All About That JS</h3>
+<h3>
+  All About That JS
+</h3>
 
-<p>Now, you might be wondering:</p>
+<p>
+  Now, you might be wondering:
+</p>
 
 <blockquote>
   <p>
@@ -1938,9 +2036,13 @@
   </p>
 </blockquote>
 
-<p>... to which I'll reply:</p>
+<p>
+  ... to which I'll reply:
+</p>
 
-<p>Excellent question! &lt;high-fives himself /&gt;</p>
+<p>
+  Excellent question! &lt;high-fives himself /&gt;
+</p>
 
 <p>
   <ref>
@@ -2094,7 +2196,9 @@
   -->
 </listing>
 
-<p>Let's try rebuilding now:</p>
+<p>
+  Let's try rebuilding now:
+</p>
 
 <listing-title>
   $ wasm-pack build
@@ -2126,7 +2230,9 @@
   -->
 </listing>
 
-<p>On the JavaScript's side, we can now do:</p>
+<p>
+  On the JavaScript's side, we can now do:
+</p>
 
 <listing-title>
   www/index.js
@@ -2144,7 +2250,9 @@
   -->
 </listing>
 
-<p>Great, we've got the simulation engine up and running!</p>
+<p>
+  Great, we've got the simulation engine up and running!
+</p>
 
 <p>
   However it's a pretty quiet engine, that one, because currently it just
@@ -2191,7 +2299,9 @@
   -->
 </listing>
 
-<p>... and two conversion methods:</p>
+<p>
+  ... and two conversion methods:
+</p>
 
 <listing-title>
   libs/simulation-wasm/src/lib.rs
@@ -2227,7 +2337,9 @@
   -->
 </listing>
 
-<p>With all that in our editor, we can now add:</p>
+<p>
+  With all that in our editor, we can now add:
+</p>
 
 <listing-title>
   libs/simulation-wasm/src/lib.rs
@@ -2250,7 +2362,9 @@
   -->
 </listing>
 
-<p>... aaaand</p>
+<p>
+  ... aaaand
+</p>
 
 <p class="text-center">
   oh my
@@ -2331,7 +2445,9 @@
   -->
 </listing>
 
-<p>Call time!</p>
+<p>
+  Call time!
+</p>
 
 <listing-title>
   www/index.js
@@ -2366,7 +2482,9 @@
   <img src="{{ assets }}/e24b0b5a-9e3b-4e14-a13e-f0529b35a05c.png" />
 </figure>
 
-<p>What can we do with this console? We can print stuff to it:</p>
+<p>
+  What can we do with this console? We can print stuff to it:
+</p>
 
 <listing-title>
   www/index.js
@@ -2405,9 +2523,9 @@
   Nice - now that we know the positions of animals, it means we can draw them!
 </p>
 
-<header id="hello-graphics">
+<h2 id="hello-graphics">
   Hello, Graphics!
-</header>
+</h2>
 
 <p>
   <ref>
@@ -2483,7 +2601,9 @@
   -->
 </listing>
 
-<p>So far, so good!</p>
+<p>
+  So far, so good!
+</p>
 
 <note>
   <p>
@@ -2554,7 +2674,9 @@
   <img src="{{ assets }}/25e0b526-015d-4db5-8c1e-5516ef684b84.png" />
 </figure>
 
-<p>Ah, Mondrian would be so proud - I tell you: we're going places!</p>
+<p>
+  Ah, Mondrian would be so proud - I tell you: we're going places!
+</p>
 
 <note>
   <p>
@@ -2566,7 +2688,9 @@
   </figure>
 </note>
 
-<h3>It’s My Data</h3>
+<h3>
+  It’s My Data
+</h3>
 
 <p>
   Now that we know how to draw rectangles, let's bring our data back into the
@@ -2593,7 +2717,9 @@
   -->
 </listing>
 
-<p>... and:</p>
+<p>
+  ... and:
+</p>
 
 <figure class="sketch w-10">
   <img src="{{ assets }}/eb853ead-5d7e-4c0d-9e6a-ca26bb515a10.png" />
@@ -2664,7 +2790,9 @@
   -->
 </listing>
 
-<p>... which gets us:</p>
+<p>
+  ... which gets us:
+</p>
 
 <figure class="sketch w-40">
   <img src="{{ assets }}/2e91178c-5441-4f66-9fbf-001d76ad752d.png" />
@@ -2761,7 +2889,9 @@
     -->
   </listing>
 
-  <p>As promised, this gets us a sharp image:</p>
+  <p>
+    As promised, this gets us a sharp image:
+  </p>
 
   <figure class="sketch w-40">
     <img src="{{ assets }}/4248d354-2b4c-420b-87c1-c1d249cdff84.png" />
@@ -2773,14 +2903,18 @@
   fashionable</b> anymore!
 </p>
 
-<p>Apparently ▼ triangles ▲ are all the rage, so let's try drawing one.</p>
+<p>
+  Apparently ▼ triangles ▲ are all the rage, so let's try drawing one.
+</p>
 
 <p>
   Somewhat unluckily, JavaScript doesn't provide any method for printing
   triangles, requiring us to draw them manually vertex-by-vertex instead.
 </p>
 
-<p>To get a grip of how it works, let's start with a hard-coded example:</p>
+<p>
+  To get a grip of how it works, let's start with a hard-coded example:
+</p>
 
 <listing-title>
   www/index.js
@@ -2817,7 +2951,9 @@
   -->
 </listing>
 
-<p>... aaaand, what a beauty!</p>
+<p>
+  ... aaaand, what a beauty!
+</p>
 
 <figure class="sketch w-30">
   <img src="{{ assets }}/bc321864-81b2-4f69-90c0-57edda4ae04f.png" />
@@ -2851,7 +2987,9 @@
   -->
 </listing>
 
-<p>... or, a bit more idiomatic:</p>
+<p>
+  ... or, a bit more idiomatic:
+</p>
 
 <listing-title>
   www/index.js
@@ -2902,7 +3040,9 @@
   </listing>
 </note>
 
-<p>Equipped with <code>.drawTriangle()</code>, we can now do:</p>
+<p>
+  Equipped with <code>.drawTriangle()</code>, we can now do:
+</p>
 
 <listing-title>
   www/index.html
@@ -2945,7 +3085,9 @@
   </p>
 </note>
 
-<p>Nice 😎</p>
+<p>
+  Nice 😎
+</p>
 
 <p style="display: block">
   <span style="display: inline-block">
@@ -2957,7 +3099,9 @@
   </span>
 </p>
 
-<h3>Vertices Go Brr</h3>
+<h3>
+  Vertices Go Brr
+</h3>
 
 <p>
   We already have a field called <code>rotation</code> inside
@@ -2981,7 +3125,9 @@
   -->
 </listing>
 
-<p>... so all we've gotta do is to pass it into JavaScript:</p>
+<p>
+  ... so all we've gotta do is to pass it into JavaScript:
+</p>
 
 <listing-title>
   libs/simulation-wasm/src/lib.rs
@@ -3013,7 +3159,9 @@
   -->
 </listing>
 
-<p>... now <code>wasm-pack build</code>:</p>
+<p>
+  ... now <code>wasm-pack build</code>:
+</p>
 
 <listing-title>
   $ wasm-pack build
@@ -3027,7 +3175,9 @@
   -->
 </listing>
 
-<p>... and we're back to JavaScript.</p>
+<p>
+  ... and we're back to JavaScript.
+</p>
 
 <p>
   Since the rotation will be different for each triangle, we'll need to have
@@ -3051,15 +3201,21 @@
   -->
 </listing>
 
-<p>Intuitively, what we're looking for is:</p>
+<p>
+  Intuitively, what we're looking for is:
+</p>
 
 <figure class="sketch w-80">
   <img src="{{ assets }}/d50a7a76-abc0-415c-b43c-dff76f18b242.svg" />
 </figure>
 
-<p>... but generalized for any angle.</p>
+<p>
+  ... but generalized for any angle.
+</p>
 
-<h3>Vertices Go Brrr (using math)</h3>
+<h3>
+  Vertices Go Brrr (using math)
+</h3>
 
 <p>
   Let's bring back our triangle - this time, together with its
@@ -3120,7 +3276,9 @@
   </p>
 </note>
 
-<p>Speaking in code-terms - if what we have currently is:</p>
+<p>
+  Speaking in code-terms - if what we have currently is:
+</p>
 
 <listing lang="javascript">
   <!--
@@ -3163,32 +3321,48 @@
 
 <ul>
   <li>
-    <p>0° ⇒ <code>rotation = 0</code></p>
+    <p>
+      0° ⇒ <code>rotation = 0</code>
+    </p>
   </li>
   <li>
-    <p>180° ⇒ <code>rotation = PI</code></p>
+    <p>
+      180° ⇒ <code>rotation = PI</code>
+    </p>
   </li>
   <li>
-    <p>360° ⇒ <code>rotation = 2 * PI</code></p>
+    <p>
+      360° ⇒ <code>rotation = 2 * PI</code>
+    </p>
   </li>
   <li>
-    <p>90° ⇒ 180° / 2 ⇒ <code>rotation = PI / 2</code></p>
+    <p>
+      90° ⇒ 180° / 2 ⇒ <code>rotation = PI / 2</code>
+    </p>
   </li>
   <li>
-    <p>45° ⇒ 180° / 4 ⇒ <code>rotation = PI / 4</code></p>
+    <p>
+      45° ⇒ 180° / 4 ⇒ <code>rotation = PI / 4</code>
+    </p>
   </li>
   <li>
-    <p>and so on.</p>
+    <p>
+      and so on.
+    </p>
   </li>
 </ul>
 
-<p>Okie - one vertex done:</p>
+<p>
+  Okie - one vertex done:
+</p>
 
 <figure class="sketch w-40">
   <img src="{{ assets }}/e0fa1f63-964b-49ba-9e32-4eab5d249a13.svg" />
 </figure>
 
-<p>... two more to go!</p>
+<p>
+  ... two more to go!
+</p>
 
 <p>
   Since the entire circle takes 360° and we've got three vertices to draw, then
@@ -3196,7 +3370,9 @@
   lays on 0°, the second vertex is going to be located at 120°.
 </p>
 
-<p>A quick conversion to radians, using proportions:</p>
+<p>
+  A quick conversion to radians, using proportions:
+</p>
 
 <listing lang="text">
   <!--
@@ -3215,7 +3391,9 @@
   -->
 </listing>
 
-<p>... gives us:</p>
+<p>
+  ... gives us:
+</p>
 
 <listing lang="javascript">
   <!--
@@ -3235,7 +3413,9 @@
   <img src="{{ assets }}/bce2d60a-cd7e-4666-84f3-76ef6dbb043a.svg" />
 </figure>
 
-<p>Similarly, for the third vertex:</p>
+<p>
+  Similarly, for the third vertex:
+</p>
 
 <listing lang="text">
   <!--
@@ -3248,7 +3428,9 @@
   -->
 </listing>
 
-<p>... giving us:</p>
+<p>
+  ... giving us:
+</p>
 
 <listing lang="javascript">
   <!--
@@ -3306,7 +3488,9 @@
   <img src="{{ assets }}/13650115-7ac4-47d2-a1d5-bcf1c3c7b370.svg" />
 </figure>
 
-<p>... so:</p>
+<p>
+  ... so:
+</p>
 
 <listing lang="javascript">
   <!--
@@ -3324,7 +3508,9 @@
   -->
 </listing>
 
-<p>In all its glory, our code is:</p>
+<p>
+  In all its glory, our code is:
+</p>
 
 <listing-title>
   www/index.js
@@ -3365,7 +3551,9 @@
   -->
 </listing>
 
-<p>Does it work? Apparently:</p>
+<p>
+  Does it work? Apparently:
+</p>
 
 <figure class="sketch w-20">
   <img src="{{ assets }}/7c0a009c-202c-4666-ac69-e6c03cf75bae.png" />
@@ -3407,13 +3595,17 @@
   -->
 </listing>
 
-<p>There, better:</p>
+<p>
+  There, better:
+</p>
 
 <figure class="sketch w-30">
   <img src="{{ assets }}/e53c3146-b334-4b4d-8492-09b6c37b4293.png" />
 </figure>
 
-<h3>Animals Go Brrr</h3>
+<h3>
+  Animals Go Brrr
+</h3>
 
 <p>
   Now that we are able to render rotated triangles, we can adjust our code from
@@ -3439,17 +3631,21 @@
   -->
 </listing>
 
-<p>... which gives us:</p>
+<p>
+  ... which gives us:
+</p>
 
 <figure class="sketch w-60">
   <img src="{{ assets }}/e5597f34-11e5-48cc-b76c-329f0ee543d6.png" />
 </figure>
 
-<p>Neat; high five, <span class="text-rainbow">pal</span> - we've earned it!</p>
+<p>
+  Neat; high five, <span class="text-rainbow">pal</span> - we've earned it!
+</p>
 
-<header id="stepping-stones">
+<h2 id="stepping-stones">
   step()-ping stones
-</header>
+</h2>
 
 <p>
   Stationary triangles are cool - obviously! -- but <b>moving</b> triangles are
@@ -3486,7 +3682,9 @@
   -->
 </listing>
 
-<p>One <code>cargo check</code> after:</p>
+<p>
+  One <code>cargo check</code> after:
+</p>
 
 <listing-title>
   $ cargo check
@@ -3531,11 +3729,15 @@
   -->
 </listing>
 
-<p>Bingo!</p>
+<p>
+  Bingo!
+</p>
 
 <note>
   <blockquote>
-    <p>Wait, wait - why <code>::new(0.0, animal.speed)</code>?</p>
+    <p>
+      Wait, wait - why <code>::new(0.0, animal.speed)</code>?
+    </p>
   </blockquote>
 
   <p>
@@ -3589,7 +3791,9 @@
   -->
 </listing>
 
-<p>... and compile:</p>
+<p>
+  ... and compile:
+</p>
 
 <listing-title>
   $ wasm-pack build
@@ -3687,17 +3891,21 @@
   -->
 </listing>
 
-<p>And voilà:</p>
+<p>
+  And voilà:
+</p>
 
 <figure>
-  <video src="{{ assets }}/4828f46c-2f2a-44a9-9d64-56ef61aa692e.mp4" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/4828f46c-2f2a-44a9-9d64-56ef61aa692e.mp4" />
 </figure>
 
-<p>... or rather voil-<i>whaaat</i> - why do they disappear after a while?</p>
+<p>
+  ... or rather voil-<i>whaaat</i> - why do they disappear after a while?
+</p>
 
-<p>Let's go back to <code>lib-simulation</code> and investigate:</p>
+<p>
+  Let's go back to <code>lib-simulation</code> and investigate:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -3727,7 +3935,9 @@
   but it'd be rendered outside the canvas; as we've just seen.
 </p>
 
-<p>Let's fix it:</p>
+<p>
+  Let's fix it:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -3782,26 +3992,30 @@
   </li>
 </ul>
 
-<p>With this fix, let's <code>$ wasm-pack build</code> - and:</p>
+<p>
+  With this fix, let's <code>$ wasm-pack build</code> - and:
+</p>
 
 <figure>
-  <video src="{{ assets }}/0653f996-eb04-4c17-a1ff-06733b46f30c.mp4" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/0653f996-eb04-4c17-a1ff-06733b46f30c.mp4" />
 </figure>
 
-<p>Woohoo!</p>
+<p>
+  Woohoo!
+</p>
 
-<header id="ur-somebody-else">
+<h2 id="ur-somebody-else">
   You’re Somebody Else (when you’re hungry)
-</header>
+</h2>
 
 <p>
   All said, birds constitute for only half of our ecosystem - we've also got
   food.
 </p>
 
-<h3>Rendering food</h3>
+<h3>
+  Rendering food
+</h3>
 
 <p>
   Fortunately, because we've already written lots of the code, rendering food
@@ -3913,7 +4127,9 @@
   -->
 </listing>
 
-<p>Believe me or not, it's enough!</p>
+<p>
+  Believe me or not, it's enough!
+</p>
 
 <listing-title>
   $ wasm-pack build
@@ -3928,12 +4144,12 @@
 </listing>
 
 <figure>
-  <video src="{{ assets }}/87172540-2d9b-4f8d-a4ff-1e0a456bfffe.mp4" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/87172540-2d9b-4f8d-a4ff-1e0a456bfffe.mp4" />
 </figure>
 
-<h3>Pimpin'-up</h3>
+<h3>
+  Pimpin'-up
+</h3>
 
 <p>
   Our math checks out, but our simulation's appearance is...​ daunting - let's try
@@ -3994,22 +4210,26 @@
   -->
 </listing>
 
-<p>There, better:</p>
+<p>
+  There, better:
+</p>
 
 <figure>
-  <video controls="" src="{{ assets }}/cac427f6-316d-4d90-80bd-609d1511e885.mp4">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/cac427f6-316d-4d90-80bd-609d1511e885.mp4" />
 </figure>
 
-<h3>Simulating food</h3>
+<h3>
+  Simulating food
+</h3>
 
 <p>
   At the moment, when our birdies collide with food, nothing happens - time to
   improve it!
 </p>
 
-<p>First, let's refactor <code>step()</code> a bit:</p>
+<p>
+  First, let's refactor <code>step()</code> a bit:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -4040,7 +4260,9 @@
   -->
 </listing>
 
-<p>Now:</p>
+<p>
+  Now:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -4069,7 +4291,9 @@
   -->
 </listing>
 
-<p>In plain English, what we want to achieve is:</p>
+<p>
+  In plain English, what we want to achieve is:
+</p>
 
 <listing lang="rust">
   <!--
@@ -4103,13 +4327,17 @@
   so whaddya say we try something simpler, hang tight:
 </p>
 
-<p class="text-center">What if we assumed our birds are <b>circles</b>?</p>
+<p class="text-center">
+  What if we assumed our birds are <b>circles</b>?
+</p>
 
 <p>
   You know, we can keep drawing them as triangles - it's only about the physics.
 </p>
 
-<p>Agreed? <i>(just kidding, I know you can't reply here.)</i></p>
+<p>
+  Agreed? <i>(just kidding, I know you can't reply here.)</i>
+</p>
 
 <p>
   Ok, so circle-circle hit testing relies on checking whether the distance
@@ -4134,7 +4362,9 @@
   </figcaption>
 </figure>
 
-<p>In practice, this reduces to a single <code>if</code>:</p>
+<p>
+  In practice, this reduces to a single <code>if</code>:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -4198,17 +4428,17 @@
   drawing.
 </p>
 
-<p>Overall, does it work? Oh my!</p>
+<p>
+  Overall, does it work? Oh my!
+</p>
 
 <figure>
-  <video src="{{ assets }}/64cb25d6-7c9f-43a8-b7ea-e022410a962a.mp4" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/64cb25d6-7c9f-43a8-b7ea-e022410a962a.mp4" />
 </figure>
 
-<header id="birdie-and-the-brain">
+<h2 id="birdie-and-the-brain">
   Birdie and the Brain
-</header>
+</h2>
 
 <p>
   Our birds can fly, but they can't interact with their environment yet - in
@@ -4217,14 +4447,18 @@
   fly.
 </p>
 
-<h3>Refactoring</h3>
+<h3>
+  Refactoring
+</h3>
 
 <p>
   There's a lot of code inside <code>libs/simulation/src/lib.rs</code> - before
   we go further, let's take a moment to refactor it.
 </p>
 
-<p>A good rule of thumb is to keep a struct per file, so:</p>
+<p>
+  A good rule of thumb is to keep a struct per file, so:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -4307,7 +4541,9 @@
   -->
 </listing>
 
-<p>... and now:</p>
+<p>
+  ... and now:
+</p>
 
 <listing-title>
   $ cargo check
@@ -4373,11 +4609,15 @@
   non-pub fields anymore.
 </p>
 
-<p>There are two ways we could solve this issue:</p>
+<p>
+  There are two ways we could solve this issue:
+</p>
 
 <ol>
   <li>
-    <p>We could provide <b>mutable getters</b>:</p>
+    <p>
+      We could provide <b>mutable getters</b>:
+    </p>
 
     <listing lang="rust">
       <!--
@@ -4431,7 +4671,9 @@
   but it'll remain private for other crates.
 </p>
 
-<p>As for the difference between both snippets, it's pretty minor:</p>
+<p>
+  As for the difference between both snippets, it's pretty minor:
+</p>
 
 <ol>
   <li>
@@ -4520,11 +4762,17 @@
   -->
 </listing>
 
-<p>Nice 😎 - now we're ready to implement eyes!</p>
+<p>
+  Nice 😎 - now we're ready to implement eyes!
+</p>
 
-<h3>Eye Of The Birdie</h3>
+<h3>
+  Eye Of The Birdie
+</h3>
 
-<p>What's an eye?</p>
+<p>
+  What's an eye?
+</p>
 
 <p>
   Well, a biologist might tell you that eye is an organ that provides vision; a
@@ -4547,7 +4795,9 @@
   -->
 </listing>
 
-<p>... is a struct!</p>
+<p>
+  ... is a struct!
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -4595,7 +4845,9 @@
   </figcaption>
 </figure>
 
-<p>Such an eye is defined by a few parameters:</p>
+<p>
+  Such an eye is defined by a few parameters:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -4740,7 +4992,9 @@
   -->
 </listing>
 
-<p>The basic outline of our algorithm is:</p>
+<p>
+  The basic outline of our algorithm is:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -4945,7 +5199,9 @@
   <img src="{{ assets }}/17d07e2f-952f-4c16-a71a-aace25683c5e.svg" />
 </figure>
 
-<p>In the poetic language of code:</p>
+<p>
+  In the poetic language of code:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5011,7 +5267,9 @@
   -->
 </listing>
 
-<p>Now that we know the cell index, our final touch in here is:</p>
+<p>
+  Now that we know the cell index, our final touch in here is:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5049,7 +5307,9 @@
   That's a lot of math! - how do we know it works? Of course, by testing it 😊
 </p>
 
-<h3>Nothing But Tests</h3>
+<h3>
+  Nothing But Tests
+</h3>
 
 <p>
   The first obstacle is that our vision requires lot of parameters to compute:
@@ -5057,19 +5317,29 @@
 
 <ul>
   <li>
-    <p>FOV range (one <code>f32</code>),</p>
+    <p>
+      FOV range (one <code>f32</code>),
+    </p>
   </li>
   <li>
-    <p>FOV angle (one <code>f32</code>),</p>
+    <p>
+      FOV angle (one <code>f32</code>),
+    </p>
   </li>
   <li>
-    <p>number of cells (one <code>usize</code>),</p>
+    <p>
+      number of cells (one <code>usize</code>),
+    </p>
   </li>
   <li>
-    <p>position (two <code>f32</code>s),</p>
+    <p>
+      position (two <code>f32</code>s),
+    </p>
   </li>
   <li>
-    <p>rotation (one <code>f32</code>).</p>
+    <p>
+      rotation (one <code>f32</code>).
+    </p>
   </li>
 </ul>
 
@@ -5107,7 +5377,9 @@
   -->
 </listing>
 
-<p>... and make it accept one or many parameters:</p>
+<p>
+  ... and make it accept one or many parameters:
+</p>
 
 <listing lang="rust">
   <!--
@@ -5148,7 +5420,9 @@
   -->
 </listing>
 
-<p>... which has a pretty straightforward syntax:</p>
+<p>
+  ... which has a pretty straightforward syntax:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5192,7 +5466,9 @@
   <code>" * "</code>, it'd be waay easier to ensure our eye works correctly.
 </p>
 
-<p>So, baby steps:</p>
+<p>
+  So, baby steps:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5289,7 +5565,9 @@
   -->
 </listing>
 
-<p>Nice and readable; nice and readable.</p>
+<p>
+  Nice and readable; nice and readable.
+</p>
 
 <p>
   Our test's result, <code>expected_vision</code>, depends on
@@ -5458,8 +5736,13 @@
   -->
 </listing>
 
-<p>Just like that, our testing framework is complete! 🥳</p>
-<p>Now, as for the tests - allow me to present you pure beauty:</p>
+<p>
+  Just like that, our testing framework is complete! 🥳
+</p>
+
+<p>
+  Now, as for the tests - allow me to present you pure beauty:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5548,7 +5831,9 @@
   -->
 </listing>
 
-<p>Breath in, breath out:</p>
+<p>
+  Breath in, breath out:
+</p>
 
 <listing-title>
   $ cargo test -p lib-simulation
@@ -5607,7 +5892,9 @@
   </p>
 </note>
 
-<p>That's one parameter - four more to go! What about rotation?</p>
+<p>
+  That's one parameter - four more to go! What about rotation?
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5689,7 +5976,9 @@
   -->
 </listing>
 
-<p>Testing positions is even more fun:</p>
+<p>
+  Testing positions is even more fun:
+</p>
 
 <listing-title>
   libs/simulation/src/eye.rs
@@ -5888,7 +6177,9 @@
   -->
 </listing>
 
-<p>Nice:</p>
+<p>
+  Nice:
+</p>
 
 <listing-title>
   cargo test -p lib-simulation
@@ -6109,7 +6400,9 @@
   -->
 </listing>
 
-<p>Does it work? Let's find out!</p>
+<p>
+  Does it work? Let's find out!
+</p>
 
 <listing-title>
   $ wasm-pack build
@@ -6123,12 +6416,12 @@
   -->
 </listing>
 
-<p>Oh my, oh my, oh my!</p>
+<p>
+  Oh my, oh my, oh my!
+</p>
 
 <figure>
-  <video controls="" src="{{ assets }}/d8d74b38-d9be-48a2-94b4-f1f917a1a63d.mp4">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/d8d74b38-d9be-48a2-94b4-f1f917a1a63d.mp4" />
 </figure>
 
 <blockquote>
@@ -6162,9 +6455,9 @@
   puzzle: the genetic algorithm.
 </p>
 
-<header id="huggin-n-evolvin">
+<h2 id="huggin-n-evolvin">
   Huggin' & Evolvin'
-</header>
+</h2>
 
 <p>
   Even though our birds can fly, their brains remain entirely random - in this
@@ -6180,7 +6473,9 @@
   best birdies.
 </p>
 
-<p>Let's get to it!</p>
+<p>
+  Let's get to it!
+</p>
 
 <listing-title>
   libs/simulation/Cargo.toml
@@ -6419,7 +6714,9 @@
   <code>Animal</code> with it, then?
 </p>
 
-<p>Most easily - by creating a dedicated struct:</p>
+<p>
+  Most easily - by creating a dedicated struct:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -6466,7 +6763,9 @@
   -->
 </listing>
 
-<p>As we see, this structure has to contain at least those two fields:</p>
+<p>
+  As we see, this structure has to contain at least those two fields:
+</p>
 
 <listing-title>
   libs/simulation/src/animal_individual.rs
@@ -6500,7 +6799,9 @@
   -->
 </listing>
 
-<p>Let's go back to <code>fn evolve()</code> and see how it fits there:</p>
+<p>
+  Let's go back to <code>fn evolve()</code> and see how it fits there:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -6542,7 +6843,9 @@
   -->
 </listing>
 
-<p>Seems like this might just work!</p>
+<p>
+  Seems like this might just work!
+</p>
 
 <p>
   To implement those <code>.map()</code>s, we'll need two conversion methods:
@@ -6570,7 +6873,9 @@
   -->
 </listing>
 
-<p>... which allow us to:</p>
+<p>
+  ... which allow us to:
+</p>
 
 <listing-title>
   libs/simulation/src/lib.rs
@@ -6604,11 +6909,17 @@
   -->
 </listing>
 
-<p>Ok, so: how can we implement those two conversion methods?</p>
+<p>
+  Ok, so: how can we implement those two conversion methods?
+</p>
 
-<h3>from_animal</h3>
+<h3>
+  from_animal
+</h3>
 
-<p>Let's bring into the picture the important bits:</p>
+<p>
+  Let's bring into the picture the important bits:
+</p>
 
 <listing-title>
   libs/simulation/src/animal_individual.rs
@@ -6645,10 +6956,14 @@
 
 <ol>
   <li>
-    <p>determine animal's <b>fitness score</b>,</p>
+    <p>
+      determine animal's <b>fitness score</b>,
+    </p>
   </li>
   <li>
-    <p>determine animal's <b>chromosome</b> (aka genotype).</p>
+    <p>
+      determine animal's <b>chromosome</b> (aka genotype).
+    </p>
   </li>
 </ol>
 
@@ -6744,7 +7059,9 @@
   -->
 </listing>
 
-<p>Ah, I love when all the pieces just fit together.</p>
+<p>
+  Ah, I love when all the pieces just fit together.
+</p>
 
 <p>
   When it comes to the second field, <code>chromosome</code>, there'll be a bit
@@ -6805,7 +7122,9 @@
   -->
 </listing>
 
-<p>For fun, let's start with a test:</p>
+<p>
+  For fun, let's start with a test:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -6854,7 +7173,9 @@
 
 <ol>
   <li>
-    <p>Loops:</p>
+    <p>
+      Loops:
+    </p>
 
     <listing-title>
       libs/neural-network/src/lib.rs
@@ -6886,7 +7207,9 @@
   </li>
 
   <li>
-    <p>Combinators:</p>
+    <p>
+      Combinators:
+    </p>
 
     <listing-title>
       libs/neural-network/src/lib.rs
@@ -6915,7 +7238,9 @@
   </li>
 
   <li>
-    <p>Combinators + iterator:</p>
+    <p>
+      Combinators + iterator:
+    </p>
 
     <listing-title>
       libs/neural-network/src/lib.rs
@@ -6991,7 +7316,9 @@
   -->
 </listing>
 
-<p>Ideally, we'd like for the following identity to hold:</p>
+<p>
+  Ideally, we'd like for the following identity to hold:
+</p>
 
 <listing lang="rust">
   <!--
@@ -6999,7 +7326,9 @@
   -->
 </listing>
 
-<p>... so let's base our tests exactly on that:</p>
+<p>
+  ... so let's base our tests exactly on that:
+</p>
 
 <listing lang="rust">
   <!--
@@ -7028,7 +7357,9 @@
   -->
 </listing>
 
-<p>... and then an example implementation could be:</p>
+<p>
+  ... and then an example implementation could be:
+</p>
 
 <listing-title>
   libs/neural-network/src/lib.rs
@@ -7114,7 +7445,9 @@
   takes a moment to sink-in - took a while to write, too!
 </p>
 
-<h3>Refactoring</h3>
+<h3>
+  Refactoring
+</h3>
 
 <p>
   Our <code>Network</code> has now everything we need to make it compatible with
@@ -7122,7 +7455,9 @@
   thing.
 </p>
 
-<p>Inside our <code>Animal</code>, what we have now is:</p>
+<p>
+  Inside our <code>Animal</code>, what we have now is:
+</p>
 
 <listing-title>
   libs/simulation/src/animal.rs
@@ -7299,9 +7634,13 @@
   -->
 </listing>
 
-<p>Once again, all the pieces fit together 🥳</p>
+<p>
+  Once again, all the pieces fit together 🥳
+</p>
 
-<h3>into_animal</h3>
+<h3>
+  into_animal
+</h3>
 
 <p>
   With our latest changes we can transform <code>Animal</code> into
@@ -7401,11 +7740,13 @@
   -->
 </listing>
 
-<p>Looks like...​ we're done! Are we done??</p>
+<p>
+  Looks like...​ we're done! Are we done??
+</p>
 
-<header id="ready-set">
+<h2 id="ready-set">
   Ready, Set...​
-</header>
+</h2>
 
 <p>
   We're kinda-sorta done - while you could just launch
@@ -7438,7 +7779,9 @@
       <a ref>what a waste of time</a>!
     </p>
 
-    <p>But if we had some kind of a "fast-forward" button...​</p>
+    <p>
+      But if we had some kind of a "fast-forward" button...​
+    </p>
   </li>
   <li>
     <p>
@@ -7462,7 +7805,9 @@
   </li>
 </ol>
 
-<p>&lt;slowly-breaths-out /&gt;</p>
+<p>
+  &lt;slowly-breaths-out /&gt;
+</p>
 
 <p>
   Our journey heads towards its end - the code that we'll write in a moment will
@@ -7470,7 +7815,9 @@
   you ready to knock on wood and begin our final birdie-adventure?
 </p>
 
-<h3>Fast-Forward & Statistics</h3>
+<h3>
+  Fast-Forward & Statistics
+</h3>
 
 <p>
   Inside our JavaScript code we invoke <code>.step()</code> only during
@@ -7865,9 +8212,9 @@
   -->
 </listing>
 
-<header id="ready-set-go">
+<h2 id="ready-set-go">
   Ready, Set, Go!
-</header>
+</h2>
 
 <p>
   Finally, ultimately, eventually, <i>at last</i> - the outcome of our diligent,
@@ -7875,9 +8222,7 @@
 </p>
 
 <figure>
-  <video src="{{ assets }}/3c9592ed-e1ef-4fc5-8b72-607fc9692a25.mp4" controls="">
-    Your browser does not support the video tag.
-  </video>
+  <video src="{{ assets }}/3c9592ed-e1ef-4fc5-8b72-607fc9692a25.mp4" />
 </figure>
 
 <style>
@@ -7890,21 +8235,31 @@
 
 <div id="_tada">🎉</div>
 
-<p>Nice?</p>
+<p>
+  Nice?
+</p>
 
 <ul>
   <li>
-    <p>birdies are cute? ✅</p>
+    <p>
+      birdies are cute? ✅
+    </p>
   </li>
   <li>
-    <p>birdies eat food? ✅</p>
+    <p>
+      birdies eat food? ✅
+    </p>
   </li>
   <li>
-    <p>birdies learn to catch food better and better? ✅</p>
+    <p>
+      birdies learn to catch food better and better? ✅
+    </p>
   </li>
 </ul>
 
-<p>Nice!</p>
+<p>
+  Nice!
+</p>
 
 <note>
   <p>
@@ -7926,11 +8281,13 @@
   </p>
 </note>
 
-<header id="closing-thoughts">
+<h2 id="closing-thoughts">
   Closing Thoughts
-</header>
+</h2>
 
-<p>Started from the bottom, haven't we?</p>
+<p>
+  Started from the bottom, haven't we?
+</p>
 
 <p>
   From rough sketches, through our very first <code>struct Network</code>, we've
@@ -7945,7 +8302,9 @@
   WebAssembly in an interesting way.
 </p>
 
-<p>And, champ, that's for you:</p>
+<p>
+  And, champ, that's for you:
+</p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/e5313753-9b47-4c39-a198-df190f2db9c4.svg" />
@@ -7956,14 +8315,18 @@
   </figcaption>
 </figure>
 
-<h3>What now?</h3>
+<h3>
+  What now?
+</h3>
 
 <p>
   If you want to fiddle a bit on your own, there's still a few <i>very</i>
   interesting left things to do here!
 </p>
 
-<p>You remember all those constants such as <code>FOV_RANGE</code>?</p>
+<p>
+  You remember all those constants such as <code>FOV_RANGE</code>?
+</p>
 
 <p>
   If instead of keeping them hard-coded, you made them configurable via some

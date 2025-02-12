@@ -26,10 +26,14 @@
     as neural networks) as we go.
   </p>
 
-  <p>No fancy mathematics or IT background is required.</p>
+  <p>
+    No fancy mathematics or IT background is required.
+  </p>
 </note>
 
-<p>This series will be divided into a few posts, roughly:</p>
+<p>
+  This series will be divided into a few posts, roughly:
+</p>
 
 <ol>
   <li>
@@ -39,13 +43,19 @@
     </p>
   </li>
   <li>
-    <p>Implementing a neural network,</p>
+    <p>
+      Implementing a neural network,
+    </p>
   </li>
   <li>
-    <p>Implementing a genetic algorithm,</p>
+    <p>
+      Implementing a genetic algorithm,
+    </p>
   </li>
   <li>
-    <p>Implementing eyes, brain and the simulation itself.</p>
+    <p>
+      Implementing eyes, brain and the simulation itself.
+    </p>
   </li>
 </ol>
 
@@ -54,9 +64,9 @@
   <a href="#design">Design</a>.
 </p>
 
-<header id="design">
+<h2 id="design">
   Design
-</header>
+</h2>
 
 <p>
   Let's start by clearly defining our objective: what are we going to simulate,
@@ -81,13 +91,17 @@
   <img src="{{ assets }}/design-2.svg" />
 </figure>
 
-<p>... and <b>foods</b> (of an abstract kind, rich in protein & fiber):</p>
+<p>
+  ... and <b>foods</b> (of an abstract kind, rich in protein & fiber):
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/design-3.svg" />
 </figure>
 
-<p>Each bird has their own <b>vision</b>, allowing them to locate the food:</p>
+<p>
+  Each bird has their own <b>vision</b>, allowing them to locate the food:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/design-4.svg" />
@@ -107,9 +121,9 @@
   We'll make our birds able to <b>learn</b> and <b>evolve</b>.
 </p>
 
-<header id="brain">
+<h2 id="brain">
   Brain
-</header>
+</h2>
 
 <p>
   If you squint your eyes hard enough, you'll see that a brain is nothing but a
@@ -121,7 +135,9 @@
 </figure>
 
 <note>
-  <p>You're a precious mathematical formula, remember that.</p>
+  <p>
+    You're a precious mathematical formula, remember that.
+  </p>
 </note>
 
 <p>
@@ -192,9 +208,9 @@
   <code>f(eyes) = what?</code>
 </p>
 
-<header id="nn-intro">
+<h2 id="nn-intro">
   Neural network: Introduction
-</header>
+</h2>
 
 <p>
   As a fellow human, you might be aware that brains are made of neurons
@@ -271,7 +287,9 @@
   </p>
 </note>
 
-<p>... and it looks like this:</p>
+<p>
+  ... and it looks like this:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/nn-2.svg" />
@@ -382,11 +400,13 @@
   step and learn about the magic allowing for all of this to happen.
 </p>
 
-<header id="nn-deep-dive">
+<h2 id="nn-deep-dive">
   Neural network: Deep dive
-</header>
+</h2>
 
-<p>FFNNs lean on two building blocks: <b>neurons</b> and <b>synapses</b>.</p>
+<p>
+  FFNNs lean on two building blocks: <b>neurons</b> and <b>synapses</b>.
+</p>
 
 <p>
   A <b>neuron</b> (usually represented with a circle) accepts some input values,
@@ -402,7 +422,9 @@
   </figcaption>
 </figure>
 
-<p>Additionally, each neuron has a <b>bias</b>:</p>
+<p>
+  Additionally, each neuron has a <b>bias</b>:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/nn-4.svg" />
@@ -490,9 +512,13 @@
   <img src="{{ assets }}/nn-6.svg" />
 </figure>
 
-<p>What a beauty, isn't it?</p>
+<p>
+  What a beauty, isn't it?
+</p>
 
-<p>Let's see what it thinks of, say, <code>(0.5, 0.8)</code>:</p>
+<p>
+  Let's see what it thinks of, say, <code>(0.5, 0.8)</code>:
+</p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/nn-7.svg" />
@@ -515,7 +541,9 @@
   -->
 </listing>
 
-<p>... then, we add the bias:</p>
+<p>
+  ... then, we add the bias:
+</p>
 
 <listing lang="text">
   <!--
@@ -574,7 +602,9 @@
   -->
 </listing>
 
-<p>Nice; now let's do the bottom-left one:</p>
+<p>
+  Nice; now let's do the bottom-left one:
+</p>
 
 <listing lang="text">
   <!--
@@ -589,13 +619,17 @@
   -->
 </listing>
 
-<p>At this point we've got the input layer completed:</p>
+<p>
+  At this point we've got the input layer completed:
+</p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/nn-9.svg" />
 </figure>
 
-<p>... which heads us towards the last neuron:</p>
+<p>
+  ... which heads us towards the last neuron:
+</p>
 
 <listing lang="text">
   <!--
@@ -610,7 +644,9 @@
   -->
 </listing>
 
-<p>... and the network's output itself:</p>
+<p>
+  ... and the network's output itself:
+</p>
 
 <listing lang="text">
   <!--
@@ -640,7 +676,9 @@
   capacity to steer a bird.
 </p>
 
-<p>More complex FFNNs, such as this one:</p>
+<p>
+  More complex FFNNs, such as this one:
+</p>
 
 <figure class="sketch w-70">
   <img src="{{ assets }}/nn-10.svg" />
@@ -665,7 +703,9 @@
   network's weights?", and for that I've got a simple answer:
 </p>
 
-<p class="text-center"><b>we randomize them</b>! ❤️️</p>
+<p class="text-center">
+  <b>we randomize them</b>! ❤️️
+</p>
 
 <p>
   If you're accustomed to deterministic algorithms (bubble sort, anyone?), this
@@ -720,16 +760,18 @@
   concrete examples of "for this vision, go left", "for this vision, go right").
 </p>
 
-<p>Solution?</p>
+<p>
+  Solution?
+</p>
 
 <p class="text-center">
   <del>biology</del> genetic algorithms and the magic of
   <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">large numbers</a>
 </p>
 
-<header id="ga-intro">
+<h2 id="ga-intro">
   Genetic algorithm: Introduction
-</header>
+</h2>
 
 <p>
   <ref>
@@ -780,7 +822,9 @@
 </p>
 
 <note>
-  <p>All the possible sets of parameters are called a <b>search space</b>.</p>
+  <p>
+    All the possible sets of parameters are called a <b>search space</b>.
+  </p>
 </note>
 
 <p>
@@ -789,13 +833,17 @@
   suboptimal answers.
 </p>
 
-<p class="text-center">And in order to do that, we must <b>dig deeper</b>.</p>
+<p class="text-center">
+  And in order to do that, we must <b>dig deeper</b>.
+</p>
 
-<header id="ga-deep-dive">
+<h2 id="ga-deep-dive">
   Genetic algorithm: Deep dive
-</header>
+</h2>
 
-<p>This is a wild carrot together with its domesticated form:</p>
+<p>
+  This is a wild carrot together with its domesticated form:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/carrot.jpg" />
@@ -849,7 +897,9 @@
   </p>
 </note>
 
-<p>Starting top-bottom, a genetic algorithm starts with a <b>population</b>:</p>
+<p>
+  Starting top-bottom, a genetic algorithm starts with a <b>population</b>:
+</p>
 
 <figure class="sketch">
   <img src="{{ assets }}/ga-2.svg" />
@@ -1076,4 +1126,6 @@
   so…​
 </p>
 
-<p class="text-center">this cannot <i>actually</i> work, can it?</p>
+<p class="text-center">
+  this cannot <i>actually</i> work, can it?
+</p>

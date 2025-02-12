@@ -1,6 +1,6 @@
-Element(
+Elem(
     Spanned {
-        inner: Element {
+        inner: Elem {
             name: Spanned {
                 inner: "img",
                 span: Span {
@@ -45,9 +45,9 @@ Text(
         },
     },
 )
-Element(
+Elem(
     Spanned {
-        inner: Element {
+        inner: Elem {
             name: Spanned {
                 inner: "img",
                 span: Span {

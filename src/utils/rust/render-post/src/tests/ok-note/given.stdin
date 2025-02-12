@@ -3,11 +3,15 @@
 </p>
 
 <note>
-  <p>Hello, World!</p>
+  <p>
+    Hello, World!
+  </p>
 </note>
 
 <note>
-  <p>this is a listing:</p>
+  <p>
+    this is a listing:
+  </p>
 
   <listing lang="rust">
     <!--
@@ -17,7 +21,9 @@
     -->
   </listing>
 
-  <p>mucho importanto</p>
+  <p>
+    mucho importanto
+  </p>
 </note>
 
 <p>

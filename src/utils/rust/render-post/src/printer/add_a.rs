@@ -1,13 +1,14 @@
-use super::{Attr, Element, Message, MessageResult, Node, Printer, Spanned};
+use super::Printer;
+use crate::{Attr, Elem, Error, Node, Result, Spanned};
 
 impl Printer<'_> {
-    pub(super) fn process_a(&mut self, mut el: Element) -> MessageResult<()> {
+    pub(super) fn add_a(&mut self, mut el: Elem) -> Result<()> {
         if let Some(ref_attr) = el.remove_attr_opt("ref") {
             let url = if let Some(ref_val) = ref_attr.value {
                 self.refs
                     .remove(&Some(ref_val.to_string()))
                     .ok_or_else(|| {
-                        Message::new(
+                        Error::new(
                             format!("unknown ref: `{}`", ref_val.as_str()),
                             ref_val.span(),
                         )
@@ -17,7 +18,7 @@ impl Printer<'_> {
                 self.refs
                     .remove(&None)
                     .ok_or_else(|| {
-                        Message::new("unknown ref", ref_attr.name.span())
+                        Error::new("unknown ref", ref_attr.name.span())
                     })?
                     .0
             };
@@ -34,6 +35,6 @@ impl Printer<'_> {
             el.children.push(Node::Text(href.value()?.clone()));
         }
 
-        self.process_generic(el)
+        self.add_ex(el)
     }
 }

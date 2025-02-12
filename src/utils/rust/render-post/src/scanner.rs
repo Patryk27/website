@@ -1,4 +1,4 @@
-use super::{Attr, Element, Message, MessageResult, Node, Span, Spanned};
+use crate::{Attr, Elem, Error, Node, Result, Span, Spanned};
 use std::iter::Peekable;
 use std::str::Chars;
 
@@ -18,9 +18,9 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn char(&mut self) -> MessageResult<char> {
+    fn char(&mut self) -> Result<char> {
         self.char_opt().ok_or_else(|| {
-            Message::new("unexpected end of file", Span::char(self.pos - 1))
+            Error::new("unexpected end of file", Span::char(self.pos - 1))
         })
     }
 
@@ -33,13 +33,13 @@ impl<'a> Scanner<'a> {
         self.src.peek().copied()
     }
 
-    fn eat(&mut self, expected: char) -> MessageResult<()> {
+    fn eat(&mut self, expected: char) -> Result<()> {
         let actual = self.char()?;
 
         if actual == expected {
             Ok(())
         } else {
-            Err(Message::new(
+            Err(Error::new(
                 format!("expected `{}`", expected),
                 Span::char(self.pos - 1),
             ))
@@ -63,7 +63,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn text(&mut self) -> MessageResult<Spanned<String>> {
+    fn text(&mut self) -> Result<Spanned<String>> {
         self.context
             .push((self.pos, "... when reading this text".into()));
 
@@ -85,7 +85,7 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn comment(&mut self) -> MessageResult<Spanned<String>> {
+    fn comment(&mut self) -> Result<Spanned<String>> {
         self.context
             .push((self.pos, "... when reading this comment".into()));
 
@@ -112,15 +112,14 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn element(&mut self) -> MessageResult<Spanned<Element>> {
+    fn elem(&mut self) -> Result<Spanned<Elem>> {
         self.context
             .push((self.pos - 1, "... when reading this element".into()));
 
-        let mut out =
-            Spanned::new(Element::default(), Span::char(self.pos - 1));
+        let mut out = Spanned::new(Elem::default(), Span::char(self.pos - 1));
 
-        if self.element_header(&mut out)? {
-            self.element_children(&mut out)?;
+        if self.elem_tag(&mut out)? {
+            self.elem_children(&mut out)?;
         }
 
         out.span_mut().end = self.pos - 1;
@@ -130,18 +129,15 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn element_header(
-        &mut self,
-        out: &mut Spanned<Element>,
-    ) -> MessageResult<bool> {
+    fn elem_tag(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
         out.name.span_mut().beg = self.pos;
 
-        let expect_attrs = self.element_header_name(out)?;
+        let expect_attrs = self.elem_tag_name(out)?;
 
         out.name.span_mut().end = self.pos - 2;
 
         let expect_children = if expect_attrs {
-            self.element_header_attrs(out)?
+            self.elem_tag_attrs(out)?
         } else {
             true
         };
@@ -149,10 +145,7 @@ impl<'a> Scanner<'a> {
         Ok(expect_children)
     }
 
-    fn element_header_name(
-        &mut self,
-        out: &mut Spanned<Element>,
-    ) -> MessageResult<bool> {
+    fn elem_tag_name(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
         loop {
             match self.char()? {
                 '>' => {
@@ -168,7 +161,7 @@ impl<'a> Scanner<'a> {
                 }
 
                 _ => {
-                    return Err(Message::new(
+                    return Err(Error::new(
                         "unexpected character",
                         Span::char(self.pos - 1),
                     ))
@@ -177,10 +170,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn element_header_attrs(
-        &mut self,
-        out: &mut Spanned<Element>,
-    ) -> MessageResult<bool> {
+    fn elem_tag_attrs(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
         loop {
             self.whitespace();
 
@@ -196,7 +186,7 @@ impl<'a> Scanner<'a> {
                     ch @ ('a'..='z' | '-') => name.push(ch),
 
                     _ => {
-                        return Err(Message::new(
+                        return Err(Error::new(
                             "unexpected character",
                             Span::char(self.pos - 1),
                         ))
@@ -250,10 +240,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn element_children(
-        &mut self,
-        out: &mut Spanned<Element>,
-    ) -> MessageResult<()> {
+    fn elem_children(&mut self, out: &mut Spanned<Elem>) -> Result<()> {
         loop {
             match self.node()? {
                 NodeOrClosingTag::Node(node) => {
@@ -264,7 +251,7 @@ impl<'a> Scanner<'a> {
                     if tag == out.name {
                         break;
                     } else {
-                        return Err(Message::new(
+                        return Err(Error::new(
                             format!(
                                 "mismatched closing tag, expected `</{}>`",
                                 *out.name,
@@ -279,7 +266,7 @@ impl<'a> Scanner<'a> {
         Ok(())
     }
 
-    fn closing_tag(&mut self) -> MessageResult<Spanned<String>> {
+    fn closing_tag(&mut self) -> Result<Spanned<String>> {
         self.context
             .push((self.pos - 2, "... when reading this closing tag".into()));
 
@@ -296,7 +283,7 @@ impl<'a> Scanner<'a> {
                 }
 
                 _ => {
-                    return Err(Message::new(
+                    return Err(Error::new(
                         "unexpected character",
                         Span::char(self.pos - 1),
                     ))
@@ -311,14 +298,14 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn node(&mut self) -> MessageResult<NodeOrClosingTag> {
+    fn node(&mut self) -> Result<NodeOrClosingTag> {
         if self.try_eating(['<']) {
             if self.try_eating(['!']) {
                 Ok(NodeOrClosingTag::Node(Node::Comment(self.comment()?)))
             } else if self.try_eating(['/']) {
                 Ok(NodeOrClosingTag::ClosingTag(self.closing_tag()?))
             } else {
-                Ok(NodeOrClosingTag::Node(Node::Element(self.element()?)))
+                Ok(NodeOrClosingTag::Node(Node::Elem(self.elem()?)))
             }
         } else {
             Ok(NodeOrClosingTag::Node(Node::Text(self.text()?)))
@@ -327,15 +314,15 @@ impl<'a> Scanner<'a> {
 }
 
 impl Iterator for Scanner<'_> {
-    type Item = MessageResult<Node>;
+    type Item = Result<Node>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.src.peek().is_some() {
             match self.node() {
                 Ok(NodeOrClosingTag::Node(node)) => Some(Ok(node)),
-                Ok(NodeOrClosingTag::ClosingTag(node)) => Some(Err(
-                    Message::new("unexpected closing tag", node.span()),
-                )),
+                Ok(NodeOrClosingTag::ClosingTag(node)) => {
+                    Some(Err(Error::new("unexpected closing tag", node.span())))
+                }
 
                 Err(mut err) => {
                     for (span, label) in &self.context {

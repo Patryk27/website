@@ -15,9 +15,13 @@
   </figcaption>
 </figure>
 
-<p>Today I'm releasing v0.6, which spans 120 commits and brings:</p>
+<p>
+  Today I'm releasing v0.6, which spans 120 commits and brings:
+</p>
 
-<header id="new-challenges">New challenges</header>
+<h2 id="new-challenges">
+  New challenges
+</h2>
 
 <p>
   kartoffels strives to be both a multiplayer and a singleplayer game - to
@@ -43,17 +47,21 @@
 </p>
 
 <figure>
-  <video src="{{ assets }}/new-challenges-02.webm" controls="" />
+  <video src="{{ assets }}/new-challenges-02.webm" />
 </figure>
 
 <p>
-  <ref>https://en.wikipedia.org/wiki/Dijkstra's_algorithm</ref>
+  <ref>
+    https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+  </ref>
 
   It's a perfect opportunity to play with <a ref>Dijkstra</a>, CPU and memory
   optimizations, and what have you.
 </p>
 
-<header id="simplified-radar-functions">Simplified radar functions</header>
+<h2 id="simplified-radar-functions">
+  Simplified radar functions
+</h2>
 
 <p>
   Radar allows for a robot to scan its surrounding area, making it a critical
@@ -68,7 +76,9 @@
   -->
 </listing>
 
-<p>This design proved a bit awkward to use due to its untypical indexing:</p>
+<p>
+  This design proved a bit awkward to use due to its untypical indexing:
+</p>
 
 <listing lang="rust">
   <!--
@@ -123,11 +133,13 @@
   -->
 </listing>
 
-<header id="arm-pick-and-arm-drop">
+<h2 id="arm-pick-and-arm-drop">
   <code>arm_pick()</code> and <code>arm_drop()</code>
-</header>
+</h2>
 
-<p>Robots can now pick objects from the ground and drop them.</p>
+<p>
+  Robots can now pick objects from the ground and drop them.
+</p>
 
 <figure>
   <img src="{{ assets }}/arm-pick-and-arm-drop.png" />
@@ -145,7 +157,9 @@
   <b>capture the flag</b>.
 </p>
 
-<header id="em-dashes">Em Dashes</header>
+<h2 id="em-dashes">
+  Em Dashes
+</h2>
 
 <p>
   A friend said it's illegal to use <code>-</code> when I really mean
@@ -164,9 +178,13 @@
   kinda annoying, but I see the merit.
 </p>
 
-<header id="inspect-bot-command"><code>inspect-bot</code> command</header>
+<h2 id="inspect-bot-command">
+  <code>inspect-bot</code> command
+</h2>
 
-<p>You can now inspect the history of each bot:</p>
+<p>
+  You can now inspect the history of each bot:
+</p>
 
 <figure>
   <img src="{{ assets }}/inspect-bot-command.png" />
@@ -178,7 +196,9 @@
   might've gotten killed, the firmware might've crashed etc.).
 </p>
 
-<header id="smooth-camera-movements">Smooth camera movements</header>
+<h2 id="smooth-camera-movements">
+  Smooth camera movements
+</h2>
 
 <p>
   Camera now interpolates between current and target position, making for a
@@ -186,12 +206,16 @@
 </p>
 
 <figure>
-  <video src="{{ assets }}/smooth-camera-movements.webm" controls="" />
+  <video src="{{ assets }}/smooth-camera-movements.webm" />
 </figure>
 
-<header id="compression">Compression</header>
+<h2 id="compression">
+  Compression
+</h2>
 
-<p>As it turns out, a text interface can generate <i>a lot</i> of data!</p>
+<p>
+  As it turns out, a text interface can generate <i>a lot</i> of data!
+</p>
 
 <p>
   This issue stems mostly from ANSI escape codes, used by kartoffels (and so
@@ -225,10 +249,14 @@
   reduced.
 </p>
 
-<header id="plans">Plans</header>
+<h2 id="plans">
+  Plans
+</h2>
 
 <p>
-  <ref>https://github.com/Patryk27/kartoffels/issues/36</ref>
+  <ref>
+    https://github.com/Patryk27/kartoffels/issues/36
+  </ref>
 
   For the next release, I'm planning to continue implementing more challenges -
   I've also got <a ref>!36</a> on my list, gotta give more love to the
@@ -236,15 +264,23 @@
 </p>
 
 <p>
-  <ref>https://github.com/Patryk27/kartoffels/issues</ref>
+  <ref>
+    https://github.com/Patryk27/kartoffels/issues
+  </ref>
 
   If you have any ideas yourself, <a ref>I'd love to hear them!</a>
 </p>
 
 <p>
-  <ref id="1">https://github.com/NixOS/patchelf/pull/544</ref>
-  <ref id="2">https://github.com/Patryk27/strolle/issues/38</ref>
-  <ref id="3">https://github.com/rust-lang/compiler-team/issues/800</ref>
+  <ref id="1">
+    https://github.com/NixOS/patchelf/pull/544
+  </ref>
+  <ref id="2">
+    https://github.com/Patryk27/strolle/issues/38
+  </ref>
+  <ref id="3">
+    https://github.com/rust-lang/compiler-team/issues/800
+  </ref>
 
   The v0.7 release will most likely happen some time next year, since
   <a ref="1">I've gotta</a> focus <a ref="2">on a couple</a> of

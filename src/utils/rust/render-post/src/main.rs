@@ -1,23 +1,25 @@
 #![feature(extract_if)]
 #![feature(try_blocks)]
 
-mod dom;
-mod msg;
+mod node;
 mod printer;
+mod result;
 mod scanner;
+mod span;
 
-use self::dom::*;
-use self::msg::*;
+use self::node::*;
 use self::printer::*;
+use self::result::*;
 use self::scanner::*;
-use anyhow::{anyhow, Context, Result};
+use self::span::*;
+use anyhow::{anyhow, Context, Result as AResult};
 use common::Env;
 
-fn main() -> Result<()> {
+fn main() -> AResult<()> {
     Env::with(|env| main_ex(env, None))
 }
 
-fn main_ex(env: &mut Env, mut nodes: Option<&mut Vec<Node>>) -> Result<()> {
+fn main_ex(env: &mut Env, mut nodes: Option<&mut Vec<Node>>) -> AResult<()> {
     let mut input = String::new();
     let mut output = String::new();
 
@@ -35,24 +37,18 @@ fn main_ex(env: &mut Env, mut nodes: Option<&mut Vec<Node>>) -> Result<()> {
                 nodes.push(node.clone());
             }
 
-            printer.process(node)?;
+            printer.add(node)?;
         }
 
         printer.finish()?;
     };
 
     if let Err(err) = result {
-        return match err.downcast() {
-            Ok(msg) => {
-                MessageReporter::new(&mut env.stderr, &input).report(msg)?;
+        ErrorReporter::new(&mut env.stderr, &input).report(err)?;
 
-                env.stderr.write_all(b"\n")?;
+        env.stderr.write_all(b"\n")?;
 
-                Err(anyhow!("compilation failed"))
-            }
-
-            Err(err) => Err(err),
-        };
+        return Err(anyhow!("compilation failed"));
     }
 
     env.stdout.write_all(output.as_bytes())?;
@@ -78,12 +74,13 @@ mod tests {
     #[test_case("err-unused-ref-2")]
     #[test_case("ok-a")]
     #[test_case("ok-a-with-implied-href")]
-    #[test_case("ok-header")]
+    #[test_case("ok-h2")]
     #[test_case("ok-img")]
     #[test_case("ok-listing")]
     #[test_case("ok-note")]
     #[test_case("ok-ref")]
     #[test_case("ok-smoke")]
+    #[test_case("ok-video")]
     fn test(case: &str) {
         let dir = Path::new("src").join("tests").join(case);
         let stdin = fs::read_to_string(dir.join("given.stdin")).unwrap();

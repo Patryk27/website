@@ -12,9 +12,9 @@
   </p>
 </note>
 
-<header id="_case_study_logistic_science_pack">
+<h2 id="_case_study_logistic_science_pack">
   Case study: Logistic science pack
-</header>
+</h2>
 
 <p>
   The story goes: we've started the game, built a few mining drills
@@ -22,7 +22,9 @@
   up - <b>time for science!</b>
 </p>
 
-<p>Certainly, we need a handful of laboratories:</p>
+<p>
+  Certainly, we need a handful of laboratories:
+</p>
 
 <figure>
   <img src="{{ assets }}/factorio-laboratories.jpg" />
@@ -35,7 +37,9 @@
   <a href="https://wiki.factorio.com/Logistic_science_pack">logistic science packs</a>.
 </p>
 
-<p>As we can find on Factorio's Wiki:</p>
+<p>
+  As we can find on Factorio's Wiki:
+</p>
 
 <ul>
   <li>
@@ -61,7 +65,9 @@
   </li>
 </ul>
 
-<p>Let's start with a minimalistic textual format of:</p>
+<p>
+  Let's start with a minimalistic textual format of:
+</p>
 
 <listing>
   <!--
@@ -77,7 +83,9 @@
   </i>
 </p>
 
-<p>Translating the former ingredients, we get:</p>
+<p>
+  Translating the former ingredients, we get:
+</p>
 
 <listing>
   <!--
@@ -152,7 +160,9 @@
   </p>
 </note>
 
-<p>This was the first step.</p>
+<p>
+  This was the first step.
+</p>
 
 <p>
   So far, we've gathered all the knowledge about what needs to be fetched
@@ -161,11 +171,13 @@
   <b>where to place those assembly machines?</b>
 </p>
 
-<p>That's when graphs come into play.</p>
+<p>
+  That's when graphs come into play.
+</p>
 
-<header id="_introduction_to_graphs">
+<h2 id="_introduction_to_graphs">
   Introduction to graphs
-</header>
+</h2>
 
 <p>
   Graphs are structures used to model <b>relationships</b> between objects -
@@ -182,7 +194,9 @@
   on the image above) and <b>edges</b> (the lines connecting nodes).
 </p>
 
-<p>Graphs can be <b>undirected</b> (like the one above) or <b>directed</b>:</p>
+<p>
+  Graphs can be <b>undirected</b> (like the one above) or <b>directed</b>:
+</p>
 
 <figure>
   <img src="{{ assets }}/graph-2.svg" />
@@ -265,11 +279,13 @@
   </p>
 </note>
 
-<header id="_case_study_logistic_science_pack_cont">
+<h2 id="_case_study_logistic_science_pack_cont">
   Case study: Logistic science pack (cont.)
-</header>
+</h2>
 
-<p>Let's recall our recipe:</p>
+<p>
+  Let's recall our recipe:
+</p>
 
 <listing>
   <!--
@@ -303,7 +319,9 @@
   right?), first we have to translate it into the DOT language.
 </p>
 
-<p>Let's start with <code>logistic_science_pack</code>:</p>
+<p>
+  Let's start with <code>logistic_science_pack</code>:
+</p>
 
 <div class="col-graph">
   <div class="cg-body">
@@ -324,7 +342,9 @@
   </div>
 </div>
 
-<p>Now it's time for <code>inserter</code> and <code>transport_belt</code>:</p>
+<p>
+  Now it's time for <code>inserter</code> and <code>transport_belt</code>:
+</p>
 
 <div class="col-graph">
   <div class="cg-body">
@@ -352,7 +372,9 @@
   </div>
 </div>
 
-<p>And so on, and so forth, until we finally end up with:</p>
+<p>
+  And so on, and so forth, until we finally end up with:
+</p>
 
 <div class="col-graph">
   <input class="cg-expander" type="checkbox"/>
@@ -478,7 +500,9 @@
   </p>
 </note>
 
-<p>It looks somewhat better, but still kinda sloppy.</p>
+<p>
+  It looks somewhat better, but still kinda sloppy.
+</p>
 
 <p>
   Since in my factory I'm going to transport copper plates next to iron plates,
@@ -487,7 +511,9 @@
   both will effectively function as "inputs" to our module).
 </p>
 
-<p>To align nodes, we can use the <code>rank</code> instruction:</p>
+<p>
+  To align nodes, we can use the <code>rank</code> instruction:
+</p>
 
 <div class="col-graph">
   <input class="cg-expander" type="checkbox"/>
@@ -714,7 +740,9 @@
   </div>
 </div>
 
-<p>Seizing the day, let's make them all of the same size as well:</p>
+<p>
+  Seizing the day, let's make them all of the same size as well:
+</p>
 
 <div class="col-graph">
   <input class="cg-expander" type="checkbox"/>
@@ -836,9 +864,13 @@
   lay our graph out - we could reconstruct it almost 1:1 in the game!
 </p>
 
-<p>There's just one itsy-bitsy tiny thing we may still iterate on:</p>
+<p>
+  There's just one itsy-bitsy tiny thing we may still iterate on:
+</p>
 
-<p>Do you see that <code>iron_gear_wheel</code> near the centre?</p>
+<p>
+  Do you see that <code>iron_gear_wheel</code> near the centre?
+</p>
 
 <p>
   Currently it's responsible for producing wheels both for
@@ -962,13 +994,12 @@
   </div>
 </div>
 
-<p>Seems like we've made it! -- this our our toy at work:</p>
+<p>
+  Seems like we've made it! -- this our our toy at work:
+</p>
 
 <figure>
-  <video
-    controls=""
-    src="{{ assets }}/factorio-finished.webm">
-  </video>
+  <video src="{{ assets }}/factorio-finished.webm" />
 </figure>
 
 <p>
@@ -976,7 +1007,9 @@
   even so - <b>it's a success</b>!
 </p>
 
-<p>Now, there's a vast array of things we could still work on - mainly:</p>
+<p>
+  Now, there's a vast array of things we could still work on - mainly:
+</p>
 
 <p>
   Up to this point we didn't really care about <i>how long</i> it takes to
@@ -985,11 +1018,13 @@
   machine.
 </p>
 
-<p>Solving this issue is left as an exercise for the reader :-)</p>
+<p>
+  Solving this issue is left as an exercise for the reader :-)
+</p>
 
-<header id="_case_study_chemical_science_pack">
+<h2 id="_case_study_chemical_science_pack">
   Case study: Chemical science pack
-</header>
+</h2>
 
 <p>
   This one is actually going to be way shorter - let's skip all the ceremony and
@@ -1050,11 +1085,13 @@
   </a>
 </p>
 
-<header id="_summary_future_work">
+<h2 id="_summary_future_work">
   Summary & future work
-</header>
+</h2>
 
-<p>As with everything, so doesn't using Graphviz solve all our problems.</p>
+<p>
+  As with everything, so doesn't using Graphviz solve all our problems.
+</p>
 
 <p>
   I find it helpful in planning the <b>initial sketches</b> of various modules

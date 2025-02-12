@@ -1,13 +1,14 @@
-use super::{Element, MessageResult, Printer};
+use super::Printer;
+use crate::{Elem, Result};
 
 impl Printer<'_> {
-    pub(super) fn process_note(&mut self, el: Element) -> MessageResult<()> {
-        el.check_no_more_attrs()?;
+    pub(super) fn add_note(&mut self, el: Elem) -> Result<()> {
+        el.assert_no_attrs()?;
 
         _ = write!(self.out, r#"<aside class="note">"#);
 
         for el in el.children {
-            self.process(el)?;
+            self.add(el)?;
         }
 
         _ = write!(self.out, r#"</aside>"#);
