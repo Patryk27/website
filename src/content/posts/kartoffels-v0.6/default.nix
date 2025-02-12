@@ -1,5 +1,5 @@
 {
-  title = "kartoffels v0.6 released!";
+  title = "kartoffels v0.6: personal roomba, simplified api, compression";
   body = builtins.readFile ./body.html;
   assets = ./assets;
 
