@@ -3,8 +3,8 @@
   body = builtins.readFile ./body.html;
 
   tags = [
+    "cursed"
     "rust"
-    "tricks"
   ];
 
   publishedAt = {

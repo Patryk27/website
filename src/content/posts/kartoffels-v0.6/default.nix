@@ -7,6 +7,7 @@
     "gamedev"
     "kartoffels"
     "release"
+    "riscv"
     "rust"
   ];
 

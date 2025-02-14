@@ -4,6 +4,7 @@
   assets = ./assets;
 
   tags = [
+    "cursed"
     "dot"
     "factorio"
     "graph"
