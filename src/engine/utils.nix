@@ -1,5 +1,4 @@
 fw: {
-  linkFarmEx = import ./utils/link-farm-ex.nix fw;
   prettifyHtml = import ./utils/prettify-html.nix fw;
   renderFeed = import ../utils/render-feed.nix fw.pkgs;
   renderPost = import ../utils/render-post.nix fw.pkgs;

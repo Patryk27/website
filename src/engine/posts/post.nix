@@ -91,8 +91,6 @@ let
             body = builtins.replaceStrings (builtins.attrNames vars) (builtins.attrValues vars) post.body;
           };
 
-          sanitize = s: builtins.replaceStrings [ "\n" ] [ " " ] (fw.pkgs.lib.strings.trim s);
-
         in
         fw.components.page {
           title = post.title;
