@@ -25,19 +25,6 @@ pub struct Elem {
 }
 
 impl Elem {
-    pub fn attr_opt(&self, key: &str) -> Option<&Attr> {
-        self.attrs.iter().find(|attr| *attr.name == key)
-    }
-
-    pub fn attr(&self, key: &str) -> Result<&Attr> {
-        self.attr_opt(key).ok_or_else(|| {
-            Error::new(
-                format!("missing attribute: `{}`", key),
-                self.name.span(),
-            )
-        })
-    }
-
     pub fn remove_attr(&mut self, key: &str) -> Result<Attr> {
         self.remove_attr_opt(key).ok_or_else(|| {
             Error::new(
@@ -91,7 +78,19 @@ pub struct Attr {
 impl Attr {
     pub fn value(&self) -> Result<&Spanned<String>> {
         self.value.as_ref().ok_or_else(|| {
-            Error::new("attribute `{}` cannot be empty", self.name.span())
+            Error::new(
+                format!("attribute `{}` cannot be empty", self.name.as_str()),
+                self.name.span(),
+            )
+        })
+    }
+
+    pub fn into_value(self) -> Result<Spanned<String>> {
+        self.value.ok_or_else(|| {
+            Error::new(
+                format!("attribute `{}` cannot be empty", self.name.as_str()),
+                self.name.span(),
+            )
         })
     }
 }

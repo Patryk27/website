@@ -254,7 +254,7 @@
     </ref>
 
     Formally, this kind of "talking to another system" module is known as a
-    <b>bridge</b> or an <a ref><b>interop</b></a>.
+    <b>bridge</b> or an <a><b>interop</b></a>.
   </p>
 </note>
 
@@ -280,7 +280,7 @@
         https://doc.rust-lang.org/reference/linkage.html
       </ref>
 
-      We have to set <a ref><code>crate-type</code></a> to <code>cdylib</code>:
+      We have to set <a><code>crate-type</code></a> to <code>cdylib</code>:
     </p>
 
     <listing-title>
@@ -346,7 +346,7 @@
           https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md
         </ref>
 
-        The type we have to use, <a ref><code>cdylib</code></a>, stands for <b>C
+        The type we have to use, <a><code>cdylib</code></a>, stands for <b>C
         dynamic library</b> and it tells the compiler:
       </p>
 
@@ -390,8 +390,7 @@
         https://github.com/rustwasm/wasm-bindgen
       </ref>
 
-      We have to include <a ref><code>wasm-bindgen</code></a> in our
-      dependencies:
+      We have to include <a><code>wasm-bindgen</code></a> in our dependencies:
     </p>
 
     <listing-title>
@@ -594,8 +593,8 @@
         https://en.wikipedia.org/wiki/Forward_declaration
       </ref>
 
-      <code>lib_simulation_wasm.d.ts</code> contains <a ref>forward
-      declarations</a> for IDEs to provide type hints:
+      <code>lib_simulation_wasm.d.ts</code> contains <a>forward declarations</a>
+      for IDEs to provide type hints:
     </p>
 
     <listing-title>
@@ -715,7 +714,7 @@
             When you move a value from one function into another, when both
             functions work in different environments and/or when they are
             written in different languages, you make it <b>cross the foreign
-            function interface (<a ref>FFI</a>) boundary</b>:
+            function interface (<a>FFI</a>) boundary</b>:
           </p>
 
           <figure class="sketch w-80">
@@ -795,7 +794,7 @@
             </ref>
 
             (serialization isn't limited to human-readable formats such as JSON,
-            YAML or XML - there's also e.g. <a ref>Protocol Buffers</a>.)
+            YAML or XML - there's also e.g. <a>Protocol Buffers</a>.)
           </p>
         </li>
       </ul>
@@ -845,7 +844,7 @@
             </ref>
 
             <code>r0</code> which determines location of returned string in
-            memory (it's good-old <a ref>pointer</a>),
+            memory (it's good-old <a>pointer</a>),
           </p>
         </li>
         <li>
@@ -871,7 +870,7 @@
         </ref>
 
         (if you're further interested in the WebAssembly memory model,
-        <a ref>here’s</a> a nice introduction.)
+        <a>here’s</a> a nice introduction.)
       </p>
     </note>
   </li>
@@ -918,7 +917,7 @@
   </ref>
 
   Setting up a frontend requires a bit of boilerplate too - luckily, this time
-  we can use <code>npm init</code> to copy-paste the <a ref>WebAssembly frontend
+  we can use <code>npm init</code> to copy-paste the <a>WebAssembly frontend
   template project</a> for us:
 </p>
 
@@ -1015,8 +1014,8 @@
     https://en.wikipedia.org/wiki/Document_Object_Model
   </ref>
 
-  Overall, an HTML document describes a <a ref>tree representation</a> of the
-  web page:
+  Overall, an HTML document describes a <a>tree representation</a> of the web
+  page:
 </p>
 
 <listing lang="text">
@@ -1187,7 +1186,7 @@
     https://webpack.js.org/
   </ref>
 
-  This file contains configuration for <a ref>webpack</a>, which is​ kinda like
+  This file contains configuration for <a>webpack</a>, which is​ kinda like
   Cargo, but for JavaScript.
 </p>
 
@@ -1204,7 +1203,7 @@
           https://www.npmjs.com/
         </ref>
 
-        <a ref>npm</a> manages dependencies,
+        <a>npm</a> manages dependencies,
       </p>
     </li>
     <li>
@@ -1321,8 +1320,8 @@
         </ref>
 
         There's no <code>function main() { }</code>, that's because JavaScript
-        doesn't need one - all the code gets to be executed top-down
-        (<a ref>more or less</a>).
+        doesn't need one - all the code gets to be executed top-down (<a>more or
+        less</a>).
       </p>
     </note>
   </li>
@@ -1355,8 +1354,7 @@
     </ref>
 
     If the command above fails with <code>error:0308010C</code>, you might be
-    using <a ref>too new Node version</a> - in that case you should run it this
-    way:
+    using <a>too new Node version</a> - in that case you should run it this way:
   </p>
 
   <listing lang="shell">
@@ -1542,7 +1540,7 @@
       https://ianjk.com/ecs-in-rust/
     </ref>
 
-    There exists a cool pattern called <a ref><b>Entity Component System</b></a>
+    There exists a cool pattern called <a><b>Entity Component System</b></a>
     which allows to express certain model &lt;-&gt; property relationships (such
     as <code>animal &lt;-&gt; position</code>) in a bit different,
     cleaner-when-there-are-lots-of-properties way.
@@ -1610,7 +1608,7 @@
     https://en.wikipedia.org/wiki/Not_invented_here
   </ref>
 
-  🚨 it's the <a ref>not-invented-here</a> police 🚨
+  🚨 it's the <a>not-invented-here</a> police 🚨
 </p>
 
 <p>
@@ -2049,10 +2047,10 @@
     https://en.wikipedia.org/wiki/Separation_of_concerns
   </ref>
 
-  I think that it's important to remember about <a ref>separation of
-  concerns</a> - <code>lib-simulation</code> should be all about <i>"how to
-  simulate evolution"</i>, not <i>"how to simulate evolution <b>and</b>
-  integrate with WebAssembly"</i>.
+  I think that it's important to remember about <a>separation of concerns</a> -
+  <code>lib-simulation</code> should be all about <i>"how to simulate
+  evolution"</i>, not <i>"how to simulate evolution <b>and</b> integrate with
+  WebAssembly"</i>.
 </p>
 
 <p>
@@ -2176,7 +2174,7 @@
     https://docs.rs/getrandom/0.2.2/getrandom/#unsupported-targets
   </ref>
 
-  Being honest, this error took me by surprise - fortunately, the <a ref>linked
+  Being honest, this error took me by surprise - fortunately, the <a>linked
   page</a> describes what's going on quite well: <code>rand</code> internally
   depends on <code>getrandom</code>, which <i>does</i> support WebAssembly
   inside a web browser environment, but only when asked explicitly to:
@@ -2533,7 +2531,7 @@
   </ref>
 
   Drawing stuff in HTML + JavaScript is relatively painless - we'll use a thing
-  called <a ref><code>&lt;canvas&gt;</code></a>:
+  called <a><code>&lt;canvas&gt;</code></a>:
 </p>
 
 <listing-title>
@@ -2612,7 +2610,7 @@
     </ref>
 
     For reference, our <code>ctxt</code> here is of type
-    <a ref><code>CanvasRenderingContext2D</code></a>.
+    <a><code>CanvasRenderingContext2D</code></a>.
   </p>
 </note>
 
@@ -3853,9 +3851,9 @@
   </ref>
 
   Instead of blocking, we can use a function called
-  <a ref><code>requestAnimationFrame()</code></a> - it <b>schedules</b> a
-  function to be executed just before the next frame is drawn and it itself
-  finishes immediately:
+  <a><code>requestAnimationFrame()</code></a> - it <b>schedules</b> a function
+  to be executed just before the next frame is drawn and it itself finishes
+  immediately:
 </p>
 
 <listing-title>
@@ -4603,10 +4601,10 @@
     https://doc.rust-lang.org/reference/visibility-and-privacy.html
   </ref>
 
-  Previously, when all four structs were in the same file, Rust's
-  <a ref>visibility rules</a> allowed for all of them to access each other's
-  private fields. Now that our structs are in separate files, they can't access
-  non-pub fields anymore.
+  Previously, when all four structs were in the same file, Rust's <a>visibility
+  rules</a> allowed for all of them to access each other's private fields. Now
+  that our structs are in separate files, they can't access non-pub fields
+  anymore.
 </p>
 
 <p>
@@ -7775,8 +7773,8 @@
 
       If we wanted to witness birdies getting smarter and smarter, we'd have to
       wait around 10 generations (speaking from experience), so roughly 6.5
-      minutes. <b>6.5 minutes</b> of bluntly staring into the screen -
-      <a ref>what a waste of time</a>!
+      minutes. <b>6.5 minutes</b> of bluntly staring into the screen - <a>what a
+      waste of time</a>!
     </p>
 
     <p>
@@ -8015,7 +8013,7 @@
       https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
     </ref>
 
-    <a ref>Simplifying a bit</a>, you could say that only one line of JavaScript
+    <a>Simplifying a bit</a>, you could say that only one line of JavaScript
     code is running at a time - it's not possible to execute both
     <code>.step()</code> and <code>.train()</code> at once (which would also
     violate the <code>&mut self</code> requirement on the Rust's side); if user

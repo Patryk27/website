@@ -76,7 +76,7 @@
   Now, for the more difficult part - we have to decide how our project's
   structure will look like. Because our project will consist of many independent
   submodules (such as the neural network and genetic algorithm), a
-  <a ref>workspace</a> will come handy:
+  <a>workspace</a> will come handy:
 </p>
 
 <listing-title>
@@ -274,7 +274,7 @@
       https://doc.rust-lang.org/std/primitive.unit.html
     </ref>
 
-    ... with <code>()</code> being called <a ref>unit value</a> (or <b>unit
+    ... with <code>()</code> being called <a>unit value</a> (or <b>unit
     type</b>, depending on context).
   </p>
 
@@ -434,8 +434,8 @@
     </ref>
 
     For instance, Real Neural Networks™ are usually implemented using
-    <a ref>matrices</a> - if we ever decided to rewrite our network to use
-    matrices as well, then it wouldn't be a breaking change:
+    <a>matrices</a> - if we ever decided to rewrite our network to use matrices
+    as well, then it wouldn't be a breaking change:
     <code>Network::propagate()</code>'s signature would remain the same and
     since users can't access <code>Layer</code> and <code>Neuron</code>, they
     wouldn't be able to notice these two being gone.
@@ -1207,8 +1207,8 @@
     </ref>
 
     The <code>::&lt;&gt;</code> syntax used in the last line is called
-    <a ref>turbofish</a> - it allows to provide explicit generic arguments when
-    the compiler has troubles inferring them.
+    <a>turbofish</a> - it allows to provide explicit generic arguments when the
+    compiler has troubles inferring them.
   </p>
 </note>
 
@@ -1501,8 +1501,8 @@
       https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html#destructuring-to-break-apart-values
     </ref>
 
-    If you know about <a ref>destructuring</a>, you might've thought of
-    rewriting this loop even further:
+    If you know about <a>destructuring</a>, you might've thought of rewriting
+    this loop even further:
   </p>
 
   <listing lang="rust">
@@ -1697,8 +1697,8 @@
       https://www.reddit.com/r/rustjerk/comments/8udbth/a_new_war_begins_choose_your_side/
     </ref>
 
-    <code>|_|</code>, also known as <a ref>toilet closure</a>, is a function
-    which accepts an argument it doesn't care about.
+    <code>|_|</code>, also known as <a>toilet closure</a>, is a function which
+    accepts an argument it doesn't care about.
   </p>
 
   <p>
@@ -1723,8 +1723,8 @@
       https://doc.rust-lang.org/reference/patterns.html#destructuring
     </ref>
 
-    Also, the <code>_</code> itself is called a <a ref>placeholder</a> and it
-    can be used in a few different contexts:
+    Also, the <code>_</code> itself is called a <a>placeholder</a> and it can be
+    used in a few different contexts:
   </p>
 
   <listing lang="rust">
@@ -1802,13 +1802,15 @@
 </figure>
 
 <p>
-  <ref>
+  <ref id="1">
+    https://crates.io/crates/rand
+  </ref>
+  <ref id="2">
     https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
   </ref>
 
-  When it comes to PRNGs,
-  <a href="https://crates.io/crates/rand"><code>rand</code></a> is the
-  <b>de facto standard</b>, <a ref>extremely versatile</a> crate which allows to
+  When it comes to PRNGs, <a ref="1"><code>rand</code></a> is the <b>de facto
+  standard</b>, <a ref="2">extremely versatile</a> crate which allows to
   generate not only pseudo-random numbers, but also other types such as strings.
 </p>
 
@@ -2139,7 +2141,7 @@
       https://github.com/Patryk27/lxd-snapper/blob/9b096962122988abb3677a69ced244ea7cec2fa2/src/cmds/backup.rs#L159
     </ref>
 
-    I've done this <a ref>in the past</a> and it's proven to be very convenient.
+    I've done this <a>in the past</a> and it's proven to be very convenient.
   </p>
 
   <p>
@@ -2149,7 +2151,7 @@
 
     Due diligence: both <code>do_something()</code> and <code>random()</code>
     technically are <i>not</i> pure functions as they all lack a property called
-    <a ref>referential transparency</a> - although, if one's insistent, there's
+    <a>referential transparency</a> - although, if one's insistent, there's
     always:
   </p>
 
@@ -2404,9 +2406,9 @@
   </ref>
 
   This is the standard way to compare floats across all programming languages
-  that implement <a ref>IEEE 754</a> (so, like, all programming languages) -
-  instead of fishing for an exact result, you compare both numbers with a
-  <b>margin of error</b> (also called <b>tolerance</b>).
+  that implement <a>IEEE 754</a> (so, like, all programming languages) - instead
+  of fishing for an exact result, you compare both numbers with a <b>margin of
+  error</b> (also called <b>tolerance</b>).
 </p>
 
 <p>
@@ -2712,7 +2714,7 @@
     https://github.com/Patryk27/shorelark/tree/main/libs/neural-network
   </ref>
 
-  In the meantime, feel free to checkout <a ref>the source code</a>.
+  In the meantime, feel free to checkout <a>the source code</a>.
 </p>
 
 <h3>

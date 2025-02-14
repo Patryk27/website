@@ -1,8 +1,8 @@
-use crate::{Elem, Error, Node, Printer, Result};
+use crate::{Elem, Error, Node, Printer, Result, Spanned};
 
 impl Printer<'_> {
     pub(super) fn add_ref(&mut self, mut el: Elem) -> Result<()> {
-        let id_and_span = el.remove_attr_opt("id").and_then(|attr| attr.value);
+        let spanned_id = el.remove_attr_opt("id").and_then(|attr| attr.value);
 
         el.assert_no_attrs()?;
 
@@ -33,17 +33,17 @@ impl Printer<'_> {
         let span;
         let id;
 
-        if let Some(id_and_span) = id_and_span {
-            span = id_and_span.span();
-            id = Some(id_and_span.into_inner());
+        if let Some(spanned_id) = spanned_id {
+            span = spanned_id.span();
+            id = Some(spanned_id.into_inner());
         } else {
             span = el.name.span();
             id = None;
         }
 
-        if let Some((_, prev_span)) = self.refs.insert(id, (url, span)) {
+        if let Some(prev_url) = self.refs.insert(id, Spanned::new(url, span)) {
             return Err(Error::new("ref overwrites another ref", span)
-                .with_label("ref defined here before", prev_span));
+                .with_label("ref defined here before", prev_url.span()));
         }
 
         Ok(())

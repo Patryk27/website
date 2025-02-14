@@ -7,14 +7,14 @@ mod add_p;
 mod add_ref;
 mod add_video;
 
-use crate::{Elem, Error, Node, Result, Span};
+use crate::{Elem, Error, Node, Result, Spanned};
 use std::collections::BTreeMap;
 use std::fmt::Write;
 
 #[must_use = "call `.finish()` to emit warnings"]
 pub struct Printer<'a> {
     out: &'a mut dyn Write,
-    refs: BTreeMap<Option<String>, (String, Span)>,
+    refs: BTreeMap<Option<String>, Spanned<String>>,
 }
 
 impl<'a> Printer<'a> {
@@ -97,11 +97,11 @@ impl<'a> Printer<'a> {
     }
 
     pub fn finish(self) -> Result<()> {
-        if let Some((name, (_, span))) = self.refs.first_key_value() {
+        if let Some((name, url)) = self.refs.first_key_value() {
             return if let Some(name) = name {
-                Err(Error::new(format!("unused ref: `{}`", name), *span))
+                Err(Error::new(format!("unused ref: `{}`", name), url.span()))
             } else {
-                Err(Error::new("unused ref", *span))
+                Err(Error::new("unused ref", url.span()))
             };
         }
 

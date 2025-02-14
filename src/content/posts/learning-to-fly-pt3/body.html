@@ -401,7 +401,7 @@
     https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
   </ref>
 
-  Choosing individuals is called the <a ref>selection stage</a> of a genetic
+  Choosing individuals is called the <a>selection stage</a> of a genetic
   algorithm and it should satisfy the following two properties:
 </p>
 
@@ -527,7 +527,7 @@
     https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
   </ref>
 
-  As for the selection method, we'll use an algorithm called <a ref>fitness
+  As for the selection method, we'll use an algorithm called <a>fitness
   proportionate selection</a> (also known as <b>roulette wheel selection</b>),
   because it's easy to reason about - to understand how it works, let's imagine
   we've got the following three individuals:
@@ -1217,7 +1217,7 @@
       </ref>
 
       Since <code>.select()</code> returns just a single individual, how can we
-      be sure it's <a ref>random?</a>
+      be sure it's <a>random?</a>
     </p>
   </li>
 </ol>
@@ -1375,7 +1375,7 @@
     </ref>
 
     <code>X</code> axis represents items, <code>Y</code> axis represents
-    frequency; I hereby dub it <a ref>The Johnny Bravo Chart</a>
+    frequency; I hereby dub it <a>The Johnny Bravo Chart</a>
   </figcaption>
 </figure>
 
@@ -1447,7 +1447,7 @@
     </ref>
 
     We have to do that, because floating-point numbers in Rust don't implement
-    the <a ref><code>Ord</code></a> trait, making it impossible to use them as a
+    the <a><code>Ord</code></a> trait, making it impossible to use them as a
     <code>BTreeMap</code>'s key:
   </p>
 
@@ -2049,8 +2049,8 @@
         https://doc.rust-lang.org/stable/std/ops/trait.Index.html
       </ref>
 
-      There's <a ref><code>Index</code></a>, which allows you to use the
-      <b>indexing operator</b> - <code>[]</code> - on your type:
+      There's <a><code>Index</code></a>, which allows you to use the <b>indexing
+      operator</b> - <code>[]</code> - on your type:
     </p>
 
     <listing lang="rust">
@@ -2082,7 +2082,7 @@
         https://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html
       </ref>
 
-      There's <a ref><code>FromIterator</code></a>, which allows you to
+      There's <a><code>FromIterator</code></a>, which allows you to
       <code>.collect()</code> into your type:
     </p>
 
@@ -2114,7 +2114,7 @@
         https://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html
       </ref>
 
-      Finally, there's <a ref><code>IntoIterator</code></a>, which works in the
+      Finally, there's <a><code>IntoIterator</code></a>, which works in the
       opposite way - it converts a type into an iterator:
     </p>
 
@@ -2379,7 +2379,7 @@
     https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Examples
   </ref>
 
-  As for the crossover itself, there are <a ref>many</a> algorithms we could
+  As for the crossover itself, there are <a>many</a> algorithms we could
   implement - usually it's best to try a few of them and see whichever plays
   best with given problem, but for simplicity, we'll go with <b>uniform
   crossover</b>, which can be described with a single drawing:
@@ -2480,7 +2480,7 @@
   </ref>
 
   Second, let's use a <span class="text-rainbow">combinator</span> - we already
-  know this one from the previous post, it's <a ref><code>.zip()</code></a>:
+  know this one from the previous post, it's <a><code>.zip()</code></a>:
 </p>
 
 <listing-title>
@@ -2748,7 +2748,7 @@
 
     Contrary to <code>SelectionMethod::select()</code>,
     <code>CrossoverMethod::crossover()</code> doesn't contain any generic
-    parameters and <a ref>that’s why</a> we can <code>Box</code> it - another
+    parameters and <a>that’s why</a> we can <code>Box</code> it - another
     approach could be:
   </p>
 
@@ -3354,8 +3354,8 @@
 
   (instead of <code>enum</code>, you could also create two separate types
   like <code>TestIndividualWithChromosome</code> and
-  <code>TestIndividualWithFitness</code>, but that feels <a ref>too
-enterprisey</a> for me)
+  <code>TestIndividualWithFitness</code>, but that feels <a>too enterprisey</a>
+  for me)
 </p>
 
 <p>
