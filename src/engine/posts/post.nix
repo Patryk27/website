@@ -86,7 +86,7 @@ let
             "{{ assets }}" = "/posts/${postId}/assets";
           };
 
-          postBody = fw.utils.renderPost {
+          postBody = fw.horizon.renderPost {
             id = postId;
             body = builtins.replaceStrings (builtins.attrNames vars) (builtins.attrValues vars) post.body;
           };

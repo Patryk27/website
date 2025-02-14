@@ -48,6 +48,7 @@ let
     };
 
     components = import ./engine/components.nix fw;
+    horizon = import ./engine/horizon.nix fw;
     utils = import ./engine/utils.nix fw;
   };
 

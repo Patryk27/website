@@ -38,7 +38,7 @@ let
 
 in
 fw.pkgs.writeText "feed.xml" (
-  fw.utils.renderFeed {
+  fw.horizon.renderFeed {
     website = {
       objects = map mkObject fw.content.objects;
     };
