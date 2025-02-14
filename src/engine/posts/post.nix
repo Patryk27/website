@@ -93,6 +93,7 @@ let
 
         in
         fw.components.page {
+          id = "post-${postId}";
           title = post.title;
           layout = "post";
 

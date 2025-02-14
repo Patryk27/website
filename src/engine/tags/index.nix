@@ -33,6 +33,7 @@ let
 
 in
 fw.components.page {
+  id = "tags";
   title = "~/tags";
   layout = "tags";
 

@@ -13,6 +13,7 @@ let
 
 in
 fw.components.page {
+  id = "posts";
   title = "~/posts";
   layout = "posts";
 

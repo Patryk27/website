@@ -14,6 +14,7 @@ let
 
 in
 fw.components.page {
+  id = "tag-${tag}";
   title = "~/tags/${tag}";
   layout = "tag";
 

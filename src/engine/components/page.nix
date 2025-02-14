@@ -1,5 +1,6 @@
 fw:
 {
+  id,
   title,
   layout,
   head ? "",
@@ -58,8 +59,23 @@ let
       </nav>
     '';
 
+  prettify =
+    html:
+    fw.pkgs.runCommandLocal id
+      {
+        inherit html;
+        passAsFile = [ "html" ];
+      }
+      ''
+        cat $htmlPath \
+          | ${fw.pkgs.nodePackages.prettier}/bin/prettier \
+            --no-config \
+            --parser html \
+          > $out
+      '';
+
 in
-fw.utils.prettifyHtml ''
+prettify ''
   <!DOCTYPE html>
   <html>
   <head>

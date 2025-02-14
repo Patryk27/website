@@ -29,6 +29,7 @@ let
 
 in
 fw.components.page {
+  id = "index";
   title = "pwy.io | Patryk Wychowaniec";
   layout = "index";
 

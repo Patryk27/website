@@ -1,6 +1,7 @@
 fw: talkId:
 
 fw.components.page {
+  id = "talk-${talkId}";
   title = fw.content.talks.${talkId}.title;
   layout = "talk";
 
