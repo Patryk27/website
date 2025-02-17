@@ -1,5 +1,5 @@
 {
-  title = "kartoffels v0.6: Personal Roomba, Simplified API, Compression";
+  title = "kartoffels v0.7: Cellular Automata, Statistics, 32-bit RISC-V";
   body = builtins.readFile ./body.html;
   assets = ./assets;
 
@@ -7,13 +7,12 @@
     "gamedev"
     "kartoffels"
     "release"
-    "riscv"
     "rust"
   ];
 
   publishedAt = {
-    y = 2024;
-    m = 11;
-    d = 20;
+    y = 2025;
+    m = 2;
+    d = 17;
   };
 }

@@ -1,0 +1,343 @@
+<p>
+  kartoffels is a game where you're given a potato and your job is to implement
+  a firmware for it:
+</p>
+
+<figure>
+  <a href="https://kartoffels.pwy.io">
+    <img src="{{ assets }}/intro.png" />
+  </a>
+
+  <figcaption>
+    <a href="https://kartoffels.pwy.io" /> |
+    <code>ssh kartoffels.pwy.io</code> |
+    <a href="https://github.com/Patryk27/kartoffels/">source code</a>
+  </figcaption>
+</figure>
+
+<p>
+  Today I've released v0.7, which spans 122 commits and brings:
+</p>
+
+<h2 id="worldgen">
+  Cellular Automata Worldgen
+</h2>
+
+<p>
+  <ref>
+    https://en.wikipedia.org/wiki/The_Room
+  </ref>
+
+  Rooms are nice. I like rooms. Who doesn't like a room or two? They remind me
+  of my <a>favourite movie</a>, they are great. Anyway, at least that's what I
+  thought when I started implementing kartoffels:
+</p>
+
+<figure>
+  <img src="{{ assets }}/worldgen-rooms.png" />
+</figure>
+
+<p>
+  <ref>
+    https://www.roguebasin.com/index.php/Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels
+  </ref>
+
+  Everything changed when <s>the Fire Nation atta</s> I learned that you can use
+  <a>white noise paired with cellular automata</a> to generate some real
+  nice-looking caves. Real. Nice.
+</p>
+
+<figure>
+  <img src="{{ assets }}/worldgen-cave.png" />
+</figure>
+
+<p>
+  Here's the algorithm in live action. Seeing CA generate plausibly looking
+  caves out of pure noise is purely amazing:
+</p>
+
+<figure>
+  <video src="{{ assets }}/worldgen-cave.webm" />
+</figure>
+
+<p>
+  <ref>
+    https://github.com/Patryk27/kartoffels/blob/55d8b818cb9fe295924afe16cf9e5552599140eb/app/crates/kartoffels-world/src/theme/cave.rs
+  </ref>
+
+  <a>My algorithm</a> mostly follows recommendations given by roguebasin.com,
+  with the only major difference being in handling isolated caves.
+</p>
+
+<p>
+  You see, this entire algorithm is prone to creating disconnected parts of the
+  map:
+</p>
+
+<figure>
+  <img src="{{ assets }}/worldgen-disconnected.png" />
+
+  <figcaption>
+    One, two, three, fo... too many. too many caves.
+  </figcaption>
+</figure>
+
+<p>
+  <ref>
+    https://dwarffortresswiki.org/DF2014:Fun&redirect=no
+  </ref>
+
+  This is problematic, because kartoffels can't drill (and implementing drilling
+  mechanic would come with its own bag of problems...), so a robot with a bad
+  luck would just get spawned into one of those tiny caves and avoid all of the
+  <a>Fun</a>.
+</p>
+
+<p>
+  There are a couple of solutions to this problem - some smarter, some... not so
+  much. You could, for instance, join all the sub-caves together into a larger
+  cave system, possibly using Langton's Ant to make the corridors looks more
+  natural.
+</p>
+
+<p>
+  I have tried that, I have failed - brute force now is my name.
+</p>
+
+<p class="text-dim">
+  (to be specific - I couldn't get the corridors to look nice, you could always
+  see something's off there)
+</p>
+
+<p>
+  <ref id="1">
+    https://github.com/Patryk27/kartoffels/blob/55d8b818cb9fe295924afe16cf9e5552599140eb/app/crates/kartoffels-world/src/theme/cave.rs#L129
+  </ref>
+  <ref id="2">
+    https://github.com/Patryk27/kartoffels/blob/55d8b818cb9fe295924afe16cf9e5552599140eb/app/crates/kartoffels-world/src/theme/cave.rs#L173
+  </ref>
+  <ref id="3">
+    https://github.com/Patryk27/kartoffels/blob/55d8b818cb9fe295924afe16cf9e5552599140eb/app/crates/kartoffels-world/src/theme/cave.rs#L34
+  </ref>
+
+  My current approach simply <a ref="1">discovers</a> all caves on the map using
+  flood fill and then fills all caves except the largest one with stone. If
+  after this operation map ends up containing <a ref="2">less than 50% of
+  stone</a>, it is rejected and the worldgen is <a ref="3">repeated</a> on
+  another seed.
+</p>
+
+<p>
+  To avoid being a frustrating experience for the players ("<i>did the entire
+  map just reset ???</i>"), all of this actually happens before the animation -
+  by the time the map is presented, we already know that its seed is golden.
+</p>
+
+<h2 id="statistics">
+  Statistics
+</h2>
+
+<p>
+  Following the example of Google, Amazon, and a couple of other companies, the
+  engine now intimately tracks the history of each bot - recording every birth,
+  death, movement, and stab:
+</p>
+
+<figure>
+  <img src="{{ assets }}/statistics-stats.png" />
+
+  <figcaption>
+    <ref>
+      https://github.com/ratatui/ratatui
+    </ref>
+
+    <a>ratatui's</a> chart showing some bot's scores across time
+  </figcaption>
+</figure>
+
+<figure>
+  <img src="{{ assets }}/statistics-events.png" />
+</figure>
+
+<figure>
+  <img src="{{ assets }}/statistics-lives.png" />
+</figure>
+
+<p>
+  There are no world-wide leaderboards yet, but the data is being recorded - I'm
+  hoping to implement things like "what was the best bot in the previous 24h" in
+  the next version.
+</p>
+
+<h2 id="riscv">
+  32-bit RISC-V
+</h2>
+
+<p>
+  <ref>
+    https://github.com/Patryk27/kartoffels/tree/df846d089c68c22683fe44e4dd687b26e46036f5/app/crates/kartoffels-cpu
+  </ref>
+
+  Each kartoffel is equipped with an arm, compass, motor, radar, serial port,
+  and - of course - <a>a CPU!</a>
+</p>
+
+<p>
+  <ref>
+    https://en.wikipedia.org/wiki/RISC-V
+  </ref>
+
+  Up until this version, the game emulated the 64-bit <a>RISC-V</a> architecture
+  (aka RV64) and this version changes it to the 32-bit one (aka RV32). There's a
+  couple of reasons behind this:
+</p>
+
+<ul>
+  <li>
+    <p>
+      Each bot has only 128 kB of RAM, so there's no point in providing a 64-bit
+      address space.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      RV64 has more instructions, making it the more difficult variant to
+      emulate.
+    </p>
+
+    <p>
+      In particular there's a lot of instructions such as "do this, but in
+      32-bits" (e.g. <code>addiw</code>) that you simply don't have to implement
+      otherwise.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      Binaries compiled for RV64 are larger.
+    </p>
+
+    <p>
+      <ref>
+        https://github.com/Patryk27/kartoffels/blob/df846d089c68c22683fe44e4dd687b26e46036f5/app/crates/kartoffels-prefabs/src/chl-personal-roomba.rs#L1
+      </ref>
+
+      This of course depends on what your program (firmware) actually does, but
+      <a>the heaviest bot I have</a> weighs 59 kB compiled for RV64 and just 50
+      kB compiled for RV32. It might not seem like a lot, but since the
+      firmware's size counts towards RAM usage, and you're given 128 kB for
+      everything, every kilobyte counts.
+    </p>
+  </li>
+</ul>
+
+<p>
+  Unfortunately, especially paired with the worldgen change, this has forced me
+  to reset the server, wiping all the bots uploaded so far. Let me honor the
+  memory of some of the souls that perished:
+</p>
+
+<figure>
+  <img src="{{ assets }}/riscv-cornerbot.png" />
+
+  <figcaption>
+    Kaylie's cornerbot, one of the very first bots uploaded - must've been like
+    8 months ago!
+  </figcaption>
+</figure>
+
+<figure>
+  <img src="{{ assets }}/riscv-krab.png" />
+
+  <figcaption>
+    verwijder krab, sounds like Dutch!
+  </figcaption>
+</figure>
+
+<figure>
+  <img src="{{ assets }}/riscv-logger.png" />
+
+  <figcaption>
+    a logging boi!
+  </figcaption>
+</figure>
+
+<figure>
+  <img src="{{ assets }}/riscv-pwning.png" />
+
+  <figcaption>
+    a pwning girl!
+  </figcaption>
+</figure>
+
+<figure>
+  <img src="{{ assets }}/riscv-safe.png" />
+
+  <figcaption>
+    a bot that feels safe and at ease, who wouldn't want a place like that!
+  </figcaption>
+</figure>
+
+<h2 id="ui">
+  Interface changes
+</h2>
+
+<p>
+  Next to all the new goodies, a couple of already existing windows and widgets
+  got redesigned - in particular the <code>bots</code> dialog can now be fully
+  operated using just the keyboard:
+</p>
+
+<figure>
+  <img src="{{ assets }}/ui-bots.png" />
+</figure>
+
+<h2 id="other-things">
+  Other things
+</h2>
+
+<ul>
+  <li>
+    <p>
+      Bots can now <span class="text-rainbow">move backward</span>.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      Couple of cooldowns got changed, especially around motors.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      API documentation got reworked to be more thorough.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      <ref>
+        https://github.com/Patryk27/kartoffels/blob/df846d089c68c22683fe44e4dd687b26e46036f5/app/crates/kartoffels-world/src/lib.rs#L265
+      </ref>
+
+      Engine got reworked to use <code>bevy_ecs</code>, viva la
+      <a>schedulation</a>.
+    </p>
+  </li>
+
+  <li>
+    <p>
+      If you don't want to or can't play the online version, you can now build
+      and run kartoffels locally. This has always been supported, it's just that
+      now the instructions (n.b. rather straightforward, since it's just a Rust
+      project) are written down in README.
+    </p>
+  </li>
+</ul>
+
+<p>
+  Anyway, <a href="https://kartoffels.pwy.io">come and play!</a>
+  (or <code>ssh kartoffels.pwy.io</code>)
+</p>
