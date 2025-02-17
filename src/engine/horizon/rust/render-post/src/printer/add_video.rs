@@ -10,10 +10,16 @@ impl Printer<'_> {
 
         self.add_ex(Elem {
             name: Spanned::dummy("video".into()),
-            attrs: vec![Attr {
-                name: Spanned::dummy("src".into()),
-                value: Some(src.clone()),
-            }],
+            attrs: vec![
+                Attr {
+                    name: Spanned::dummy("src".into()),
+                    value: Some(src.clone()),
+                },
+                Attr {
+                    name: Spanned::dummy("controls".into()),
+                    value: None,
+                },
+            ],
             children: Default::default(),
         })
     }

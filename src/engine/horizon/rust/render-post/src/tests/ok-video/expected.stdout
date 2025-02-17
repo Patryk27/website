@@ -1,1 +1,1 @@
-<video src="https://foo/bar.jpg"></video>
+<video src="https://foo/bar.jpg" controls></video>
