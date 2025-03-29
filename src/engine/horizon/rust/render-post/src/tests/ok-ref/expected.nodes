@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "ref",
                 span: Span {
-                    beg: 1,
-                    end: 3,
+                    start: 1,
+                    end: 4,
                 },
             },
             attrs: [
@@ -13,16 +13,16 @@ Elem(
                     name: Spanned {
                         inner: "id",
                         span: Span {
-                            beg: 5,
-                            end: 6,
+                            start: 5,
+                            end: 7,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "a",
                             span: Span {
-                                beg: 8,
-                                end: 10,
+                                start: 8,
+                                end: 11,
                             },
                         },
                     ),
@@ -33,16 +33,16 @@ Elem(
                     Spanned {
                         inner: "\n    http://a.com\n",
                         span: Span {
-                            beg: 12,
-                            end: 29,
+                            start: 12,
+                            end: 30,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 0,
-            end: 35,
+            start: 0,
+            end: 36,
         },
     },
 )
@@ -50,8 +50,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 36,
-            end: 37,
+            start: 36,
+            end: 38,
         },
     },
 )
@@ -61,8 +61,8 @@ Elem(
             name: Spanned {
                 inner: "ref",
                 span: Span {
-                    beg: 39,
-                    end: 41,
+                    start: 39,
+                    end: 42,
                 },
             },
             attrs: [
@@ -70,16 +70,16 @@ Elem(
                     name: Spanned {
                         inner: "id",
                         span: Span {
-                            beg: 43,
-                            end: 44,
+                            start: 43,
+                            end: 45,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "b",
                             span: Span {
-                                beg: 46,
-                                end: 48,
+                                start: 46,
+                                end: 49,
                             },
                         },
                     ),
@@ -90,16 +90,16 @@ Elem(
                     Spanned {
                         inner: "\n    http://b.com\n",
                         span: Span {
-                            beg: 50,
-                            end: 67,
+                            start: 50,
+                            end: 68,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 38,
-            end: 73,
+            start: 38,
+            end: 74,
         },
     },
 )
@@ -107,8 +107,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 74,
-            end: 75,
+            start: 74,
+            end: 76,
         },
     },
 )
@@ -118,8 +118,8 @@ Elem(
             name: Spanned {
                 inner: "a",
                 span: Span {
-                    beg: 77,
-                    end: 77,
+                    start: 77,
+                    end: 78,
                 },
             },
             attrs: [
@@ -127,16 +127,16 @@ Elem(
                     name: Spanned {
                         inner: "ref",
                         span: Span {
-                            beg: 79,
-                            end: 81,
+                            start: 79,
+                            end: 82,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "a",
                             span: Span {
-                                beg: 83,
-                                end: 85,
+                                start: 83,
+                                end: 86,
                             },
                         },
                     ),
@@ -147,16 +147,16 @@ Elem(
                     Spanned {
                         inner: "a.com",
                         span: Span {
-                            beg: 87,
-                            end: 91,
+                            start: 87,
+                            end: 92,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 76,
-            end: 95,
+            start: 76,
+            end: 96,
         },
     },
 )
@@ -164,8 +164,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 96,
-            end: 96,
+            start: 96,
+            end: 97,
         },
     },
 )
@@ -175,8 +175,8 @@ Elem(
             name: Spanned {
                 inner: "a",
                 span: Span {
-                    beg: 98,
-                    end: 98,
+                    start: 98,
+                    end: 99,
                 },
             },
             attrs: [
@@ -184,16 +184,16 @@ Elem(
                     name: Spanned {
                         inner: "ref",
                         span: Span {
-                            beg: 100,
-                            end: 102,
+                            start: 100,
+                            end: 103,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "b",
                             span: Span {
-                                beg: 104,
-                                end: 106,
+                                start: 104,
+                                end: 107,
                             },
                         },
                     ),
@@ -204,16 +204,16 @@ Elem(
                     Spanned {
                         inner: "b.com",
                         span: Span {
-                            beg: 108,
-                            end: 112,
+                            start: 108,
+                            end: 113,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 97,
-            end: 116,
+            start: 97,
+            end: 117,
         },
     },
 )
@@ -221,8 +221,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 117,
-            end: 118,
+            start: 117,
+            end: 119,
         },
     },
 )
@@ -232,8 +232,8 @@ Elem(
             name: Spanned {
                 inner: "ref",
                 span: Span {
-                    beg: 120,
-                    end: 122,
+                    start: 120,
+                    end: 123,
                 },
             },
             attrs: [],
@@ -242,16 +242,16 @@ Elem(
                     Spanned {
                         inner: "\n  http://c.com\n",
                         span: Span {
-                            beg: 124,
-                            end: 139,
+                            start: 124,
+                            end: 140,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 119,
-            end: 145,
+            start: 119,
+            end: 146,
         },
     },
 )
@@ -259,8 +259,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 146,
-            end: 147,
+            start: 146,
+            end: 148,
         },
     },
 )
@@ -270,8 +270,8 @@ Elem(
             name: Spanned {
                 inner: "a",
                 span: Span {
-                    beg: 149,
-                    end: 149,
+                    start: 149,
+                    end: 150,
                 },
             },
             attrs: [],
@@ -280,16 +280,16 @@ Elem(
                     Spanned {
                         inner: "c.com",
                         span: Span {
-                            beg: 151,
-                            end: 155,
+                            start: 151,
+                            end: 156,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 148,
-            end: 159,
+            start: 148,
+            end: 160,
         },
     },
 )
@@ -297,8 +297,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 160,
-            end: 161,
+            start: 160,
+            end: 162,
         },
     },
 )
@@ -308,8 +308,8 @@ Elem(
             name: Spanned {
                 inner: "ref",
                 span: Span {
-                    beg: 163,
-                    end: 165,
+                    start: 163,
+                    end: 166,
                 },
             },
             attrs: [],
@@ -318,16 +318,16 @@ Elem(
                     Spanned {
                         inner: "\n  http://d.com\n",
                         span: Span {
-                            beg: 167,
-                            end: 182,
+                            start: 167,
+                            end: 183,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 162,
-            end: 188,
+            start: 162,
+            end: 189,
         },
     },
 )
@@ -335,8 +335,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 189,
-            end: 190,
+            start: 189,
+            end: 191,
         },
     },
 )
@@ -346,8 +346,8 @@ Elem(
             name: Spanned {
                 inner: "a",
                 span: Span {
-                    beg: 192,
-                    end: 192,
+                    start: 192,
+                    end: 193,
                 },
             },
             attrs: [],
@@ -356,16 +356,16 @@ Elem(
                     Spanned {
                         inner: "d.com",
                         span: Span {
-                            beg: 194,
-                            end: 198,
+                            start: 194,
+                            end: 199,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 191,
-            end: 202,
+            start: 191,
+            end: 203,
         },
     },
 )
@@ -373,8 +373,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 203,
-            end: 203,
+            start: 203,
+            end: 204,
         },
     },
 )

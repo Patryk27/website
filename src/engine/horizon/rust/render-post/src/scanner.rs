@@ -78,7 +78,7 @@ impl<'a> Scanner<'a> {
             }
         }
 
-        out.span_mut().end = self.pos - 1;
+        out.span_mut().end = self.pos;
 
         self.context.pop();
 
@@ -105,7 +105,7 @@ impl<'a> Scanner<'a> {
             }
         }
 
-        out.span_mut().end = self.pos - 3;
+        out.span_mut().end = self.pos - 2;
 
         self.context.pop();
 
@@ -122,7 +122,7 @@ impl<'a> Scanner<'a> {
             self.elem_children(&mut out)?;
         }
 
-        out.span_mut().end = self.pos - 1;
+        out.span_mut().end = self.pos;
 
         self.context.pop();
 
@@ -130,11 +130,11 @@ impl<'a> Scanner<'a> {
     }
 
     fn elem_tag(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
-        out.name.span_mut().beg = self.pos;
+        out.name.span_mut().start = self.pos;
 
         let expect_attrs = self.elem_tag_name(out)?;
 
-        out.name.span_mut().end = self.pos - 2;
+        out.name.span_mut().end = self.pos - 1;
 
         let expect_children = if expect_attrs {
             self.elem_tag_attrs(out)?
@@ -164,7 +164,7 @@ impl<'a> Scanner<'a> {
                     return Err(Error::new(
                         "unexpected character",
                         Span::char(self.pos - 1),
-                    ))
+                    ));
                 }
             }
         }
@@ -189,12 +189,12 @@ impl<'a> Scanner<'a> {
                         return Err(Error::new(
                             "unexpected character",
                             Span::char(self.pos - 1),
-                        ))
+                        ));
                     }
                 }
             };
 
-            name.span_mut().end = self.pos - 2;
+            name.span_mut().end = self.pos - 1;
 
             if !name.is_empty() {
                 if expect == "attr-value" {
@@ -210,7 +210,7 @@ impl<'a> Scanner<'a> {
                         }
                     }
 
-                    value.span_mut().end = self.pos - 1;
+                    value.span_mut().end = self.pos;
 
                     out.attrs.push(Attr {
                         name,
@@ -286,12 +286,12 @@ impl<'a> Scanner<'a> {
                     return Err(Error::new(
                         "unexpected character",
                         Span::char(self.pos - 1),
-                    ))
+                    ));
                 }
             }
         }
 
-        out.span_mut().end = self.pos - 1;
+        out.span_mut().end = self.pos;
 
         self.context.pop();
 

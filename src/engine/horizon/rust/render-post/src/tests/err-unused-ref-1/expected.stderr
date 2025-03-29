@@ -1,5 +1,5 @@
 [31merror:[0m unused ref: `b`
-   ╭─[input:5:9]
+   ╭─[ <unknown>:5:9 ]
    │
  5 │ <ref id="b">
    │         ─┬─  

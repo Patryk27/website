@@ -1,4 +1,3 @@
-#![feature(extract_if)]
 #![feature(try_blocks)]
 
 mod node;
@@ -12,7 +11,7 @@ use self::printer::*;
 use self::result::*;
 use self::scanner::*;
 use self::span::*;
-use anyhow::{anyhow, Context, Result as AResult};
+use anyhow::{Context, Result as AResult, anyhow};
 use common::Env;
 
 fn main() -> AResult<()> {

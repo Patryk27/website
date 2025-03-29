@@ -1,13 +1,13 @@
 [package]
 name = "render-post"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0"
-ariadne = "0.4.0"
+ariadne = "0.5.1"
 common = { path = "../common" }
-itertools = "0.12.1"
+itertools = "0.14.0"
 
 [dev-dependencies]
 test-case = "3.3.1"

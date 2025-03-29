@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use chrono::{DateTime, NaiveDate, TimeZone, Utc};
 use common::Env;
 use rss::extension::atom::{self, AtomExtensionBuilder, Link};

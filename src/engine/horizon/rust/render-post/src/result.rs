@@ -1,9 +1,9 @@
 use crate::Span;
 use ariadne::{Color, Label, Report, ReportKind, Source};
-use std::fmt;
 use std::io::Write;
+use std::{error, fmt, result};
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
 pub struct Error {
@@ -27,7 +27,7 @@ impl Error {
     }
 }
 
-impl std::error::Error for Error {
+impl error::Error for Error {
     //
 }
 
@@ -50,19 +50,14 @@ impl<'a, 'b> ErrorReporter<'a, 'b> {
     pub fn report(&mut self, msg: Error) -> anyhow::Result<()> {
         let mut report = Report::build(
             ReportKind::Custom("error", Color::Red),
-            "input",
-            msg.span.beg,
+            msg.span.as_range(),
         )
         .with_message(&msg.body)
-        .with_label(
-            Label::new(("input", msg.span.beg..(msg.span.end + 1)))
-                .with_message(&msg.body),
-        );
+        .with_label(Label::new(msg.span.as_range()).with_message(&msg.body));
 
         for (label_body, label_span) in msg.labels {
             report = report.with_label(
-                Label::new(("input", label_span.beg..(label_span.end + 1)))
-                    .with_message(label_body),
+                Label::new(label_span.as_range()).with_message(label_body),
             );
         }
 
@@ -74,7 +69,7 @@ impl<'a, 'b> ErrorReporter<'a, 'b> {
 
         report
             .finish()
-            .write(("input", Source::from(self.src)), &mut self.out)?;
+            .write(Source::from(self.src), &mut self.out)?;
 
         Ok(())
     }

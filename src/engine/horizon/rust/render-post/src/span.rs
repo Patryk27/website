@@ -1,22 +1,29 @@
 use std::cmp::Ordering;
-use std::ops::{Deref, DerefMut};
+use std::ops::{Deref, DerefMut, Range};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Span {
-    pub beg: usize,
+    pub start: usize,
     pub end: usize,
 }
 
 impl Span {
     pub fn char(pos: usize) -> Self {
-        Self { beg: pos, end: pos }
+        Self {
+            start: pos,
+            end: pos + 1,
+        }
+    }
+
+    pub fn as_range(&self) -> Range<usize> {
+        self.start..self.end
     }
 }
 
 impl Default for Span {
     fn default() -> Self {
         Self {
-            beg: usize::MAX,
+            start: usize::MAX,
             end: usize::MAX,
         }
     }

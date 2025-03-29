@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "listing",
                 span: Span {
-                    beg: 1,
-                    end: 7,
+                    start: 1,
+                    end: 8,
                 },
             },
             attrs: [],
@@ -14,8 +14,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 9,
-                            end: 11,
+                            start: 9,
+                            end: 12,
                         },
                     },
                 ),
@@ -23,8 +23,8 @@ Elem(
                     Spanned {
                         inner: "\n    fn main() {\n        println!(\"hello\");\n    }\n  ",
                         span: Span {
-                            beg: 16,
-                            end: 68,
+                            start: 16,
+                            end: 69,
                         },
                     },
                 ),
@@ -32,8 +32,8 @@ Elem(
                     Spanned {
                         inner: "\n\n  ",
                         span: Span {
-                            beg: 71,
-                            end: 74,
+                            start: 71,
+                            end: 75,
                         },
                     },
                 ),
@@ -41,8 +41,8 @@ Elem(
                     Spanned {
                         inner: "\n    fn main() {\n        println!(\"world\");\n    }\n  ",
                         span: Span {
-                            beg: 79,
-                            end: 131,
+                            start: 79,
+                            end: 132,
                         },
                     },
                 ),
@@ -50,16 +50,16 @@ Elem(
                     Spanned {
                         inner: "\n",
                         span: Span {
-                            beg: 134,
-                            end: 134,
+                            start: 134,
+                            end: 135,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 0,
-            end: 144,
+            start: 0,
+            end: 145,
         },
     },
 )

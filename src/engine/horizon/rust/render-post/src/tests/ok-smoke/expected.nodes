@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "p",
                 span: Span {
-                    beg: 1,
-                    end: 1,
+                    start: 1,
+                    end: 2,
                 },
             },
             attrs: [],
@@ -14,16 +14,16 @@ Elem(
                     Spanned {
                         inner: "\n  Hello, World!\n",
                         span: Span {
-                            beg: 3,
-                            end: 19,
+                            start: 3,
+                            end: 20,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 0,
-            end: 23,
+            start: 0,
+            end: 24,
         },
     },
 )
@@ -31,8 +31,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 24,
-            end: 25,
+            start: 24,
+            end: 26,
         },
     },
 )
@@ -42,8 +42,8 @@ Elem(
             name: Spanned {
                 inner: "table",
                 span: Span {
-                    beg: 27,
-                    end: 31,
+                    start: 27,
+                    end: 32,
                 },
             },
             attrs: [],
@@ -52,8 +52,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 33,
-                            end: 35,
+                            start: 33,
+                            end: 36,
                         },
                     },
                 ),
@@ -63,8 +63,8 @@ Elem(
                             name: Spanned {
                                 inner: "thead",
                                 span: Span {
-                                    beg: 37,
-                                    end: 41,
+                                    start: 37,
+                                    end: 42,
                                 },
                             },
                             attrs: [],
@@ -73,8 +73,8 @@ Elem(
                                     Spanned {
                                         inner: "\n    ",
                                         span: Span {
-                                            beg: 43,
-                                            end: 47,
+                                            start: 43,
+                                            end: 48,
                                         },
                                     },
                                 ),
@@ -84,8 +84,8 @@ Elem(
                                             name: Spanned {
                                                 inner: "tr",
                                                 span: Span {
-                                                    beg: 49,
-                                                    end: 50,
+                                                    start: 49,
+                                                    end: 51,
                                                 },
                                             },
                                             attrs: [],
@@ -94,8 +94,8 @@ Elem(
                                                     Spanned {
                                                         inner: "\n      ",
                                                         span: Span {
-                                                            beg: 52,
-                                                            end: 58,
+                                                            start: 52,
+                                                            end: 59,
                                                         },
                                                     },
                                                 ),
@@ -105,8 +105,8 @@ Elem(
                                                             name: Spanned {
                                                                 inner: "td",
                                                                 span: Span {
-                                                                    beg: 60,
-                                                                    end: 61,
+                                                                    start: 60,
+                                                                    end: 62,
                                                                 },
                                                             },
                                                             attrs: [],
@@ -115,16 +115,16 @@ Elem(
                                                                     Spanned {
                                                                         inner: "first",
                                                                         span: Span {
-                                                                            beg: 63,
-                                                                            end: 67,
+                                                                            start: 63,
+                                                                            end: 68,
                                                                         },
                                                                     },
                                                                 ),
                                                             ],
                                                         },
                                                         span: Span {
-                                                            beg: 59,
-                                                            end: 72,
+                                                            start: 59,
+                                                            end: 73,
                                                         },
                                                     },
                                                 ),
@@ -132,16 +132,16 @@ Elem(
                                                     Spanned {
                                                         inner: "\n    ",
                                                         span: Span {
-                                                            beg: 73,
-                                                            end: 77,
+                                                            start: 73,
+                                                            end: 78,
                                                         },
                                                     },
                                                 ),
                                             ],
                                         },
                                         span: Span {
-                                            beg: 48,
-                                            end: 82,
+                                            start: 48,
+                                            end: 83,
                                         },
                                     },
                                 ),
@@ -149,16 +149,16 @@ Elem(
                                     Spanned {
                                         inner: "\n  ",
                                         span: Span {
-                                            beg: 83,
-                                            end: 85,
+                                            start: 83,
+                                            end: 86,
                                         },
                                     },
                                 ),
                             ],
                         },
                         span: Span {
-                            beg: 36,
-                            end: 93,
+                            start: 36,
+                            end: 94,
                         },
                     },
                 ),
@@ -166,8 +166,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 94,
-                            end: 96,
+                            start: 94,
+                            end: 97,
                         },
                     },
                 ),
@@ -177,8 +177,8 @@ Elem(
                             name: Spanned {
                                 inner: "tbody",
                                 span: Span {
-                                    beg: 98,
-                                    end: 102,
+                                    start: 98,
+                                    end: 103,
                                 },
                             },
                             attrs: [],
@@ -187,8 +187,8 @@ Elem(
                                     Spanned {
                                         inner: "\n    ",
                                         span: Span {
-                                            beg: 104,
-                                            end: 108,
+                                            start: 104,
+                                            end: 109,
                                         },
                                     },
                                 ),
@@ -198,8 +198,8 @@ Elem(
                                             name: Spanned {
                                                 inner: "tr",
                                                 span: Span {
-                                                    beg: 110,
-                                                    end: 111,
+                                                    start: 110,
+                                                    end: 112,
                                                 },
                                             },
                                             attrs: [],
@@ -208,8 +208,8 @@ Elem(
                                                     Spanned {
                                                         inner: "\n      ",
                                                         span: Span {
-                                                            beg: 113,
-                                                            end: 119,
+                                                            start: 113,
+                                                            end: 120,
                                                         },
                                                     },
                                                 ),
@@ -219,8 +219,8 @@ Elem(
                                                             name: Spanned {
                                                                 inner: "td",
                                                                 span: Span {
-                                                                    beg: 121,
-                                                                    end: 122,
+                                                                    start: 121,
+                                                                    end: 123,
                                                                 },
                                                             },
                                                             attrs: [],
@@ -229,16 +229,16 @@ Elem(
                                                                     Spanned {
                                                                         inner: "second",
                                                                         span: Span {
-                                                                            beg: 124,
-                                                                            end: 129,
+                                                                            start: 124,
+                                                                            end: 130,
                                                                         },
                                                                     },
                                                                 ),
                                                             ],
                                                         },
                                                         span: Span {
-                                                            beg: 120,
-                                                            end: 134,
+                                                            start: 120,
+                                                            end: 135,
                                                         },
                                                     },
                                                 ),
@@ -246,16 +246,16 @@ Elem(
                                                     Spanned {
                                                         inner: "\n    ",
                                                         span: Span {
-                                                            beg: 135,
-                                                            end: 139,
+                                                            start: 135,
+                                                            end: 140,
                                                         },
                                                     },
                                                 ),
                                             ],
                                         },
                                         span: Span {
-                                            beg: 109,
-                                            end: 144,
+                                            start: 109,
+                                            end: 145,
                                         },
                                     },
                                 ),
@@ -263,8 +263,8 @@ Elem(
                                     Spanned {
                                         inner: "\n    ",
                                         span: Span {
-                                            beg: 145,
-                                            end: 149,
+                                            start: 145,
+                                            end: 150,
                                         },
                                     },
                                 ),
@@ -272,8 +272,8 @@ Elem(
                                     Spanned {
                                         inner: " comment ",
                                         span: Span {
-                                            beg: 154,
-                                            end: 163,
+                                            start: 154,
+                                            end: 164,
                                         },
                                     },
                                 ),
@@ -281,16 +281,16 @@ Elem(
                                     Spanned {
                                         inner: "\n  ",
                                         span: Span {
-                                            beg: 166,
-                                            end: 168,
+                                            start: 166,
+                                            end: 169,
                                         },
                                     },
                                 ),
                             ],
                         },
                         span: Span {
-                            beg: 97,
-                            end: 176,
+                            start: 97,
+                            end: 177,
                         },
                     },
                 ),
@@ -298,16 +298,16 @@ Elem(
                     Spanned {
                         inner: "\n",
                         span: Span {
-                            beg: 177,
-                            end: 177,
+                            start: 177,
+                            end: 178,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 26,
-            end: 185,
+            start: 26,
+            end: 186,
         },
     },
 )
@@ -315,8 +315,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 186,
-            end: 187,
+            start: 186,
+            end: 188,
         },
     },
 )
@@ -326,8 +326,8 @@ Elem(
             name: Spanned {
                 inner: "p",
                 span: Span {
-                    beg: 189,
-                    end: 189,
+                    start: 189,
+                    end: 190,
                 },
             },
             attrs: [],
@@ -336,8 +336,8 @@ Elem(
                     Spanned {
                         inner: "\n  Hello, ",
                         span: Span {
-                            beg: 191,
-                            end: 200,
+                            start: 191,
+                            end: 201,
                         },
                     },
                 ),
@@ -347,8 +347,8 @@ Elem(
                             name: Spanned {
                                 inner: "b",
                                 span: Span {
-                                    beg: 202,
-                                    end: 202,
+                                    start: 202,
+                                    end: 203,
                                 },
                             },
                             attrs: [],
@@ -357,16 +357,16 @@ Elem(
                                     Spanned {
                                         inner: "World",
                                         span: Span {
-                                            beg: 204,
-                                            end: 208,
+                                            start: 204,
+                                            end: 209,
                                         },
                                     },
                                 ),
                             ],
                         },
                         span: Span {
-                            beg: 201,
-                            end: 212,
+                            start: 201,
+                            end: 213,
                         },
                     },
                 ),
@@ -374,16 +374,16 @@ Elem(
                     Spanned {
                         inner: "!\n",
                         span: Span {
-                            beg: 213,
-                            end: 214,
+                            start: 213,
+                            end: 215,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 188,
-            end: 218,
+            start: 188,
+            end: 219,
         },
     },
 )
@@ -391,8 +391,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 219,
-            end: 219,
+            start: 219,
+            end: 220,
         },
     },
 )

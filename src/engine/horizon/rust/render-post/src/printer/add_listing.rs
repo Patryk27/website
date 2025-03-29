@@ -14,7 +14,7 @@ impl Printer<'_> {
             Error::new("expected comment to start with a newline", span)
         })?;
 
-        span = Span::char(span.beg + 1);
+        span = Span::char(span.start + 1);
 
         let indent = listing
             .chars()
@@ -44,7 +44,7 @@ impl Printer<'_> {
                 highlights.push(line_idx + 1);
             }
 
-            span = Span::char(span.beg + line.len() + 1);
+            span = Span::char(span.start + line.len() + 1);
 
             // --
 

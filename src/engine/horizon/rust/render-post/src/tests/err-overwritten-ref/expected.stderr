@@ -1,5 +1,5 @@
 [31merror:[0m ref overwrites another ref
-   ╭─[input:5:9]
+   ╭─[ <unknown>:5:9 ]
    │
  1 │ <ref id="a">
    │         ─┬─  

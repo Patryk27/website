@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "img",
                 span: Span {
-                    beg: 1,
-                    end: 3,
+                    start: 1,
+                    end: 4,
                 },
             },
             attrs: [
@@ -13,16 +13,16 @@ Elem(
                     name: Spanned {
                         inner: "src",
                         span: Span {
-                            beg: 5,
-                            end: 7,
+                            start: 5,
+                            end: 8,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "https://foo/bar.jpg",
                             span: Span {
-                                beg: 9,
-                                end: 29,
+                                start: 9,
+                                end: 30,
                             },
                         },
                     ),
@@ -31,8 +31,8 @@ Elem(
             children: [],
         },
         span: Span {
-            beg: 0,
-            end: 32,
+            start: 0,
+            end: 33,
         },
     },
 )
@@ -40,8 +40,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 33,
-            end: 33,
+            start: 33,
+            end: 34,
         },
     },
 )
@@ -51,8 +51,8 @@ Elem(
             name: Spanned {
                 inner: "img",
                 span: Span {
-                    beg: 35,
-                    end: 37,
+                    start: 35,
+                    end: 38,
                 },
             },
             attrs: [
@@ -60,16 +60,16 @@ Elem(
                     name: Spanned {
                         inner: "src",
                         span: Span {
-                            beg: 39,
-                            end: 41,
+                            start: 39,
+                            end: 42,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "{{ assets }}/zar.jpg",
                             span: Span {
-                                beg: 43,
-                                end: 64,
+                                start: 43,
+                                end: 65,
                             },
                         },
                     ),
@@ -78,16 +78,16 @@ Elem(
                     name: Spanned {
                         inner: "class",
                         span: Span {
-                            beg: 66,
-                            end: 70,
+                            start: 66,
+                            end: 71,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "image",
                             span: Span {
-                                beg: 72,
-                                end: 78,
+                                start: 72,
+                                end: 79,
                             },
                         },
                     ),
@@ -96,8 +96,8 @@ Elem(
             children: [],
         },
         span: Span {
-            beg: 34,
-            end: 81,
+            start: 34,
+            end: 82,
         },
     },
 )
@@ -105,8 +105,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 82,
-            end: 82,
+            start: 82,
+            end: 83,
         },
     },
 )

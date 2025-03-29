@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "a",
                 span: Span {
-                    beg: 1,
-                    end: 1,
+                    start: 1,
+                    end: 2,
                 },
             },
             attrs: [
@@ -13,16 +13,16 @@ Elem(
                     name: Spanned {
                         inner: "href",
                         span: Span {
-                            beg: 3,
-                            end: 6,
+                            start: 3,
+                            end: 7,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "https://google.com",
                             span: Span {
-                                beg: 8,
-                                end: 27,
+                                start: 8,
+                                end: 28,
                             },
                         },
                     ),
@@ -33,16 +33,16 @@ Elem(
                     Spanned {
                         inner: "Google",
                         span: Span {
-                            beg: 29,
-                            end: 34,
+                            start: 29,
+                            end: 35,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 0,
-            end: 38,
+            start: 0,
+            end: 39,
         },
     },
 )
@@ -50,8 +50,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 39,
-            end: 39,
+            start: 39,
+            end: 40,
         },
     },
 )

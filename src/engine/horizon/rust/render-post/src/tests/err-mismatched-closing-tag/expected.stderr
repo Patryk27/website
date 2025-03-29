@@ -1,5 +1,5 @@
 [31merror:[0m mismatched closing tag, expected `</note>`
-   ╭─[input:5:1]
+   ╭─[ <unknown>:5:1 ]
    │
  1 │ <note>
    │ ┬  

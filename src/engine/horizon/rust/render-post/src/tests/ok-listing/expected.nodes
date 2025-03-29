@@ -4,8 +4,8 @@ Elem(
             name: Spanned {
                 inner: "p",
                 span: Span {
-                    beg: 1,
-                    end: 1,
+                    start: 1,
+                    end: 2,
                 },
             },
             attrs: [],
@@ -14,16 +14,16 @@ Elem(
                     Spanned {
                         inner: "\n  before listings\n",
                         span: Span {
-                            beg: 3,
-                            end: 21,
+                            start: 3,
+                            end: 22,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 0,
-            end: 25,
+            start: 0,
+            end: 26,
         },
     },
 )
@@ -31,8 +31,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 26,
-            end: 27,
+            start: 26,
+            end: 28,
         },
     },
 )
@@ -42,8 +42,8 @@ Elem(
             name: Spanned {
                 inner: "listing",
                 span: Span {
-                    beg: 29,
-                    end: 35,
+                    start: 29,
+                    end: 36,
                 },
             },
             attrs: [],
@@ -52,8 +52,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 37,
-                            end: 39,
+                            start: 37,
+                            end: 40,
                         },
                     },
                 ),
@@ -61,8 +61,8 @@ Elem(
                     Spanned {
                         inner: "\n    fn main() {\n        println!(\"First Listing\");\n    }\n  ",
                         span: Span {
-                            beg: 44,
-                            end: 104,
+                            start: 44,
+                            end: 105,
                         },
                     },
                 ),
@@ -70,16 +70,16 @@ Elem(
                     Spanned {
                         inner: "\n",
                         span: Span {
-                            beg: 107,
-                            end: 107,
+                            start: 107,
+                            end: 108,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 28,
-            end: 117,
+            start: 28,
+            end: 118,
         },
     },
 )
@@ -87,8 +87,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 118,
-            end: 119,
+            start: 118,
+            end: 120,
         },
     },
 )
@@ -98,8 +98,8 @@ Elem(
             name: Spanned {
                 inner: "listing-title",
                 span: Span {
-                    beg: 121,
-                    end: 133,
+                    start: 121,
+                    end: 134,
                 },
             },
             attrs: [],
@@ -108,16 +108,16 @@ Elem(
                     Spanned {
                         inner: "\n  some python code\n",
                         span: Span {
-                            beg: 135,
-                            end: 154,
+                            start: 135,
+                            end: 155,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 120,
-            end: 170,
+            start: 120,
+            end: 171,
         },
     },
 )
@@ -125,8 +125,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 171,
-            end: 172,
+            start: 171,
+            end: 173,
         },
     },
 )
@@ -136,8 +136,8 @@ Elem(
             name: Spanned {
                 inner: "listing",
                 span: Span {
-                    beg: 174,
-                    end: 180,
+                    start: 174,
+                    end: 181,
                 },
             },
             attrs: [
@@ -145,16 +145,16 @@ Elem(
                     name: Spanned {
                         inner: "lang",
                         span: Span {
-                            beg: 182,
-                            end: 185,
+                            start: 182,
+                            end: 186,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "python",
                             span: Span {
-                                beg: 187,
-                                end: 194,
+                                start: 187,
+                                end: 195,
                             },
                         },
                     ),
@@ -163,16 +163,16 @@ Elem(
                     name: Spanned {
                         inner: "class",
                         span: Span {
-                            beg: 196,
-                            end: 200,
+                            start: 196,
+                            end: 201,
                         },
                     },
                     value: Some(
                         Spanned {
                             inner: "listing-invalid",
                             span: Span {
-                                beg: 202,
-                                end: 218,
+                                start: 202,
+                                end: 219,
                             },
                         },
                     ),
@@ -183,8 +183,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 220,
-                            end: 222,
+                            start: 220,
+                            end: 223,
                         },
                     },
                 ),
@@ -192,8 +192,8 @@ Elem(
                     Spanned {
                         inner: "\n  = def main():\n  =\n  =     print \"Second Listing\"\n  =\n  ",
                         span: Span {
-                            beg: 227,
-                            end: 285,
+                            start: 227,
+                            end: 286,
                         },
                     },
                 ),
@@ -201,16 +201,16 @@ Elem(
                     Spanned {
                         inner: "\n",
                         span: Span {
-                            beg: 288,
-                            end: 288,
+                            start: 288,
+                            end: 289,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 173,
-            end: 298,
+            start: 173,
+            end: 299,
         },
     },
 )
@@ -218,8 +218,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 299,
-            end: 300,
+            start: 299,
+            end: 301,
         },
     },
 )
@@ -229,8 +229,8 @@ Elem(
             name: Spanned {
                 inner: "listing",
                 span: Span {
-                    beg: 302,
-                    end: 308,
+                    start: 302,
+                    end: 309,
                 },
             },
             attrs: [],
@@ -239,8 +239,8 @@ Elem(
                     Spanned {
                         inner: "\n  ",
                         span: Span {
-                            beg: 310,
-                            end: 312,
+                            start: 310,
+                            end: 313,
                         },
                     },
                 ),
@@ -248,8 +248,8 @@ Elem(
                     Spanned {
                         inner: "\n    fn main() {\n  =     println!(\"Third Listing\");\n    }\n  ",
                         span: Span {
-                            beg: 317,
-                            end: 377,
+                            start: 317,
+                            end: 378,
                         },
                     },
                 ),
@@ -257,16 +257,16 @@ Elem(
                     Spanned {
                         inner: "\n",
                         span: Span {
-                            beg: 380,
-                            end: 380,
+                            start: 380,
+                            end: 381,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 301,
-            end: 390,
+            start: 301,
+            end: 391,
         },
     },
 )
@@ -274,8 +274,8 @@ Text(
     Spanned {
         inner: "\n\n",
         span: Span {
-            beg: 391,
-            end: 392,
+            start: 391,
+            end: 393,
         },
     },
 )
@@ -285,8 +285,8 @@ Elem(
             name: Spanned {
                 inner: "p",
                 span: Span {
-                    beg: 394,
-                    end: 394,
+                    start: 394,
+                    end: 395,
                 },
             },
             attrs: [],
@@ -295,16 +295,16 @@ Elem(
                     Spanned {
                         inner: "\n  after listings\n",
                         span: Span {
-                            beg: 396,
-                            end: 413,
+                            start: 396,
+                            end: 414,
                         },
                     },
                 ),
             ],
         },
         span: Span {
-            beg: 393,
-            end: 417,
+            start: 393,
+            end: 418,
         },
     },
 )
@@ -312,8 +312,8 @@ Text(
     Spanned {
         inner: "\n",
         span: Span {
-            beg: 418,
-            end: 418,
+            start: 418,
+            end: 419,
         },
     },
 )
