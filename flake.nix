@@ -56,43 +56,18 @@
         };
 
         apps = {
-          default =
-            let
-              app = pkgs.writeText "app.py" ''
-                import http.server
+          default = utils.lib.mkApp {
+            drv =
+              let
+                python = pkgs.python3.withPackages (ps: [
+                  ps.watchdog
+                ]);
 
-                class Server(http.server.ThreadingHTTPServer):
-                    def finish_request(self, request, client_address):
-                        self.RequestHandlerClass(
-                            request,
-                            client_address,
-                            self,
-                            directory="${defaultPackage}"
-                        )
-
-                class Handler(http.server.SimpleHTTPRequestHandler):
-                    def end_headers(self):
-                        self.send_my_headers()
-                        http.server.SimpleHTTPRequestHandler.end_headers(self)
-
-                    def send_my_headers(self):
-                        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-                        self.send_header("Pragma", "no-cache")
-                        self.send_header("Expires", "0")
-
-                http.server.test(
-                    ServerClass=Server,
-                    HandlerClass=Handler,
-                    port=3080
-                )
+              in
+              pkgs.writeShellScriptBin "app" ''
+                ${python}/bin/python ${./src/app.py}
               '';
-
-            in
-            utils.lib.mkApp {
-              drv = pkgs.writeShellScriptBin "run" ''
-                ${pkgs.python3}/bin/python ${app}
-              '';
-            };
+          };
 
           render-sketch = utils.lib.mkApp {
             drv = import ./src/utils/render-sketch.nix pkgs;
