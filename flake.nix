@@ -47,7 +47,7 @@
         };
 
       in
-      rec {
+      {
         defaultPackage = import ./src/engine.nix {
           inherit pkgs;
 
