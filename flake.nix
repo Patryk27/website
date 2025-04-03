@@ -8,6 +8,11 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
+    # TODO https://gitlab.com/inkscape/inkscape/-/issues/4878
+    nixpkgs-inkscape = {
+      url = "github:nixos/nixpkgs/nixos-22.11";
+    };
+
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
 
@@ -28,6 +33,7 @@
       self,
       crane,
       nixpkgs,
+      nixpkgs-inkscape,
       rust-overlay,
       utils,
     }:
@@ -44,6 +50,10 @@
 
         pkgs = pkgs' // {
           inherit crane;
+        };
+
+        pkgs-inkscape = import nixpkgs-inkscape {
+          inherit system;
         };
 
       in
@@ -69,8 +79,8 @@
               '';
           };
 
-          render-sketch = utils.lib.mkApp {
-            drv = import ./src/utils/render-sketch.nix pkgs;
+          pdf2img = utils.lib.mkApp {
+            drv = import ./src/utils/pdf2img.nix pkgs-inkscape;
           };
         };
 

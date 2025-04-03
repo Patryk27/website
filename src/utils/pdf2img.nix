@@ -17,19 +17,18 @@ let
   };
 
 in
-pkgs.writeShellScriptBin "render-sketch" ''
+pkgs.writeShellScriptBin "pdf2img" ''
   input="$1"
   page="$2"
   output="$3"
 
   if [[ -z "$input" || -z "$page" || -z "$output" ]]; then
-      echo "usage:"
-      echo "    nix run .#render-sketch -- file.pdf 1 sketch.png"
-      exit 0
+      echo "invalid usage"
+      exit 1
   fi
 
   ${inkscape}/bin/inkscape \
-      --export-filename=/tmp/sketch.svg \
+      --export-filename=$output \
       --pdf-page=$page \
       --export-area-drawing \
       $input
