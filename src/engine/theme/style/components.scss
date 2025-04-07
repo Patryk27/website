@@ -18,7 +18,7 @@
 }
 
 .col-graph {
-  @media only screen and (min-width: 992px) {
+  @media print, (min-width: 992px) {
     margin-left: -150px;
     width: ($body-width + 2 * 150px);
     text-align: center;
@@ -50,7 +50,7 @@
     display: flex;
     flex-direction: column;
 
-    @media only screen and (min-width: 992px) {
+    @media print, (min-width: 992px) {
       flex-direction: row;
       justify-content: center;
       gap: 1em;
@@ -102,7 +102,7 @@
   display: inline-block;
   margin-top: 0.25em;
 
-  @media only screen and (min-width: 992px) {
+  @media print, (min-width: 992px) {
     margin-top: 0;
   }
 }
@@ -110,7 +110,7 @@
 .post-meta-tags,
 .talk-meta-tags,
 .talk-meta-resources {
-  @media only screen and (min-width: 992px) {
+  @media print, (min-width: 992px) {
     display: inline-block;
     padding-left: 0.7em;
     margin-left: 0.5em;
