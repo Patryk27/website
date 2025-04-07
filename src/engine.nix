@@ -15,34 +15,46 @@ let
         lib.lists.unique (lib.lists.flatten (map (obj: obj.tags) fw.content.objects))
       );
 
-      object =
-        type: id:
-        if type == "post" then
-          {
-            inherit id;
-
-            type = "post";
-            tags = fw.content.posts.${id}.tags or [ ];
-            date = fw.content.posts.${id}.publishedAt;
-          }
-        else if type == "talk" then
-          {
-            inherit id;
-
-            type = "talk";
-            tags = fw.content.talks.${id}.tags or [ ];
-            date = fw.content.talks.${id}.when;
-          }
-        else
-          throw "unknown object type: ${type}";
-
       objects =
         let
-          posts = map (fw.content.object "post") (builtins.attrNames fw.content.posts);
-          talks = map (fw.content.object "talk") (builtins.attrNames fw.content.talks);
+          mkPost =
+            id:
+            let
+              post = fw.content.posts.${id};
+
+            in
+            if post ? publishedAt then
+              {
+                inherit id;
+
+                type = "post";
+                tags = post.tags or [ ];
+                date = post.publishedAt;
+              }
+            else
+              null;
+
+          mkTalk =
+            id:
+            let
+              talk = fw.content.talks.${id};
+
+            in
+            {
+              inherit id;
+
+              type = "talk";
+              tags = talk.tags or [ ];
+              date = talk.when;
+            };
+
+          posts' = map mkPost (builtins.attrNames fw.content.posts);
+          posts = builtins.filter (post: post != null) posts';
+
+          talks = map mkTalk (builtins.attrNames fw.content.talks);
 
         in
-        builtins.sort (a: b: fw.utils.dateLessThat b.date a.date) (posts ++ talks);
+        builtins.sort (a: b: fw.utils.dateLt b.date a.date) (posts ++ talks);
 
       findObjectsByTag = tag: builtins.filter (obj: builtins.elem tag obj.tags) fw.content.objects;
     };

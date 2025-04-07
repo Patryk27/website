@@ -2,7 +2,7 @@ fw:
 
 let
   talkIds = builtins.sort (
-    a: b: fw.utils.dateLessThat fw.content.talks.${b}.when fw.content.talks.${a}.when
+    a: b: fw.utils.dateLt fw.content.talks.${b}.when fw.content.talks.${a}.when
   ) (builtins.attrNames fw.content.talks);
 
   renderTalk =

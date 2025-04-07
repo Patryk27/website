@@ -19,13 +19,26 @@ let
         </h1>
 
         <div class="post-meta">
-          <div class="post-meta-time">
-            ${fw.components.date "%M %d, %y" post.publishedAt}
-          </div>
-
-          <div class="post-meta-tags">
-            ${toString (map tag (post.tags or [ ]))}
-          </div>
+          ${
+            if post ? publishedAt then
+              ''
+                <div class="post-meta-time">
+                  ${fw.components.date "%M %d, %y" post.publishedAt}
+                </div>
+              ''
+            else
+              ""
+          }
+          ${
+            if post ? tags then
+              ''
+                <div class="post-meta-tags">
+                  ${toString (map tag (post.tags or [ ]))}
+                </div>
+              ''
+            else
+              ""
+          }
         </div>
       </div>
     '';
