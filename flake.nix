@@ -89,6 +89,19 @@
             python3Packages.pygments
           ];
         };
+
+        formatter = pkgs.writeShellApplication {
+          name = "nixfmt-wrapper";
+
+          runtimeInputs = with pkgs; [
+            fd
+            nixfmt-rfc-style
+          ];
+
+          text = ''
+            fd "$@" -t f -e nix -x nixfmt '{}'
+          '';
+        };
       }
     );
 }
