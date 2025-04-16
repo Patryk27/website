@@ -694,10 +694,10 @@
               // this date must be an occurrence of the underlying event.
               Span::zero()
           } else {
-              // If any of the rules doesn't match, return a guess as to when
-              // the next occurrence might be. We can underapproximate, but we
-              // can't overshoot, so let's take an epsilon of one second - can't
-              // go wrong with it!
+              // If any of the rules don't match, return a guess as to when the
+              // next occurrence might be. We can underapproximate, but we can't
+              // overshoot, so let's take an epsilon of one second - can't go
+              // wrong with it!
               //
               // (that's because recurrence rules don't support milliseconds - a
               // second is the lowest unit.)
