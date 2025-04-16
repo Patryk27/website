@@ -253,7 +253,7 @@
       let mut curr = recur.dtstart;
 
       loop {
-          if curr.by_month_day.is_empty() {
+          if recur.by_month_day.is_empty() {
               // FREQ=MONTHLY;INTERVAL=3 simply repeats the DTSTART with
               // consecutive freq-based increments
 
@@ -262,7 +262,7 @@
               // FREQ=MONTHLY;BYMONTHDAY=10,20,30 creates *new* dates that are
               // based on the currently iterated-over date
 
-              for day in curr.by_month_day {
+              for day in recur.by_month_day {
                   yield curr.with_day(day);
               }
           }
@@ -672,13 +672,13 @@
       Box::new(move |curr: Date| -> Span {
           // Check if `curr` matches any of the `BYDAY` rules
           // (evaluates to `true` if `by_day` is empty)
-          let matches_by_day = curr.by_day.iter().any(|wd| {
+          let matches_by_day = recur.by_day.iter().any(|wd| {
               curr.weekday() == wd
           });
 
           // Check if `curr` matches any of the `BYMONTHDAY` rules
           // (evaluates to `true` when `by_month_day` is empty)
-          let matches_by_month_day = curr.by_month_day.iter().any(|md| {
+          let matches_by_month_day = recur.by_month_day.iter().any(|md| {
               curr.month_day() == md
           });
 
