@@ -25,7 +25,7 @@ in
 
     <div class="talk-meta">
       <div class="talk-meta-time">
-        ${fw.components.date "%M %d, %y" talk.when} @ ${talk.where}
+        ${fw.components.date talk.when} @ ${talk.where}
       </div>
 
       ${

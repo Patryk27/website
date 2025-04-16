@@ -1,0 +1,2120 @@
+<p>
+  Recently I've been <s>cursed</s> blessed with the opportunity of implementing
+  a library for operating on iCalendar files. If you haven't heard of them, you
+  probably have - it's the format used to transfer e-mail RSVPs, to name a
+  thing:
+</p>
+
+<figure>
+  <img src="{{ assets }}/candles.png" />
+</figure>
+
+<p>
+  <ref>
+    https://www.rfc-editor.org/rfc/rfc2445
+  </ref>
+
+  Despite iCal's age - <a>RFC 2245</a> is dated 1998, same as the
+  Clinton-Lewinsky scandal - I think it's a Pretty Good Format™. It's
+  reasonably easy to print and parse:
+</p>
+
+<listing lang="text">
+  <!--
+  BEGIN:VEVENT
+  UID:1234-1234-1234-1234
+  DTSTAMP:20250608T160000Z
+  DTSTART:20250628T160000Z
+  DTEND:20250628T190000Z
+  SUMMARY:Found some good candles in my neighbour's trash, gonna snort 'em.
+  CATEGORIES:BUSINESS
+  END:VEVENT
+  -->
+</listing>
+
+<p>
+  ... and supports a ton of things - today the limelight shines on
+  <b>recurring events</b>.
+</p>
+
+<h2 id="its-a-date">
+  It's a Date!
+</h2>
+
+<p>
+  I'm a simple boy - to me <i>recurring</i> means a simple thing like "every
+  day" or "every week"; world ain't no simple place, though.
+</p>
+
+<style>
+  ._rules span {
+    display: inline-block;
+  }
+
+  ._rules span:nth-child(3n + 0) {
+    color: #72a4b2;
+  }
+
+  ._rules span:nth-child(3n + 1) {
+    color: #b27283;
+  }
+
+  ._rules span:nth-child(3n + 2) {
+    color: #74a962;
+  }
+
+  ._rules span:nth-child(4n + 0) {
+    transform: rotate(-5deg);
+  }
+
+  ._rules span:nth-child(4n + 1) {
+    transform: rotate(+10deg);
+  }
+
+  ._rules span:nth-child(4n + 2) {
+    transform: rotate(-15deg);
+  }
+
+  ._rules span:nth-child(4n + 3) {
+    transform: rotate(10deg);
+  }
+</style>
+
+<div class="_rules">
+  <span>
+    every day
+  </span>
+  <span>
+    every hour
+  </span>
+  <span>
+    every week
+  </span>
+  <span>
+    every second Monday
+  </span>
+  <span>
+    every year starting from 2018-02-29
+  </span>
+  <span>
+    every last Wednesday of every third year
+  </span>
+  <span>
+    every fourth Sunday every other January at 12:34:56
+  </span>
+  <span>
+    every last Tuesday every fifth month starting from 2018-03 at noon
+  </span>
+  <span>
+    every last work day on each other month from 2018-04 onwards, unless it's
+    2018-01-01
+  </span>
+</div>
+
+<p>
+  How do we tame this? iCalendar proposes we define:
+</p>
+
+<ul>
+  <li>
+    <code>FREQ</code>, saying how an event repeats (hourly, daily, weekly, ...),
+  </li>
+  <li>
+    <code>DTSTART</code>, saying from when an event repeats,
+  </li>
+</ul>
+
+<p>
+  ... and that's basically it, at least when it comes to required properties:
+</p>
+
+<listing-title>
+  FREQ=HOURLY;DTSTART=20180101T120000
+</listing-title>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-01 12:00:00
+  -> 2018-01-01 13:00:00
+  -> 2018-01-01 14:00:00
+  -> [...]
+  -->
+</listing>
+
+<p class="text-dim">
+  (yes, this blog is a proud user of the european date format - if you don't
+  want to see yyyy-mm-dd's, please press alt-f4 and go back to boycotting bud
+  light or something)
+</p>
+
+<p>
+  We can also specify <code>INTERVAL</code>, which produces multiplies of the
+  frequency:
+</p>
+
+<listing-title>
+  FREQ=DAILY;INTERVAL=3;DTSTART=20180101T120000
+</listing-title>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-01 12:00:00
+  -> 2018-01-04 12:00:00
+  -> 2018-01-07 12:00:00
+  -> [...]
+  -->
+</listing>
+
+<p>
+  But that's boring, that's something you could've come up with on your own -
+  here's something fun:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;INTERVAL=2;BYMONTHDAY=1,-1;BYDAY=MO;DTSTART=20180101
+</listing-title>
+
+<listing lang="text">
+  <!--
+  starting from 2018-01, repeat every other month on its first and last day, but
+  only if that day is Monday:
+
+  -> 2018-01-01
+  -> 2019-07-01
+  -> 2019-09-30
+  -> 2020-11-30
+  -->
+</listing>
+
+<p>
+  ... and here's something pragmatic:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1;DTSTART=20180131
+</listing-title>
+
+<listing lang="text">
+  <!--
+  starting from 2018-01, repeat every month on its last workday:
+
+  -> 2018-01-31 (Wednesday)
+  -> 2018-02-28 (Wednesday)
+  -> 2018-03-30 (Friday)
+  -> [...]
+  -->
+</listing>
+
+<p>
+  You might see where this is going:
+</p>
+
+<p class="text-center text-bold">
+  given an iCal formula, how do we figure out when it repeats?
+</p>
+
+<h2 id="computer-love">
+  Computer Liebe
+</h2>
+
+<p>
+  Sounds easy, right? Or maybe not easy-easy, but - like - doable.
+</p>
+
+<p>
+  Even if you're aware of potential roadblocks (how's repeating defined across
+  time zone transitions?), you might have this thought that <i>intuitively</i>
+  this shouldn't be a terribly difficult thing to implement.
+</p>
+
+<p>
+  And you'd be right, somewhat.
+</p>
+
+<p>
+  Most implementations tend to have some sort of hand-unrolled,
+  frequency-specific logic:
+</p>
+
+<listing lang="rust">
+  <!--
+  fn iter(recur: &Recur) -> impl Iterator<Item = DateTime> {
+      match recur.freq {
+          "yearly" => iter_yearly(recur),
+          "monthly" => iter_monthly(recur),
+          "daily" => iter_daily(recur),
+          /* ... */
+      }
+  }
+
+  /* ... */
+
+  fn iter_monthly(recur: &Recur) -> impl Iterator<Item = DateTime> {
+      let mut curr = recur.dtstart;
+
+      loop {
+          if curr.by_month_day.is_empty() {
+              // FREQ=MONTHLY;INTERVAL=3 simply repeats the DTSTART with
+              // consecutive freq-based increments
+
+              yield curr;
+          } else {
+              // FREQ=MONTHLY;BYMONTHDAY=10,20,30 creates *new* dates that are
+              // based on the currently iterated-over date
+
+              for day in curr.by_month_day {
+                  yield curr.with_day(day);
+              }
+          }
+
+          curr += Span::Year * recur.interval;
+      } 
+  }
+
+  /* ... */
+  -->
+</listing>
+
+<p>
+  That's because depending on context, a parameter can function either as a
+  filter:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  for day in days_since(dtstart) {
+      if day.is(Monday) {
+          yield day;
+      }
+  }
+  -->
+</listing>
+
+<p>
+  ... or as a generator:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;BYDAY=MO
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  for month in months_since(dtstart) {
+      for day in month.every(Monday) {
+          yield day;
+      }
+  }
+  -->
+</listing>
+
+<p>
+  RFC collects all of those cases into a rather spooky-looking table:
+</p>
+
+<figure>
+  <img src="{{ assets }}/expand-limit.png" />
+</figure>
+
+<p>
+  <ref id="1">
+    https://github.com/libical/libical
+  </ref>
+  <ref id="2">
+    https://github.com/libical/libical/issues/795
+  </ref>
+
+  ... whose apparent complexity is what causes libraries to implement iCal
+  features just partially, like with <a ref="1">libical</a> and the
+  <a ref="2">BYSETPOS</a> rule - since it must be provided for each context in
+  which it appears, it's naturally implemented only for the common use cases.
+</p>
+
+<p class="text-dim">
+  (not a nitpick towards libical, it's just an example i'm aware of.)
+</p>
+
+<p>
+  That's the way I started my implementation as well, but something about it
+  felt off to me - I had a feeling there must be a better way to approach this.
+</p>
+
+<p>
+  I began to imagine those recurrence rules as SQL queries:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO;DTSTART=20180101
+</listing-title>
+
+<listing lang="sql">
+  <!--
+  select day
+    from dates  -- infinite table of all possible dates
+   where day_of_week(day) = 'Monday'
+     and day >= '2018-01-01'
+  -->
+</listing>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
+</listing-title>
+
+<listing lang="sql">
+  <!--
+  select day
+    from dates
+   where day_of_week(day) = 'Monday' or day_of_week(day) = 'Tuesday'
+     and day_of_month(day) = 10
+     and day >= '2018-01-01'
+  -->
+</listing>
+
+<p>
+  ... and then I realized that under this framework, the <code>FREQ</code> rule
+  disappears - <code>FREQ=DAILY;BYDAY=MO</code>,
+  <code>FREQ=WEEKLY;BYDAY=MO</code> and <code>FREQ=MONTHLY;BYDAY=MO</code> all
+  correspond to the same query, even though in one case <code>BYDAY</code>
+  functions as a filter, while in the others it's a generator:
+</p>
+
+<listing-title>
+  FREQ=DAILY/WEEKLY/MONTHLY;BYDAY=MO;DTSTART=20180101
+</listing-title>
+
+<listing lang="sql">
+  <!--
+  select day
+    from dates
+   where day_of_week(day) = 'Monday'
+     and day >= '2018-01-01'
+  -->
+</listing>
+
+<p>
+  Having this, I started to think about how I would materialize this query -
+  naively we could just iterate through all of the possible dates and check
+  whether all conditions match (modulo the <code>>= '2018-01-01'</code> part,
+  since this hypothetical <code>dates</code> table is infinite). But maybe
+  there's a better way?
+</p>
+
+<p>
+  And then I realized there's a thing I can <s>steal</s> borrow from the
+  rendering community.
+</p>
+
+<h2 id="love-triangles">
+  The Math of Love Triangles
+</h2>
+
+<p>
+  Triangles are those pointy, pointy, sexy bois:
+</p>
+
+<figure class="sketch w-30">
+  <img src="{{ assets }}/triangles-1.svg" />
+</figure>
+
+<p>
+  ... whose life purpose is illustrating <s>Pytagorean</s> <s>Pythagoran</s>
+  <s>Pytagoream</s> Pythagorean theorem - they also tend to be used for
+  modelling stuff in computer graphics and whathaveyou:
+</p>
+
+<figure class="sketch w-30">
+  <img src="{{ assets }}/triangles-2.svg" />
+
+  <figcaption>
+    <a href="https://commons.wikimedia.org/wiki/File:CG_WIKI.jpg" />
+  </figcaption>
+</figure>
+
+<p>
+  <ref>
+    https://en.wikipedia.org/wiki/Constructive_solid_geometry
+  </ref>
+
+  Triangles are cool, because GPUs can draw millions of them per second, but
+  simplicity in rendering comes at a cost. Certain operations - like <a>figuring
+  out the difference of two shapes</a>:
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/triangles-3.svg" />
+</figure>
+
+<p>
+  ... are rather awkward when operating on triangles (aka polygons).
+</p>
+
+<p>
+  Another way of thinking about shapes is by describing them analytically, with
+  the most popular approach (citation needed) being via <b>signed distance
+  functions</b>.
+</p>
+
+<p>
+  A signed distance function accepts a point and returns a distance from that
+  point towards the nearest surface. You might think it sounds like a difficult
+  kind of thing to implement, but it's actually quite straightforward - for
+  instance the SDF of a sphere of radius=1 centered at xyz=(0,0,0) is just:
+</p>
+
+<listing lang="rust">
+  <!--
+  struct Vec3 {
+      x: f32,
+      y: f32,
+      z: f32,
+  }
+
+  fn sphere(point: Vec3) -> f32 {
+      // Calculate distance from origin (0,0,0) to given point
+      let dist_to_origin = (
+          point.x * point.x
+          + point.y * point.y
+          + point.z * point.z
+      ).sqrt();
+
+      dist_to_origin - 1.0
+  }
+  -->
+</listing>
+
+<p>
+  ... because:
+</p>
+
+<listing lang="rust">
+  <!--
+  sphere(vec3(2.0, 2.0, 2.0)) =~ 2.46
+  // ^ we're 2.46 units away from the nearest sphere
+
+  sphere(vec3(0.57, 0.57, 0.57)) =~ 0.0
+  // ^ we're exactly *at* the sphere (0.57 = 1/sqrt(3))
+
+  sphere(vec3(0.0, 0.0, 0.0)) = -1.0
+  // ^ we're -1.0 units past the surface of sphere (we're inside of the shape)
+  -->
+</listing>
+
+<p>
+  Notably, an SDF returns zero when given point is located directly on the
+  surface represented by the function - so if we wanted to render this surface,
+  we'd take a camera:
+</p>
+
+<figure class="sketch w-20">
+  <img src="{{ assets }}/camera-1.svg" />
+</figure>
+
+<p>
+  ... and a viewport (a canvas onto which we're projecting the image):
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/camera-2.svg" />
+</figure>
+
+<p>
+  ... and then for each pixel of this viewport we'd shoot a ray from the camera,
+  through the viewport, outward towards the world:
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/camera-3.svg" />
+</figure>
+
+<p>
+  ... and we'd slowly march through each of those rays, looking for places where
+  SDF returns zero, indicating that the particular ray has reached a
+  surface:
+</p>
+
+<listing lang="rust">
+  <!--
+  fn render_image(
+      sdf: fn(Vec3) -> f32,
+      camera: Camera,
+  ) -> Image {
+      let mut image = Image::new(width, height);
+
+      for x in 0..width {
+          for y in 0..height {
+              let mut curr = camera.origin;
+              let dir = camera.ray((x, y));
+
+              for _iter in 0..128 {
+                  if sdf(curr) == 0.0 {
+                      // Yay, reached the surface!
+                      image.set_color(x, y, Color::Green);
+                      break;
+                  }
+
+                  // Nay, not yet - make a small step forward!
+                  curr += 0.01 * dir;
+              }
+          }
+      }
+
+      image
+  }
+  -->
+</listing>
+
+<p>
+  Marching in constant steps is inefficient, though - it doesn't make a good use
+  of the SDF, because it treats it as a binary function (<code>0 => yay</code>,
+  <code>!= 0 => nay</code>), while in reality the SDF tells us much more.
+</p>
+
+<p>
+  Instead of taking constant-length steps, we can use the value returned from
+  the SDF as a guide of how long step we can make - this is known as <b>sphere
+  tracing</b>:
+</p>
+
+<listing lang="rust">
+  <!--
+  for _iter in 0..128 {
+      let step = sdf(point);
+
+      if step == 0.0 {
+          image.set_color(x, y, Color::White);
+          break;
+      }
+
+      curr += step * dir;
+  }
+  -->
+</listing>
+
+<p>
+  You might think:
+</p>
+
+<blockquote>
+  <p>
+    but since the function tells us where the closest surface is, can't we do it
+    in <code>O(1)</code> by simply calling the function once, why the loop ??
+  </p>
+</blockquote>
+
+<p>
+  Unfortunately, we have to call the SDF multiple times, because this function
+  only tells us about the distance to the closest surface, not about distance to
+  the closest surface that coincides with the direction we're walking towards:
+</p>
+
+<figure class="sketch">
+  <img src="{{ assets }}/camera-4.svg" />
+</figure>
+
+<p>
+  So the specific property is that an SDF returns zero when we're at the surface
+  and otherwise it returns a distance to the nearest surface, or at most an
+  underapproximation of this distance.
+</p>
+
+<h2 id="marching-events">
+  Marching events
+</h2>
+
+<p>
+  Cool, but what all of that has to do with recurring events?
+</p>
+
+<p>
+  I've found a way of describing occurrences through distance functions. This
+  means that instead of implementing logic for all combinations of frequencies
+  and parameters - as that spooky table from before suggests one might do - we
+  can simply compose a couple of distance functions together.
+</p>
+
+<p>
+  Instead of 7 (frequencies) * 9 (<code>BY*</code> parameters) code paths, we
+  end up with 7 + 9.
+</p>
+
+<p>
+  Similarly to SDFs, what we're looking for is a function that takes a date,
+  returns a span (+1 hour, +2 days etc.), and satisfies the following
+  properties:
+</p>
+
+<ul>
+  <li>
+    if <code>date</code> is an occurrence of the event, this function returns
+    zero,
+  </li>
+  <li>
+    otherwise this function returns a positive span that either points at the
+    next occurrence or it's an underapproximation of it.
+  </li>
+</ul>
+
+<p>
+  Having those as the only requirements means we're given a lot of leeway when
+  it comes to the implementation - in fact, coming up with a basic distance
+  function takes just a couple lines of code:
+</p>
+
+<listing lang="rust">
+  <!--
+  type DistFn = Box<dyn Fn(Date) -> Span>;
+
+  fn compile_recur(recur: &Recur) -> DistFn {
+      Box::new(move |curr: Date| -> Span {
+          // Check if `curr` matches any of the `BYDAY` rules
+          // (evaluates to `true` if `by_day` is empty)
+          let matches_by_day = curr.by_day.iter().any(|wd| {
+              curr.weekday() == wd
+          });
+
+          // Check if `curr` matches any of the `BYMONTHDAY` rules
+          // (evaluates to `true` when `by_month_day` is empty)
+          let matches_by_month_day = curr.by_month_day.iter().any(|md| {
+              curr.month_day() == md
+          });
+
+          /* ... */
+
+          let matches_all =
+              matches_by_day
+              && matches_by_month_day
+              && /* ... */;
+
+          if matches_all {
+              // If all of the rules are satisfied, great! -- return zero, since
+              // this date must be an occurrence of the underlying event.
+              Span::zero()
+          } else {
+              // If any of the rules doesn't match, return a guess as to when
+              // the next occurrence might be. We can underapproximate, but we
+              // can't overshoot, so let's take an epsilon of one second - can't
+              // go wrong with it!
+              //
+              // (that's because recurrence rules don't support milliseconds - a
+              // second is the lowest unit.)
+              Span::seconds(1)
+          }
+      })
+  }
+  -->
+</listing>
+
+<p>
+  Now that we have this magical thing available, what can we do with it? We
+  march!
+</p>
+
+<listing lang="rust">
+  <!--
+  fn iter(
+      dist: DistFn,
+      dtstart: Date,
+  ) -> impl Iterator<Item = Date> {
+      // Start at the first date at which the event repeats
+      let mut curr = dtstart;
+
+      loop {
+          // Call the distance function and note down the step size
+          let step = dist(curr);
+
+          // If step is zero, it means that `curr` is a repetition of `event` -
+          // in that case we can just yield it back to the caller.
+          //
+          // Conversely, a non-zero step tells us how we can get closer to the
+          // next occurrence; not necessarily directly at it, just closer.
+          if step.is_zero() {
+              yield curr;
+
+              // As compared to ray marching, in here we're interested not in
+              // the first occurrence, but in *all* of them - so having reached
+              // a `dist`s root, let's add an arbitrarily small span to get the
+              // ball rolling again in the next iteration.
+              //
+              // Without this, the next iteration would yield `curr` back again,
+              // forever, since `step` is zero.
+              curr += Span::seconds(1);
+          } else {
+              curr += step;
+          }
+      }
+  }
+  -->
+</listing>
+
+<blockquote>
+  <p>
+    hey, that's stupid, you're just iterating over all possible dates
+  </p>
+</blockquote>
+
+<p>
+  You're right! What we've got so far is essentially:
+</p>
+
+<listing lang="rust">
+  <!--
+  fn iter(
+      recur: &Recur,
+      dtstart: Date,
+  ) -> impl Iterator<Item = Date> {
+      let mut curr = dtstart;
+
+      loop {
+          if recur.matches(curr) {
+              yield candidate;
+          }
+
+          curr += Span::seconds(1);
+      }
+  }
+  -->
+</listing>
+
+<p>
+  ... which <i>is</i> stupid - for instance given:
+</p>
+
+<listing lang="text">
+  <!--
+  FREQ=DAILY;BYSECOND=0,10,20;DTSTART=20180101T120000
+  -->
+</listing>
+
+<p>
+  ... the algorithm will do:
+</p>
+
+<listing lang="text">
+  <!--
+  curr = 2018-01-01 12:00:00
+
+  iteration 1:
+      # 12:00:00 matches BYSECOND=0,10,20
+      yield curr
+      curr += 1 second
+
+  iteration 2:
+      # 12:00:01 doesn't match BYSECOND=0,10,20
+      curr += 1 second
+
+  iteration 3:
+      # 12:00:02 doesn't match BYSECOND=0,10,20
+      curr += 1 second
+
+  iteration 4:
+      # 12:00:03 doesn't match BYSECOND=0,10,20
+      curr += 1 second
+
+  /* ... */
+
+  iteration 11:
+      # 12:00:10 matches BYSECOND=0,10,20
+      yield curr
+      curr += 1 second
+  -->
+</listing>
+
+<p>
+  ... and that's a lot of iterations, I agree - but the important bit is that
+  <b>the outcome is correct</b>.
+</p>
+
+<p>
+  It's inefficient, yes - but correct. This means that our approach is sound, we
+  just need to find a way to make it more efficient, more practical; we need to
+  optimize it.
+</p>
+
+<p>
+  Of course, we also have to implement more rules, e.g. conveniently enough
+  we've skipped how the <code>FREQ</code> rule is supposed to work, but no
+  worries - we'll get there.
+</p>
+
+<h2 id="atoms">
+  Atoms
+</h2>
+
+<p>
+  Let's ignore time for a moment. Nooo time. Zero. Null. Bliss. Remember that
+  time Jeff has said something mean to you? No, you don't, because there's no
+  time.
+</p>
+
+<p>
+  Uhm, anyway. Let's focus on day-dates, such as <code>2018-01-01</code> - say
+  we're given the following rule:
+</p>
+
+<listing lang="text">
+  <!--
+  FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
+  -->
+</listing>
+
+<p>
+  ... which corresponds to this pseudo-SQL:
+</p>
+
+<listing lang="sql">
+  <!--
+  select day
+    from dates
+   where day_of_week(day) = 'Monday' or day_of_week(day) = 'Tuesday'
+     and day_of_month(day) = 10
+     and day >= '2018-01-01'
+  -->
+</listing>
+
+<p>
+  How do we get from here towards a good distance function? Piecewise. Let's
+  tackle <code>day_of_week</code> first.
+</p>
+
+<p>
+  Ignoring the context in which it appears, how would we <i>like</i> for an
+  ideal <code>day-of-week</code> distance function to work? We can come up with
+  a couple of examples:
+</p>
+
+<listing lang="text">
+  <!--
+  (day-of-week Monday 2018-01-01) = 0
+  // 2018-01-01 is Monday
+
+  (day-of-week Tuesday 2018-01-01) = +1d
+  // 2018-01-01 one day away from Tuesday
+
+  (day-of-week Friday 2018-01-01) = +5d
+  // 2018-01-01 five days away from Friday
+  -->
+</listing>
+
+<p>
+  Since we don't care about travelling back in time, we can also state that:
+</p>
+
+<listing lang="text">
+  <!--
+  (day-of-week Monday 2018-01-02) = +6d
+  // 2018-01-02 is technically -1d away from the nearest Monday (2018-01-01),
+  // but since we want for the returned spans to be positive, let's choose the
+  // next Monday (2018-01-08), which is +6d away from 2018-01-02
+  -->
+</listing>
+
+<note>
+  <p>
+    Note that travelling back in time can be a useful property.
+  </p>
+
+  <p>
+    If our function was a <i>signed</i> distance function, we could implement an
+    iterator that works in both directions, i.e. we could have both
+    <code>find_next_occurrence()</code> and <code>find_prev_occurrence()</code>.
+  </p>
+
+  <p>
+    But since it's usually the next occurrences that people want to find, we'll
+    focus just on them.
+  </p>
+</note>
+
+<p>
+  <ref>
+    https://docs.rs/jiff/latest/jiff/
+  </ref>
+
+  Now that we have a couple of examples, it's time to come up with an
+  implementation - we'll use <a>Jiff</a> as the base for our algorithm, since
+  I've already had a chance to play with it and it's very pleasant.
+</p>
+
+<p>
+  Before we jump into the code, there's one thing we're going to simplify -
+  instead of juggling <code>fn(Date) -> Span</code>, we'll go ahead with
+  <code>fn(Date) -> Date</code>, where the <code>span.is_zero()</code> condition
+  is encoded as the function returning the same date as the input one:
+</p>
+
+<listing lang="text">
+  <!--
+  (day-of-week Monday 2018-01-01) = 2018-01-01
+  (day-of-week Tuesday 2018-01-01) = 2018-01-02
+  (day-of-week Friday 2018-01-01) = 2018-01-05
+  -->
+</listing>
+
+<p>
+  This doesn't really change anything, we're just making our lives easier,
+  because in practice working on dates tends to be easier than working on spans.
+  Without further ado:
+</p>
+
+<listing lang="rust">
+  <!--
+  use jiff::Span;
+  use jiff::civil::{Date, Weekday};
+
+  enum Rule {
+      DayOfWeek(Weekday),
+  }
+
+  impl Rule {
+      fn next(&self, curr: Date) -> Date {
+          match self {
+              Rule::DayOfWeek(wd) => {
+                  curr + Span::new().days(curr.weekday().until(*wd))
+              }
+          }
+      }
+  }
+  -->
+</listing>
+
+<p>
+  That wasn't so hard, was it? We can confirm it's working as intended:
+</p>
+
+<listing-title>
+  <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=c5ed4d7bd47134355a4c718c3b59db84">
+    open in playground
+  </a>
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  #[cfg(test)]
+  mod tests {
+      use super::*;
+
+      #[track_caller]
+      fn date(s: &str) -> Date {
+          s.parse().unwrap()
+      }
+
+      #[test]
+      fn day_of_week() {
+          assert_eq!(
+              date("2018-01-01"),
+              Rule::DayOfWeek(Weekday::Monday)
+                  .next(date("2018-01-01"))
+          );
+
+          assert_eq!(
+              date("2018-01-02"),
+              Rule::DayOfWeek(Weekday::Tuesday)
+                  .next(date("2018-01-01"))
+          );
+
+          assert_eq!(
+              date("2018-01-05"),
+              Rule::DayOfWeek(Weekday::Friday)
+                  .next(date("2018-01-01"))
+          );
+
+          assert_eq!(
+              date("2018-01-08"),
+              Rule::DayOfWeek(Weekday::Monday)
+                  .next(date("2018-01-02"))
+          );
+      }
+  }
+  -->
+</listing>
+
+<p>
+  Ok, so it seems distance functions are not as scary as they seem! Or at least
+  this one isn't, but I can tell you that most of them will be similarly
+  intuitive.
+</p>
+
+<p>
+  Moving on to <code>day-of-month</code> - as before, first let's imagine how
+  we'd like for it to behave:
+</p>
+
+<listing lang="text">
+  <!--
+  (day-of-month 14 2018-01-14) = 2018-01-14
+  // 2018-01-14 is already the 14th day of month
+
+  (day-of-month 16 2018-01-14) = 2018-01-16
+  // 2018-01-16 is the closest 16th day of month starting from 2018-01-14 (+2d)
+
+  (day-of-month 12 2018-01-14) = 2018-02-14
+  // 2018-01-12 is the closest 12th day of month starting from 2018-01-14 (-2d),
+  // but that corresponds to a negative span, so we jump to the next month
+  -->
+</listing>
+
+<p>
+  Implementing this one is a bit more tricky, but not dangerously so - there are
+  three edge cases:
+</p>
+
+<listing lang="rust">
+  <!--
+  /* ... */
+  use std::cmp::Ordering;
+
+  enum Rule {
+      /* ... */
+      DayOfMonth(i8),
+  }
+
+  impl Rule {
+      fn next(&self, curr: Date) -> Date {
+          match self {
+              /* ... */
+
+              Rule::DayOfMonth(day) => {
+                  match curr.day().cmp(day) {
+                      // E.g. curr=2018-01-14 and day=16
+                      Ordering::Less => todo!(),
+
+                      // E.g. curr=2018-01-14 and day=14
+                      Ordering::Equal => todo!(),
+
+                      // E.g. curr=2018-01-14 and day=12
+                      Ordering::Greater => todo!(),
+                  }
+              }
+          }
+      }
+  }
+  -->
+</listing>
+
+<p>
+  ... out of which the <code>Less</code> and <code>Equal</code> branches are
+  pretty straightforward:
+</p>
+
+<listing lang="rust">
+  <!--
+  match self {
+      /* ... */
+
+      Rule::DayOfMonth(day) => {
+          match curr.day().cmp(day) {
+              // E.g. curr=2018-01-14 and day=16
+              Ordering::Less => curr + Span::new().days(day - curr.day()),
+
+              // E.g. curr=2018-01-14 and day=14
+              Ordering::Equal => curr,
+
+              // E.g. curr=2018-01-14 and day=12
+              Ordering::Greater => todo!(),
+          }
+      }
+  }
+  -->
+</listing>
+
+<p>
+  What about <code>=> Ordering::Greater</code>? Well, we could provide an exact
+  solution:
+</p>
+
+<listing lang="rust">
+  <!--
+  // E.g. curr=2018-01-14 and day=12
+  Ordering::Greater => {
+      // 2018-01-14 -> 2018-02-14
+      let dst = curr + Span::months(1);
+
+      // 2018-02-14 -> 2018-02-01
+      let dst = dst.first_of_month().unwrap();
+
+      // 2018-02-01 -> 2018-02-12
+      dst + Span::days(*day - 1)
+  }
+  -->
+</listing>
+
+<p>
+  ... but since it's legal to underapproximate, we might as well go the easier
+  way:
+</p>
+
+<listing lang="rust">
+  <!--
+  Ordering::Greater => curr.last_of_month().tomorrow().unwrap(),
+  -->
+</listing>
+
+<p>
+  Given <code>curr=2018-01-14</code> and <code>day=12</code>, the function will
+  suggest jumping to <code>2018-02-01</code> and then, on the next iteration,
+  we'll hit the <code>Less</code> branch to end up on <code>2018-02-12</code>.
+  Somewhat inefficient, but legal.
+</p>
+
+<note>
+  <blockquote>
+    <p>
+      gotcha, you didn't think about non-existent days such as 2018-02-31 !!!
+    </p>
+  </blockquote>
+
+  <p>
+    <i>*fixes bowtie*</i> well actually such days will work correctly, but also
+    somewhat inefficient, e.g.:
+  </p>
+
+  <listing lang="rust">
+    <!--
+    Rule::DayOfMonth(31)
+        .next(date("2018-02-14"))
+    -->
+  </listing>
+
+  <p>
+    ... will say <code>2018-03-03</code> - which is legal, because the actual
+    next occurrence happens on <code>2018-03-31</code>, for which
+    <code>2018-03-03</code> is a valid underapproximation.
+  </p>
+
+  <p>
+    Note that ideally our function <i>would</i> return <code>2018-03-31</code>,
+    but it doesn't have to.
+  </p>
+</note>
+
+<p>
+  Ok, we've got <code>day-of-week</code>, we've got <code>day-of-month</code> -
+  time for conditionals!
+</p>
+
+<h2 id="yield-me-maybe">
+  Yield Me Maybe
+</h2>
+
+<p>
+  There are two types of boolean operators we need to support, <code>or</code>
+  and <code>and</code>. <code>or</code> is used for combining values for the
+  same parameter, while <code>and</code> combines across parameters:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
+</listing-title>
+
+<listing lang="text">
+  <!--
+  (and
+    (or (day-of-week Monday) (day-of-week Tuesday))
+    (day-of-month 10))
+  -->
+</listing>
+
+<p>
+  ... or, a bit less LISP-y:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
+</listing-title>
+
+<listing lang="text">
+  <!--
+  (day-of-week(Monday) or day-of-week(Tuesday)) and day-of-month(10)
+  -->
+</listing>
+
+<p>
+  What does it mean <code>day-of-week(Monday) or day-of-week(Tuesday)</code>,
+  then? Pessimistically, it's like:
+</p>
+
+<listing lang="text">
+  <!--
+  if day-of-week(Monday) == 0 or day-of-week(Tuesday) == 0:
+      return 0
+  else
+      return +1s
+  -->
+</listing>
+
+<p>
+  ... i.e. we march, slowly, looking for any of the functions to return zero. We
+  know that marching second-by-second is legal, just suboptimal, so now the
+  question becomes - how do we do it better?
+</p>
+
+<p>
+  Our functions have this nice property that:
+</p>
+
+<listing lang="text">
+  <!--
+  if:
+      f(x) = y
+
+  then, for t >= 0 && x + t <= y:
+      f(x + t) = y
+  -->
+</listing>
+
+<note>
+  <p>
+    Intuitively - if <code>(day-of-week Friday 2018-01-01)</code> returns
+    <code>2018-01-05</code>, then it will say the same when asked from
+    <code>2018-01-01</code> up to and including <code>2018-01-05</code>:
+  </p>
+
+  <ul>
+    <li>
+      <code>(day-of-week Friday 2018-01-01) = 2018-01-05</code>
+    </li>
+    <li>
+      <code>(day-of-week Friday 2018-01-02) = 2018-01-05</code>
+    </li>
+    <li>
+      <code>(day-of-week Friday 2018-01-03) = 2018-01-05</code>
+    </li>
+    <li>
+      <code>(day-of-week Friday 2018-01-04) = 2018-01-05</code>
+    </li>
+    <li>
+      <code>(day-of-week Friday 2018-01-05) = 2018-01-05</code>
+    </li>
+  </ul>
+</note>
+
+<p>
+  This means that <code>f(x) or g(x)</code> corresponds to
+  <code>min(f(x), g(x))</code>, which we can eyeball by doing:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO,TU;DTSTART=20180103
+</listing-title>
+
+<listing lang="text">
+  <!--
+  since 2018-01-03 is Wednesday, we'd expect for the next ocurrences to be:
+
+  -> 2018-01-08 (Monday, since it comes before the next Tuesday)
+  -> 2018-01-09 (Tuesday, since it comes before the next Monday)
+  -> 2018-01-15 (Monday, ...)
+  -> [...]
+  -->
+</listing>
+
+<p>
+  This boils down to the following cute snippet:
+</p>
+
+<listing lang="rust">
+  <!--
+  enum Rule {
+      /* ... */
+      Or(Vec<Self>),
+  }
+
+  impl Rule {
+      fn next(&self, curr: Date) -> Date {
+          match self {
+              /* ... */
+
+              Rule::Or(rules) => {
+                  rules
+                      .iter()
+                      .map(|rule| rule.next(curr))
+                      .min()
+                      .unwrap_or(curr)
+              }
+          }
+      }
+  }
+  -->
+</listing>
+
+<p>
+  Conversely, <code>and = max</code>, for a similar reason: if <code>f(x)</code>
+  says it won't be valid until some date <code>A</code> and <code>g(x)</code>
+  says it won't be valid until some date <code>B</code>, then both won't be
+  valid until at least <code>max(A, B)</code>.
+</p>
+
+<p>
+  This doesn't necessarily mean that both rules <i>are</i> valid at
+  <code>max(A, B)</code>, e.g.:
+</p>
+
+<listing-title>
+  FREQ=DAILY;BYDAY=MO;BYMONTHDAY=10;DTSTART=20180101
+</listing-title>
+
+<listing lang="text">
+  <!--
+  (and
+     (day-of-week Monday)
+     (day-of-month 10))
+
+  Given 2018-01-03, we'll evaulate:
+
+     (day-of-week Monday 2018-01-03)
+     = 2018-01-08
+
+     (day-of-month 10 2018-01-03)
+     = 2018-01-10
+
+     (and (day-of-week ...) (day-of-month ...))
+     = (max 2018-01-08 2018-01-10)
+     = 2018-01-10
+
+  2018-01-10 isn't Monday though, so we have to try again on the next iteration.
+  -->
+</listing>
+
+<p>
+  Still, <code>and = max</code> is alright, because it's legal to
+  underapproximate:
+</p>
+
+<listing lang="rust">
+  <!--
+  enum Rule {
+      /* ... */
+      And(Vec<Self>),
+  }
+
+  impl Rule {
+      fn next(&self, curr: Date) -> Date {
+          match self {
+              /* ... */
+
+              Rule::And(rules) => {
+                  rules
+                      .iter()
+                      .map(|rule| rule.next(curr))
+                      .max()
+                      .unwrap_or(curr)
+              }
+          }
+      }
+  }
+  -->
+</listing>
+
+<note>
+  <p>
+    By the way, I'm 99% sure we can represent <code>and</code> much better with
+    composition:
+  </p>
+
+  <listing lang="rust">
+    <!--
+    match self {
+        /* ... */
+
+        Rule::And(rules) => {
+            let mut curr = curr;
+
+            for rule in rules {
+                curr = rule.next(curr);
+            }
+
+            curr
+        }
+    }
+    -->
+  </listing>
+
+  <p>
+    Consider the following:
+  </p>
+
+  <listing lang="text">
+    <!--
+    (and
+      (or (month 4) (month 6))
+      (or (day-of-month 10) (day-of-month 30)))
+    -->
+  </listing>
+
+  <p>
+    If we start on <code>2018-01-01</code>, then converging to
+    <code>2018-04-10</code> requires two iterations when <code>and = max</code>,
+    but just one iteration with <code>and = ∘</code>:
+  </p>
+
+  <listing lang="text">
+    <!--
+    (or (month 4 2018-01-01) (month 6 2018-01-01))
+    = (or 2018-04-01 2018-06-01)
+    = 2018-06-01
+
+    // having a new date, we plug it directly into the second rule:
+
+    (or (day-of-month 10 2018-06-01) (day-of-month 30 2018-06-01))
+    = (or 2018-06-10 2018-06-30)
+    = 2018-06-10
+      ^^^^^^^^^^
+    -->
+  </listing>
+
+  <p>
+    But that's just an optimization.
+  </p>
+</note>
+
+<h2 id="molecules">
+  Molecules
+</h2>
+
+<p>
+  We're still missing the <code>FREQ</code> rule, but what we've got so far is
+  sufficient to play with:
+</p>
+
+<listing lang="rust">
+  <!--
+  /* ... */
+  use std::iter;
+
+  struct Recur {
+      by_day: Vec<Weekday>,
+      by_month_day: Vec<i8>,
+      dtstart: Date,
+  }
+
+  impl Recur {
+      fn as_rule(&self) -> Rule {
+          let mut rules = Vec::new();
+
+          // If BYDAY paremeter is present, emit the DayOfWeek rule
+          if !self.by_day.is_empty() {
+              rules.push(Rule::Or(
+                  self.by_day
+                      .iter()
+                      .copied()
+                      .map(Rule::DayOfWeek)
+                      .collect(),
+              ));
+          }
+
+          // If BYMONTHDAY parameter is present, emit the DayOfMonth rule
+          if !self.by_month_day.is_empty() {
+              rules.push(Rule::Or(
+                  self.by_month_day
+                      .iter()
+                      .copied()
+                      .map(Rule::DayOfMonth)
+                      .collect(),
+              ));
+          }
+
+          Rule::And(rules)
+      }
+
+      fn iter(&self) -> impl Iterator<Item = Date> {
+          let rule = self.as_rule();
+          let mut curr = self.dtstart;
+
+          iter::from_fn(move || {
+              loop {
+                  let next = rule.next(curr);
+
+                  if next == curr {
+                      curr += Span::new().days(1);
+                      break Some(next);
+                  } else {
+                      curr = next;
+                  }
+              }
+          })
+      }
+  }
+  -->
+</listing>
+
+<p>
+  ... and voilà:
+</p>
+
+<listing-title>
+  <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=987c63e0180ef3609c9aa7c2b140557c">
+    open in playground
+  </a>
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  #[cfg(test)]
+  mod tests {
+      /* ... */
+
+      #[test]
+      fn smoke() {
+          // FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10,20,30;DTSTART=20180101
+          let recur = Recur {
+              by_day: vec![Weekday::Monday, Weekday::Tuesday],
+              by_month_day: vec![10, 20, 30],
+              dtstart: date("20180101"),
+          };
+
+          let actual: Vec<_> = recur.iter().take(5).collect();
+
+          // Cross-checked with https://jkbrzt.github.io/rrule
+          let expected = vec![
+              date("2018-01-30"),
+              date("2018-02-20"),
+              date("2018-03-20"),
+              date("2018-04-10"),
+              date("2018-04-30"),
+          ];
+
+          assert_eq!(expected, actual);
+      }
+
+      /* ... */
+  }
+  -->
+</listing>
+
+<p>
+  Now, I could go on and implement all of the other parameters, but for the most
+  part they follow the outline showed here, nothing fancy - so instead let's
+  wrap up by implementing the parameters that require a bit different approach,
+  <code>FREQ</code> and <code>INTERVAL</code>.
+</p>
+
+<p>
+  The simplest case is the default of <code>INTERVAL=1</code> - it feels quite
+  intuitive, but what does it really mean?
+</p>
+
+<p>
+  Let's analyze a specific example:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114
+</listing-title>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-14
+  -> 2018-02-14
+  -> 2018-03-14
+  -> 2018-04-14
+  -> [...]
+  -->
+</listing>
+
+<p>
+  What's the pattern? Perhaps surprisingly, we can already encode it - that's
+  just <code>(day-of-month 14)</code>!
+</p>
+
+<p>
+  This means that <code>FREQ=MONTHLY;INTERVAL=1;DTSTART=201801014</code> is
+  really <code>BYMONTHDAY=14;DTSTART=20180114</code> - and actually all forms of
+  <code>FREQ=;INTERVAL=1</code> can be reduced to some combination of the
+  <code>BY*</code> rules:
+</p>
+
+<listing lang="text">
+  <!--
+  FREQ=YEARLY;INTERVAL=1;DTSTART=20180114
+  -> BYMONTH=1;BYMONTHDAY=14
+  -> (and (month 1) (day-of-month 14))
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+  FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114
+  -> BYMONTHDAY=14
+  -> (day-of-month 14)
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+  FREQ=WEEKLY;INTERVAL=1;DTSTART=20180114
+  -> BYDAY=SU
+  -> (weekday Sunday)
+  -->
+</listing>
+
+<listing lang="text">
+  <!--
+  FREQ=DAILY;INTERVAL=1;DTSTART=20180114
+  -> no-op
+  -->
+</listing>
+
+<note>
+  <p>
+    Introducing time requires extending this logic, like:
+  </p>
+
+  <listing lang="text">
+    <!--
+    FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114T123456
+    -> BYMONTHDAY=14;BYHOUR=12;BYMINUTE=34;BYSECOND=56
+    -> (and (day-of-month 14) (hour 12) (minute 34) (second 56))
+    -->
+  </listing>
+
+  <p>
+    This is addressed by the standard right here:
+  </p>
+
+  <listing lang="text">
+    <!--
+    Information, not contained in the rule, necessary to determine the
+    various recurrence instance start time and dates are derived from
+    the Start Time ("DTSTART") component attribute.  For example,
+    "FREQ=YEARLY;BYMONTH=1" doesn't specify a specific day within the
+    month or a time.  This information would be the same as what is
+    specified for "DTSTART".
+    -->
+  </listing>
+
+  <p>
+    ... with one hidden caveat, time zone transitions (daylight saving time) -
+    standard says that:
+  </p>
+
+  <listing lang="text">
+    <!--
+    Recurrence rules may generate recurrence instances with an invalid
+    date (e.g., February 30) or nonexistent local time (e.g., 1:30 AM
+    on a day where the local time is moved forward by an hour at 1:00
+    AM).  Such recurrence instances MUST be ignored and MUST NOT be
+    counted as part of the recurrence set.
+    -->
+  </listing>
+
+  <p>
+    ... but I'm pretty sure this doesn't affect the cases where
+    <code>DTSTART</code>'s time lands on a daylight saving time switch. Let me
+    show you a specific example.
+  </p>
+
+  <p>
+    In the Europe/Warsaw time zone, on 2025-03-30 clocks are adjusted forward
+    from 02:00:00 (winter time) to 03:00:00 (summer time) - this means that e.g.
+    02:30:00 local time doesn't exist.
+  </p>
+
+  <p>
+    If <code>DTSTART</code>'s time happens to land there, some implementations
+    actually snap the time forward:
+  </p>
+
+  <listing-title>
+    FREQ=DAILY;INTERVAL=1;DTSTART;TZID=Europe/Warsaw=20250329T023000
+  </listing-title>
+
+  <listing lang="text">
+    <!--
+    -> 2025-03-29 02:30:00
+    -> 2025-03-30 03:30:00 [!!]
+    -> 2025-03-31 02:30:00
+    -->
+  </listing>
+
+  <p>
+    At the same time, the <code>BYHOUR</code> rule must work on a
+    literal-comparison basis, so if we'd like to reproduce this behavior, we'd
+    have to distinguish between literal and observed time.
+  </p>
+</note>
+
+<p>
+  What about intervals larger than one? Once again, let's take an example:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;INTERVAL=5;DTSTART=20180114
+</listing-title>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-14
+  -> 2018-06-14
+  -> 2018-11-14
+  -> 2019-04-14
+  -> [...]
+  -->
+</listing>
+
+<p>
+  ... or two, to have a complete picture:
+</p>
+
+<listing-title>
+  FREQ=MONTHLY;INTERVAL=5;BYDAY=MO,TU;DTSTART=20180114
+</listing-title>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-15
+  -> 2018-01-16
+  -> 2018-01-22
+  -> 2018-01-23
+  -> 2018-01-29
+  -> 2018-01-30
+  -> 2018-06-04
+  -> 2018-06-05
+  -> [...]
+  -->
+</listing>
+
+<p>
+  Alright, what's the pattern? Looking at the first example suggests:
+</p>
+
+<listing lang="text">
+  <!--
+  date = DTSTART + FREQ * INTERVAL * nth
+
+  -> 2018-01-14 = 2018-01-14 + 5 months * 0
+  -> 2018-06-14 = 2018-01-14 + 5 months * 1
+  -> 2018-11-14 = 2018-01-14 + 5 months * 2
+  -> 2019-04-14 = 2018-01-14 + 5 months * 3
+  -->
+</listing>
+
+<p>
+  ... but this falls apart over the second example where none of the dates are
+  an exact repetition:
+</p>
+
+<listing lang="text">
+  <!--
+  -> 2018-01-15 = 2018-01-14 + 1 day
+  -> 2018-01-16 = 2018-01-14 + 2 days
+  -> [...]
+  -> 2018-06-04 = 2018-01-14 + 4 months and 21 days
+  -> 2018-06-05 = 2018-01-14 + 4 months and 22 days
+  -> [...]
+  -->
+</listing>
+
+<p>
+  In fact, <code>2018-06-04</code> isn't even 5 months apart from
+  <code>2018-01-14</code>!
+</p>
+
+<p>
+  If we're not literally repeating the starting date, then what's going on?
+  Let's compare a correct and an incorrect occurrence, following the second
+  example and ignoring <code>BYDAY=MO,TU</code> for a moment:
+</p>
+
+<listing lang="text">
+  <!--
+  correct:
+  -> 2018-06-04 = 2018-01-14 + 4 months and 21 days
+
+  incorrect:
+  -> 2018-05-31 = 2018-01-14 + 4 months and 17 days
+  -->
+</listing>
+
+<p>
+  Clearly we're doing something wrong by looking  the distance between
+  <code>DTSTART</code> and our candidate. In particular, we can see that
+  <code>DTSTART</code>'s day part doesn't affect anything, except for in the
+  first month.
+</p>
+
+<p>
+  That is, if we started on <code>DTSTART=20180120</code>, we'd still go through
+  <code>2018-06-04</code>, even though the distance between those two just got
+  shorter - so for <code>FREQ=MONTHLY</code> we should have a way of comparing
+  dates that ignores the day part.
+</p>
+
+<p>
+  One approach could be:
+</p>
+
+<listing lang="rust">
+  <!--
+  fn months_of(date: Date) -> i16 {
+      date.year() * 12 + date.month()
+  }
+
+  fn months_between(lhs: Date, rhs: Date) -> i16 {
+       months_of(lhs) - months_of(rhs)
+  }
+
+  // ... and then we make sure that months_between() is divisible by INTERVAL
+  -->
+</listing>
+
+<p>
+  ... but Jiff's spans are more convenient to work with, and they generalize to
+  other units as well:
+</p>
+
+<listing lang="rust">
+  <!--
+  /* ... */
+  use jiff::{SpanRound, Unit};
+
+  /* ... */
+
+  enum Rule {
+      /* ... */
+      InstanceOf(Date, Unit, i32),
+      /* ... */
+  }
+
+  impl Rule {
+      fn next(&self, curr: Date) -> Date {
+          match self {
+              /* ... */
+
+              Rule::InstanceOf(start, unit, interval) => {
+                  // Calculate the distance between `start` and our candidate
+                  // date (`curr`).
+                  //
+                  // `start` is expected to be already snapped to the first day
+                  // of month, first day of year etc.
+                  let diff = curr.since(*start).unwrap();
+
+                  // By default `.since()` returns span in days - for proper
+                  // comparison we need to round it to months, years etc.
+                  let diff = diff
+                      .round(
+                          SpanRound::new()
+                              .largest(*unit)
+                              .relative(*start)
+                      )
+                      .unwrap();
+
+                  // Now we've got all the funny numbers we need!
+                  match unit {
+                      Unit::Month => {
+                          let diff = diff.get_months() % interval;
+
+                          if diff == 0 {
+                              curr
+                          } else {
+                              (curr + Span::new().months(interval - diff))
+                                  .first_of_month()
+                          }
+                      }
+
+                      _ => todo!(),
+                  }
+              }
+
+              /* ... */
+          }
+      }
+  }
+  -->
+</listing>
+
+<p>
+  This new rule integrates quite nicely with the existing code:
+</p>
+
+<listing lang="rust">
+  <!--
+  enum Freq {
+      Daily,
+      Monthly,
+      Yearly,
+  }
+
+  struct Recur {
+      freq: Freq,
+      interval: i32,
+      by_day: Vec<Weekday>,
+      by_month_day: Vec<i8>,
+      dtstart: Date,
+  }
+
+  impl Recur {
+      fn as_rule(&self) -> Rule {
+          let mut rules = Vec::new();
+
+          // Create the `InstanceOf` rule
+          rules.push({
+              // Snap `start` to the beginning of `FREQ`
+              let start = match self.freq {
+                  Freq::Daily => self.dtstart,
+                  Freq::Monthly => self.dtstart.first_of_month(),
+                  Freq::Yearly => todo!(),
+              };
+
+              // Convert our `Freq` into Jiff's `Unit`
+              let unit = match self.freq {
+                  Freq::Daily => Unit::Day,
+                  Freq::Monthly => Unit::Month,
+                  Freq::Yearly => Unit::Year,
+              };
+
+              Rule::InstanceOf(start, unit, self.interval)
+          });
+
+          /* ... */
+
+          // Create implied rules
+          match self.freq {
+              Freq::Daily => {
+                  // No extra rules required
+              }
+
+              Freq::Monthly => {
+                  if self.by_day.is_empty() && self.by_month_day.is_empty() {
+                      rules.push(Rule::DayOfMonth(self.dtstart.month()));
+                  }
+              }
+
+              Freq::Yearly => {
+                  todo!("left as an exercise for the reader");
+              }
+          }
+
+          Rule::And(rules)
+      }
+  }
+  -->
+</listing>
+
+<p>
+  ... and voilà:
+</p>
+
+<listing-title>
+  <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=32c37489e516012eb8521ab7eb72dd1f">
+    open in playground
+  </a>
+</listing-title>
+
+<listing lang="rust">
+  <!--
+  #[cfg(test)]
+  mod tests {
+      /* ... */
+
+      #[test]
+      fn smoke() {
+          // FREQ=MONTHLY;INTERVAL=5;BYDAY=FR;DTSTART=20180114
+          let recur = Recur {
+              freq: Freq::Monthly,
+              interval: 5,
+              by_day: vec![Weekday::Friday],
+              by_month_day: Vec::new(),
+              dtstart: date("20180119"),
+          };
+
+          // Cross-checked with https://jkbrzt.github.io/rrule
+          let actual: Vec<_> = recur.iter().take(8).collect();
+
+          let expected = vec![
+              date("2018-01-19"),
+              date("2018-01-26"),
+              date("2018-06-01"),
+              date("2018-06-08"),
+              date("2018-06-15"),
+              date("2018-06-22"),
+              date("2018-06-29"),
+              date("2018-11-02"),
+          ];
+
+          assert_eq!(expected, actual);
+      }
+  }
+  -->
+</listing>
+
+<p>
+  As it turns out, spooky RFC tables don't have to always end up in spooky code!
+</p>
+
+<h2 id="closing-thoughts">
+  Closing thoughts
+</h2>
+
+<h3>
+  Isn't it too complex?
+</h3>
+
+<p>
+  I'd argue that this distance-based approach is actually <i>simpler</i> than
+  what other implementations do.
+</p>
+
+<p>
+  That's because at every step you have something that's easy to reason about in
+  isolation - you have one function that rounds date to the next week, you have
+  another function that takes two values and returns the smallest one etc., and
+  all of those functions make sense on their own.
+</p>
+
+<p>
+  Not to mention that fast-forwarding - "find me the next occurrence after xxx"
+  - is something that other implementations struggle with, while in this case
+  you have it for free.
+</p>
+
+<h3>
+  Isn't it too slow?
+</h3>
+
+<p>
+  Seems to be okay - I've benchmarked my reasonably optimization implementation
+  (closed source for the time being) and iterating hundreds of times over
+  complex rules happens under a millisecond.
+</p>
+
+<p>
+  The beauty of going distancefunctioned™ is that you can optimize as much or
+  as little as you want - after all, half of this article is actually spent
+  talking about optimization.
+</p>
+
+<h3>
+  Surely you can't be the first one to come up with this?
+</h3>
+
+<p>
+  I hope I'm not the first one! I couldn't find any existing implementation
+  that works this way, though.
+</p>
+
+<p>
+  The mathematical foundation also escapes me - surely this must've been already
+  discovered in one form or another, but I haven't found anything this specific.
+</p>
+
+<p>
+  <ref>
+    https://en.wikipedia.org/wiki/Proximal_operator
+  </ref>
+
+  <a>Proximal operator</a> sounds quite close maybe?
+
+  <ref>
+    https://en.wikipedia.org/wiki/Frank%E2%80%93Wolfe_algorithm
+  </ref>
+
+  <a>Frank-Wolfe</a>?
+</p>
+
+<p>
+  If you have an idea, lemme know!
+</p>

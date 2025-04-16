@@ -23,7 +23,7 @@ in
 
     <div class="post-meta">
       <div class="post-meta-time">
-        ${fw.components.date "%M %d, %y" post.publishedAt}
+        ${fw.components.date post.publishedAt}
       </div>
 
       ${
