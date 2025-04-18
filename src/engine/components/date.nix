@@ -11,4 +11,4 @@ let
   toStringPadded = n: width: lib.strings.fixedWidthString width "0" (toString n);
 
 in
-"${toStringPadded d 2}-${toStringPadded m 2}-${toString y}"
+"${toStringPadded d 2}.${toStringPadded m 2}.${toString y}"
