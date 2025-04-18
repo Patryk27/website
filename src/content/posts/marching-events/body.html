@@ -1174,14 +1174,16 @@
   </listing>
 
   <p>
-    ... will say <code>2018-03-03</code> - which is legal, because the actual
-    next occurrence happens on <code>2018-03-31</code>, for which
-    <code>2018-03-03</code> is a valid underapproximation.
+    ... will hit the <code>Ordering::Less</code> branch (14 &lt; 31) and return
+    <code>2018-02-14 + (31 - 14) = 2018-03-03</code>. The actual next occurrence
+    happens on <code>2018-03-31</code>, so <code>2018-03-03</code> is a valid
+    underapproximation.
   </p>
 
   <p>
     Note that ideally our function <i>would</i> return <code>2018-03-31</code>,
-    but it doesn't have to.
+    but it doesn't have to - any date from <code>curr + 1</code> up to
+    <code>2018-03-31</code> will do.
   </p>
 </note>
 
