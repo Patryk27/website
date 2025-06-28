@@ -1,5 +1,5 @@
 {
-  title = "kartoffels: Emulating thousands of RISC V CPUs For Fun";
+  title = "kartoffels: Emulating thousands of RISC V CPUs for fun";
 
   tags = [
     "gamedev"
