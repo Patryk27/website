@@ -3,7 +3,6 @@
   body = builtins.readFile ./body.html;
 
   tags = [
-    "ai"
     "markov-chains"
     "n-grams"
     "rust"

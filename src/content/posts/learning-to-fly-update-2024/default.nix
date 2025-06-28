@@ -3,7 +3,6 @@
   body = builtins.readFile ./body.html;
 
   tags = [
-    "ai"
     "genetic-algorithm"
     "neural-network"
     "rust"

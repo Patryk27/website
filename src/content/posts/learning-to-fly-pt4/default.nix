@@ -4,7 +4,6 @@
   assets = ./assets;
 
   tags = [
-    "ai"
     "genetic-algorithm"
     "neural-network"
     "rust"
