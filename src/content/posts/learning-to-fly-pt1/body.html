@@ -64,9 +64,9 @@
   <a href="#design">Design</a>.
 </p>
 
-<h2 id="design">
+<hdr id="design">
   Design
-</h2>
+</hdr>
 
 <p>
   Let's start by clearly defining our objective: what are we going to simulate,
@@ -121,9 +121,9 @@
   We'll make our birds able to <b>learn</b> and <b>evolve</b>.
 </p>
 
-<h2 id="brain">
+<hdr id="brain">
   Brain
-</h2>
+</hdr>
 
 <p>
   If you squint your eyes hard enough, you'll see that a brain is nothing but a
@@ -208,9 +208,9 @@
   <code>f(eyes) = what?</code>
 </p>
 
-<h2 id="nn-intro">
+<hdr id="nn-intro">
   Neural network: Introduction
-</h2>
+</hdr>
 
 <p>
   As a fellow human, you might be aware that brains are made of neurons
@@ -400,9 +400,9 @@
   step and learn about the magic allowing for all of this to happen.
 </p>
 
-<h2 id="nn-deep-dive">
+<hdr id="nn-deep-dive">
   Neural network: Deep dive
-</h2>
+</hdr>
 
 <p>
   FFNNs lean on two building blocks: <b>neurons</b> and <b>synapses</b>.
@@ -535,21 +535,21 @@
   by computing a <b>weighted sum</b> of all its inputs:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     0.5 * 0.2 = 0.1
   -->
-</listing>
+</code>
 
 <p>
   ... then, we add the bias:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     0.1 - 0.3 = -0.2
   -->
-</listing>
+</code>
 
 <p>
   ... and <b>clamp</b> this value through so-called <b>activation function</b>;
@@ -596,17 +596,17 @@
   our current output:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     max(-0.2, 0.0) = 0.0
   -->
-</listing>
+</code>
 
 <p>
   Nice; now let's do the bottom-left one:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     # Weighted sum:
     0.8 * 1.0 = 0.8
@@ -617,7 +617,7 @@
     # Activation function:
     max(0.8, 0.0) = 0.8
   -->
-</listing>
+</code>
 
 <p>
   At this point we've got the input layer completed:
@@ -631,7 +631,7 @@
   ... which heads us towards the last neuron:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     # Weighted sum:
     (0.0 * 0.6) + (0.8 * 0.5) = 0.4
@@ -642,17 +642,17 @@
     # Activation function:
     max(0.6, 0.0) = 0.6
   -->
-</listing>
+</code>
 
 <p>
   ... and the network's output itself:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     0.6 * 1.0 = 0.6
   -->
-</listing>
+</code>
 
 <p>
   Voilà - for the input of <code>(0.5, 0.8)</code>, our network responded
@@ -769,9 +769,9 @@
   <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">large numbers</a>
 </p>
 
-<h2 id="ga-intro">
+<hdr id="ga-intro">
   Genetic algorithm: Introduction
-</h2>
+</hdr>
 
 <p>
   <ref>
@@ -800,11 +800,11 @@
   different combinations…​
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     (3.402 * 10^38) ^ (3 + 5) ~= 1.8 * 10^308
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   (<a href="https://jameshoward.us/2015/09/09/how-many-floating-point-numbers-are-there/">
@@ -837,9 +837,9 @@
   And in order to do that, we must <b>dig deeper</b>.
 </p>
 
-<h2 id="ga-deep-dive">
+<hdr id="ga-deep-dive">
   Genetic algorithm: Deep dive
-</h2>
+</hdr>
 
 <p>
   This is a wild carrot together with its domesticated form:

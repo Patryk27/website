@@ -286,11 +286,11 @@ table {
   }
 }
 
-.listing {
+.code {
   position: relative;
   margin: 1em 0;
 
-  &.listing-invalid {
+  &.code-invalid {
     position: relative;
     border-left: 5px solid #dc3545;
 
@@ -318,7 +318,7 @@ table {
   }
 }
 
-.listing-title {
+.code-title {
   margin-bottom: 0 !important;
   padding: ($para-indent / 2);
   background: darken($pre-bg, 4%);
@@ -334,7 +334,7 @@ table {
     line-height: 1;
   }
 
-  & + .listing {
+  & + .code {
     margin-top: 0 !important;
 
     pre {

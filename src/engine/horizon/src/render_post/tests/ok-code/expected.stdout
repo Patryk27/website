@@ -1,0 +1,30 @@
+<p>
+  before code fragments
+</p>
+
+<div class="code"><pre><span></span>fn main() {
+    println!(&quot;first fragment&quot;);
+}
+</pre></div>
+
+<div class="code-title">
+  some python code
+</div>
+
+<div class="code code-invalid"><pre><span></span><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="nb">print</span> <span class="s2">&quot;second fragment&quot;</span>
+</span></pre></div>
+
+<div class="code"><pre><span></span>fn main() {
+<span class="hll">    println!(&quot;third fragment&quot;);
+</span>}
+</pre></div>
+
+<p>
+  after code fragments
+</p>
+
+<p>
+  some <code>inline code</code>!
+</p>

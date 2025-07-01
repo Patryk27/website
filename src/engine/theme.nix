@@ -15,7 +15,7 @@ let
     ${pkgs.python3Packages.pygments}/bin/pygmentize \
       -f html \
       -S monokai \
-      -a .listing \
+      -a .code \
       > $out
   '';
 

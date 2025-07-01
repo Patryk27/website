@@ -19,7 +19,7 @@
   reasonably easy to print and parse:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   BEGIN:VEVENT
   UID:1234-1234-1234-1234
@@ -30,16 +30,16 @@
   CATEGORIES:BUSINESS
   END:VEVENT
   -->
-</listing>
+</code>
 
 <p>
   ... and supports a ton of things - today the limelight shines on
   <b>recurring events</b>.
 </p>
 
-<h2 id="its-a-date">
+<hdr id="its-a-date">
   It's a Date!
-</h2>
+</hdr>
 
 <p>
   I'm a simple boy - to me <i>recurring</i> means a simple thing like "every
@@ -128,47 +128,47 @@
   ... and that's basically it, at least when it comes to required properties:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=HOURLY;DTSTART=20180101T120000
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-01 12:00:00
   -> 2018-01-01 13:00:00
   -> 2018-01-01 14:00:00
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   We can also specify <code>INTERVAL</code>, which produces multiplies of the
   frequency:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;INTERVAL=3;DTSTART=20180101T120000
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-01 12:00:00
   -> 2018-01-04 12:00:00
   -> 2018-01-07 12:00:00
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   But that's boring, that's something you could've come up with on your own -
   here's something fun:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;INTERVAL=2;BYMONTHDAY=1,-1;BYDAY=MO;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   starting from 2018-01, repeat every other month on its first and last day, but
   only if that day is Monday:
@@ -178,17 +178,17 @@
   -> 2019-09-30
   -> 2020-11-30
   -->
-</listing>
+</code>
 
 <p>
   ... and here's something pragmatic:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1;DTSTART=20180131
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   starting from 2018-01, repeat every month on its last workday:
 
@@ -197,7 +197,7 @@
   -> 2018-03-30 (Friday)
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   You might see where this is going:
@@ -207,9 +207,9 @@
   given an iCal formula, how do we figure out when it repeats?
 </p>
 
-<h2 id="computer-love">
+<hdr id="computer-love">
   Computer Liebe
-</h2>
+</hdr>
 
 <p>
   Sounds easy, right? Or maybe not easy-easy, but - like - doable.
@@ -230,7 +230,7 @@
   frequency-specific logic:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn iter(recur: &Recur) -> impl Iterator<Item = DateTime> {
       match recur.freq {
@@ -267,18 +267,18 @@
 
   /* ... */
   -->
-</listing>
+</code>
 
 <p>
   That's because depending on context, a parameter can function either as a
   filter:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   for day in days_since(dtstart) {
       if day.is(Monday) {
@@ -286,17 +286,17 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   ... or as a generator:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;BYDAY=MO
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   for month in months_since(dtstart) {
       for day in month.every(Monday) {
@@ -304,7 +304,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   RFC collects all of those cases into a rather spooky-looking table:
@@ -341,24 +341,24 @@
   I began to imagine those recurrence rules as SQL queries:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="sql">
+<code lang="sql">
   <!--
   select day
     from dates  -- infinite table of all possible dates
    where day_of_week(day) = 'Monday'
      and day >= '2018-01-01'
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="sql">
+<code lang="sql">
   <!--
   select day
     from dates
@@ -366,7 +366,7 @@
      and day_of_month(day) = 10
      and day >= '2018-01-01'
   -->
-</listing>
+</code>
 
 <p>
   ... and then I realized that under this framework, the <code>FREQ</code> rule
@@ -376,18 +376,18 @@
   functions as a filter, while in the others it's a generator:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY/WEEKLY/MONTHLY;BYDAY=MO;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="sql">
+<code lang="sql">
   <!--
   select day
     from dates
    where day_of_week(day) = 'Monday'
      and day >= '2018-01-01'
   -->
-</listing>
+</code>
 
 <p>
   Having this, I started to think about how I would materialize this query -
@@ -402,9 +402,9 @@
   rendering community.
 </p>
 
-<h2 id="love-triangles">
+<hdr id="love-triangles">
   The Math of Love Triangles
-</h2>
+</hdr>
 
 <p>
   Triangles are those pointy, pointy, sexy bois:
@@ -459,7 +459,7 @@
   instance the SDF of a sphere of radius=1 centered at xyz=(0,0,0) is just:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   struct Vec3 {
       x: f32,
@@ -478,13 +478,13 @@
       dist_to_origin - 1.0
   }
   -->
-</listing>
+</code>
 
 <p>
   ... because:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   sphere(vec3(2.0, 2.0, 2.0)) =~ 2.46
   // ^ we're 2.46 units away from the nearest sphere
@@ -495,7 +495,7 @@
   sphere(vec3(0.0, 0.0, 0.0)) = -1.0
   // ^ we're -1.0 units past the surface of sphere (we're inside of the shape)
   -->
-</listing>
+</code>
 
 <p>
   Notably, an SDF returns zero when given point is located directly on the
@@ -530,7 +530,7 @@
   surface:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn render_image(
       sdf: fn(Vec3) -> f32,
@@ -559,7 +559,7 @@
       image
   }
   -->
-</listing>
+</code>
 
 <p>
   Marching in constant steps is inefficient, though - it doesn't make a good use
@@ -573,7 +573,7 @@
   tracing</b>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   for _iter in 0..128 {
       let step = sdf(point);
@@ -586,7 +586,7 @@
       curr += step * dir;
   }
   -->
-</listing>
+</code>
 
 <p>
   You might think:
@@ -615,9 +615,9 @@
   underapproximation of this distance.
 </p>
 
-<h2 id="marching-events">
+<hdr id="marching-events">
   Marching events
-</h2>
+</hdr>
 
 <p>
   Cool, but what all of that has to do with recurring events?
@@ -658,7 +658,7 @@
   function takes just a couple lines of code:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   type DistFn = Box<dyn Fn(Date) -> Span>;
 
@@ -700,14 +700,14 @@
       })
   }
   -->
-</listing>
+</code>
 
 <p>
   Now that we have this magical thing available, what can we do with it? We
   march!
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn iter(
       dist: DistFn,
@@ -742,7 +742,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <blockquote>
   <p>
@@ -754,7 +754,7 @@
   You're right! What we've got so far is essentially:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn iter(
       recur: &Recur,
@@ -771,23 +771,23 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   ... which <i>is</i> stupid - for instance given:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=DAILY;BYSECOND=0,10,20;DTSTART=20180101T120000
   -->
-</listing>
+</code>
 
 <p>
   ... the algorithm will do:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   curr = 2018-01-01 12:00:00
 
@@ -815,7 +815,7 @@
       yield curr
       curr += 1 second
   -->
-</listing>
+</code>
 
 <p>
   ... and that's a lot of iterations, I agree - but the important bit is that
@@ -834,9 +834,9 @@
   worries - we'll get there.
 </p>
 
-<h2 id="atoms">
+<hdr id="atoms">
   Atoms
-</h2>
+</hdr>
 
 <p>
   Let's ignore time for a moment. Nooo time. Zero. Null. Bliss. Remember that
@@ -849,17 +849,17 @@
   we're given the following rule:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
   -->
-</listing>
+</code>
 
 <p>
   ... which corresponds to this pseudo-SQL:
 </p>
 
-<listing lang="sql">
+<code lang="sql">
   <!--
   select day
     from dates
@@ -867,7 +867,7 @@
      and day_of_month(day) = 10
      and day >= '2018-01-01'
   -->
-</listing>
+</code>
 
 <p>
   How do we get from here towards a good distance function? Piecewise. Let's
@@ -880,7 +880,7 @@
   a couple of examples:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (day-of-week Monday 2018-01-01) = 0
   // 2018-01-01 is Monday
@@ -891,20 +891,20 @@
   (day-of-week Friday 2018-01-01) = +5d
   // 2018-01-01 five days away from Friday
   -->
-</listing>
+</code>
 
 <p>
   Since we don't care about travelling back in time, we can also state that:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (day-of-week Monday 2018-01-02) = +6d
   // 2018-01-02 is technically -1d away from the nearest Monday (2018-01-01),
   // but since we want for the returned spans to be positive, let's choose the
   // next Monday (2018-01-08), which is +6d away from 2018-01-02
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -940,13 +940,13 @@
   is encoded as the function returning the same date as the input one:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (day-of-week Monday 2018-01-01) = 2018-01-01
   (day-of-week Tuesday 2018-01-01) = 2018-01-02
   (day-of-week Friday 2018-01-01) = 2018-01-05
   -->
-</listing>
+</code>
 
 <p>
   This doesn't really change anything, we're just making our lives easier,
@@ -954,7 +954,7 @@
   Without further ado:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   use jiff::Span;
   use jiff::civil::{Date, Weekday};
@@ -973,19 +973,19 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   That wasn't so hard, was it? We can confirm it's working as intended:
 </p>
 
-<listing-title>
+<code-title>
   <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=c5ed4d7bd47134355a4c718c3b59db84">
     open in playground
   </a>
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   #[cfg(test)]
   mod tests {
@@ -1024,7 +1024,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   Ok, so it seems distance functions are not as scary as they seem! Or at least
@@ -1037,7 +1037,7 @@
   we'd like for it to behave:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (day-of-month 14 2018-01-14) = 2018-01-14
   // 2018-01-14 is already the 14th day of month
@@ -1049,14 +1049,14 @@
   // 2018-01-12 is the closest 12th day of month starting from 2018-01-14 (-2d),
   // but that corresponds to a negative span, so we jump to the next month
   -->
-</listing>
+</code>
 
 <p>
   Implementing this one is a bit more tricky, but not dangerously so - there are
   three edge cases:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   /* ... */
   use std::cmp::Ordering;
@@ -1087,14 +1087,14 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   ... out of which the <code>Less</code> and <code>Equal</code> branches are
   pretty straightforward:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   match self {
       /* ... */
@@ -1113,14 +1113,14 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   What about <code>=> Ordering::Greater</code>? Well, we could provide an exact
   solution:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   // E.g. curr=2018-01-14 and day=12
   Ordering::Greater => {
@@ -1134,18 +1134,18 @@
       dst + Span::days(*day - 1)
   }
   -->
-</listing>
+</code>
 
 <p>
   ... but since it's legal to underapproximate, we might as well go the easier
   way:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   Ordering::Greater => curr.last_of_month().tomorrow().unwrap(),
   -->
-</listing>
+</code>
 
 <p>
   Given <code>curr=2018-01-14</code> and <code>day=12</code>, the function will
@@ -1166,12 +1166,12 @@
     somewhat inefficient, e.g.:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
     Rule::DayOfMonth(31)
         .next(date("2018-02-14"))
     -->
-  </listing>
+  </code>
 
   <p>
     ... will hit the <code>Ordering::Less</code> branch (14 &lt; 31) and return
@@ -1192,9 +1192,9 @@
   time for conditionals!
 </p>
 
-<h2 id="yield-me-maybe">
+<hdr id="yield-me-maybe">
   Yield Me Maybe
-</h2>
+</hdr>
 
 <p>
   There are two types of boolean operators we need to support, <code>or</code>
@@ -1202,45 +1202,45 @@
   same parameter, while <code>and</code> combines across parameters:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (and
     (or (day-of-week Monday) (day-of-week Tuesday))
     (day-of-month 10))
   -->
-</listing>
+</code>
 
 <p>
   ... or, a bit less LISP-y:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO,TU;BYMONTHDAY=10;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (day-of-week(Monday) or day-of-week(Tuesday)) and day-of-month(10)
   -->
-</listing>
+</code>
 
 <p>
   What does it mean <code>day-of-week(Monday) or day-of-week(Tuesday)</code>,
   then? Pessimistically, it's like:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   if day-of-week(Monday) == 0 or day-of-week(Tuesday) == 0:
       return 0
   else
       return +1s
   -->
-</listing>
+</code>
 
 <p>
   ... i.e. we march, slowly, looking for any of the functions to return zero. We
@@ -1252,7 +1252,7 @@
   Our functions have this nice property that:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   if:
       f(x) = y
@@ -1260,7 +1260,7 @@
   then, for t >= 0 && x + t <= y:
       f(x + t) = y
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1293,11 +1293,11 @@
   <code>min(f(x), g(x))</code>, which we can eyeball by doing:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO,TU;DTSTART=20180103
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   since 2018-01-03 is Wednesday, we'd expect for the next ocurrences to be:
 
@@ -1306,13 +1306,13 @@
   -> 2018-01-15 (Monday, ...)
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   This boils down to the following cute snippet:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   enum Rule {
       /* ... */
@@ -1335,7 +1335,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   Conversely, <code>and = max</code>, for a similar reason: if <code>f(x)</code>
@@ -1349,11 +1349,11 @@
   <code>max(A, B)</code>, e.g.:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=DAILY;BYDAY=MO;BYMONTHDAY=10;DTSTART=20180101
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   (and
      (day-of-week Monday)
@@ -1373,14 +1373,14 @@
 
   2018-01-10 isn't Monday though, so we have to try again on the next iteration.
   -->
-</listing>
+</code>
 
 <p>
   Still, <code>and = max</code> is alright, because it's legal to
   underapproximate:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   enum Rule {
       /* ... */
@@ -1403,7 +1403,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1411,7 +1411,7 @@
     composition:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
     match self {
         /* ... */
@@ -1427,19 +1427,19 @@
         }
     }
     -->
-  </listing>
+  </code>
 
   <p>
     Consider the following:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     (and
       (or (month 4) (month 6))
       (or (day-of-month 10) (day-of-month 30)))
     -->
-  </listing>
+  </code>
 
   <p>
     If we start on <code>2018-01-01</code>, then converging to
@@ -1447,7 +1447,7 @@
     but just one iteration with <code>and = ∘</code>:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     (or (month 4 2018-01-01) (month 6 2018-01-01))
     = (or 2018-04-01 2018-06-01)
@@ -1460,23 +1460,23 @@
     = 2018-06-10
       ^^^^^^^^^^
     -->
-  </listing>
+  </code>
 
   <p>
     But that's just an optimization.
   </p>
 </note>
 
-<h2 id="molecules">
+<hdr id="molecules">
   Molecules
-</h2>
+</hdr>
 
 <p>
   We're still missing the <code>FREQ</code> rule, but what we've got so far is
   sufficient to play with:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   /* ... */
   use std::iter;
@@ -1535,19 +1535,19 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   ... and voilà:
 </p>
 
-<listing-title>
+<code-title>
   <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=987c63e0180ef3609c9aa7c2b140557c">
     open in playground
   </a>
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   #[cfg(test)]
   mod tests {
@@ -1579,7 +1579,7 @@
       /* ... */
   }
   -->
-</listing>
+</code>
 
 <p>
   Now, I could go on and implement all of the other parameters, but for the most
@@ -1597,11 +1597,11 @@
   Let's analyze a specific example:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-14
   -> 2018-02-14
@@ -1609,7 +1609,7 @@
   -> 2018-04-14
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   What's the pattern? Perhaps surprisingly, we can already encode it - that's
@@ -1623,55 +1623,55 @@
   <code>BY*</code> rules:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=YEARLY;INTERVAL=1;DTSTART=20180114
   -> BYMONTH=1;BYMONTHDAY=14
   -> (and (month 1) (day-of-month 14))
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114
   -> BYMONTHDAY=14
   -> (day-of-month 14)
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=WEEKLY;INTERVAL=1;DTSTART=20180114
   -> BYDAY=SU
   -> (weekday Sunday)
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
   FREQ=DAILY;INTERVAL=1;DTSTART=20180114
   -> no-op
   -->
-</listing>
+</code>
 
 <note>
   <p>
     Introducing time requires extending this logic, like:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     FREQ=MONTHLY;INTERVAL=1;DTSTART=20180114T123456
     -> BYMONTHDAY=14;BYHOUR=12;BYMINUTE=34;BYSECOND=56
     -> (and (day-of-month 14) (hour 12) (minute 34) (second 56))
     -->
-  </listing>
+  </code>
 
   <p>
     This is addressed by the standard right here:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     Information, not contained in the rule, necessary to determine the
     various recurrence instance start time and dates are derived from
@@ -1680,14 +1680,14 @@
     month or a time.  This information would be the same as what is
     specified for "DTSTART".
     -->
-  </listing>
+  </code>
 
   <p>
     ... with one hidden caveat, time zone transitions (daylight saving time) -
     standard says that:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     Recurrence rules may generate recurrence instances with an invalid
     date (e.g., February 30) or nonexistent local time (e.g., 1:30 AM
@@ -1695,7 +1695,7 @@
     AM).  Such recurrence instances MUST be ignored and MUST NOT be
     counted as part of the recurrence set.
     -->
-  </listing>
+  </code>
 
   <p>
     ... but I'm pretty sure this doesn't affect the cases where
@@ -1714,17 +1714,17 @@
     actually snap the time forward:
   </p>
 
-  <listing-title>
+  <code-title>
     FREQ=DAILY;INTERVAL=1;DTSTART;TZID=Europe/Warsaw=20250329T023000
-  </listing-title>
+  </code-title>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
     -> 2025-03-29 02:30:00
     -> 2025-03-30 03:30:00 [!!]
     -> 2025-03-31 02:30:00
     -->
-  </listing>
+  </code>
 
   <p>
     At the same time, the <code>BYHOUR</code> rule must work on a
@@ -1737,11 +1737,11 @@
   What about intervals larger than one? Once again, let's take an example:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;INTERVAL=5;DTSTART=20180114
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-14
   -> 2018-06-14
@@ -1749,17 +1749,17 @@
   -> 2019-04-14
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   ... or two, to have a complete picture:
 </p>
 
-<listing-title>
+<code-title>
   FREQ=MONTHLY;INTERVAL=5;BYDAY=MO,TU;DTSTART=20180114
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-15
   -> 2018-01-16
@@ -1771,13 +1771,13 @@
   -> 2018-06-05
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   Alright, what's the pattern? Looking at the first example suggests:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   date = DTSTART + FREQ * INTERVAL * nth
 
@@ -1786,14 +1786,14 @@
   -> 2018-11-14 = 2018-01-14 + 5 months * 2
   -> 2019-04-14 = 2018-01-14 + 5 months * 3
   -->
-</listing>
+</code>
 
 <p>
   ... but this falls apart over the second example where none of the dates are
   an exact repetition:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   -> 2018-01-15 = 2018-01-14 + 1 day
   -> 2018-01-16 = 2018-01-14 + 2 days
@@ -1802,7 +1802,7 @@
   -> 2018-06-05 = 2018-01-14 + 4 months and 22 days
   -> [...]
   -->
-</listing>
+</code>
 
 <p>
   In fact, <code>2018-06-04</code> isn't even 5 months apart from
@@ -1815,7 +1815,7 @@
   example and ignoring <code>BYDAY=MO,TU</code> for a moment:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
   correct:
   -> 2018-06-04 = 2018-01-14 + 4 months and 21 days
@@ -1823,7 +1823,7 @@
   incorrect:
   -> 2018-05-31 = 2018-01-14 + 4 months and 17 days
   -->
-</listing>
+</code>
 
 <p>
   Clearly we're doing something wrong by looking  the distance between
@@ -1843,7 +1843,7 @@
   One approach could be:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn months_of(date: Date) -> i16 {
       date.year() * 12 + date.month()
@@ -1855,14 +1855,14 @@
 
   // ... and then we make sure that months_between() is divisible by INTERVAL
   -->
-</listing>
+</code>
 
 <p>
   ... but Jiff's spans are more convenient to work with, and they generalize to
   other units as well:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   /* ... */
   use jiff::{SpanRound, Unit};
@@ -1920,13 +1920,13 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   This new rule integrates quite nicely with the existing code:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   enum Freq {
       Daily,
@@ -1988,19 +1988,19 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   ... and voilà:
 </p>
 
-<listing-title>
+<code-title>
   <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=32c37489e516012eb8521ab7eb72dd1f">
     open in playground
   </a>
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   #[cfg(test)]
   mod tests {
@@ -2035,19 +2035,19 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   As it turns out, spooky RFC tables don't have to always end up in spooky code!
 </p>
 
-<h2 id="closing-thoughts">
+<hdr id="closing-thoughts">
   Closing thoughts
-</h2>
+</hdr>
 
-<h3>
+<shdr>
   Isn't it too complex?
-</h3>
+</shdr>
 
 <p>
   I'd argue that this distance-based approach is actually <i>simpler</i> than
@@ -2067,9 +2067,9 @@
   you get it for free.
 </p>
 
-<h3>
+<shdr>
   Isn't it too slow?
-</h3>
+</shdr>
 
 <p>
   Seems to be okay - I've benchmarked my reasonably optimized implementation
@@ -2083,9 +2083,9 @@
   talking about optimization.
 </p>
 
-<h3>
+<shdr>
   Surely you can't be the first one to come up with this?
-</h3>
+</shdr>
 
 <p>
   I hope I'm not the first one! I couldn't find any existing implementation

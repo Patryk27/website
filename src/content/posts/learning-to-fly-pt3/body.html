@@ -31,9 +31,9 @@
   But how can we <b>train</b> a bunch of floating-point numbers?
 </p>
 
-<h2 id="plan">
+<hdr id="plan">
   Plan
-</h2>
+</hdr>
 
 <p>
   <ref id="selection">
@@ -71,9 +71,9 @@
   implemented all this on my own!
 </p>
 
-<h2 id="intro">
+<hdr id="intro">
   Introduction
-</h2>
+</hdr>
 
 <p>
   First, let's recap how a genetic algorithm works and what's the point of this
@@ -142,7 +142,7 @@
   enetic algorithm:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     10  go to your garden
     20  sow a few random carrots
@@ -156,7 +156,7 @@
     - mutation & crossover = happen automatically (free labor!)
     - fitness function = your eyes & brain
   -->
-</listing>
+</code>
 
 <p>
   By now, most of those words ought to sound familiar to you - we've already
@@ -188,35 +188,35 @@
   </li>
 </ul>
 
-<h2 id="coding-outline">
+<hdr id="coding-outline">
   Coding: Outline
-</h2>
+</hdr>
 
 <p>
   We'll start by creating a second crate inside our workspace:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cd shorelark/libs
     $ cargo new genetic-algorithm --name lib-genetic-algorithm --lib
   -->
-</listing>
+</code>
 
 <p>
   That's some nice <code>lib.rs</code> Cargo created for us - let's replace it
   with an entry point:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub struct GeneticAlgorithm;
   -->
-</listing>
+</code>
 
 <p>
   Our genetic algorithm will provide only one functionality - sometimes it's
@@ -224,11 +224,11 @@
   <code>process</code> - I've tossed a coin and decided on:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
   =     pub fn evolve(&self) {
@@ -236,17 +236,17 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <p>
   What are we evolving? A population, of course!
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
         pub fn evolve(&self, population: &[???]) -> Vec<???> {
@@ -254,7 +254,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Our actual problem will depend on neural networks, but since we want for this
@@ -263,11 +263,11 @@
     parameter</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
   =     pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
@@ -275,14 +275,14 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
     <code>I</code> stands for <b>individual</b> - as for the Rust's terminology:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       // visibility  generics   _ function parameters
       // |          _|     ____|  (or just "parameters")
@@ -296,7 +296,7 @@
       //            |   type parameter
       //            lifetime parameter
     -->
-  </listing>
+  </code>
 
   <p class="text-attached">
     (<a href="https://doc.rust-lang.org/reference/items/functions.html" />)
@@ -320,7 +320,7 @@
     specify there are called <b>arguments</b>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       // v-----------------------v call site
          foo::<'static, f32>(&1.0);
@@ -331,7 +331,7 @@
       //       |        type argument
       //       lifetime argument
     -->
-  </listing>
+  </code>
 
   <p>
     Most of this vernacular (e.g. the difference between an argument and a
@@ -344,11 +344,11 @@
   Learning from past mistakes, let's not forget about <b>preconditions</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
         pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
@@ -358,17 +358,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   As for the algorithm itself - the outline is:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
         pub fn evolve<I>(&self, population: &[I]) -> Vec<I> {
@@ -385,11 +385,11 @@
         }
     }
   -->
-</listing>
+</code>
 
-<h2 id="coding-selection">
+<hdr id="coding-selection">
   Coding: Selection
-</h2>
+</hdr>
 
 <p>
   At this point, inside the loop, we have to pick two individuals - they will
@@ -431,11 +431,11 @@
       Fitness function as a <i>parameter</i> of an individual:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/genetic-algorithm/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         impl GeneticAlgorithm {
             pub fn evolve<I>(
@@ -447,7 +447,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -455,11 +455,11 @@
       Fitness score as a <i>property</i> of an individual:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/genetic-algorithm/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = pub trait Individual {
       =     fn fitness(&self) -> f32;
@@ -474,7 +474,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -690,27 +690,27 @@
   able to provide any algorithm they fancy:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub trait SelectionMethod {
   =     fn select(&self);
   = }
   -->
-</listing>
+</code>
 
 <p>
   A selection method has to have access to the entire population:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub trait SelectionMethod {
   =     fn select<I>(&self, population: &[I]) -> &I
@@ -718,17 +718,17 @@
   =         I: Individual;
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and, for clarity, let's annotate the lifetime:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub trait SelectionMethod {
   =     fn select<'a, I>(&self, population: &'a [I]) -> &'a I
@@ -736,17 +736,17 @@
   =         I: Individual;
     }
   -->
-</listing>
+</code>
 
 <p>
   We're going to need random numbers any minute now, so:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -756,7 +756,7 @@
   = [dev-dependencies]
   = rand_chacha = "0.3"
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -772,11 +772,11 @@
   PRNG via a parameter:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use rand::RngCore;
 
@@ -788,7 +788,7 @@
             I: Individual;
     }
   -->
-</listing>
+</code>
 
 <p>
   Ain't that a beautiful signature?
@@ -800,7 +800,7 @@
     <code>select()</code> generic over the PRNG, too:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       pub trait SelectionMethod {
           fn select<'a, R, I>(
@@ -813,7 +813,7 @@
               I: Individual;
       }
     -->
-  </listing>
+  </code>
 
   <p>
     First, let's catch up on the vernacular:
@@ -839,7 +839,7 @@
     exactly?" for generic types:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn foo() {
          bar();
@@ -859,14 +859,14 @@
           //   own `fn method(&self) { ... }`
       }
     -->
-  </listing>
+  </code>
 
   <p>
     For the sake of an example, let's consider this trait with its two
     implementations:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       trait Animal {
           fn kind(&self) -> &'static str;
@@ -892,20 +892,20 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     If you wanted to create a function that prints the kind of any animal, you
     could do it twofold:
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d5d734320717f0fda4d16de1f2600764">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       // Using static dispatch (aka static polymorphism):
       fn print_kind_static<A>(animal: &A)
@@ -928,7 +928,7 @@
           print_kind_dynamic(&Viscacha);
       }
     -->
-  </listing>
+  </code>
 
   <p>
     From a distance, both function look alike - what's the difference, then?
@@ -941,7 +941,7 @@
     "copy-pasted" version of that function:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn print_kind_static__chinchilla(animal: &Chinchilla) {
           println!("{}", Chinchilla::kind(animal));
@@ -956,7 +956,7 @@
           print_kind_static__viscacha(&Viscacha);
       }
     -->
-  </listing>
+  </code>
 
   <p>
     At this point you can see why it's called <i>static</i> dispatch -
@@ -977,7 +977,7 @@
     created a dedicated table mapping to concrete functions:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       // (this is pseudo-Rust, just to show the concept)
       
@@ -1006,7 +1006,7 @@
           print_kind_dynamic(&Viscacha, &VISCACHA_VTABLE);
       }
     -->
-  </listing>
+  </code>
 
   <p>
     Since all implementations can be described via <code>AnimalVtable</code>,
@@ -1038,11 +1038,11 @@
   As for the implementation:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub struct RouletteWheelSelection;
   =
@@ -1055,13 +1055,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... we <i>could</i> do it by hand:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl SelectionMethod for RouletteWheelSelection {
         fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
@@ -1089,7 +1089,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... but a code <i>par excellence</i> would be <i>&lt;drums /&gt;</i>
@@ -1116,11 +1116,11 @@
   exactly the exact thing we need:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use rand::seq::SliceRandom;
   = use rand::{Rng, RngCore};
@@ -1138,7 +1138,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   (thanks to <a href="https://github.com/javiertury">@javiertury</a> for
@@ -1151,11 +1151,11 @@
   <code>choose_weighted()</code> does the thing we need? By testing it!
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[cfg(test)]
   = mod tests {
@@ -1167,18 +1167,18 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   Path to the TDD-nirvana is strawn with roses and we're about to get bit by one
   of their thorns:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1197,7 +1197,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   At this point we've got two problems:
@@ -1231,7 +1231,7 @@
   <a href="https://www.youtube.com/watch?v=LI_Oe-jtgdI">in a song</a>:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Friend, either you're closing your eyes
     To a situation you do not wish to acknowledge
@@ -1244,18 +1244,18 @@
     With a "T"! Gotta rhyme it with "M"!
     And that stands for Mock
   -->
-</listing>
+</code>
 
 <p>
   My suggestion - one that doesn't require any external crates - it to create a
   dedicated testing-struct:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1281,17 +1281,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... which we can then use as:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1312,13 +1312,13 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   What about the assertion, though? A test such as this one:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1335,7 +1335,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... doesn't inspire confidence, because it doesn't <b>prove</b> that the
@@ -1343,7 +1343,7 @@
   implementation such as:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl SelectionMethod for RouletteWheelSelection {
         fn select<'a, I>(/* ... */) -> &'a I
@@ -1354,7 +1354,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... would pass such test with <span class="text-rainbow">flying colors</span>!
@@ -1379,11 +1379,11 @@
   </figcaption>
 </figure>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1425,7 +1425,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1433,13 +1433,13 @@
     scores from <code>f32</code> to <code>i32</code>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       let fitness = RouletteWheelSelection
           .select(&mut rng, &population)
           .fitness() as i32;
     -->
-  </listing>
+  </code>
 
   <p>
     <ref>
@@ -1451,13 +1451,13 @@
     <code>BTreeMap</code>'s key:
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=535648a70ce2e61f12b8c38021fddbef">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       use std::collections::BTreeMap;
       
@@ -1466,16 +1466,16 @@
           map.insert(1.0, "one point zero");
       }
     -->
-  </listing>
+  </code>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       error[E0277]: the trait bound `{float}: Ord` is not satisfied
         |
         |     map.insert(1.0, "one point zero");
         |         ^^^^^^ the trait `Ord` is not implemented for `{float}`
     -->
-  </listing>
+  </code>
 
   <p>
     The reason is that floating-point numbers, as defined by the
@@ -1486,11 +1486,11 @@
     problematic, because:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       NaN != NaN
     -->
-  </listing>
+  </code>
 
   <p>
     What this means in practice is that if you were able to insert a
@@ -1549,24 +1549,24 @@
   the virtual manifest's directory) returns:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `{1: 98, 2: 202, 3: 278, 4: 422}`,
      right: `{1: 0, 2: 0, 3: 0, 4: 0}`'
   -->
-</listing>
+</code>
 
 <p>
   ... proving that <code>choose_weighted()</code> works as advertised (higher
   fitness scores were chosen more frequently), so let's adjust the test:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -1588,14 +1588,14 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Voilà - we've tested the untestable! Having the selection ready, let's recap
   where we've stopped:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl GeneticAlgorithm {
         pub fn evolve<I>(&self, population: &[I]) -> Vec<I>
@@ -1615,7 +1615,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   What we have to figure out now is how to pass
@@ -1628,7 +1628,7 @@
       Using a parameter:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         impl GeneticAlgorithm {
             pub fn evolve<I, S>(
@@ -1644,7 +1644,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -1652,11 +1652,11 @@
       Using a constructor:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/genetic-algorithm/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = pub struct GeneticAlgorithm<S> {
       =     selection_method: S,
@@ -1678,7 +1678,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -1698,11 +1698,11 @@
   Now we're almost ready to invoke the selection method:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -1729,17 +1729,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... the only thing we're missing is the PRNG:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -1755,7 +1755,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1775,7 +1775,7 @@
         By accepting an <b>owned</b> PRNG via the constructor:
       </p>
 
-      <listing lang="rust">
+      <code lang="rust">
         <!--
           pub struct GeneticAlgorithm<R> {
               rng: R,
@@ -1790,14 +1790,14 @@
               }
           }
         -->
-      </listing>
+      </code>
     </li>
     <li>
       <p>
         By accepting a <b>borrowed</b> PRNG via the constructor:
       </p>
 
-      <listing lang="rust">
+      <code lang="rust">
         <!--
           pub struct GeneticAlgorithm<'r> {
               rng: &'r mut dyn RngCore,
@@ -1809,7 +1809,7 @@
               }
           }
         -->
-      </listing>
+      </code>
     </li>
   </ol>
 
@@ -1819,7 +1819,7 @@
     constructor, we won't be able to use it in other places of the application:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn main() {
           let rng = /* ... */;
@@ -1833,13 +1833,13 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     You could argue the same already happens for <code>SelectionMethod</code>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn main() {
           let sp = RouletteWheelSelection::new();
@@ -1851,7 +1851,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but in my opinion there's a difference in that <code>Rng</code> is a
@@ -1873,7 +1873,7 @@
     only it "locks" PRNG for the lifetime of the genetic algorithm:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn main() {
           let rng = /* ... */;
@@ -1889,13 +1889,13 @@
           ga.evolve(population);
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but it also prevents otherwise valid use cases such as this one:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       struct Simulation {
           rng: ChaCha8Rng,
@@ -1911,7 +1911,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     By the way, that's called a <b>self-referential struct</b> - they can be
@@ -1932,9 +1932,9 @@
   </ul>
 </note>
 
-<h2 id="coding-crossover">
+<hdr id="coding-crossover">
   Coding: Crossover
-</h2>
+</hdr>
 
 <p>
   Now that we have chosen two parent-individuals, it's time for the
@@ -1997,18 +1997,18 @@
   <img src="{{ assets }}/coding-crossover-5.svg" />
 </figure>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Clone, Debug)]
   = pub struct Chromosome {
   =     genes: Vec<f32>,
   = }
   -->
-</listing>
+</code>
 
 <p>
   Instead of exposing genes directly (via <code>pub genes: ...​</code>), we'll
@@ -2016,11 +2016,11 @@
   called <b>encapsulation</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = impl Chromosome {
   =     pub fn len(&self) -> usize {
@@ -2036,7 +2036,7 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   Seizing the day, let's catch up on some cool traits from the standard library:
@@ -2053,7 +2053,7 @@
       operator</b> - <code>[]</code> - on your type:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = use std::ops::Index;
 
@@ -2073,7 +2073,7 @@
       =     }
       = }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -2086,7 +2086,7 @@
       <code>.collect()</code> into your type:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = // ---
       = // | this is the type of the item an iterator should provide in order to be compatible
@@ -2105,7 +2105,7 @@
       =     }
       = }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -2118,7 +2118,7 @@
       opposite way - it converts a type into an iterator:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = impl IntoIterator for Chromosome {
       =     type Item = f32;
@@ -2129,7 +2129,7 @@
       =     }
       = }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -2143,13 +2143,13 @@
     <code>Iterator</code> trait:
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=e0d46e15578e4acc5a2dd9d948e8cbc6">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       struct Fibonacci {
           prev: u32,
@@ -2181,7 +2181,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     So if you want to convert a type into an iterator, you need to know what
@@ -2190,13 +2190,13 @@
     <code>std::vec::IntoIter</code>, which the compiler can even spell for us:
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=3f802badda113751add0ac5f92bca8b4">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       struct Chromosome {
           genes: Vec<f32>,
@@ -2211,9 +2211,9 @@
           }
       }
     -->
-  </listing>
+  </code>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       error[E0308]: mismatched types
          |
@@ -2222,20 +2222,20 @@
          = note: expected unit type `()`
                        found struct `std::vec::IntoIter<f32>`
     -->
-  </listing>
+  </code>
 
   <p>
     Naming this type is not always this easy, though, because combinators such
     as <code>.filter()</code> or <code>.map()</code> all account into it:
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=1e2f3dd9f63d54022a657113e5e1754e">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       struct Somethinger {
           values: Vec<f32>,
@@ -2253,9 +2253,9 @@
           }
       }
     -->
-  </listing>
+  </code>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       error[E0308]: mismatched types
          |
@@ -2264,14 +2264,14 @@
          = note: expected unit type `()`
                        found struct `Map<Filter<std::vec::IntoIter<f32>, {closure}>, {closure}>`
     -->
-  </listing>
+  </code>
 
   <p>
     Nightly Rust offers a cosy solution to this problem -
     <code>impl_trait_in_assoc_type</code>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #![feature(impl_trait_in_assoc_type)]
 
@@ -2291,7 +2291,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... which essentially says "please, compiler, find out the type on your
@@ -2319,11 +2319,11 @@
   ... which brings us to:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -2372,7 +2372,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -2393,11 +2393,11 @@
   Same as before, let's start with a trait:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub trait CrossoverMethod {
   =     fn crossover(
@@ -2408,17 +2408,17 @@
   =     ) -> Chromosome;
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... and a rudimentary implementation:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Clone, Debug)]
   = pub struct UniformCrossover;
@@ -2447,7 +2447,7 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   Your internal critic might've noticed a few things off about this code -
@@ -2458,11 +2458,11 @@
   First, let's add an assertion:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl CrossoverMethod for UniformCrossover {
         fn crossover(/* ... */) -> Chromosome {
@@ -2472,7 +2472,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -2483,11 +2483,11 @@
   know this one from the previous post, it's <a><code>.zip()</code></a>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl CrossoverMethod for UniformCrossover {
         fn crossover(/* ... */) -> Chromosome {
@@ -2501,7 +2501,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   How neat!
@@ -2518,11 +2518,11 @@
   ah, tests!
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2539,7 +2539,7 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <p>
   What we want to verify, in plain words, is that <code>child</code> is 50%
@@ -2551,11 +2551,11 @@
   random, just build out of different genes):
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2581,17 +2581,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and then compare how much <code>child</code> differs from each of them:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2614,69 +2614,69 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   <code>cargo test</code> says:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `49`,
      right: `0`'
   -->
-</listing>
+</code>
 
 <p>
   ... so let's adjust the test:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     assert_eq!(diff_a, 49);
   -->
-</listing>
+</code>
 
 <p>
   Another <code>cargo test</code> will fail on the second assertion:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `51`,
      right: `0`'
   -->
-</listing>
+</code>
 
 <p>
   ... so:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     assert_eq!(diff_b, 51);
   -->
-</listing>
+</code>
 
 <p>
   To recall, what we've got is:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2691,7 +2691,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... meaning that our <code>child</code> got 49% of its genome from
@@ -2710,11 +2710,11 @@
   <code>SelectionMethod</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub struct GeneticAlgorithm<S> {
         selection_method: S,
@@ -2738,7 +2738,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -2752,7 +2752,7 @@
     approach could be:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       pub struct GeneticAlgorithm<S, C> {
           selection_method: S,
@@ -2777,7 +2777,7 @@
           /* ... */
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... with the trade-off here being the same as when we were talking about
@@ -2803,11 +2803,11 @@
   ... and then we can call it:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -2833,11 +2833,11 @@
         }
     }
   -->
-</listing>
+</code>
 
-<h2 id="coding-mutation">
+<hdr id="coding-mutation">
   Coding: Mutation
-</h2>
+</hdr>
 
 <p>
   Now that we have a semi-new chromosome at hand, it's time to introduce some
@@ -2866,17 +2866,17 @@
   be smooth as butter:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub trait MutationMethod {
   =     fn mutate(&self, rng: &mut dyn RngCore, child: &mut Chromosome);
   = }
   -->
-</listing>
+</code>
 
 <p>
   We'll use Gaussian mutation, which is a fancy way of saying "we'll add or
@@ -2884,11 +2884,11 @@
   selection method, Gaussian mutation requires specifying two arguments:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Clone, Debug)]
   = pub struct GaussianMutation {
@@ -2923,7 +2923,7 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   As for the tests, instead of doing <code>fn test()</code> like before, this
@@ -2931,11 +2931,11 @@
   <b>edge cases</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2992,7 +2992,7 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <p>
   Naming tests this way took me a while to get used to, but eventually I've
@@ -3005,11 +3005,11 @@
   When implementing, to avoid copy-pasting, let's create a helper function:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3031,17 +3031,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and with it, the rest is as easy as:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -3049,13 +3049,13 @@
   = approx = "0.4"
     rand_chacha = "0.3"
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3100,7 +3100,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Implementing rest of the tests follows what we've learned so far, so it's been
@@ -3114,11 +3114,11 @@
   <code>Box</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub struct GeneticAlgorithm<S> {
         selection_method: S,
@@ -3145,17 +3145,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and then:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -3181,11 +3181,11 @@
         }
     }
   -->
-</listing>
+</code>
 
-<h2 id="coding-creating-individuals">
+<hdr id="coding-creating-individuals">
   Coding: Creating individuals
-</h2>
+</hdr>
 
 <p>
   Our <code>child</code> is of type <code>Chromosome</code>, while the vector we
@@ -3193,11 +3193,11 @@
   ability of converting a genotype back into an individual:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub trait Individual {
   =     fn create(chromosome: Chromosome) -> Self;
@@ -3220,17 +3220,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and then voilà!
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -3258,11 +3258,11 @@
         }
     }
   -->
-</listing>
+</code>
 
-<h2 id="the-test">
+<hdr id="the-test">
   The Test
-</h2>
+</hdr>
 
 <p>
   Having <code>.evolve()</code> ready, the time has come for perhaps the most
@@ -3288,11 +3288,11 @@
   <code>struct</code> to an <code>enum</code> with two different variants:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3345,7 +3345,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   <ref>
@@ -3363,11 +3363,11 @@
   handy in a moment:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3389,18 +3389,18 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   As for the test, nothing scary - we'll start with a few individuals, evolve
   them over a couple of generations and see how they end up looking like:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3440,18 +3440,18 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   We're going to create a few individuals at once, so a helper function is a
   must:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3469,17 +3469,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and now:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3509,7 +3509,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   (as before, there's no reason for having exactly 4 individuals with exactly 3
@@ -3523,24 +3523,24 @@
   <code>expected_population</code>:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `[WithChromosome { ... }, WithChromosome { ... }, ... ]`,
      right: `[WithChromosome { ... }, WithChromosome { ... }, ... ]`,
   -->
-</listing>
+</code>
 
 <p>
   Using this output, we can copy-paste actual genes from <code>left</code> into
   <code>expected_population</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -3561,7 +3561,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Yes...​ ha ha ha...​ <b><u>yes</u></b>... we've got...​ numbers?
@@ -3577,11 +3577,11 @@
   Well, we can compare their fitness scores!
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     // In this case, `fitness score` means `average of the genes`, as per our implemetation
     // inside `TestIndividual::fitness()`
@@ -3600,7 +3600,7 @@
         individual(&[/* ... */]), // fitness ~= 7.4
     ];
   -->
-</listing>
+</code>
 
 <p class="text-rainbow" style="margin-top: 3em; margin-bottom: 4em">
   it works! it works! our genetic algorithm is the apex predator of computer
@@ -3646,19 +3646,19 @@
   algorithm:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     // self.mutation_method.mutate(rng, &mut child);
   -->
-</listing>
+</code>
 
 <p>
   ... and see how they affect the output population.
 </p>
 
-<h2 id="closing-thoughts">
+<hdr id="closing-thoughts">
   Closing thoughts
-</h2>
+</hdr>
 
 <p>
   So far, learning <i>whoa so much</i> on the way, we've implemented two

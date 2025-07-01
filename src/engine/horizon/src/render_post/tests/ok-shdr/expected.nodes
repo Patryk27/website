@@ -1,0 +1,76 @@
+Elem(
+    Spanned {
+        inner: Elem {
+            name: Spanned {
+                inner: "shdr",
+                span: Span {
+                    start: 1,
+                    end: 5,
+                },
+            },
+            attrs: [],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Hello, ",
+                        span: Span {
+                            start: 6,
+                            end: 16,
+                        },
+                    },
+                ),
+                Elem(
+                    Spanned {
+                        inner: Elem {
+                            name: Spanned {
+                                inner: "i",
+                                span: Span {
+                                    start: 17,
+                                    end: 18,
+                                },
+                            },
+                            attrs: [],
+                            children: [
+                                Text(
+                                    Spanned {
+                                        inner: "World",
+                                        span: Span {
+                                            start: 19,
+                                            end: 24,
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                        span: Span {
+                            start: 16,
+                            end: 28,
+                        },
+                    },
+                ),
+                Text(
+                    Spanned {
+                        inner: "!\n",
+                        span: Span {
+                            start: 28,
+                            end: 30,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            start: 0,
+            end: 37,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            start: 37,
+            end: 38,
+        },
+    },
+)

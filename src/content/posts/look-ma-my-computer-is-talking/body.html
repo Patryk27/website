@@ -8,7 +8,7 @@
   Here's an example of that, having trained it on Shakespeare:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     > ACT IV
     ACT IV. Scene I.
@@ -23,11 +23,11 @@
         Will tie you to this vault to die,
         Or with the Emperor in his banishment.
   -->
-</listing>
+</code>
 
 ... a few Wikipedia articles:
 
-<listing lang="text">
+<code lang="text">
   <!--
     > Salmon thinks
     Salmon thinks, again contrary to Kant, that it is he whom Wanda will marry,
@@ -35,14 +35,14 @@
     Ashton met the Australian dental surgeon Phil Rasmussen, who gave him the name
     Valor.
   -->
-</listing>
+</code>
 
 <p>
   ... and, as is the custom, on <a href="https://github.com/torvalds/linux">The
   Kernel</a> itself:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     > switch (
     switch (skdev->state) {
@@ -50,7 +50,7 @@
                     if (m->gpio[MAX1600_GPIO_0VPP]) {
                     tsi_err(&pdev->dev, DMA_BIT_MASK(32);
   -->
-</listing>
+</code>
 
 <p>
   My hopes are to spark your interest in the topic of language models and then,
@@ -71,9 +71,9 @@
   (as always, source code is <a href="https://github.com/Patryk27/chatgpt-at-home">available at my GitHub</a>.)
 </p>
 
-<h2 id="naivete">
+<hdr id="naivete">
   Naïveté
-</h2>
+</hdr>
 
 <p>
   So, what we want to achieve is an application that can can be trained on a
@@ -85,7 +85,7 @@
   That is to say, an overview of our program is:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     struct Brain {
         /* ... */
@@ -105,13 +105,13 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and a very naive implementation could fit on a larger handkerchief:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use rand::seq::SliceRandom;
   =
@@ -144,33 +144,33 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   Before we start ranting about what makes that approach bad, let's at least see
   it in action:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cargo new chatgpt-at-home
     $ cd chatgpt-at-home
     $ cargo add rand
     # fill-in src/main.rs
   -->
-</listing>
+</code>
 
 <p>
   Let's train it on, say, Orwell's <i>Nineteen Eighty-Four</i>:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ wget http://gutenberg.net.au/ebooks01/0100021.txt -O 1984.txt
   -->
-</listing>
+</code>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = fn main() {
   =     let mut brain = Brain::default();
@@ -180,17 +180,17 @@
   =     println!("{}", brain.prompt("It was a", 64));
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... aaaand:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo run
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a the
     bullet, sensuality, tiny--helpless!
@@ -203,16 +203,16 @@
      as that idea Even
     the the was An the no the 'It's he to with go white. the to pleasure Socialist he This on
   -->
-</listing>
+</code>
 
 <p>
   Oof, owie <i>(surprised pikatchu face)</i>, that's pretty bad - what's going
   on?
 </p>
 
-<h2 id="context">
+<hdr id="context">
   Context
-</h2>
+</hdr>
 
 <p>
   Arguably, generating random words yields bad prose because usually words in
@@ -225,14 +225,14 @@
   keeping words as a plain list, it keeps track of their <b>context</b> as well:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Default)]
     struct Brain {
   =     words: HashMap<String, HashMap<String, usize>>,
     }
   -->
-</listing>
+</code>
 
 <p>
   In this design, the outer map contains all of the words and the inner map
@@ -244,17 +244,17 @@
   That is to say, given this sentence:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Hello, World! Hello, Joe! Hello, World!
   -->
-</listing>
+</code>
 
 <p>
   ... we'd expect the map to look like this:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     {
       "Hello,": {
@@ -269,7 +269,7 @@
       },
     }
   -->
-</listing>
+</code>
 
 <p>
   As compared to a pure list, a map is pretty neat because it tells us the
@@ -283,7 +283,7 @@
   fine-tune the prompter to choose words based on their frequency:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use rand::seq::SliceRandom;
   = use std::collections::HashMap;
@@ -360,35 +360,35 @@
   =     println!("{}", brain.prompt("Hello,", 16));
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   $ cargo run
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Hello, World! Hello, World! Hello, World! Hello, Joe! Hello, World! Hello, World! Hello, Joe! Hello, World!
   -->
-</listing>
+</code>
 
 <p>
   Hey, that's some progress! Let's see what it thinks of Orwell back again:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   =   brain.train(include_str!("../1984.txt"));
   =
   =   println!("{}", brain.prompt("It was a", 64));
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   $ cargo run
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a different person.
 
@@ -399,7 +399,7 @@
     had been issued yet. The face against all hours. He picked herself was awake he had racked my
     brains. There
   -->
-</listing>
+</code>
 
 <p>
   Now we're talking! -- the first sentence is correct English, feels like it
@@ -421,7 +421,7 @@
   In general, n-grams are just "sliding windows" of the input data:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     fn main() {
         let input = "Onions have layers. Ogres have layers. Onions have layers.";
@@ -433,14 +433,14 @@
         println!("{:?}", trigram);
     }
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
     [["Onions", "have"], ["have", "layers."], ["layers.", "Ogres"], ...]
     [["Onions", "have", "layers."], ["have", "layers.", "Ogres"], ["layers.", "Ogres", "have"], ...]
   -->
-</listing>
+</code>
 
 <p>
   ... and they come handy pretty often when working with text, e.g. when
@@ -472,12 +472,12 @@
   given sentence:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Mary   had    a      little  lamb
     word0  word1  word2  word3   word4
   -->
-</listing>
+</code>
 
 <p>
   ... <code>word1</code> is only influenced by <code>word0</code>,
@@ -495,9 +495,9 @@
   So, there are (at least) two (easy) things we can do to improve it.
 </p>
 
-<h2 id="tokens">
+<hdr id="tokens">
   All My Tokens Gone
-</h2>
+</hdr>
 
 <p>
   n-grams (and lots of other text algorithms, for that matter) require for the
@@ -516,11 +516,11 @@
   So far our tokenization has been pretty simple:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     text.split(' ')
   -->
-</listing>
+</code>
 
 <p>
   ... and while simplicity is generally desirable, in this case it leaves us
@@ -543,7 +543,7 @@
   the entire word (or number), passing other characters through:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
   = use std::{collections::HashMap, iter};
@@ -624,13 +624,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... which we can now call:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Brain {
         pub fn train(&mut self, text: &str) {
@@ -656,17 +656,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo run
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a stronger are the
 
@@ -674,7 +674,7 @@
 
     these
   -->
-</listing>
+</code>
 
 <p>
   Huh, it's... <i>somewhat worse</i>?
@@ -687,7 +687,7 @@
   means that what before was:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     {
       "Hello,": {
@@ -702,13 +702,13 @@
       },
     }
   -->
-</listing>
+</code>
 
 <p>
   ... has now become:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     {
         "World": {
@@ -733,7 +733,7 @@
         },
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and so after emitting e.g. <code>Hello</code>, the only next possible
@@ -748,16 +748,16 @@
   fixed.
 </p>
 
-<h2 id="more-context">
+<hdr id="more-context">
   More context, More Context, MORE. CONTEXT.
-</h2>
+</hdr>
 
 <p>
   If currently we're generating <i>bi</i>grams, then maybe generating
   <i>longer</i>-grams would help? Let's try:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Default)]
     struct Brain {
@@ -826,7 +826,7 @@
   =     println!("{}", brain.prompt("It was a failure.", 64));
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -842,7 +842,7 @@
     and later looking them up by ids:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       type Token = String;
       type TokenId = usize;
@@ -855,7 +855,7 @@
           frequencies: HashMap<Vec<TokenId>, HashMap<TokenId, TokenFrequency>>,
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but for the purposes of this article strings-strings will be just fine.
@@ -866,24 +866,24 @@
   ... and:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a failure. It had faded but before
     O'Brien smiled faintly. 'You are thinking,' he said.
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a failure. It was gin that revived him every morning.
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was a failure. It was somehow slightly frightening, like the beams of a dental plate fell out of him under the banner of equality
   -->
-</listing>
+</code>
 
 <p>
   Ha, ha!
@@ -894,7 +894,7 @@
   context to contain exactly four tokens, prompts with less:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     fn main() {
         /* ... */
@@ -902,25 +902,25 @@
   =     println!("{}", brain.prompt("It was", 64));
     }
   -->
-</listing>
+</code>
 
 <p>
   ... cause <span class="text-rainbow">panic! at the brain</span>:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread 'main' panicked at 'slice index starts at 18446744073709551614 but ends at 3'
   -->
-</listing>
+</code>
 
 <p>
   Can <i>even more</i> statistics save us?
 </p>
 
-<h2 id="everywhere">
+<hdr id="everywhere">
   N-grams Everywhere All at Once
-</h2>
+</hdr>
 
 <p>
   Using bigrams allows us to start prompts with just one word, but it generates
@@ -942,7 +942,7 @@
   this one simple trick:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Default)]
     struct Brain {
@@ -1046,17 +1046,17 @@
   =     println!("{}", brain.prompt("It was", 256));
     }
   -->
-</listing>
+</code>
 
 <p>
   ... which gives us:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo run
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     It was as inscrutable as everybody else's.
 
@@ -1073,15 +1073,15 @@
 
     GOD IS POWER
   -->
-</listing>
+</code>
 
 <p>
   Heyo! (ka ching (nobel prize))
 </p>
 
-<h2 id="summary">
+<hdr id="summary">
   Summary
-</h2>
+</hdr>
 
 <p>
   So, what we created here is an application that can be trained on a dataset

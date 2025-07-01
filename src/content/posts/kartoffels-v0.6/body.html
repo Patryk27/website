@@ -19,9 +19,9 @@
   Today I've released v0.6, which spans 120 commits and brings:
 </p>
 
-<h2 id="new-challenges">
+<hdr id="new-challenges">
   New challenges
-</h2>
+</hdr>
 
 <p>
   kartoffels strives to be both a multiplayer and a singleplayer game - to
@@ -59,9 +59,9 @@
   optimizations, and what have you.
 </p>
 
-<h2 id="simplified-radar-functions">
+<hdr id="simplified-radar-functions">
   Simplified radar functions
-</h2>
+</hdr>
 
 <p>
   Radar allows for a robot to scan its surrounding area, making it a critical
@@ -70,17 +70,17 @@
   scan:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub fn radar_scan_3x3() -> [[char; 3]; 3];
   -->
-</listing>
+</code>
 
 <p>
   This design proved a bit awkward to use due to its untypical indexing:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     let scan = radar_scan_3x3();
 
@@ -99,14 +99,14 @@
     // scan[1][0] -> tile to the left of the robot
     // scan[1][2] -> tile to the right of the robot
   -->
-</listing>
+</code>
 
 <p>
   ... and so the <code>radar_scan_*</code> functions were redesigned to return a
   struct with a convenient accessor:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     let scan = radar_scan_3x3();
 
@@ -116,14 +116,14 @@
     // scan.at(-1, 0) -> tile to the left of the robot
     // scan.at(1, 0)  -> tile to the right of the robot
   -->
-</listing>
+</code>
 
 <p>
   Seizing the day, the radar got extra data - you can now use it to check which
   specific robot is at given location:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     if let Some(bot_id) = scan.bot_at(0, -1) {
         if !friends.contains(&bot_id) {
@@ -131,11 +131,11 @@
         }
     }
   -->
-</listing>
+</code>
 
-<h2 id="arm-pick-and-arm-drop">
+<hdr id="arm-pick-and-arm-drop">
   <code>arm_pick()</code> and <code>arm_drop()</code>
-</h2>
+</hdr>
 
 <p>
   Robots can now pick objects from the ground and drop them.
@@ -157,9 +157,9 @@
   <b>capture the flag</b>.
 </p>
 
-<h2 id="em-dashes">
+<hdr id="em-dashes">
   Em Dashes
-</h2>
+</hdr>
 
 <p>
   A friend said it's illegal to use <code>-</code> when I really mean
@@ -178,9 +178,9 @@
   kinda annoying, but I see the merit.
 </p>
 
-<h2 id="inspect-bot-command">
+<hdr id="inspect-bot-command">
   <code>inspect-bot</code> command
-</h2>
+</hdr>
 
 <p>
   You can now inspect the history of each bot:
@@ -196,9 +196,9 @@
   might've gotten killed, the firmware might've crashed etc.).
 </p>
 
-<h2 id="smooth-camera-movements">
+<hdr id="smooth-camera-movements">
   Smooth camera movements
-</h2>
+</hdr>
 
 <p>
   Camera now interpolates between current and target position, making for a
@@ -209,9 +209,9 @@
   <video src="{{ assets }}/smooth-camera-movements.webm" />
 </figure>
 
-<h2 id="compression">
+<hdr id="compression">
   Compression
-</h2>
+</hdr>
 
 <p>
   As it turns out, a text interface can generate <i>a lot</i> of data!
@@ -249,9 +249,9 @@
   reduced.
 </p>
 
-<h2 id="plans">
+<hdr id="plans">
   Plans
-</h2>
+</hdr>
 
 <p>
   <ref>

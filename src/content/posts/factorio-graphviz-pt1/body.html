@@ -12,9 +12,9 @@
   </p>
 </note>
 
-<h2 id="_case_study_logistic_science_pack">
+<hdr id="_case_study_logistic_science_pack">
   Case study: Logistic science pack
-</h2>
+</hdr>
 
 <p>
   The story goes: we've started the game, built a few mining drills
@@ -69,12 +69,12 @@
   Let's start with a minimalistic textual format of:
 </p>
 
-<listing>
+<code>
   <!--
     product
         requirements
   -->
-</listing>
+</code>
 
 <p>
   <i>
@@ -87,20 +87,20 @@
   Translating the former ingredients, we get:
 </p>
 
-<listing>
+<code>
   <!--
     logistic_science_pack
         inserter
         transport_belt
   -->
-</listing>
+</code>
 
 <p>
   Since both <code>inserter</code> and <code>transport_belt</code> need to be
   produced too, let's include them as well:
 </p>
 
-<listing>
+<code>
   <!--
     logistic_science_pack
         inserter
@@ -115,7 +115,7 @@
         iron_gear_wheel
         iron_plate
   -->
-</listing>
+</code>
 
 <p>
   Similarly, we'll need to produce <code>electronic_circuit</code>,
@@ -124,7 +124,7 @@
   <code>iron_plate</code> and <code>copper_plate</code>):
 </p>
 
-<listing>
+<code>
   <!--
     logistic_science_pack
         inserter
@@ -149,7 +149,7 @@
     iron_gear_wheel
         iron_plate
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -175,9 +175,9 @@
   That's when graphs come into play.
 </p>
 
-<h2 id="_introduction_to_graphs">
+<hdr id="_introduction_to_graphs">
   Introduction to graphs
-</h2>
+</hdr>
 
 <p>
   Graphs are structures used to model <b>relationships</b> between objects -
@@ -224,7 +224,7 @@
   above:
 </p>
 
-<listing lang="dot">
+<code lang="dot">
   <!--
     # This instruction starts a directed graph
     digraph {
@@ -239,7 +239,7 @@
         Dulcia -> Charlie
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -279,15 +279,15 @@
   </p>
 </note>
 
-<h2 id="_case_study_logistic_science_pack_cont">
+<hdr id="_case_study_logistic_science_pack_cont">
   Case study: Logistic science pack (cont.)
-</h2>
+</hdr>
 
 <p>
   Let's recall our recipe:
 </p>
 
-<listing>
+<code>
   <!--
     logistic_science_pack
         inserter
@@ -312,7 +312,7 @@
     iron_gear_wheel
         iron_plate
   -->
-</listing>
+</code>
 
 <p>
   Since Graphviz doesn't understand our notation (we've just invented it,
@@ -326,14 +326,14 @@
 <div class="col-graph">
   <div class="cg-body">
     <div data-state="collapsed" class="cg-code">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               inserter -> logistic_science_pack
               transport_belt -> logistic_science_pack
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -349,7 +349,7 @@
 <div class="col-graph">
   <div class="cg-body">
     <div class="cg-code">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               inserter -> logistic_science_pack
@@ -363,7 +363,7 @@
         =     iron_plate -> transport_belt
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -382,7 +382,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               # ...
@@ -395,11 +395,11 @@
         =     iron_plate -> iron_gear_wheel
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div class="cg-code" data-state="expanded">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               inserter -> logistic_science_pack
@@ -420,7 +420,7 @@
         =     iron_plate -> iron_gear_wheel
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -451,7 +451,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
         =     splines = ortho
@@ -459,11 +459,11 @@
               # ...
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div class="cg-code" data-state="expanded">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
         =     splines = ortho
@@ -481,7 +481,7 @@
               iron_plate -> iron_gear_wheel
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -521,7 +521,7 @@
 
   <div class="cg-body">
     <div data-state="collapsed" class="cg-code">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               # ...
@@ -539,11 +539,11 @@
               # ...
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div data-state="expanded" class="cg-code">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               splines = ortho
@@ -568,7 +568,7 @@
               iron_plate -> iron_gear_wheel
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -596,7 +596,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               # ...
@@ -611,11 +611,11 @@
               # ...
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div class="cg-code" data-state="expanded">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               splines = ortho
@@ -647,7 +647,7 @@
               iron_plate -> transport_belt
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -673,7 +673,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               # ...
@@ -688,11 +688,11 @@
               # ...
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div class="cg-code" data-state="expanded">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               splines = ortho
@@ -731,7 +731,7 @@
               iron_plate -> transport_belt
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -750,7 +750,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               /* ... */
@@ -772,11 +772,11 @@
               /* ... */
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div data-state="expanded" class="cg-code">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               splines = ortho
@@ -850,7 +850,7 @@
               iron_plate -> transport_belt
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -885,7 +885,7 @@
 
   <div class="cg-body">
     <div class="cg-code" data-state="collapsed">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               /* ... */
@@ -899,11 +899,11 @@
               /* ... */
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <div class="cg-code" data-state="expanded">
-      <listing lang="dot">
+      <code lang="dot">
         <!--
           digraph {
               splines = ortho
@@ -985,7 +985,7 @@
               iron_plate -> transport_belt
           }
         -->
-      </listing>
+      </code>
     </div>
 
     <figure class="cg-graph">
@@ -1022,16 +1022,16 @@
   Solving this issue is left as an exercise for the reader :-)
 </p>
 
-<h2 id="_case_study_chemical_science_pack">
+<hdr id="_case_study_chemical_science_pack">
   Case study: Chemical science pack
-</h2>
+</hdr>
 
 <p>
   This one is actually going to be way shorter - let's skip all the ceremony and
   jump straight into the recipe:
 </p>
 
-<listing>
+<code>
   <!--
     chemical_science_pack
         advanced_circuit
@@ -1072,7 +1072,7 @@
         petroleum_gas
         water
   -->
-</listing>
+</code>
 
 <p>
   Now, since I don't enjoy arduous, repetitive tasks, I've prepared a tiny
@@ -1085,9 +1085,9 @@
   </a>
 </p>
 
-<h2 id="_summary_future_work">
+<hdr id="_summary_future_work">
   Summary & future work
-</h2>
+</hdr>
 
 <p>
   As with everything, so doesn't using Graphviz solve all our problems.

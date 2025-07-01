@@ -25,15 +25,15 @@
   Strap your straps, seatbelt your seatbelts and get ready for some coding!
 </p>
 
-<h2 id="setup">
+<hdr id="setup">
   Setup
-</h2>
+</hdr>
 
 <p>
   Oh, the joys of starting a new project!
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ mkdir shorelark
     $ cd shorelark
@@ -41,7 +41,7 @@
     # If you're using Git, it's also the time for:
     $ git init
   -->
-</listing>
+</code>
 
 <p>
   First things first, we have to establish which toolchain version we'll be
@@ -54,15 +54,15 @@
   and create a file called <code>rust-toolchain</code> that says:
 </p>
 
-<listing-title>
+<code-title>
   rust-toolchain
-</listing-title>
+</code-title>
 
-<listing>
+<code>
   <!--
   = 1.76.0
   -->
-</listing>
+</code>
 
 <p>
   Phew!
@@ -79,11 +79,11 @@
   <a>workspace</a> will come handy:
 </p>
 
-<listing-title>
+<code-title>
   Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
   = [workspace]
   = resolver = "2"
@@ -92,7 +92,7 @@
   =     "libs/*",
   = ]
   -->
-</listing>
+</code>
 
 <p>
   What this means is that instead of having <code>src/main.rs</code> right away,
@@ -100,13 +100,13 @@
   libraries (aka <i>crates</i>) in there:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
   $ mkdir libs
   $ cd libs
   $ cargo new neural-network --name lib-neural-network --lib
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -117,7 +117,7 @@
     for library-crates:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       project
       ├─ Cargo.toml
@@ -135,7 +135,7 @@
             └─ src
                └─ lib.rs
     -->
-  </listing>
+  </code>
 
   <p>
     There's no standard guideline, follow your gut (unless you're following this
@@ -143,9 +143,9 @@
   </p>
 </note>
 
-<h2 id="coding-propagate">
+<hdr id="coding-propagate">
   Coding: <code>propagate()</code>
-</h2>
+</hdr>
 
 <p>
   It's time to get down to business.
@@ -157,16 +157,16 @@
   <code>lib.rs</code> and write:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Debug)]
   = pub struct Network;
   -->
-</listing>
+</code>
 
 <p>
   A neural network's most crucial operation is propagating numbers:
@@ -180,11 +180,11 @@
   ... so:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     pub struct Network;
@@ -195,34 +195,34 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <note>
   <p>
     While some languages allow to leave "work-in-progress" functions empty:
   </p>
 
-  <listing lang="cpp">
+  <code lang="cpp">
     <!--
       int get_berry_number() {
           // TODO solve the paradox
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... an equivalent code in Rust does not compile:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn berry_number() -> usize {
           // TODO solve the paradox
       }
     -->
-  </listing>
+  </code>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       error[E0308]: mismatched types
        -\-> src/lib.rs
@@ -233,13 +233,13 @@
         |    implicitly returns `()` as its body has no tail or `return`
         |    expression
     -->
-  </listing>
+  </code>
 
   <p>
     That's because almost everything in Rust is an expression:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       let value = if condition {
           "computer says yass"
@@ -255,19 +255,19 @@
           // empty block is an expression, too
       };
     -->
-  </listing>
+  </code>
 
   <p>
     ... and so the way Rust sees that function is actually:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn berry_number() -> usize {
           return ();
       }
     -->
-  </listing>
+  </code>
 
   <p>
     <ref>
@@ -289,11 +289,11 @@
     runtime, cause the application to safely crash:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       thread 'main' panicked at 'not yet implemented'
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
@@ -308,11 +308,11 @@
   ... so:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Debug)]
   = pub struct Network {
@@ -322,7 +322,7 @@
   = #[derive(Debug)]
   = struct Layer;
   -->
-</listing>
+</code>
 
 <p>
   Layers are built from neurons:
@@ -336,18 +336,18 @@
   ... giving us:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
   = struct Layer {
   =     neurons: Vec<Neuron>,
   = }
   -->
-</listing>
+</code>
 
 <p>
   Eventually, neurons contain biases and <b>output</b> weights:
@@ -357,11 +357,11 @@
   <img src="{{ assets }}/coding-propagate-4.svg" />
 </figure>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Debug)]
   = struct Neuron {
@@ -369,17 +369,17 @@
   =     weights: Vec<f32>,
   = }
   -->
-</listing>
+</code>
 
 <p>
   Let's see our initial design in its entriety:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     pub struct Network {
@@ -403,7 +403,7 @@
         weights: Vec<f32>,
     }
   -->
-</listing>
+</code>
 
 <p>
   Nice.
@@ -447,11 +447,11 @@
   <code>propagate()</code> in there, too:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = impl Layer {
   =     fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -459,18 +459,18 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   Having <code>Layer::propagate()</code>, we can go back and implement
   <code>Network::propagate()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -484,7 +484,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   This is quite a satisfying, correct piece of code - but it's also
@@ -504,26 +504,26 @@
   First of all, this is called a <b>rebinding</b> (or <i>shadowing</i>):
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = let mut inputs = inputs;
   -->
-</listing>
+</code>
 
 <p>
   ... and it's unnecessary, because we might as well move this
   <code>mut</code> into the function's parameter:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
   =     pub fn propagate(&self, mut inputs: Vec<f32>) -> Vec<f32> {
@@ -535,20 +535,20 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
     But hey, won't this force our callers to pass mutable values? Nope!
   </p>
 
-  <listing-title>
+  <code-title>
     <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=945c2c2852ccbeb143ea569747038626">
       open in playground
     </a>
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn process(mut items: Vec<f32>) {
           // do something
@@ -562,14 +562,14 @@
           //      ^ just works
       }
     -->
-  </listing>
+  </code>
 
   <p>
     The reasoning is that the <code>mut</code> we've just introduced appears in
     so-called <b>binding</b> position:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn foo_1(items: &[f32]) {
           //   ^^^^^  ------
@@ -606,13 +606,13 @@
           // (partially immutable, partially mutable) (immutable)
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... and bindings, contrary to types, are <b>local</b> to the function:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn foo(items: &mut Vec<usize>) {
           // When a type is mutable, you can modify the thing being
@@ -637,7 +637,7 @@
           //         behind a `&` reference
       }
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
@@ -645,27 +645,27 @@
   known as <b>folding</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     for layer in &self.layers {
         inputs = layer.propagate(inputs);
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and Rust's standard library provides a dedicated function for it:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
   =     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -675,7 +675,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   (one could argue whether our final code is actually more readable or less -
@@ -694,11 +694,11 @@
   single output, so:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     struct Neuron {
@@ -712,17 +712,17 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   As before, we can backtrack to implement <code>Layer::propagate()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     struct Layer {
@@ -742,13 +742,13 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   If we try to compile it, we get our first borrow-checker failure:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     error[E0382]: use of moved value: `inputs`
       -\-> src/lib.rs
@@ -763,7 +763,7 @@
        |                                value moved here, in previous
        |                                iteration of loop
   -->
-</listing>
+</code>
 
 <p>
   Obviously, the compiler is right: after invoking
@@ -776,11 +776,11 @@
   <code>Neuron::propagate()</code> work on <b>borrowed</b> values:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Layer {
         fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -803,17 +803,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   To reiterate, the code we have at the moment is:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Layer {
         fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -828,18 +828,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and, would you believe it, this particular pattern is called
   <b>mapping</b> and the standard library also provides a method for it!
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Layer {
         fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
@@ -850,7 +850,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Currently we've got nowhere else to go, but to complete
@@ -858,11 +858,11 @@
   <a href="https://en.wikipedia.org/wiki/Superfund">superfund</a>-ish version:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -882,7 +882,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   This snippet contains two unidiomatic constructs and one potential bug - let's
@@ -929,7 +929,7 @@
       message:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         impl Neuron {
             fn propagate(&self, inputs: &[f32]) -> Result<f32, String> {
@@ -945,14 +945,14 @@
             }
         }
       -->
-    </listing>
+    </code>
 
     <p>
       ... or, using one of the crates I love the most -
       <a href="https://github.com/dtolnay/thiserror">thiserror</a>:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         pub type Result<T> = std::result::Result<T, Error>;
         
@@ -980,7 +980,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -988,7 +988,7 @@
       We could use <code>assert_eq!()</code> / <code>panic!()</code>:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         impl Neuron {
             fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -998,7 +998,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -1028,11 +1028,11 @@
   So:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1042,17 +1042,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   As for the idioms - this one:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1066,17 +1066,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... is <code>f32::max()</code> in disguise:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1086,17 +1086,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   While this one:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1112,17 +1112,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... can be simplified first with <code>.zip()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1138,7 +1138,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1147,21 +1147,21 @@
     index lays within the array bounds, panicking when it's too big:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn main() {
           let numbers = vec![1];
           println!("{}", numbers[123]);
       }
     -->
-  </listing>
+  </code>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       thread 'main' panicked at 'index out of bounds: the len is 1 but
       the index is 123'
     -->
-  </listing>
+  </code>
 
   <p>
     When instead of indexing, you use combinators such as <code>.zip()</code> or
@@ -1178,11 +1178,11 @@
   ... and then using <code>.map()</code> + <code>.sum()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1198,7 +1198,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1216,11 +1216,11 @@
   Voilà:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn propagate(&self, inputs: &[f32]) -> f32 {
@@ -1236,16 +1236,16 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   It's unquestionably beautiful - but <b>does it work</b>? Can it recognize a
   cat? Can we use it to predict future Dogecoin prices?
 </p>
 
-<h2 id="coding-new">
+<hdr id="coding-new">
   Coding: <code>new()</code>
-</h2>
+</hdr>
 
 <p>
   Up to this point we were focused so much on the algorithm that we gave little
@@ -1254,15 +1254,14 @@
 </p>
 
 <p>
-  Our first approach for creating a constructor could be a plain,
-  <abbr title="no-operation, i.e. doing nothing">no-op</abbr> function of:
+  Our first approach for creating a constructor could be a plain function of:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     pub struct Network {
@@ -1277,7 +1276,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... but it won't do in this case, because - as we've already established -
@@ -1291,11 +1290,11 @@
   need something in the lines of:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random() -> Self {
@@ -1303,7 +1302,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   In order to randomize a network, we'll need to know the number of its layers
@@ -1311,11 +1310,11 @@
   vector:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random(neurons_per_layer: Vec<usize>) -> Self {
@@ -1323,17 +1322,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... or, in a bit more elegant way:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = #[derive(Debug)]
   = pub struct LayerTopology {
@@ -1355,7 +1354,7 @@
     // provide enough information to tell what this `usize` represents - using a
     // separate type makes the intention explicit.
   -->
-</listing>
+</code>
 
 <p>
   Now, if you look real close at a neural network's layer:
@@ -1387,7 +1386,7 @@
   ... because layer A's output is layer B's input, if we went with:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[derive(Debug)]
     pub struct LayerTopology {
@@ -1395,7 +1394,7 @@
         pub output_neurons: usize,
     }
   -->
-</listing>
+</code>
 
 <p>
   ... then not only would we make our interface unwieldy, but - what's more
@@ -1413,11 +1412,11 @@
   As for the implementation, a crude approach would be:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random(layers: Vec<LayerTopology>) -> Self {
@@ -1437,18 +1436,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and now let's rustify it -- care to guess what happens when you call
   <code>Network::random(vec![])</code>?
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random(layers: Vec<LayerTopology>) -> Self {
@@ -1460,7 +1459,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   There, better.
@@ -1472,11 +1471,11 @@
   <code>.windows()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random(layers: Vec<LayerTopology>) -> Self {
@@ -1493,7 +1492,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1505,19 +1504,19 @@
     this loop even further:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       for [fst, snd] in layers.windows(2) {
           built_layers.push(Layer::random(fst.neurons, snd.neurons));
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but, regrettably, computer says no:
   </p>
 
-  <listing lang="text">
+  <code lang="text">
     <!--
       error[E0005]: refutable pattern in `for` loop binding: `&[]`,
                     `&[_]` and `&[_, _, _, ..]` not covered
@@ -1529,7 +1528,7 @@
         |
         = note: the matched value is of type `&[LayerTopology]`
     -->
-  </listing>
+  </code>
 
   <p>
     Compiler doesn't understand that <code>.windows(2)</code> returns arrays of
@@ -1550,7 +1549,7 @@
     solution - <code>.array_windows()</code>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #![feature(array_windows)]
       
@@ -1558,7 +1557,7 @@
           built_layers.push(Layer::random(fst.neurons, snd.neurons));
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but, for simplicity, we'll stay away from const generics and continue
@@ -1570,11 +1569,11 @@
   In this case, switching to iterators is a no-brainer for me:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
         pub fn random(layers: Vec<LayerTopology>) -> Self {
@@ -1587,18 +1586,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   And one final touch - when it doesn't make the code awkward, it's a good
   practice to accept <b>borrowed</b> values instead of owned:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Network {
   =     pub fn random(layers: &[LayerTopology]) -> Self {
@@ -1606,7 +1605,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   More often than not, accepting borrowed values doesn't change much inside the
@@ -1614,7 +1613,7 @@
   now do:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     let network = Network::random(&[
         LayerTopology { neurons: 8 },
@@ -1622,13 +1621,13 @@
         LayerTopology { neurons: 2 },
     ]);
   -->
-</listing>
+</code>
 
 <p>
   ... and:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     let layers = vec![
         LayerTopology { neurons: 8 },
@@ -1640,18 +1639,18 @@
     let network_b = Network::random(&layers);
     //                              ^ no need to .clone()
   -->
-</listing>
+</code>
 
 <p>
   What's next, what's next...​ <i>checks notes</i>...​ ah,
   <code>Layer::random()</code>!
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Layer {
   =     fn random(input_size: usize, output_size: usize) -> Self {
@@ -1667,17 +1666,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... or:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Layer {
         fn random(input_size: usize, output_size: usize) -> Self {
@@ -1689,7 +1688,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1705,11 +1704,11 @@
     We might've written as well:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       .map(|output_neuron_id| Neuron::random(input))
     -->
-  </listing>
+  </code>
 
   <p>
     ... but since we don't have to read this
@@ -1727,7 +1726,7 @@
     used in a few different contexts:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       // As a binding:
       fn ignore_some_arguments(_: usize, b: usize, _: usize) {
@@ -1755,18 +1754,18 @@
           //              within types on item signatures
       }
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
   Finally, the last piece of our chain - <code>Neuron::random()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
   =     fn random(input_size: usize) -> Self {
@@ -1782,7 +1781,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Contrary to C++ or Python, Rust's standard library doesn't provide any
@@ -1819,28 +1818,28 @@
   <code>Cargo.toml</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
     [dependencies]
   = rand = "0.8"
   -->
-</listing>
+</code>
 
 <p>
   ... and then:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use rand::Rng;
 
@@ -1859,7 +1858,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1883,9 +1882,9 @@
   network works as intended?
 </p>
 
-<h2 id="testing">
+<hdr id="testing">
   Testing
-</h2>
+</hdr>
 
 <p>
   A <a href="https://en.wikipedia.org/wiki/Pure_function">pure function</a> is a
@@ -1893,25 +1892,25 @@
   instance, this is a pure function:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub fn add(x: usize, y: usize) -> usize {
         x + y
     }
   -->
-</listing>
+</code>
 
 <p>
   ... while this one is not:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub fn read(path: impl AsRef<Path>) -> String {
         std::fs::read_to_string(path).unwrap()
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   (<code>add(1, 2)</code> will always return <code>3</code>, while
@@ -1923,7 +1922,7 @@
   Pure functions are nice, because they can be tested in isolation:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     // This test always succeeds
     // (i.e it is *deterministic*)
@@ -1942,7 +1941,7 @@
         );
     }
   -->
-</listing>
+</code>
 
 <p>
   Unfortunately, the way we generate numbers inside
@@ -1950,7 +1949,7 @@
   proven with:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn random_is_pure() {
@@ -1962,18 +1961,18 @@
         assert_eq!(neuron_a, neuron_b);
     }
   -->
-</listing>
+</code>
 
 <p>
   Testing unpure functions is hard, because there's not much we can assert
   <b>reliably</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -1989,13 +1988,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   We might try:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn test() {
@@ -2004,7 +2003,7 @@
         assert_eq!(neuron.weights.len(), 4);
     }
   -->
-</listing>
+</code>
 
 <p>
   ... but that's a useless test, it doesn't actually prove anything.
@@ -2021,7 +2020,7 @@
   impurity - in this case, it is:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Neuron {
         fn random(input_size: usize) -> Self {
@@ -2031,18 +2030,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   If instead of invoking <code>thread_rng()</code>, we accepted a parameter with
   the randomizer:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use rand::{Rng, RngCore};
 
@@ -2085,7 +2084,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... then we could use a fake, <b>predictable</b> PRNG in our tests, while
@@ -2098,33 +2097,33 @@
     of:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn do_something() {
           println!("Doing something...");
           println!("... done!");
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... you did:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn do_something(stdout: &mut dyn Write) {
           writeln!(stdout, "Doing something...").unwrap();
           writeln!(stdout, "... done!").unwrap();
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... then you'd be able to test the output quite easily:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #[test]
       fn ensure_something_happens() {
@@ -2134,7 +2133,7 @@
           assert_eq!(stdout, "Doing something...\n... done!\n");
       }
     -->
-  </listing>
+  </code>
 
   <p>
     <ref>
@@ -2155,13 +2154,13 @@
     always:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn do_something<W: Write>(stdout: W) -> W {
           /* ... */
       }
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
@@ -2170,11 +2169,11 @@
   (easy to remember, you've probably already memorized it):
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
 
@@ -2184,17 +2183,17 @@
   = [dev-dependencies]
   = rand_chacha = "0.3"
   -->
-</listing>
+</code>
 
 <p>
   ... which allows us to do:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2214,7 +2213,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   We don't know which numbers will be returned just yet, but finding out is
@@ -2222,11 +2221,11 @@
   output:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn random() {
@@ -2236,29 +2235,29 @@
   =     assert_eq!(neuron.weights, &[0.0, 0.0, 0.0, 0.0]);
     }
   -->
-</listing>
+</code>
 
 <p>
   First <code>cargo test</code> gives us:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `-0.6255188`,
      right: `0.0`
   -->
-</listing>
+</code>
 
 <p>
   ... so:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn random() {
@@ -2269,29 +2268,29 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Another <code>cargo test</code>:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread '...' panicked at 'assertion failed: `(left == right)`
       left: `[0.67383957, 0.8181262, 0.26284897, 0.5238807]`,
      right: `[0.0, 0.0, 0.0, 0.0]`', src/lib.rs:29:5
   -->
-</listing>
+</code>
 
 <p>
   ... and we end up with:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn random() {
@@ -2303,7 +2302,7 @@
   =     );
     }
   -->
-</listing>
+</code>
 
 <p>
   Notice the numbers are <i>different</i> and that's alright - they are allowed
@@ -2329,27 +2328,27 @@
   <code>0.15</code> - it'll always be off by a bit:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     fn main() {
         println!("{:.10}", 0.15f32);
         // prints: 0.1500000060
     }
   -->
-</listing>
+</code>
 
 <p>
   ... same with, say, <code>0.45</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     fn main() {
        println!("{:.10}", 0.45f32);
        // prints: 0.4499999881
     }
   -->
-</listing>
+</code>
 
 <p>
   Usually it doesn't matter, because floating-point numbers were never made to
@@ -2357,22 +2356,22 @@
   falling from the sky:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn test() {
         assert_eq!(0.45f32, 0.15 + 0.15 + 0.15);
     }
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
     thread 'test' panicked at 'assertion failed: `(left == right)`
       left: `0.45`,
      right: `0.45000002`'
   -->
-</listing>
+</code>
 
 <p>
   To avoid reinventing the wheel, I'll just drop this link:
@@ -2388,7 +2387,7 @@
   <b>approximately</b>!
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn test() {
@@ -2398,7 +2397,7 @@
         assert!((actual - expected).abs() < f32::EPSILON);
     }
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -2416,7 +2415,7 @@
   via a macro:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     macro_rules! assert_almost_eq {
         ($left:expr, $right:expr) => {
@@ -2432,32 +2431,32 @@
         assert_almost_eq!(0.45f32, 0.15 + 0.15 + 0.15);
     }
   -->
-</listing>
+</code>
 
 <p>
   ... or - which is the best approach - using a crate such as
   <a href="https://docs.rs/approx/0.4.0/approx/">approx</a>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn test() {
         approx::assert_relative_eq!(0.45f32, 0.15 + 0.15 + 0.15);
     }
   -->
-</listing>
+</code>
 
 <p>
   I personally like <code>approx</code>, so let's add it to our neural network's
   <code>Cargo.toml</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -2465,17 +2464,17 @@
   = approx = "0.4"
     rand_chacha = "0.3"
   -->
-</listing>
+</code>
 
 <p>
   ... and then adjust the tests:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use super::*;
   = use approx::assert_relative_eq;
@@ -2495,18 +2494,18 @@
   =     );
     }
   -->
-</listing>
+</code>
 
 <p>
   This covers half of neuron's functions - thankfully, knowing what we know now,
   writing a test for <code>Neuron::propagate()</code> will go easy:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[cfg(test)]
     mod tests {
@@ -2523,7 +2522,7 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -2536,7 +2535,7 @@
     structure its tests like so:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #[cfg(test)]
       mod tests {
@@ -2569,7 +2568,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     The sitch is that our <code>Neuron</code> isn't typical "business code" and
@@ -2577,7 +2576,7 @@
     we had some <b>edge cases</b> to consider, say:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       fn propagate(/* ... */) {
           if /* ... */ {
@@ -2587,13 +2586,13 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... then it'd make sense to create two separate tests:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #[cfg(test)]
       mod tests {
@@ -2622,7 +2621,7 @@
           }
       }
     -->
-  </listing>
+  </code>
 
   <p>
     ... but having the code we have - we're better off with simple
@@ -2635,11 +2634,11 @@
   expected response manually:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn propagate() {
@@ -2664,7 +2663,7 @@
   =     // formula makes our intentions clearer
     }
   -->
-</listing>
+</code>
 
 <p>
   From this point, implementing tests for <code>Layer</code> and
@@ -2672,13 +2671,13 @@
   exercise for the reader :-)
 </p>
 
-<h2 id="closing-thoughts">
+<hdr id="closing-thoughts">
   Closing thoughts
-</h2>
+</hdr>
 
-<h3>
+<shdr>
   What have we created, exactly?
-</h3>
+</shdr>
 
 <p>
   It might seem that what we've implemented has nothing to do with learning or
@@ -2717,9 +2716,9 @@
   In the meantime, feel free to checkout <a>the source code</a>.
 </p>
 
-<h3>
+<shdr>
   Is our design inflated?
-</h3>
+</shdr>
 
 <p>
   When you search for <code>python neural network from scratch</code>, you'll
@@ -2742,9 +2741,9 @@
   crates</a>, but it's not the destination that matters, it's the journey.
 </p>
 
-<h3>
+<shdr>
   What’s next?
-</h3>
+</shdr>
 
 <p>
   At the moment we've got a bare-bones FFNN at hand - in the next article we'll

@@ -28,21 +28,21 @@
   fit in the memory multiple times...
 </p>
 
-<h2 id="hello-world">
+<hdr id="hello-world">
   Hello, World!
-</h2>
+</hdr>
 
 <p>
   Simplifying <s>a bit</s> a lot, what we're dealing with is:
 </p>
 
-<listing-title>
+<code-title>
   <a href="https://github.com/Patryk27/mimalloc-cigarette">
     github:Patryk27/mimalloc-cigarette
   </a>
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   struct State {
       hotels: Vec<Hotel>,
@@ -97,7 +97,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   Of course IRL there's <code>ArcSwap</code> instead of <code>RwLock</code>,
@@ -110,9 +110,9 @@
   characteristics depending on which allocator you use?
 </p>
 
-<h2 id="practical-reasons">
+<hdr id="practical-reasons">
   Practical Reasons
-</h2>
+</hdr>
 
 <p>
   Memory allocator is the piece of software invoked whenever your program needs
@@ -148,9 +148,9 @@
   But there's a catch.
 </p>
 
-<h2 id="desenchantee">
+<hdr id="desenchantee">
   Désenchantée
-</h2>
+</hdr>
 
 <p>
   That program from before, on my x86_64 Linux machine it allocates around 4 GB
@@ -166,14 +166,14 @@
   But if you use mimalloc:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   use mimalloc::MiMalloc;
 
   #[global_allocator]
   static GLOBAL: MiMalloc = MiMalloc;
   -->
-</listing>
+</code>
 
 <p>
   ... the program will first allocate 4 GB and then allocate <i>extra</i> 4 GB
@@ -204,9 +204,9 @@
   <span class="text-dim">~~~tv noise~~~</span>
 </p>
 
-<h2 id="remede">
+<hdr id="remede">
   Remède
-</h2>
+</hdr>
 
 <p>
   Allocators have different characteristics for a reason - they do some things
@@ -219,7 +219,7 @@
   cursed:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   // Approach 1:
   fn main() {
@@ -239,7 +239,7 @@
       }
   }
   -->
-</listing>
+</code>
 
 <p>
   Any ideas? Last chance to win a plushie polar bear!

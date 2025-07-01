@@ -2,7 +2,7 @@
   Why does the code below compile?
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use std::thread;
     
@@ -16,7 +16,7 @@
         });
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -38,9 +38,9 @@
   </p>
 </note>
 
-<h2 id="_where_t_send">
+<hdr id="_where_t_send">
   <code>where T: Send</code>
-</h2>
+</hdr>
 
 <p>
   One would be completely sane to ask
@@ -52,7 +52,7 @@
   </a>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub fn spawn<F, T>(f: F) -> JoinHandle<T>
     where
@@ -63,7 +63,7 @@
         // ...
     }
   -->
-</listing>
+</code>
 
 <p>
   Among all the noise (types, duh!), one bound might catch an astute reader's
@@ -108,7 +108,7 @@
   <code>Send</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use std::rc::Rc;
     use std::thread;
@@ -142,7 +142,7 @@
     //     = note: required because it appears within the type
     //             `[closure@src/main.rs:12:19: 14:6`
   -->
-</listing>
+</code>
 
 <p>
   Though the message might be a bit cryptic (especially if you're not used to
@@ -157,9 +157,9 @@
   atomic counters.
 </p>
 
-<h2 id="_oibits">
+<hdr id="_oibits">
   OIBITs
-</h2>
+</hdr>
 
 <p>
   So far we've talked about the <i>role</i> <code>Send</code> plays in Rust's
@@ -175,7 +175,7 @@
   </a>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use std::fmt::Display;
     
@@ -204,7 +204,7 @@
     // 14 |     assert_display(Chinchilla("Flora"));
     //    |                    ^^^^^^^^^^^^^^^^^^^
   -->
-</listing>
+</code>
 
 <p>
   Since we didn't provide <code>impl Display for Chinchilla</code>, our
@@ -235,16 +235,16 @@
   into <code>auto traits</code>, so we'll go with the latter from now on.
 </p>
 
-<h2 id="_auto_traits">
+<hdr id="_auto_traits">
   Auto traits
-</h2>
+</hdr>
 
 <p>
   Regular traits are opt-in, meaning that they don't apply unless you explicitly
   provide an <code>impl Trait for Type</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     trait Foo {
         //
@@ -263,13 +263,13 @@
         test("hi!"); // ok
     }
   -->
-</listing>
+</code>
 
 <p>
   Auto traits, on the other hand, are <b>opt-out</b>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #![feature(auto_traits)]
     #![feature(negative_impls)]
@@ -291,20 +291,20 @@
         test("hi!"); // err: the trait bound ... is not satisfied
     }
   -->
-</listing>
+</code>
 
 <p>
   Since auto traits cannot contain methods or associated items:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     auto trait Foo {
         type Type; // err
         fn function(&self); // err
     }
   -->
-</listing>
+</code>
 
 <p>
   ... they function as so-called <b>marker traits</b>.
@@ -327,23 +327,23 @@
   standard library:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     pub unsafe auto trait Send {
         // empty.
     }
   -->
-</listing>
+</code>
 
 <p>
   ... additionally, in <code>std/alloc/rc.rs</code> we can find that:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T: ?Sized> !Send for Rc<T> {}
   -->
-</listing>
+</code>
 
 <p>
   See, no magic!
@@ -356,7 +356,7 @@
   i.e.:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #![feature(auto_traits)]
     #![feature(negative_impls)]
@@ -389,7 +389,7 @@
         value_2: Bar,
     }
   -->
-</listing>
+</code>
 
 <p class="text-attached">
   <i>
@@ -400,9 +400,9 @@
   </i>
 </p>
 
-<h2 id="_specialization">
+<hdr id="_specialization">
   Specialization
-</h2>
+</hdr>
 
 <p>
   Let's stash all that boring-auto-trait-knowledge somewhere else for now and
@@ -417,20 +417,20 @@
   first three of our monolithic microservice's:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     trait Serialize {
         fn serialize_in_place(&self, buffer: &mut String);
     }
   -->
-</listing>
+</code>
 
 <p>
   Seizing the day, let's add a blanket impl for <code>serialize()</code>, to
   make our lives easier during testing:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     trait Serialize {
         fn serialize_in_place(&self, buffer: &mut String);
@@ -442,14 +442,14 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Our investors say that we're going to be crunching lots of booleans, so why
   don't we start with them:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Serialize for bool {
         fn serialize_in_place(&self, buffer: &mut String) {
@@ -467,13 +467,13 @@
         assert_eq!("b(false)", false.serialize());
     }
   -->
-</listing>
+</code>
 
 <p>
   They were saying something about <code>strings attached</code> too, so:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Serialize for &str {
         fn serialize_in_place(&self, buffer: &mut String) {
@@ -488,7 +488,7 @@
         assert_eq!("s(hummus)", "hummus".serialize());
     }
   -->
-</listing>
+</code>
 
 <p>
   Obviously, a single string or a boolean is of no use - we're professional
@@ -496,7 +496,7 @@
   to appear:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T> Serialize for Vec<T> where T: Serialize {
         fn serialize_in_place(&self, buffer: &mut String) {
@@ -527,7 +527,7 @@
         );
     }
   -->
-</listing>
+</code>
 
 <p>
   Great - our code, though rudimentary, is already able to serialize an infinite
@@ -554,7 +554,7 @@
   <code>Vec&lt;bool&gt;</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Serialize for Vec<bool> {
         fn serialize_in_place(&self, buffer: &mut String) {
@@ -573,7 +573,7 @@
     //    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation
     //                                   for `Vec<bool>`
   -->
-</listing>
+</code>
 
 <p>
   ... and wait, what's that error message?
@@ -601,7 +601,7 @@
   <code>serialize_in_place()</code> as <code>default</code>, like so:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T> Serialize for Vec<T> where T: Serialize {
         default fn serialize_in_place(&self, buffer: &mut String) {
@@ -615,7 +615,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Specialization is <i>the</i> state of the art solution for this kind of
@@ -624,34 +624,34 @@
   auto traits.
 </p>
 
-<h2 id="_specialization_with_auto_traits">
+<hdr id="_specialization_with_auto_traits">
   Specialization with auto traits
-</h2>
+</hdr>
 
 <p>
   Since the issue with our current implementation:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T> Serialize for Vec<T> where T: Serialize {
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... is that it overlaps with <code>Vec&lt;bool&gt;</code> (as
   <code>bool: Serialize</code> is met), what we want to achieve is more or less:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T> Serialize for Vec<T> where T: Serialize, T != bool {
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Though Rust doesn't support the <code>!=</code> operator in this position, a
@@ -659,37 +659,37 @@
   one:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     auto trait BlanketVecImpl {
         //
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and un-implement it for <code>bool</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl !BlanketVecImpl for bool {
         //
     }
   -->
-</listing>
+</code>
 
 <p>
   We can then adjust our previous impl for <code>Vec&lt;T&gt;</code> to say:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<T> Serialize for Vec<T> where T: Serialize + BlanketVecImpl {
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Voilà - this impl provides a <code>Serialize</code> for all
@@ -697,17 +697,17 @@
   now can provide manually:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl Serialize for Vec<bool> {
         /* ... */
     }
   -->
-</listing>
+</code>
 
-<h2 id="_the_code">
+<hdr id="_the_code">
   The Code
-</h2>
+</hdr>
 
 <p>
   The entire solution leans on two nightly features: <code>auto_traits</code> &
@@ -716,13 +716,13 @@
   code to write:
 </p>
 
-<listing-title>
+<code-title>
   <a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=c9cbd4c7cc6810e2ed4e773437751181">
     open in playground
   </a>
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #![feature(auto_traits)]
     #![feature(negative_impls)]
@@ -843,4 +843,4 @@
         }
     }
   -->
-</listing>
+</code>

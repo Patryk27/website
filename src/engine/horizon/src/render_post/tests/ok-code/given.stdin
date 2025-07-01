@@ -1,0 +1,40 @@
+<p>
+  before code fragments
+</p>
+
+<code>
+  <!--
+    fn main() {
+        println!("first fragment");
+    }
+  -->
+</code>
+
+<code-title>
+  some python code
+</code-title>
+
+<code lang="python" class="code-invalid">
+  <!--
+  = def main():
+  =
+  =     print "second fragment"
+  =
+  -->
+</code>
+
+<code>
+  <!--
+    fn main() {
+  =     println!("third fragment");
+    }
+  -->
+</code>
+
+<p>
+  after code fragments
+</p>
+
+<p>
+  some <code>inline code</code>!
+</p>

@@ -4,7 +4,7 @@
   tons of data points:
 </p>
 
-<listing>
+<code>
   <!--
   |  city  |          dates         |  room  | occupancy |     price      |
   |--------|------------------------|--------|-----------|----------------|
@@ -20,17 +20,17 @@
   | berlin | 2018-01-01..2018-01-14 | double | 2 adults  | 235.00 per day |
   | berlin | 2018-01-15..2018-01-14 | double | 2 adults  | 260.00 per day |
   -->
-</listing>
+</code>
 
 <p>
   ... and then it allowed you to issue queries, like:
 </p>
 
-<listing>
+<code>
   <!--
   find me the cheapest stay in berlin for 2 adults, from 2018-01-03 to 2018-01-04, plzz
   -->
-</listing>
+</code>
 
 <p>
   Calculating prices was plenty difficult on its own, since you had to take into
@@ -47,15 +47,15 @@
   ♪ memory for nothing and bits for free... ♪
 </p>
 
-<h2 id="indexing">
+<hdr id="indexing">
   Indexing
-</h2>
+</hdr>
 
 <p>
   Let's ground ourselves with a specific example - we're given all of those:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   use std::collections::HashMap;
   use std::ops::RangeInclusive;
@@ -90,23 +90,23 @@
       occ: Occupancy,
   }
   -->
-</listing>
+</code>
 
 <p>
   ... and our problem is to efficiently implement this function:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn query(prices: &[Price], query: &Query) -> Option<f32>
   -->
-</listing>
+</code>
 
 <p>
   Naively, we're looking for:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   fn query(prices: &[Price], query: &Query) -> Option<f32> {
       prices
@@ -121,7 +121,7 @@
           .next()
   }
   -->
-</listing>
+</code>
 
 <p>
   ... but, of course, that won't fly when we're given millions of prices.
@@ -137,7 +137,7 @@
   drink a cup of coffee laced with kava kava and finally spit:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   /* ... */
 
@@ -195,7 +195,7 @@
           .next()
   }
   -->
-</listing>
+</code>
 
 <p>
   ... and that's a perfectly valid approach! Although...
@@ -212,39 +212,39 @@
     with something like:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
     struct Engine {
         prices: Vec<Price>,
         index: Index,
     }
     -->
-  </listing>
+  </code>
 
   <p>
     Now, if our <code>Index</code> was based around borrows:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
     struct Index<'a> {
         indexed_prices: HashMap<City, HashMap<Occupancy, Vec<&'a Price>>>,
     }
     -->
-  </listing>
+  </code>
 
   <p>
     ... then we'd have to implement a self-referential <code>Engine</code>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
     struct Engine {
         prices: Vec<Price>,
         index: Index<'whoopsie>,
     }
     -->
-  </listing>
+  </code>
 
   <p>
     ... and self-referential types are not really supported in Rust - the
@@ -257,9 +257,9 @@
   </p>
 </note>
 
-<h2 id="unwasting">
+<hdr id="unwasting">
   Unwasting
-</h2>
+</hdr>
 
 <p>
   Alright, look at them <code>Vec&lt;usize&gt;</code>. Look. At. Them. Squeeze
@@ -303,7 +303,7 @@
   It goes sorta like:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   use std::{iter, mem};
 
@@ -402,11 +402,11 @@
       }
   }
   -->
-</listing>
+</code>
 
-<h2 id="summary">
+<hdr id="summary">
   Summary
-</h2>
+</hdr>
 
 <p>
   Should you (continue to) use <code>Vec&lt;usize&gt;</code>? Most likely yes!

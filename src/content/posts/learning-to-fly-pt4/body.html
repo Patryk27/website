@@ -120,9 +120,9 @@
   </p>
 </note>
 
-<h2 id="plan">
+<hdr id="plan">
   Plan
-</h2>
+</hdr>
 
 <p>
   We've got <code>struct NeuralNetwork</code> and
@@ -177,9 +177,9 @@
   Ready? Off we go!
 </p>
 
-<h2 id="prerequisites">
+<hdr id="prerequisites">
   Prerequisites
-</h2>
+</hdr>
 
 <p>
   For a <span class="text-spaced">fearless</span> WebAssembly experience, we'll
@@ -213,11 +213,11 @@
     applications is as easy as creating a file called <code>shell.nix</code>:
   </p>
 
-  <listing-title>
+  <code-title>
     shell.nix
-  </listing-title>
+  </code-title>
 
-  <listing lang="nix">
+  <code lang="nix">
     <!--
       let
         pkgs = import <nixpkgs> { };
@@ -231,16 +231,16 @@
           ];
         }
     -->
-  </listing>
+  </code>
 
   <p>
     ... and executing <code>nix-shell</code>.
   </p>
 </note>
 
-<h2 id="hello-wasm-rust">
+<hdr id="hello-wasm-rust">
   Hello, WebAssembly World! (the Rust part)
-</h2>
+</hdr>
 
 <p>
   Let's begin by creating a new crate - as in the diagram, it will be
@@ -258,7 +258,7 @@
   </p>
 </note>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cd shorelark/libs
     $ cargo new simulation-wasm --lib --name lib-simulation-wasm
@@ -266,7 +266,7 @@
     # (this crate's name doesn't have to contain `wasm` - it's just a
     # convention of mine, so that the crate's purpose is explicit)
   -->
-</listing>
+</code>
 
 <p>
   To make our crate WebAssembly-aware, there are two things we have to add to
@@ -283,11 +283,11 @@
       We have to set <a><code>crate-type</code></a> to <code>cdylib</code>:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation-wasm/Cargo.toml
-    </listing-title>
+    </code-title>
 
-    <listing lang="toml">
+    <code lang="toml">
       <!--
         [package]
         # ...
@@ -295,7 +295,7 @@
       = [lib]
       = crate-type = ["cdylib"]
       -->
-    </listing>
+    </code>
 
     <note>
       <p>
@@ -393,18 +393,18 @@
       We have to include <a><code>wasm-bindgen</code></a> in our dependencies:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation-wasm/Cargo.toml
-    </listing-title>
+    </code-title>
 
-    <listing lang="toml">
+    <code lang="toml">
       <!--
         # ...
         
         [dependencies]
       = wasm-bindgen = "0.2"
       -->
-    </listing>
+    </code>
 
     <note>
       <p>
@@ -431,17 +431,17 @@
   ensure that this <i>"WebAssembly"</i> thing isn't just a hoax:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub fn whos_that_dog() -> String {
   =     "Mister Peanutbutter".into()
   = }
   -->
-</listing>
+</code>
 
 <p>
   If we were building a regular crate to publish on crates.io, that'd be all -
@@ -449,11 +449,11 @@
   <code>#[wasm_bindgen]</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use wasm_bindgen::prelude::*;
     
@@ -462,7 +462,7 @@
         "Mister Peanutbutter".into()
     }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -488,11 +488,11 @@
     to inspect what this macro does:
   </p>
 
-  <listing-title>
+  <code-title>
     $ cargo expand
-  </listing-title>
+  </code-title>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       use wasm_bindgen::prelude::*;
       
@@ -526,7 +526,7 @@
       //  | https://doc.rust-lang.org/reference/items/external-blocks.html#abi
       //  ---
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
@@ -534,12 +534,12 @@
   installed:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cd simulation-wasm
     $ wasm-pack build
   -->
-</listing>
+</code>
 
 <p>
   The difference between plain <code>cargo</code> and <code>wasm-pack</code> is
@@ -548,7 +548,7 @@
   all inside a newly-created directory called <code>pkg</code>:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     $ ls -l pkg
     total 36
@@ -559,7 +559,7 @@
     -rw-r--r-- 1 pwy   271 Apr  2 17:20 lib_simulation_wasm_bg.wasm.d.ts
     -rw-r--r-- 1 pwy   356 Apr  2 17:20 package.json
   -->
-</listing>
+</code>
 
 <p>
   To ground ourselves, let's take a brief look at what we've got:
@@ -573,11 +573,11 @@
       contains metadata about the module itself:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation-wasm/pkg/package.json
-    </listing-title>
+    </code-title>
 
-    <listing lang="javascript">
+    <code lang="javascript">
       <!--
         {
           "name": "lib-simulation-wasm",
@@ -585,7 +585,7 @@
           /* ... */
         }
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
@@ -597,18 +597,18 @@
       for IDEs to provide type hints:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation-wasm/pkg/lib_simulation_wasm.d.ts
-    </listing-title>
+    </code-title>
 
-    <listing lang="javascript">
+    <code lang="javascript">
       <!--
         /**
          * @returns {string}
          */
         export function whos_that_dog(): string;
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
@@ -626,11 +626,11 @@
       <a ref="wabt">wabt</a> to inspect it (mainly for fun, I guess):
     </p>
 
-    <listing-title>
+    <code-title>
       $ wasm2wat pkg/lib_simulation_wasm_bg.wasm
-    </listing-title>
+    </code-title>
 
-    <listing lang="lisp">
+    <code lang="lisp">
       <!--
         (module
           (func (type 1) (param i32) (result i32)
@@ -641,7 +641,7 @@
             local.tee 11
             ;; ...
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
@@ -649,11 +649,11 @@
       code that actually invokes our WebAssembly library:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation-wasm/pkg/lib_simulation_wasm_bg.js
-    </listing-title>
+    </code-title>
 
-    <listing lang="javascript">
+    <code lang="javascript">
       <!--
         /**
          * @returns {string}
@@ -671,24 +671,24 @@
             }
         }
       -->
-    </listing>
+    </code>
 
     <note>
       <p>
         Wait - if our Rust code does next to nothing:
       </p>
 
-      <listing-title>
+      <code-title>
         libs/simulation-wasm/src/lib.rs
-      </listing-title>
+      </code-title>
 
-      <listing lang="rust">
+      <code lang="rust">
         <!--
           pub fn whos_that_dog() -> String {
               "Mister Peanutbutter".into()
           }
         -->
-      </listing>
+      </code>
 
       <p>
         ... then why does that piece look so complex?
@@ -756,37 +756,37 @@
             For instance, a type such as this one:
           </p>
 
-          <listing lang="rust">
+          <code lang="rust">
             <!--
               struct Foo {
                   value: String,
               }
             -->
-          </listing>
+          </code>
 
           <p>
             ... can be serialized into, say, JSON that looks like this:
           </p>
 
-          <listing lang="json">
+          <code lang="json">
             <!--
               {
                 "value": "Hi!"
               }
             -->
-          </listing>
+          </code>
 
           <p>
             ... which can be then easily <b>deserialized</b> on the JavaScript's
             side:
           </p>
 
-          <listing lang="javascript">
+          <code lang="javascript">
             <!--
               const foo = JSON.parse('{ "value": "Hi!" }');
               console.log(foo);
             -->
-          </listing>
+          </code>
 
           <p>
             <ref>
@@ -811,11 +811,11 @@
         creative - it generated this boi we've already seen a moment ago:
       </p>
 
-      <listing-title>
+      <code-title>
         (generated automatically during compilation)
-      </listing-title>
+      </code-title>
 
-      <listing lang="rust">
+      <code lang="rust">
         <!--
           pub extern "C" fn __wasm_bindgen_generated_whos_that_dog()
               -> <String as ReturnWasmAbi>::Abi
@@ -824,7 +824,7 @@
               <String as ReturnWasmAbi>::return_abi(_ret)
           }
         -->
-      </listing>
+      </code>
 
       <p>
         In general, this is known as <b>shim</b> (or <b>glue-function</b>, or
@@ -892,9 +892,9 @@
   <b>how do we run it?</b>
 </p>
 
-<h2 id="hello-wasm-js">
+<hdr id="hello-wasm-js">
   Hello, WebAssembly World! (the JavaScript part)
-</h2>
+</hdr>
 
 <p>
   Frontend time!
@@ -905,11 +905,11 @@
   directory (next to our top-level <code>Cargo.toml</code>):
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cd ../..
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -921,18 +921,18 @@
   template project</a> for us:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ npm init wasm-app www
   -->
-</listing>
+</code>
 
 <p>
   You should now see a directory called <code>www</code> with a handful of
   files:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     $ ls -l www
     total 248
@@ -946,26 +946,26 @@
     -rw-r--r-- 1 pwy    937 Apr  2 17:24 package.json
     -rw-r--r-- 1 pwy    311 Apr  2 17:24 webpack.config.js
   -->
-</listing>
+</code>
 
 <p>
   ... let's briefly go through them.
 </p>
 
-<h3>
+<shdr>
   Knowing your enemy
-</h3>
+</shdr>
 
 <p>
   <i>Le point d'entrée</i>, similar to Rust's <code>main.rs</code>, here is
   <code>index.html</code>:
 </p>
 
-<listing-title>
+<code-title>
   www/index.html
-</listing-title>
+</code-title>
 
-<listing lang="html">
+<code lang="html">
   <!--
     <!DOCTYPE html>
     <html>
@@ -979,7 +979,7 @@
       </body>
     </html>
   -->
-</listing>
+</code>
 
 <p>
   A quick primer on HTML:
@@ -1018,7 +1018,7 @@
   page:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     html
     ├── head
@@ -1027,7 +1027,7 @@
     └── body
         └── script
   -->
-</listing>
+</code>
 
 <p>
   ... which browser analyzes, trying to make something nice out of it.
@@ -1069,13 +1069,13 @@
       <code>b</code> (ditto) prints text in bold:
     </p>
 
-    <listing lang="html">
+    <code lang="html">
       <!--
         <body>
           <p>yes... ha ha ha... <b>yes!</b></p>
         </body>
       -->
-    </listing>
+    </code>
 
     <figure class="sketch w-30">
       <img src="{{ assets }}/ab2b7ba1-2fbb-44a7-8126-592e2c8f4a1f.png" />
@@ -1089,16 +1089,16 @@
   <code>bootstrap.js</code>:
 </p>
 
-<listing-title>
+<code-title>
   www/bootstrap.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import("./index.js")
       .catch(e => console.error("Error importing `index.js`:", e));
   -->
-</listing>
+</code>
 
 <p>
   <code>import</code> is like Rust's <code>use</code> or
@@ -1107,7 +1107,7 @@
   <b>returns a value</b>; in pseudo-Rust, what happens above is:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     (mod "./index.js")
         .await
@@ -1115,18 +1115,18 @@
             eprintln!("Error importing ...", err);
         });
   -->
-</listing>
+</code>
 
 <p>
   We can see that this code loads <code>index.js</code>, so let's take a look
   there:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import * as wasm from "hello-wasm-pack";
     //                     ^-------------^
@@ -1134,20 +1134,20 @@
     
     wasm.greet();
   -->
-</listing>
+</code>
 
 <p>
   This <code>import</code> is a bit different in that it resembles
   <code>extern crate</code> more:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     extern crate hello_wasm_pack as wasm;
 
     wasm::greet();
   -->
-</listing>
+</code>
 
 <p>
   When it comes to the application's code itself, that's all.
@@ -1158,11 +1158,11 @@
   we won't have to touch it, it won't hurt to take a look either:
 </p>
 
-<listing-title>
+<code-title>
   www/webpack.config.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     const CopyWebpackPlugin = require("copy-webpack-plugin");
     const path = require('path');
@@ -1179,7 +1179,7 @@
       ],
     };
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -1228,9 +1228,9 @@
   </p>
 </note>
 
-<h3>
+<shdr>
   What To Do After You Know Your Enemy
-</h3>
+</shdr>
 
 <p>
   Having exchanged pleasantries with the filesystem, let's get back to the
@@ -1244,11 +1244,11 @@
       <code>lib-simulation-wasm</code> - let's fix it:
     </p>
 
-    <listing-title>
+    <code-title>
       www/package.json
-    </listing-title>
+    </code-title>
 
-    <listing lang="javascript">
+    <code lang="javascript">
       <!--
         {
           /* ... */
@@ -1258,37 +1258,37 @@
           }
         }
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
       After that, we have to let <code>npm</code> know about that change:
     </p>
 
-    <listing lang="shell">
+    <code lang="shell">
       <!--
         $ cd www
         $ npm install
       -->
-    </listing>
+    </code>
 
     <note>
       <p>
         This command might print a few scary-looking messages:
       </p>
 
-      <listing lang="text">
+      <code lang="text">
         <!--
           npm WARN optional SKIPPING OPTIONAL DEPENDENCY: ...
         -->
-      </listing>
+      </code>
 
-      <listing lang="text">
+      <code lang="text">
         <!--
           found 362 vulnerabilities (348 low, 4 moderate, 10 high)
             run `npm audit fix` to fix them, or `npm audit` for details
         -->
-      </listing>
+      </code>
 
       <p>
         ... but worry not - that's just <code>npm</code> being <code>npm</code>;
@@ -1301,17 +1301,17 @@
       Now it's time for <code>index.js</code>:
     </p>
 
-    <listing-title>
+    <code-title>
       www/index.js
-    </listing-title>
+    </code-title>
 
-    <listing lang="javascript">
+    <code lang="javascript">
       <!--
       = import * as sim from "lib-simulation-wasm";
       = 
       = alert("Who's that dog? " + sim.whos_that_dog() + "!");
       -->
-    </listing>
+    </code>
 
     <note>
       <p>
@@ -1331,19 +1331,19 @@
       basically <code>cargo run</code>:
     </p>
 
-    <listing lang="shell">
+    <code lang="shell">
       <!--
         $ npm run start
       -->
-    </listing>
+    </code>
 
-    <listing lang="text">
+    <code lang="text">
       <!--
         ...
         ℹ ｢wds｣: Project is running at http://localhost:8080/
         ...
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -1357,11 +1357,11 @@
     using <a>too new Node version</a> - in that case you should run it this way:
   </p>
 
-  <listing lang="shell">
+  <code lang="shell">
     <!--
     $ NODE_OPTIONS=--openssl-legacy-provider npm run start
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
@@ -1395,9 +1395,9 @@
   </p>
 </note>
 
-<h2 id="hello-wasm-summary">
+<hdr id="hello-wasm-summary">
   Hello, WebAssembly World! (the summary part)
-</h2>
+</hdr>
 
 <p>
   So...​ what is all this?
@@ -1415,36 +1415,36 @@
   enough to have something to send to JavaScript.
 </p>
 
-<h2 id="hello-simulation">
+<hdr id="hello-simulation">
   Hello, Simulation!
-</h2>
+</hdr>
 
 <p>
   As before, to keep the boundaries clean & tidy, let's start by creating a new
   crate:
 </p>
 
-<listing lang="shell">
+<code lang="shell">
   <!--
     $ cd ../libs
     $ cargo new simulation --lib --name lib-simulation
   -->
-</listing>
+</code>
 
 <p>
   This crate will contain our <span class="text-rainbow">simulation
   engine</span>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub struct Simulation;
   -->
-</listing>
+</code>
 
 <p>
   Now, to avoid conjuring a design out of <span class="text-spaced">thin
@@ -1459,11 +1459,11 @@
   What do we see there? Hmm, well - certainly a <b>world</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = pub struct Simulation {
   =     world: World,
@@ -1472,18 +1472,18 @@
   = #[derive(Debug)]
   = pub struct World;
   -->
-</listing>
+</code>
 
 <p>
   ... which contains some <b>animals</b> (<i>birds!</i>) and <b>foods</b>
   (<i>rich in protein & fiber!</i>):
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -1499,17 +1499,17 @@
   = #[derive(Debug)]
   = pub struct Food;
   -->
-</listing>
+</code>
 
 <p>
   ... which are located at some <b>coordinates</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -1523,7 +1523,7 @@
   =     position: ?,
   = }
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1557,11 +1557,11 @@
   Our world is two-dimensional, which sets us at:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -1581,7 +1581,7 @@
   =     y: f32,
   = }
   -->
-</listing>
+</code>
 
 <p>
   Moreover, animals are of certain <b>rotati</b>...​
@@ -1622,7 +1622,7 @@
   educational in writing:
 </p>
 
-<listing lang="rust" class="listing-invalid">
+<code lang="rust" class="code-invalid">
   <!--
     #[derive(Copy, Clone, Debug)]
     pub struct Point2 {
@@ -1659,7 +1659,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and in part because I'd like to introduce you to a crate that I love:
@@ -1722,28 +1722,28 @@
   Since it's just a crate, installing it boils down to editing the manifest:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
     [dependencies]
   = nalgebra = "0.26"
   -->
-</listing>
+</code>
 
 <p>
   ... and then our code from a moment ago becomes:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use nalgebra as na;
     // --------- ^^
@@ -1763,18 +1763,18 @@
   =     position: na::Point2<f32>,
     }
   -->
-</listing>
+</code>
 
 <p>
   Where were we? Ah, right - animals are of certain <b>rotation</b> and
   <b>speed</b>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -1787,7 +1787,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -1795,7 +1795,7 @@
     <b>vector</b>:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #[derive(Debug)]
       pub struct Animal {
@@ -1803,7 +1803,7 @@
           velocity: na::Vector2<f32>,
       }
     -->
-  </listing>
+  </code>
 
   <p>
     We'll continue with two separate fields, because it makes certain
@@ -1816,11 +1816,11 @@
   them, so:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -1828,18 +1828,18 @@
     nalgebra = "0.26"
   = rand = "0.8"
   -->
-</listing>
+</code>
 
 <p>
   ... and while we're here, let's enable nalgebra's support for rand - it'll
   come handy in a moment:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -1847,18 +1847,18 @@
   = nalgebra = { version = "0.26", features = ["rand-no-std"] }
     rand = "0.8"
   -->
-</listing>
+</code>
 
 <p>
   We'll start with a few rudimentary constructors that just randomize
   everything:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use nalgebra as na;
   = use rand::{Rng, RngCore};
@@ -1919,18 +1919,18 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   A <b>getter</b> is a function that allows to access object's state - a few of
   them will come useful:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -1986,7 +1986,7 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <p>
   Nice?
@@ -2019,9 +2019,9 @@
   ✨ something ✨ displayed on the screen via JavaScript.
 </p>
 
-<h3>
+<shdr>
   All About That JS
-</h3>
+</shdr>
 
 <p>
   Now, you might be wondering:
@@ -2065,11 +2065,11 @@
   aware of <code>rand</code> and <code>lib-simulation</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -2080,33 +2080,33 @@
   = lib-simulation = { path = "../simulation" }
                             # ^ path relative to *this* Cargo.toml
   -->
-</listing>
+</code>
 
 <p>
   Now inside <code>lib-simulation-wasm</code> we can refer to
   <code>lib_simulation</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use lib_simulation as sim;
   -->
-</listing>
+</code>
 
 <p>
   ... and implement a WebAssembly-aware <b>wrapper</b> (also known as
   <a href="https://en.wikipedia.org/wiki/Proxy_pattern">proxy</a>):
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use lib_simulation as sim;
   = use rand::prelude::*;
@@ -2129,18 +2129,18 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   As for baby steps, this looks good - let's try compiling it; surely nothing
   can fail <i>just yet</i>!
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     [INFO]: Checking for the Wasm target...
     [INFO]: Compiling to Wasm...
@@ -2163,7 +2163,7 @@
     235 |     imp::getrandom_inner(dest)
         |     ^^^ use of undeclared crate or module `imp`
   -->
-</listing>
+</code>
 
 <p class="text-center">
   <i>ayy, ayy</i>
@@ -2180,11 +2180,11 @@
   inside a web browser environment, but only when asked explicitly to:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -2192,17 +2192,17 @@
     # ...
   = getrandom = { version = "0.2", features = ["js"] }
   -->
-</listing>
+</code>
 
 <p>
   Let's try rebuilding now:
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     [INFO]: Checking for the Wasm target...
     [INFO]: Compiling to Wasm...
@@ -2226,17 +2226,17 @@
     [INFO]: :-) Done in 0.63s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
 <p>
   On the JavaScript's side, we can now do:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import * as sim from "lib-simulation-wasm";
     
@@ -2246,7 +2246,7 @@
     // | `Simulation::new()`
     // ---
   -->
-</listing>
+</code>
 
 <p>
   Great, we've got the simulation engine up and running!
@@ -2263,11 +2263,11 @@
   <code>lib-simulation</code>, but with WebAssembly in mind:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -2295,17 +2295,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... and two conversion methods:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -2333,17 +2333,17 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   With all that in our editor, we can now add:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -2358,7 +2358,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... aaaand
@@ -2392,7 +2392,7 @@
   <i>oh no</i> 😢
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     error[E0277]: the trait bound `Vec<Animal>: std::marker::Copy` is not satisfied
       -\-> libs/simulation-wasm/src/lib.rs
@@ -2401,7 +2401,7 @@
        |                            ^ the trait `std::marker::Copy` is not ...
        |
   -->
-</listing>
+</code>
 
 <p>
   This happens because <code>#[wasm_bindgen]</code> automatically creates
@@ -2409,7 +2409,7 @@
   <code>Copy</code> - intuitively, the macro does something similar to:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl World {
         pub fn animals(&self) -> Vec<Animal> {
@@ -2417,18 +2417,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... which also wouldn't work, not without an explicit <code>.clone()</code> -
   and that's exactly what we need to tell <code>#[wasm_bindgen]</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -2441,24 +2441,24 @@
 
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Call time!
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import * as sim from "lib-simulation-wasm";
     
     const simulation = new sim.Simulation();
   = const world = simulation.world();
   -->
-</listing>
+</code>
 
 <p>
   All this should work...​ in theory - but how can we be sure our world contains
@@ -2484,11 +2484,11 @@
   What can we do with this console? We can print stuff to it:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2496,7 +2496,7 @@
   =   console.log(animal.x, animal.y);
   = }
   -->
-</listing>
+</code>
 
 <p>
   <i>
@@ -2506,7 +2506,7 @@
 </p>
 
 <note>
-  <listing lang="javascript">
+  <code lang="javascript">
     <!--
       // Nobody can stop us now:
       console.log(Array(16).join('wat' - 1) + ' Batman!');
@@ -2514,16 +2514,16 @@
       // Haha, ha:
       console.log(console.log);
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
   Nice - now that we know the positions of animals, it means we can draw them!
 </p>
 
-<h2 id="hello-graphics">
+<hdr id="hello-graphics">
   Hello, Graphics!
-</h2>
+</hdr>
 
 <p>
   <ref>
@@ -2534,11 +2534,11 @@
   called <a><code>&lt;canvas&gt;</code></a>:
 </p>
 
-<listing-title>
+<code-title>
   www/index.html
-</listing-title>
+</code-title>
 
-<listing lang="html">
+<code lang="html">
   <!--
     <!DOCTYPE html>
     <html>
@@ -2553,18 +2553,18 @@
       </body>
     </html>
   -->
-</listing>
+</code>
 
 <p>
   Our canvas has an attribute called <code>id</code> - this attribute is used to
   identify tags, so that they can be easily found from inside JavaScript:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2574,7 +2574,7 @@
     // | current page (e.g. create or remove stuff from it).
     // ---
   -->
-</listing>
+</code>
 
 <p>
   If you want to take a moment to digest what's happening, feel free to
@@ -2587,17 +2587,17 @@
   specific drawing mode (think: 2D vs 3D):
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
   = const ctxt = viewport.getContext('2d');
   -->
-</listing>
+</code>
 
 <p>
   So far, so good!
@@ -2620,11 +2620,11 @@
   <code>fillRect()</code>:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2661,7 +2661,7 @@
     // | (unit: pixels)
     // ---
   -->
-</listing>
+</code>
 
 <p>
   Launching this code should make our <code>&lt;canvas&gt;</code> print a red
@@ -2686,20 +2686,20 @@
   </figure>
 </note>
 
-<h3>
+<shdr>
   It’s My Data
-</h3>
+</shdr>
 
 <p>
   Now that we know how to draw rectangles, let's bring our data back into the
   picture:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import * as sim from "lib-simulation-wasm";
     
@@ -2713,7 +2713,7 @@
   =     ctxt.fillRect(animal.x, animal.y, 15, 15);
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... and:
@@ -2728,11 +2728,11 @@
   again:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2740,9 +2740,9 @@
   =   console.log(animal.x, animal.y);
   = }
   -->
-</listing>
+</code>
 
-<listing lang="text">
+<code lang="text">
   <!--
     0.6751065850257874 0.9448947906494141
     0.2537931203842163 0.4474523663520813
@@ -2755,7 +2755,7 @@
     0.5087683200836182 0.10066533088684082
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Ah, positions of our animals belong to range <code>&lt;0.0, 1.0&gt;</code>,
@@ -2763,11 +2763,11 @@
   <b>pixel</b> - we can fix this by scaling the numbers while rendering:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2786,7 +2786,7 @@
   =     );
     }
   -->
-</listing>
+</code>
 
 <p>
   ... which gets us:
@@ -2814,7 +2814,7 @@
     the browser's default behavior:
   </p>
 
-  <listing lang="javascript">
+  <code lang="javascript">
     <!--
       /* ... */
       
@@ -2885,7 +2885,7 @@
           );
       }
     -->
-  </listing>
+  </code>
 
   <p>
     As promised, this gets us a sharp image:
@@ -2914,11 +2914,11 @@
   To get a grip of how it works, let's start with a hard-coded example:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2947,7 +2947,7 @@
   = ctxt.fillStyle = 'rgb(0, 0, 0)';
   = ctxt.fill();
   -->
-</listing>
+</code>
 
 <p>
   ... aaaand, what a beauty!
@@ -2962,11 +2962,11 @@
   make it a function:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -2983,17 +2983,17 @@
   = 
   = drawTriangle(ctxt, 50, 0, 50);
   -->
-</listing>
+</code>
 
 <p>
   ... or, a bit more idiomatic:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3014,7 +3014,7 @@
   = 
   = ctxt.drawTriangle(50, 0, 50);
   -->
-</listing>
+</code>
 
 <note>
   <p>
@@ -3022,7 +3022,7 @@
     similar code in Rust would require creating a trait:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       trait DrawTriangle {
           fn draw_triangle(&mut self, x: f32, y: f32, size: f32);
@@ -3035,30 +3035,30 @@
           }
       }
     -->
-  </listing>
+  </code>
 </note>
 
 <p>
   Equipped with <code>.drawTriangle()</code>, we can now do:
 </p>
 
-<listing-title>
+<code-title>
   www/index.html
-</listing-title>
+</code-title>
 
-<listing lang="html">
+<code lang="html">
   <!--
     <!-- ... -\->
   = <canvas id="viewport" width="800" height="800"></canvas>
     <!-- ... -\->
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3070,7 +3070,7 @@
   =     );
   = }
   -->
-</listing>
+</code>
 
 <figure class="sketch w-30">
   <img src="{{ assets }}/37718e09-3278-44ef-a104-28cb5486e4ff.png" />
@@ -3097,20 +3097,20 @@
   </span>
 </p>
 
-<h3>
+<shdr>
   Vertices Go Brr
-</h3>
+</shdr>
 
 <p>
   We already have a field called <code>rotation</code> inside
   <code>lib-simulation</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -3121,17 +3121,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... so all we've gotta do is to pass it into JavaScript:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -3155,23 +3155,23 @@
 
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... now <code>wasm-pack build</code>:
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     ...
     [INFO]: :-) Done in 2.42s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
 <p>
   ... and we're back to JavaScript.
@@ -3182,11 +3182,11 @@
   another parameter:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3197,7 +3197,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Intuitively, what we're looking for is:
@@ -3211,9 +3211,9 @@
   ... but generalized for any angle.
 </p>
 
-<h3>
+<shdr>
   Vertices Go Brrr (using math)
-</h3>
+</shdr>
 
 <p>
   Let's bring back our triangle - this time, together with its
@@ -3278,39 +3278,39 @@
   Speaking in code-terms - if what we have currently is:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     this.moveTo(x, y);
   -->
-</listing>
+</code>
 
 <p>
   ... then rotating the <code>x</code> coordinate requires applying
   <code>- sin()</code>:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     this.moveTo(
   =     x - Math.sin(rotation) * size,
         y,
     );
   -->
-</listing>
+</code>
 
 <p>
   ... and rotating the <code>y</code> coordinate requires applying
   <code>+ cos()</code>:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     this.moveTo(
         x - Math.sin(rotation) * size,
   =     y + Math.cos(rotation) * size,
     );
   -->
-</listing>
+</code>
 
 <p>
   ... where <code>rotation</code> is measured in <b>radians</b> - that is,
@@ -3372,7 +3372,7 @@
   A quick conversion to radians, using proportions:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     { 2 * PI = 360°
     {      x = 120°
@@ -3387,13 +3387,13 @@
            x = PI * 2 / 3       | shuffle constant to left
            x = 2 / 3 * PI       | enjoy
   -->
-</listing>
+</code>
 
 <p>
   ... gives us:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     this.moveTo(
         x - Math.sin(rotation) * size,
@@ -3405,7 +3405,7 @@
   =     y + Math.cos(rotation + 2.0 / 3.0 * Math.PI) * size,
   = );
   -->
-</listing>
+</code>
 
 <figure class="sketch w-40">
   <img src="{{ assets }}/bce2d60a-cd7e-4666-84f3-76ef6dbb043a.svg" />
@@ -3415,7 +3415,7 @@
   Similarly, for the third vertex:
 </p>
 
-<listing lang="text">
+<code lang="text">
   <!--
     2 * PI = 360°
          x = 120° + 120°
@@ -3424,13 +3424,13 @@
     
     x = 4 / 3 * PI
   -->
-</listing>
+</code>
 
 <p>
   ... giving us:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     this.moveTo(
         x - Math.sin(rotation) * size,
@@ -3447,7 +3447,7 @@
   =     y + Math.cos(rotation + 4.0 / 3.0 * Math.PI) * size,
   = );
   -->
-</listing>
+</code>
 
 <figure class="sketch w-40">
   <img src="{{ assets }}/66781628-c317-4a0c-98ce-b5317abf4c4c.svg" />
@@ -3460,14 +3460,14 @@
     vertex"):
   </p>
 
-  <listing lang="javascript">
+  <code lang="javascript">
     <!--
       this.lineTo(
           x - Math.sin(rotation - 2.0 / 3.0 * Math.PI) * size,
           y + Math.cos(rotation - 2.0 / 3.0 * Math.PI) * size,
       );
     -->
-  </listing>
+  </code>
 
   <p>
     ... as both
@@ -3490,7 +3490,7 @@
   ... so:
 </p>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3504,17 +3504,17 @@
   =     y + Math.cos(rotation) * size,
   = );
   -->
-</listing>
+</code>
 
 <p>
   In all its glory, our code is:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3547,7 +3547,7 @@
   = 
   = ctxt.drawTriangle(50, 50, 25, Math.PI / 4);
   -->
-</listing>
+</code>
 
 <p>
   Does it work? Apparently:
@@ -3562,11 +3562,11 @@
   the vertices?
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3591,7 +3591,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   There, better:
@@ -3601,20 +3601,20 @@
   <img src="{{ assets }}/e53c3146-b334-4b4d-8492-09b6c37b4293.png" />
 </figure>
 
-<h3>
+<shdr>
   Animals Go Brrr
-</h3>
+</shdr>
 
 <p>
   Now that we are able to render rotated triangles, we can adjust our code from
   before:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3627,7 +3627,7 @@
         );
     }
   -->
-</listing>
+</code>
 
 <p>
   ... which gives us:
@@ -3641,9 +3641,9 @@
   Neat; high five, <span class="text-rainbow">pal</span> - we've earned it!
 </p>
 
-<h2 id="stepping-stones">
+<hdr id="stepping-stones">
   step()-ping stones
-</h2>
+</hdr>
 
 <p>
   Stationary triangles are cool - obviously! -- but <b>moving</b> triangles are
@@ -3656,11 +3656,11 @@
   their environment yet:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -3678,17 +3678,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   One <code>cargo check</code> after:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo check
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     error[E0277]: cannot multiply `Rotation<f32, 2_usize>` by `f32`
        |
@@ -3700,32 +3700,32 @@
        = help: the trait `Mul<f32>` is not implemented for
          `Rotation<f32, 2_usize>`
   -->
-</listing>
+</code>
 
 <p>
   Hmm, nalgebra doesn't provide <code>Rotation2 * f32</code> - maybe we can use
   a vector instead?
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = animal.position += animal.rotation * na::Vector2::new(0.0, animal.speed);
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   $ cargo check
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Finished dev [unoptimized + debuginfo] target(s) in 18.04s
   -->
-</listing>
+</code>
 
 <p>
   Bingo!
@@ -3768,11 +3768,11 @@
   it via <code>lib-simulation-wasm</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -3787,30 +3787,30 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... and compile:
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     ....
     [INFO]: :-) Done in 3.58s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
 <p>
   As for invoking <code>.step()</code> from JavaScript - while in some languages
   we might've used a loop:
 </p>
 
-<listing lang="javascript" class="listing-invalid">
+<code lang="javascript" class="code-invalid">
   <!--
     /* ... */
     
@@ -3829,7 +3829,7 @@
          }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... the web browser environment makes it a bit harder, because our code
@@ -3856,11 +3856,11 @@
   immediately:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -3887,7 +3887,7 @@
   = 
   = redraw();
   -->
-</listing>
+</code>
 
 <p>
   And voilà:
@@ -3905,11 +3905,11 @@
   Let's go back to <code>lib-simulation</code> and investigate:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -3925,7 +3925,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   So we add rotation to position and...​ ah, right! Our map is bounded by
@@ -3937,11 +3937,11 @@
   Let's fix it:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -3960,7 +3960,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   <a href="https://docs.rs/nalgebra/0.26.2/nalgebra/fn.wrap.html"><code>wrap()</code></a>
@@ -4002,29 +4002,29 @@
   Woohoo!
 </p>
 
-<h2 id="ur-somebody-else">
+<hdr id="ur-somebody-else">
   You’re Somebody Else (when you’re hungry)
-</h2>
+</hdr>
 
 <p>
   All said, birds constitute for only half of our ecosystem - we've also got
   food.
 </p>
 
-<h3>
+<shdr>
   Rendering food
-</h3>
+</shdr>
 
 <p>
   Fortunately, because we've already written lots of the code, rendering food
   distills to just a few changes:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -4065,13 +4065,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
 
@@ -4123,42 +4123,42 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Believe me or not, it's enough!
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     ....
     [INFO]: :-) Done in 1.25s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
 <figure>
   <video src="{{ assets }}/87172540-2d9b-4f8d-a4ff-1e0a456bfffe.mp4" />
 </figure>
 
-<h3>
+<shdr>
   Pimpin'-up
-</h3>
+</shdr>
 
 <p>
   Our math checks out, but our simulation's appearance is...​ daunting - let's try
   pimpin' it up:
 </p>
 
-<listing-title>
+<code-title>
   www/index.html
-</listing-title>
+</code-title>
 
-<listing lang="html">
+<code lang="html">
   <!--
     <!DOCTYPE html>
     <html>
@@ -4178,13 +4178,13 @@
       </body>
     </html>
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -4206,7 +4206,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   There, better:
@@ -4216,9 +4216,9 @@
   <video src="{{ assets }}/cac427f6-316d-4d90-80bd-609d1511e885.mp4" />
 </figure>
 
-<h3>
+<shdr>
   Simulating food
-</h3>
+</shdr>
 
 <p>
   At the moment, when our birdies collide with food, nothing happens - time to
@@ -4229,11 +4229,11 @@
   First, let's refactor <code>step()</code> a bit:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4256,17 +4256,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Now:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4287,13 +4287,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   In plain English, what we want to achieve is:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4309,7 +4309,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   The process of checking whether two polygons collide is called
@@ -4364,11 +4364,11 @@
   In practice, this reduces to a single <code>if</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4391,13 +4391,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4412,7 +4412,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   The distance returned by nalgebra is in the same units as our positions - so a
@@ -4434,9 +4434,9 @@
   <video src="{{ assets }}/64cb25d6-7c9f-43a8-b7ea-e022410a962a.mp4" />
 </figure>
 
-<h2 id="birdie-and-the-brain">
+<hdr id="birdie-and-the-brain">
   Birdie and the Brain
-</h2>
+</hdr>
 
 <p>
   Our birds can fly, but they can't interact with their environment yet - in
@@ -4445,9 +4445,9 @@
   fly.
 </p>
 
-<h3>
+<shdr>
   Refactoring
-</h3>
+</shdr>
 
 <p>
   There's a lot of code inside <code>libs/simulation/src/lib.rs</code> - before
@@ -4458,11 +4458,11 @@
   A good rule of thumb is to keep a struct per file, so:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = mod animal;
   = mod food;
@@ -4480,13 +4480,13 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
@@ -4499,13 +4499,13 @@
   =     /* ... */
   = }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/food.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
@@ -4518,13 +4518,13 @@
   =     /* ... */
   = }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/world.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
@@ -4537,17 +4537,17 @@
   =     /* ... */
   = }
   -->
-</listing>
+</code>
 
 <p>
   ... and now:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo check
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     error[E0616]: field `animals` of struct `world::World` is private
       -\-> libs/simulation/src/lib.rs
@@ -4563,18 +4563,18 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Oh no, we've only shuffled some code around - what happened? Let's see the
   offending place:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4594,7 +4594,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   <ref>
@@ -4617,7 +4617,7 @@
       We could provide <b>mutable getters</b>:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         // libs/simulation/src/world.rs
         impl World {
@@ -4641,7 +4641,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
@@ -4649,7 +4649,7 @@
       <b>crate-public</b> instead of private:
     </p>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         #[derive(Debug)]
         pub struct World {
@@ -4657,7 +4657,7 @@
             pub(crate) foods: Vec<Food>,
         }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -4694,11 +4694,11 @@
   For simplicity, we'll go with the second approach:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4711,13 +4711,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/food.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4728,13 +4728,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/world.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4746,27 +4746,27 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   $ cargo check
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     Checking lib-simulation v0.1.0
         Checking lib-simulation-wasm v0.1.0
         Finished dev [unoptimized + debuginfo] target(s) in 0.57s
   -->
-</listing>
+</code>
 
 <p>
   Nice 😎 - now we're ready to implement eyes!
 </p>
 
-<h3>
+<shdr>
   Eye Of The Birdie
-</h3>
+</shdr>
 
 <p>
   What's an eye?
@@ -4778,11 +4778,11 @@
   think that an eye...​
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     mod animal;
   = mod eye;
@@ -4791,34 +4791,34 @@
 
   = pub use self::{animal::*, eye::*, food::*, world::*};
   -->
-</listing>
+</code>
 
 <p>
   ... is a struct!
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
   = #[derive(Debug)]
   = pub struct Eye;
   -->
-</listing>
+</code>
 
 <p>
   Not just any struct, though - it's gotta have one function in particular:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -4828,7 +4828,7 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   The result of this function is a vector of numbers, where each number - each
@@ -4847,11 +4847,11 @@
   Such an eye is defined by a few parameters:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use crate::*;
   = use std::f32::consts::*;
@@ -4988,17 +4988,17 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   The basic outline of our algorithm is:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5016,7 +5016,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   How can we check if some food is inside our field of view? Two conditions must
@@ -5030,11 +5030,11 @@
       <code>FOV_RANGE</code>:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation/src/eye.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         /* ... */
         
@@ -5090,7 +5090,7 @@
         
         /* ... */
       -->
-    </listing>
+    </code>
   </li>
   <li>
     <p>
@@ -5101,11 +5101,11 @@
       <code>&lt;-FOV_ANGLE/2, +FOV_ANGLE/2&gt;</code>:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/simulation/src/eye.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         /* ... */
         
@@ -5172,7 +5172,7 @@
         
         /* ... */
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -5181,11 +5181,11 @@
   eye to work, we need one more thing:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     cells[cell that sees this food] += how close the food is;
   -->
-</listing>
+</code>
 
 <p>
   Determining which concrete cell sees the food is a bit tricky, but it distills
@@ -5201,11 +5201,11 @@
   In the poetic language of code:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5263,17 +5263,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Now that we know the cell index, our final touch in here is:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5299,15 +5299,15 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   That's a lot of math! - how do we know it works? Of course, by testing it 😊
 </p>
 
-<h3>
+<shdr>
   Nothing But Tests
-</h3>
+</shdr>
 
 <p>
   The first obstacle is that our vision requires lot of parameters to compute:
@@ -5366,20 +5366,20 @@
   when you create a testing function:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     #[test]
     fn some_test() {
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and make it accept one or many parameters:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     // This is just an example in pseudo-Rust
     
@@ -5390,7 +5390,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   This testing methodology allows to cover the input space more thoroughly than
@@ -5405,28 +5405,28 @@
   <a href="https://crates.io/crates/test-case">test-case</a>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
   = [dev-dependencies]
   = test-case = "3.3.1"
   -->
-</listing>
+</code>
 
 <p>
   ... which has a pretty straightforward syntax:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5443,7 +5443,7 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   This solves the first obstacle, at least for all the practical purposes; while
@@ -5468,11 +5468,11 @@
   So, baby steps:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5509,18 +5509,18 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Hmmm, <b>no</b> - that's waaay too many parameters for a single function; how
   about a struct?
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5561,7 +5561,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Nice and readable; nice and readable.
@@ -5572,11 +5572,11 @@
   <code>fov_range</code>, so it's a parameter, too:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5597,14 +5597,14 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   About that <code>TestCase</code> - from a birds-eye view, what we're looking
   for is:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5621,18 +5621,18 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Since our <code>TestCase</code> already knows all the parameters needed, we
   can start implementing it:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5667,7 +5667,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Currently our <code>actual_vision</code> is <code>Vec&lt;f32&gt;</code> - we
@@ -5675,11 +5675,11 @@
   <code>.map()</code> and <code>.join()</code> magic:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5732,7 +5732,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Just like that, our testing framework is complete! 🥳
@@ -5742,11 +5742,11 @@
   Now, as for the tests - allow me to present you pure beauty:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -5827,17 +5827,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Breath in, breath out:
 </p>
 
-<listing-title>
+<code-title>
   $ cargo test -p lib-simulation
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     running 10 tests
     test eye::tests::fov_ranges::_0_4_ ... ok
@@ -5853,7 +5853,7 @@
     
     test result: ok. 10 passed; 0 failed
   -->
-</listing>
+</code>
 
 <p>
   Ha, ha! - it works! And it's readable! (and, with luck, even maintainable!)
@@ -5866,12 +5866,12 @@
     scenes, what I've done was:
   </p>
 
-  <listing lang="rust">
+  <code lang="rust">
     <!--
       #[test_case(1.0, "")]
       /* ... */
     -->
-  </listing>
+  </code>
 
   <p>
     ... and then I've run <code>$ cargo test</code> and copy-pasted the actual
@@ -5894,11 +5894,11 @@
   That's one parameter - four more to go! What about rotation?
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -5972,17 +5972,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Testing positions is even more fun:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -6077,7 +6077,7 @@
 
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   We've got only one more parameter left to cover: field of view's angle.
@@ -6089,11 +6089,11 @@
   correct):
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/eye.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6173,32 +6173,32 @@
 
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Nice:
 </p>
 
-<listing-title>
+<code-title>
   cargo test -p lib-simulation
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     test result: ok. 49 passed; 0 failed
   -->
-</listing>
+</code>
 
 <p>
   So - we've got eyez, but what about brainz? Fortunately, we've already
   implemented it!
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -6209,13 +6209,13 @@
     
     # ...
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simuation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6225,13 +6225,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6295,13 +6295,13 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6396,23 +6396,23 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Does it work? Let's find out!
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     ...
     [INFO]: :-) Done in 12.20s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
 <p>
   Oh my, oh my, oh my!
@@ -6453,9 +6453,9 @@
   puzzle: the genetic algorithm.
 </p>
 
-<h2 id="huggin-n-evolvin">
+<hdr id="huggin-n-evolvin">
   Huggin' & Evolvin'
-</h2>
+</hdr>
 
 <p>
   Even though our birds can fly, their brains remain entirely random - in this
@@ -6475,11 +6475,11 @@
   Let's get to it!
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/Cargo.toml
-</listing-title>
+</code-title>
 
-<listing lang="toml">
+<code lang="toml">
   <!--
     # ...
     
@@ -6491,13 +6491,13 @@
     
     # ...
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6505,13 +6505,13 @@
     use lib_neural_network as nn;
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6592,18 +6592,18 @@
   =     }
     }
   -->
-</listing>
+</code>
 
 <p>
   As you might remember, our <code>GenenticAlgorithm::evolve()</code> requires
   for the "evolvable" type to implement a trait called <code>Individual</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     impl<S> GeneticAlgorithm<S>
     where
@@ -6619,7 +6619,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   ... so a naïve approach could be to simply implement <code>Individual</code>
@@ -6627,11 +6627,11 @@
   evolve:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust" class="listing-invalid">
+<code lang="rust" class="code-invalid">
   <!--
     /* ... */
     
@@ -6649,7 +6649,7 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   But as soon as we try to actually implement those, we get backed into a corner
@@ -6658,11 +6658,11 @@
   contain a field called <code>chromosome</code>?
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust" class="listing-invalid">
+<code lang="rust" class="code-invalid">
   <!--
     impl ga::Individual for Animal {
         /* ... */
@@ -6674,7 +6674,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Granted, you could say that since we control the code inside
@@ -6684,11 +6684,11 @@
   underlying design issue, merely pushes it somewhere else:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust" class="listing-invalid">
+<code lang="rust" class="code-invalid">
   <!--
     /* ... */
     
@@ -6704,7 +6704,7 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   So, for the sake of argument, let's assume that our
@@ -6716,11 +6716,11 @@
   Most easily - by creating a dedicated struct:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6733,13 +6733,13 @@
     use lib_neural_network as nn;
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
@@ -6759,17 +6759,17 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
 <p>
   As we see, this structure has to contain at least those two fields:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     use crate::*;
     
@@ -6795,17 +6795,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   Let's go back to <code>fn evolve()</code> and see how it fits there:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6839,7 +6839,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Seems like this might just work!
@@ -6849,11 +6849,11 @@
   To implement those <code>.map()</code>s, we'll need two conversion methods:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6869,17 +6869,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... which allow us to:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6905,25 +6905,25 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Ok, so: how can we implement those two conversion methods?
 </p>
 
-<h3>
+<shdr>
   from_animal
-</h3>
+</shdr>
 
 <p>
   Let's bring into the picture the important bits:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -6945,7 +6945,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   What are we supposed to do inside <code>::from_animal()</code>? Well, looks
@@ -6970,11 +6970,11 @@
   all we've gotta do is to count them:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7001,13 +7001,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7032,13 +7032,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7055,7 +7055,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Ah, I love when all the pieces just fit together.
@@ -7067,11 +7067,11 @@
   the neural network - so ideally we'd write:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust" class="listing-invalid">
+<code lang="rust" class="code-invalid">
   <!--
     /* ... */
     
@@ -7088,7 +7088,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... but our <code>lib-neural-network</code>'s <code>Network</code> doesn't
@@ -7100,11 +7100,11 @@
   <code>lib-neural-network</code> - what we're looking for is:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7118,17 +7118,17 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   For fun, let's start with a test:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7162,7 +7162,7 @@
   =    }
     }
   -->
-</listing>
+</code>
 
 <p>
   As for the implementation, I'll show you three - one uses <code>for</code>
@@ -7175,11 +7175,11 @@
       Loops:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/neural-network/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
         impl Network {
             /* ... */
@@ -7201,7 +7201,7 @@
       =     }
         }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -7209,11 +7209,11 @@
       Combinators:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/neural-network/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = use std::iter::once;
 
@@ -7232,7 +7232,7 @@
       =     }
         }
       -->
-    </listing>
+    </code>
   </li>
 
   <li>
@@ -7240,11 +7240,11 @@
       Combinators + iterator:
     </p>
 
-    <listing-title>
+    <code-title>
       libs/neural-network/src/lib.rs
-    </listing-title>
+    </code-title>
 
-    <listing lang="rust">
+    <code lang="rust">
       <!--
       = use std::iter::once;
 
@@ -7278,7 +7278,7 @@
             }
         }
       -->
-    </listing>
+    </code>
   </li>
 </ol>
 
@@ -7293,7 +7293,7 @@
   <code>::from_weights()</code>:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7312,23 +7312,23 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Ideally, we'd like for the following identity to hold:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     network == Network::from_weights(network.weights())
   -->
-</listing>
+</code>
 
 <p>
   ... so let's base our tests exactly on that:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7353,17 +7353,17 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   ... and then an example implementation could be:
 </p>
 
-<listing-title>
+<code-title>
   libs/neural-network/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7436,16 +7436,16 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Recreating network from weights is quite complex, so don't worry if this code
   takes a moment to sink-in - took a while to write, too!
 </p>
 
-<h3>
+<shdr>
   Refactoring
-</h3>
+</shdr>
 
 <p>
   Our <code>Network</code> has now everything we need to make it compatible with
@@ -7457,11 +7457,11 @@
   Inside our <code>Animal</code>, what we have now is:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7474,18 +7474,18 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... and what I have on mind is to refactor <code>brain: nn::Network</code>
   into a distinct, em, body part:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7496,13 +7496,13 @@
   = mod brain;
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/brain.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
   = use crate::*;
   = 
@@ -7535,13 +7535,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7585,13 +7585,13 @@
   =     }
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     fn process_brains(&mut self) {
         for animal in &mut self.world.animals {
@@ -7603,17 +7603,17 @@
         }
     }
   -->
-</listing>
+</code>
 
 <p>
   All this allows us to complete <code>AnimalIndividual::from_animal()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7630,15 +7630,15 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   Once again, all the pieces fit together 🥳
 </p>
 
-<h3>
+<shdr>
   into_animal
-</h3>
+</shdr>
 
 <p>
   With our latest changes we can transform <code>Animal</code> into
@@ -7648,11 +7648,11 @@
   convert it into <code>Animal</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal_individual.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7666,13 +7666,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/animal.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7704,13 +7704,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/brain.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7736,15 +7736,15 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
 <p>
   Looks like...​ we're done! Are we done??
 </p>
 
-<h2 id="ready-set">
+<hdr id="ready-set">
   Ready, Set...​
-</h2>
+</hdr>
 
 <p>
   We're kinda-sorta done - while you could just launch
@@ -7813,20 +7813,20 @@
   you ready to knock on wood and begin our final birdie-adventure?
 </p>
 
-<h3>
+<shdr>
   Fast-Forward & Statistics
-</h3>
+</shdr>
 
 <p>
   Inside our JavaScript code we invoke <code>.step()</code> only during
   <code>redraw()</code> - that's what makes our simulation "stuck" to 60 FPS:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -7840,18 +7840,18 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   To make our simulation faster, we could either invoke
   <code>.step()</code> many times at once:
 </p>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -7869,7 +7869,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   ... or, a bit better, we could provide a dedicated method that "fast-forwards"
@@ -7883,11 +7883,11 @@
   let's go with <code>fn train()</code>:
 </p>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7919,13 +7919,13 @@
         /* ... */
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -7940,13 +7940,13 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.html
-</listing-title>
+</code-title>
 
-<listing lang="html">
+<code lang="html">
   <!--
     <!-- ... -\->
     <style>
@@ -7965,13 +7965,13 @@
     </body>
     <!-- ... -\->
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     import * as sim from "lib-simulation-wasm";
     
@@ -7986,7 +7986,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <note>
   <blockquote>
@@ -8028,11 +8028,11 @@
   <code>lib-genetic-algorithm</code> seems like a nice place to implement them:
 </p>
 
-<listing-title>
+<code-title>
   libs/genetic-algorithm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
 
@@ -8096,13 +8096,13 @@
   =     }
   = }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -8140,13 +8140,13 @@
         }
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   libs/simulation-wasm/src/lib.rs
-</listing-title>
+</code-title>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     /* ... */
     
@@ -8174,13 +8174,13 @@
   =     }
     }
   -->
-</listing>
+</code>
 
-<listing-title>
+<code-title>
   www/index.js
-</listing-title>
+</code-title>
 
-<listing lang="javascript">
+<code lang="javascript">
   <!--
     /* ... */
     
@@ -8190,7 +8190,7 @@
     
     /* ... */
   -->
-</listing>
+</code>
 
 <p>
   This time, when building, don't forget about the <code>--release</code> switch
@@ -8198,21 +8198,21 @@
   working at reasonable performance:
 </p>
 
-<listing-title>
+<code-title>
   $ wasm-pack build --release
-</listing-title>
+</code-title>
 
-<listing lang="text">
+<code lang="text">
   <!--
     ...
     [INFO]: :-) Done in 40.00s
     [INFO]: :-) Your wasm pkg is ready to publish at /home/pwy/Projects/...
   -->
-</listing>
+</code>
 
-<h2 id="ready-set-go">
+<hdr id="ready-set-go">
   Ready, Set, Go!
-</h2>
+</hdr>
 
 <p>
   Finally, ultimately, eventually, <i>at last</i> - the outcome of our diligent,
@@ -8279,9 +8279,9 @@
   </p>
 </note>
 
-<h2 id="closing-thoughts">
+<hdr id="closing-thoughts">
   Closing Thoughts
-</h2>
+</hdr>
 
 <p>
   Started from the bottom, haven't we?
@@ -8313,9 +8313,9 @@
   </figcaption>
 </figure>
 
-<h3>
+<shdr>
   What now?
-</h3>
+</shdr>
 
 <p>
   If you want to fiddle a bit on your own, there's still a few <i>very</i>
@@ -8333,7 +8333,7 @@
   optimal ones:
 </p>
 
-<listing lang="rust">
+<code lang="rust">
   <!--
     let mut stats = Vec::new();
     
@@ -8351,7 +8351,7 @@
     
     // TODO using `stats`, find out which combinations yielded the best results
   -->
-</listing>
+</code>
 
 <p>
   Bonus points for using <a href="https://github.com/rayon-rs/rayon">rayon</a>!
