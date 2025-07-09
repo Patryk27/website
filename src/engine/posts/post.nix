@@ -6,9 +6,7 @@ let
   postHeader =
     let
       tag = tag: ''
-        <a class="post-meta-tag" href="/tags/${tag}">
-          #${tag}
-        </a>
+        <span>#</span><a class="post-meta-tag" href="/tags/${tag}">${tag}</a>
       '';
 
     in

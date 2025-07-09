@@ -6,9 +6,7 @@ let
 
   tags = toString (
     map (tag: ''
-      <a class="post-meta-tag" href="/tags/${tag}">
-        #${tag}
-      </a>
+      <span>#</span><a class="post-meta-tag" href="/tags/${tag}">${tag}</a>
     '') post.tags
   );
 
