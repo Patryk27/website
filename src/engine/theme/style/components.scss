@@ -101,9 +101,6 @@
 .talk-meta-time {
   display: inline-block;
   margin-top: 0.25em;
-  margin-right: 0.5em;
-  padding-right: 0.7em;
-  border-right: 1px solid $body-fg-secondary;
 
   @media print, (min-width: 992px) {
     margin-top: 0;
@@ -113,6 +110,10 @@
 .post-meta-tags,
 .talk-meta-tags,
 .talk-meta-resources {
+  margin-left: 0.5em;
+  padding-left: 0.7em;
+  border-left: 1px solid $body-fg-secondary;
+
   @media print, (min-width: 992px) {
     display: inline-block;
   }
