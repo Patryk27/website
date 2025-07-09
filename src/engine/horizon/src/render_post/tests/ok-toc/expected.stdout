@@ -1,0 +1,19 @@
+<ul class="toc"><li>&gt; <a href="#first">
+  First Header
+</a></li><li>&gt; <a href="#second">
+  Second Header
+</a></li><li>&gt; <a href="#third">
+  Third Header
+</a></li></ul>
+
+<h2 id="first"><a href="#first">
+  First Header
+</a></h2>
+
+<h2 id="second"><a href="#second">
+  Second Header
+</a></h2>
+
+<h2 id="third"><a href="#third">
+  Third Header
+</a></h2>

@@ -1,6 +1,6 @@
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "hdr",
                 span: Span {
@@ -38,9 +38,9 @@ Elem(
                         },
                     },
                 ),
-                Elem(
+                Element(
                     Spanned {
-                        inner: Elem {
+                        inner: Element {
                             name: Spanned {
                                 inner: "i",
                                 span: Span {

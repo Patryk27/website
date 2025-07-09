@@ -1,6 +1,6 @@
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "a",
                 span: Span {

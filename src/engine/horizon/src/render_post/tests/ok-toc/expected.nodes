@@ -1,0 +1,199 @@
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "toc",
+                span: Span {
+                    start: 1,
+                    end: 4,
+                },
+            },
+            attrs: [],
+            children: [],
+        },
+        span: Span {
+            start: 0,
+            end: 7,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            start: 7,
+            end: 9,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "hdr",
+                span: Span {
+                    start: 10,
+                    end: 13,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            start: 14,
+                            end: 16,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "first",
+                            span: Span {
+                                start: 17,
+                                end: 24,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  First Header\n",
+                        span: Span {
+                            start: 25,
+                            end: 41,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            start: 9,
+            end: 47,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            start: 47,
+            end: 49,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "hdr",
+                span: Span {
+                    start: 50,
+                    end: 53,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            start: 54,
+                            end: 56,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "second",
+                            span: Span {
+                                start: 57,
+                                end: 65,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Second Header\n",
+                        span: Span {
+                            start: 66,
+                            end: 83,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            start: 49,
+            end: 89,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n\n",
+        span: Span {
+            start: 89,
+            end: 91,
+        },
+    },
+)
+Element(
+    Spanned {
+        inner: Element {
+            name: Spanned {
+                inner: "hdr",
+                span: Span {
+                    start: 92,
+                    end: 95,
+                },
+            },
+            attrs: [
+                Attr {
+                    name: Spanned {
+                        inner: "id",
+                        span: Span {
+                            start: 96,
+                            end: 98,
+                        },
+                    },
+                    value: Some(
+                        Spanned {
+                            inner: "third",
+                            span: Span {
+                                start: 99,
+                                end: 106,
+                            },
+                        },
+                    ),
+                },
+            ],
+            children: [
+                Text(
+                    Spanned {
+                        inner: "\n  Third Header\n",
+                        span: Span {
+                            start: 107,
+                            end: 123,
+                        },
+                    },
+                ),
+            ],
+        },
+        span: Span {
+            start: 91,
+            end: 129,
+        },
+    },
+)
+Text(
+    Spanned {
+        inner: "\n",
+        span: Span {
+            start: 129,
+            end: 130,
+        },
+    },
+)

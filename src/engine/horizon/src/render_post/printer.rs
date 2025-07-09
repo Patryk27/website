@@ -1,20 +1,22 @@
-mod add_a;
-mod add_code;
-mod add_code_title;
-mod add_hdr;
-mod add_note;
-mod add_p;
-mod add_ref;
-mod add_shdr;
-mod add_video;
+mod a;
+mod code;
+mod code_title;
+mod hdr;
+mod note;
+mod p;
+mod r#ref;
+mod shdr;
+mod toc;
+mod video;
 
-use super::{Attr, Elem, Error, Node, Result, Span, Spanned};
+use super::{Attr, Element, Error, Node, Result, Span, Spanned};
 use std::collections::BTreeMap;
 use std::fmt::Write;
 
 #[must_use = "call `.finish()` to emit warnings"]
 pub struct Printer<'a> {
     out: &'a mut dyn Write,
+    headers: Vec<Header>,
     refs: BTreeMap<Option<String>, Spanned<String>>,
 }
 
@@ -22,7 +24,16 @@ impl<'a> Printer<'a> {
     pub fn new(out: &'a mut dyn Write) -> Self {
         Self {
             out,
+            headers: Default::default(),
             refs: Default::default(),
+        }
+    }
+
+    pub fn scan(&mut self, node: &Node) {
+        if let Node::Element(el) = node
+            && el.name.as_str() == "hdr"
+        {
+            self.scan_hdr(el);
         }
     }
 
@@ -36,7 +47,7 @@ impl<'a> Printer<'a> {
                 //
             }
 
-            Node::Elem(el) => {
+            Node::Element(el) => {
                 let el = el.into_inner();
 
                 match el.name.as_str() {
@@ -48,6 +59,7 @@ impl<'a> Printer<'a> {
                     "p" => self.add_p(el)?,
                     "ref" => self.add_ref(el)?,
                     "shdr" => self.add_shdr(el)?,
+                    "toc" => self.add_toc(el)?,
                     "video" => self.add_video(el)?,
 
                     #[rustfmt::skip]
@@ -95,7 +107,7 @@ impl<'a> Printer<'a> {
         Ok(())
     }
 
-    fn add_any(&mut self, el: Elem) -> Result<()> {
+    fn add_any(&mut self, el: Element) -> Result<()> {
         _ = write!(self.out, "<{}", *el.name);
 
         for attr in &el.attrs {
@@ -139,4 +151,10 @@ impl<'a> Printer<'a> {
 
         Ok(())
     }
+}
+
+#[derive(Clone, Debug)]
+struct Header {
+    id: String,
+    name: Vec<Node>,
 }

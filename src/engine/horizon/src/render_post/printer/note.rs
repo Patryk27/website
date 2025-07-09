@@ -1,7 +1,7 @@
-use super::{Elem, Printer, Result};
+use super::{Element, Printer, Result};
 
 impl Printer<'_> {
-    pub(super) fn add_note(&mut self, el: Elem) -> Result<()> {
+    pub(super) fn add_note(&mut self, el: Element) -> Result<()> {
         el.assert_no_attrs()?;
 
         _ = write!(self.out, r#"<aside class="note">"#);

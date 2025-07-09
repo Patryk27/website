@@ -1,11 +1,11 @@
-use super::{Elem, Error, Node, Printer, Result, Span};
+use super::{Element, Error, Node, Printer, Result, Span};
 use itertools::Itertools;
 use std::fmt::Write as _;
 use std::io::Write;
 use std::process::{Command, Stdio};
 
 impl Printer<'_> {
-    pub(super) fn add_code(&mut self, el: Elem) -> Result<()> {
+    pub(super) fn add_code(&mut self, el: Element) -> Result<()> {
         if el.children.iter().any(|el| matches!(el, Node::Comment(_))) {
             self.add_code_block(el)
         } else {
@@ -13,7 +13,7 @@ impl Printer<'_> {
         }
     }
 
-    fn add_code_block(&mut self, el: Elem) -> Result<()> {
+    fn add_code_block(&mut self, el: Element) -> Result<()> {
         let mut code = None;
 
         for el in &el.children {
@@ -92,7 +92,7 @@ impl Printer<'_> {
     }
 }
 
-fn render(el: &Elem, body: &str, highlights: &[usize]) -> Result<String> {
+fn render(el: &Element, body: &str, highlights: &[usize]) -> Result<String> {
     let mut lang = None;
     let mut class = None;
 

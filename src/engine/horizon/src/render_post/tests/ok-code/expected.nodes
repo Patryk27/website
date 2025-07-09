@@ -1,6 +1,6 @@
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "p",
                 span: Span {
@@ -36,9 +36,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "code",
                 span: Span {
@@ -92,9 +92,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "code-title",
                 span: Span {
@@ -130,9 +130,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "code",
                 span: Span {
@@ -223,9 +223,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "code",
                 span: Span {
@@ -279,9 +279,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "p",
                 span: Span {
@@ -317,9 +317,9 @@ Text(
         },
     },
 )
-Elem(
+Element(
     Spanned {
-        inner: Elem {
+        inner: Element {
             name: Spanned {
                 inner: "p",
                 span: Span {
@@ -338,9 +338,9 @@ Elem(
                         },
                     },
                 ),
-                Elem(
+                Element(
                     Spanned {
-                        inner: Elem {
+                        inner: Element {
                             name: Spanned {
                                 inner: "code",
                                 span: Span {

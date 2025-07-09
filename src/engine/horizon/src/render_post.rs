@@ -21,7 +21,7 @@ impl Cmd {
         Self::run_ex(env, None)
     }
 
-    fn run_ex(env: &mut Env, mut nodes: Option<&mut Vec<Node>>) -> AResult<()> {
+    fn run_ex(env: &mut Env, out_nodes: Option<&mut Vec<Node>>) -> AResult<()> {
         let mut input = String::new();
         let mut output = String::new();
 
@@ -32,13 +32,16 @@ impl Cmd {
         let mut printer = Printer::new(&mut output);
 
         let result: Result<()> = try {
-            for node in Scanner::new(&input) {
-                let node = node?;
+            let nodes: Vec<_> = Scanner::new(&input).collect::<Result<_>>()?;
 
-                if let Some(nodes) = &mut nodes {
-                    nodes.push(node.clone());
-                }
+            if let Some(out_nodes) = out_nodes {
+                *out_nodes = nodes.clone();
+            }
 
+            for node in &nodes {
+                printer.scan(node);
+            }
+            for node in nodes {
                 printer.add(node)?;
             }
 
@@ -84,6 +87,7 @@ mod tests {
     #[test_case("ok-ref")]
     #[test_case("ok-shdr")]
     #[test_case("ok-smoke")]
+    #[test_case("ok-toc")]
     #[test_case("ok-video")]
     fn test(case: &str) {
         let dir = Path::new("src")

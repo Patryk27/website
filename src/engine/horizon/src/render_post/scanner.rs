@@ -1,4 +1,4 @@
-use super::{Attr, Elem, Error, Node, Result, Span, Spanned};
+use super::{Attr, Element, Error, Node, Result, Span, Spanned};
 use std::iter::Peekable;
 use std::str::Chars;
 
@@ -112,11 +112,12 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn elem(&mut self) -> Result<Spanned<Elem>> {
+    fn elem(&mut self) -> Result<Spanned<Element>> {
         self.context
             .push((self.pos - 1, "... when reading this element".into()));
 
-        let mut out = Spanned::new(Elem::default(), Span::char(self.pos - 1));
+        let mut out =
+            Spanned::new(Element::default(), Span::char(self.pos - 1));
 
         if self.elem_tag(&mut out)? {
             self.elem_children(&mut out)?;
@@ -129,7 +130,7 @@ impl<'a> Scanner<'a> {
         Ok(out)
     }
 
-    fn elem_tag(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
+    fn elem_tag(&mut self, out: &mut Spanned<Element>) -> Result<bool> {
         out.name.span_mut().start = self.pos;
 
         let expect_attrs = self.elem_tag_name(out)?;
@@ -145,7 +146,7 @@ impl<'a> Scanner<'a> {
         Ok(expect_children)
     }
 
-    fn elem_tag_name(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
+    fn elem_tag_name(&mut self, out: &mut Spanned<Element>) -> Result<bool> {
         loop {
             match self.char()? {
                 '>' => {
@@ -170,7 +171,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn elem_tag_attrs(&mut self, out: &mut Spanned<Elem>) -> Result<bool> {
+    fn elem_tag_attrs(&mut self, out: &mut Spanned<Element>) -> Result<bool> {
         loop {
             self.whitespace();
 
@@ -240,7 +241,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn elem_children(&mut self, out: &mut Spanned<Elem>) -> Result<()> {
+    fn elem_children(&mut self, out: &mut Spanned<Element>) -> Result<()> {
         loop {
             match self.node()? {
                 NodeOrClosingTag::Node(node) => {
@@ -305,7 +306,7 @@ impl<'a> Scanner<'a> {
             } else if self.try_eating(['/']) {
                 Ok(NodeOrClosingTag::ClosingTag(self.closing_tag()?))
             } else {
-                Ok(NodeOrClosingTag::Node(Node::Elem(self.elem()?)))
+                Ok(NodeOrClosingTag::Node(Node::Element(self.elem()?)))
             }
         } else {
             Ok(NodeOrClosingTag::Node(Node::Text(self.text()?)))

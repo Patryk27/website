@@ -1,7 +1,7 @@
-use super::{Elem, Error, Node, Printer, Result};
+use super::{Element, Error, Node, Printer, Result};
 
 impl Printer<'_> {
-    pub(super) fn add_p(&mut self, el: Elem) -> Result<()> {
+    pub(super) fn add_p(&mut self, el: Element) -> Result<()> {
         if let Some(Node::Text(text)) = el.children.first()
             && !text.starts_with('\n')
         {

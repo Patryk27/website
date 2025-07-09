@@ -1,13 +1,13 @@
-use super::{Attr, Elem, Printer, Result, Spanned};
+use super::{Attr, Element, Printer, Result, Spanned};
 
 impl Printer<'_> {
-    pub(super) fn add_video(&mut self, mut el: Elem) -> Result<()> {
+    pub(super) fn add_video(&mut self, mut el: Element) -> Result<()> {
         let src = el.remove_attr("src")?;
         let src = src.value()?;
 
         el.assert_no_attrs()?;
 
-        self.add_any(Elem {
+        self.add_any(Element {
             name: Spanned::dummy("video".into()),
             attrs: vec![
                 Attr {

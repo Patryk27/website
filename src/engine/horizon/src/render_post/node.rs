@@ -4,40 +4,68 @@ use super::{Error, Result, Span, Spanned};
 pub enum Node {
     Text(Spanned<String>),
     Comment(Spanned<String>),
-    Elem(Spanned<Elem>),
+    Element(Spanned<Element>),
 }
 
 impl Node {
     pub fn span(&self) -> Span {
         match self {
-            Node::Text(el) => el.span(),
-            Node::Comment(el) => el.span(),
-            Node::Elem(el) => el.span(),
+            Node::Text(node) => node.span(),
+            Node::Comment(node) => node.span(),
+            Node::Element(node) => node.span(),
         }
     }
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct Elem {
+pub struct Element {
     pub name: Spanned<String>,
     pub attrs: Vec<Attr>,
     pub children: Vec<Node>,
 }
 
-impl Elem {
-    pub fn remove_attr(&mut self, key: &str) -> Result<Attr> {
-        self.remove_attr_opt(key).ok_or_else(|| {
-            Error::new(format!("missing attribute: `{key}`"), self.name.span())
-        })
+impl Element {
+    pub fn attr(&self, name: &str) -> Result<&str> {
+        self.attrs
+            .iter()
+            .find_map(|attr| {
+                if *attr.name == name {
+                    attr.value.as_ref().map(|value| value.as_str())
+                } else {
+                    None
+                }
+            })
+            .ok_or_else(|| {
+                Error::new(
+                    format!("missing attribute: `{name}`"),
+                    self.name.span(),
+                )
+            })
     }
 
-    pub fn remove_attr_opt(&mut self, key: &str) -> Option<Attr> {
-        self.attrs.extract_if(.., |attr| *attr.name == key).next()
+    pub fn remove_attr(&mut self, name: &str) -> Result<Attr> {
+        self.attrs
+            .extract_if(.., |attr| *attr.name == name)
+            .next()
+            .ok_or_else(|| {
+                Error::new(
+                    format!("missing attribute: `{name}`"),
+                    self.name.span(),
+                )
+            })
     }
 
     pub fn assert_no_attrs(&self) -> Result<()> {
         if let Some(attr) = self.attrs.first() {
-            Err(Error::new("unknown attribute", attr.name.span()))
+            Err(Error::new("unexpected attribute", attr.name.span()))
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn assert_no_children(&self) -> Result<()> {
+        if let Some(child) = self.children.first() {
+            Err(Error::new("unexpected child", child.span()))
         } else {
             Ok(())
         }

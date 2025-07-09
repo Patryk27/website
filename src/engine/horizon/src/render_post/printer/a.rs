@@ -1,10 +1,10 @@
-use super::{Attr, Elem, Error, Node, Printer, Result, Spanned};
+use super::{Attr, Element, Error, Node, Printer, Result, Spanned};
 
 impl Printer<'_> {
-    pub(super) fn add_a(&mut self, mut el: Elem) -> Result<()> {
-        let href = if let Some(href) = el.remove_attr_opt("href") {
+    pub(super) fn add_a(&mut self, mut el: Element) -> Result<()> {
+        let href = if let Ok(href) = el.remove_attr("href") {
             href.into_value()?
-        } else if let Some(ref_id) = el.remove_attr_opt("ref") {
+        } else if let Ok(ref_id) = el.remove_attr("ref") {
             let ref_id = ref_id.value()?;
 
             self.refs.remove(&Some(ref_id.to_string())).ok_or_else(|| {

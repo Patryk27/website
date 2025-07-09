@@ -1,8 +1,8 @@
-use super::{Elem, Error, Node, Printer, Result, Spanned};
+use super::{Element, Error, Node, Printer, Result, Spanned};
 
 impl Printer<'_> {
-    pub(super) fn add_ref(&mut self, mut el: Elem) -> Result<()> {
-        let spanned_id = el.remove_attr_opt("id").and_then(|attr| attr.value);
+    pub(super) fn add_ref(&mut self, mut el: Element) -> Result<()> {
+        let spanned_id = el.remove_attr("id").ok().and_then(|attr| attr.value);
 
         el.assert_no_attrs()?;
 
